@@ -1,0 +1,53 @@
+{
+    "$schema": "https://openapi.vercel.sh/vercel.json",
+    "framework": "nextjs",
+    "regions": [
+        "bom1"
+    ],
+    "functions": {
+        "app/api/**/*.ts": {
+            "maxDuration": 10
+        },
+        "app/(public)/[type]/[slug]/page.tsx": {
+            "maxDuration": 15
+        },
+        "app/sitemap.ts": {
+            "maxDuration": 30
+        }
+    },
+    "crons": [
+        {
+            "path": "/api/cron",
+            "schedule": "*/15 * * * *"
+        }
+    ],
+    "headers": [
+        {
+            "source": "/api/health",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "no-store, no-cache, must-revalidate"
+                }
+            ]
+        },
+        {
+            "source": "/api/feed",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, s-maxage=900, stale-while-revalidate=1800"
+                }
+            ]
+        },
+        {
+            "source": "/feed.xml",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400"
+                }
+            ]
+        }
+    ]
+}

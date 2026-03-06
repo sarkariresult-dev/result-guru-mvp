@@ -1,0 +1,90 @@
+'use client'
+
+/**
+ * useLocalStorage — Result Guru
+ *
+ * SSR-safe localStorage hook with:
+ *  - Lazy initialisation (avoids hydration mismatch)
+ *  - Cross-tab synchronisation via the `storage` event
+ *  - Functional updates like useState
+ *  - Optional serializer/deserializer override
+ *  - `removeItem` helper for clearing the key
+ *
+ * Usage:
+ *   const [bookmarks, setBookmarks, clearBookmarks] =
+ *     useLocalStorage<string[]>('rg_bookmarks', [])
+ */
+
+import { useState, useEffect, useCallback, useRef } from 'react'
+
+interface Options<T> {
+    serializer?: (value: T) => string
+    deserializer?: (raw: string) => T
+}
+
+export function useLocalStorage<T>(
+    key: string,
+    initialValue: T,
+    options?: Options<T>,
+): [T, (value: T | ((prev: T) => T)) => void, () => void] {
+    const serialize = options?.serializer ?? JSON.stringify
+    const deserialize = options?.deserializer ?? ((raw) => JSON.parse(raw) as T)
+
+    // Read once, lazily — avoids SSR / hydration mismatch
+    const readValue = useCallback((): T => {
+        if (typeof window === 'undefined') return initialValue
+        try {
+            const item = window.localStorage.getItem(key)
+            return item !== null ? deserialize(item) : initialValue
+        } catch {
+            return initialValue
+        }
+    }, [key, initialValue, deserialize])
+
+    const [stored, setStored] = useState<T>(readValue)
+
+    // Keep initialValue reference stable so the effect below doesn't re-fire
+    const initialValueRef = useRef(initialValue)
+
+    // Sync with external changes to the same key (e.g. another tab)
+    useEffect(() => {
+        const handleStorageEvent = (e: StorageEvent) => {
+            if (e.key !== key) return
+            if (e.newValue === null) {
+                setStored(initialValueRef.current)
+            } else {
+                try {
+                    setStored(deserialize(e.newValue))
+                } catch {
+                    setStored(initialValueRef.current)
+                }
+            }
+        }
+        window.addEventListener('storage', handleStorageEvent)
+        return () => window.removeEventListener('storage', handleStorageEvent)
+    }, [key, deserialize])
+
+    const setValue = useCallback(
+        (value: T | ((prev: T) => T)) => {
+            setStored((prev) => {
+                const next = value instanceof Function ? value(prev) : value
+                try {
+                    window.localStorage.setItem(key, serialize(next))
+                } catch {
+                    // Quota exceeded or private mode — silently ignore
+                }
+                return next
+            })
+        },
+        [key, serialize],
+    )
+
+    const removeItem = useCallback(() => {
+        try {
+            window.localStorage.removeItem(key)
+        } catch { /* ignore */ }
+        setStored(initialValueRef.current)
+    }, [key])
+
+    return [stored, setValue, removeItem]
+}

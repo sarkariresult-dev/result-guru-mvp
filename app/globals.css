@@ -1,0 +1,629 @@
+/* ============================================================
+   globals.css — Tailwind CSS v4 · Next.js 16
+   Result Guru — India's Government Jobs & Results Portal
+   ============================================================ */
+
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* ── T2: Tell Tailwind that dark: uses .dark class (next-themes) ─── */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Design Tokens via @theme ──────────────────────────────── */
+@theme {
+    /* ── Typography ── */
+    --font-sans: var(--font-sans-next), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-display: var(--font-display-next), var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    --font-mono: var(--font-mono-next), ui-monospace, "Cascadia Code", "Fira Code", monospace;
+
+    /* ── Indigo brand scale (authority / trust / depth) ── */
+    --color-brand-50: oklch(0.97 0.012 264);
+    --color-brand-100: oklch(0.93 0.028 264);
+    --color-brand-200: oklch(0.87 0.058 264);
+    --color-brand-300: oklch(0.77 0.098 264);
+    --color-brand-400: oklch(0.65 0.145 264);
+    --color-brand-500: oklch(0.55 0.180 264);
+    --color-brand-600: oklch(0.48 0.192 264);
+    --color-brand-700: oklch(0.41 0.180 264);
+    --color-brand-800: oklch(0.33 0.155 264);
+    --color-brand-900: oklch(0.25 0.118 264);
+    --color-brand-950: oklch(0.17 0.082 264);
+
+    /* ── Saffron accent scale (energy / India / warmth) ── */
+    --color-accent-50: oklch(0.98 0.016 60);
+    --color-accent-100: oklch(0.95 0.040 58);
+    --color-accent-200: oklch(0.89 0.085 55);
+    --color-accent-300: oklch(0.82 0.135 52);
+    --color-accent-400: oklch(0.74 0.170 48);
+    --color-accent-500: oklch(0.66 0.185 45);
+    --color-accent-600: oklch(0.57 0.172 42);
+    --color-accent-700: oklch(0.47 0.145 40);
+    --color-accent-800: oklch(0.37 0.110 40);
+    --color-accent-900: oklch(0.28 0.076 40);
+    --color-accent-950: oklch(0.20 0.050 40);
+
+    /* ── Semantic tokens (wired to CSS custom properties below) ── */
+    --color-background: var(--bg);
+    --color-background-muted: var(--bg-muted);
+    --color-background-subtle: var(--bg-subtle);
+    --color-foreground: var(--fg);
+    --color-foreground-muted: var(--fg-muted);
+    --color-foreground-subtle: var(--fg-subtle);
+    --color-border: var(--border);
+    --color-border-strong: var(--border-strong);
+    --color-ring: var(--ring);
+    --color-surface: var(--surface);
+    --color-surface-raised: var(--surface-raised);
+    --color-overlay: var(--overlay);
+
+    /* ── Status colours (WCAG AA contrast on both themes) ── */
+    --color-success: oklch(0.58 0.150 155);
+    --color-warning: oklch(0.72 0.160 78);
+    --color-error: oklch(0.55 0.185 25);
+    --color-info: oklch(0.58 0.160 230);
+
+    /* ── Border radius ── */
+    --radius-xs: 0.25rem;
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-2xl: 1.25rem;
+    --radius-3xl: 1.5rem;
+    --radius-full: 9999px;
+
+    /* ── Elevation / Shadow system ── */
+    --shadow-xs: 0 1px 2px 0 oklch(0 0 0 / 0.04);
+    --shadow-sm: 0 1px 3px 0 oklch(0 0 0 / 0.07), 0 1px 2px -1px oklch(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px oklch(0 0 0 / 0.07), 0 2px 4px -2px oklch(0 0 0 / 0.05);
+    --shadow-lg: 0 10px 24px -4px oklch(0 0 0 / 0.09), 0 4px 8px -4px oklch(0 0 0 / 0.05);
+    --shadow-xl: 0 20px 40px -8px oklch(0 0 0 / 0.12);
+    --shadow-brand: 0 4px 16px -2px oklch(0.48 0.192 264 / 0.30);
+    --shadow-accent: 0 4px 16px -2px oklch(0.57 0.172 42 / 0.30);
+
+    /* ── Transitions ── */
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out-quad: cubic-bezier(0.45, 0, 0.55, 1);
+    --duration-fast: 120ms;
+    --duration-base: 200ms;
+    --duration-slow: 350ms;
+    --duration-slower: 550ms;
+
+    /* ── Container sizes ── */
+    --container-prose: 65ch;
+}
+
+/* ── Light Mode ─────────────────────────────────────────────── */
+:root {
+    --bg: oklch(0.988 0.002 264);
+    --bg-muted: oklch(0.965 0.005 264);
+    --bg-subtle: oklch(0.945 0.008 264);
+    --fg: oklch(0.145 0.020 264);
+    --fg-muted: oklch(0.35 0.016 264);
+    --fg-subtle: oklch(0.45 0.010 264);
+    --border: oklch(0.905 0.008 264);
+    --border-strong: oklch(0.80 0.016 264);
+    --ring: oklch(0.48 0.192 264);
+    --surface: oklch(1 0 0);
+    --surface-raised: oklch(0.995 0.002 264);
+    --overlay: oklch(0.145 0.020 264 / 0.50);
+    color-scheme: light;
+}
+
+/* ── Dark Mode ──────────────────────────────────────────────── */
+.dark {
+    --bg: oklch(0.12 0.014 264);
+    --bg-muted: oklch(0.15 0.014 264);
+    --bg-subtle: oklch(0.18 0.014 264);
+    --fg: oklch(0.94 0.005 264);
+    --fg-muted: oklch(0.65 0.008 264);
+    --fg-subtle: oklch(0.48 0.007 264);
+    --border: oklch(0.24 0.016 264);
+    --border-strong: oklch(0.34 0.020 264);
+    --ring: oklch(0.65 0.145 264);
+    --surface: oklch(0.15 0.014 264);
+    --surface-raised: oklch(0.19 0.015 264);
+    --overlay: oklch(0 0 0 / 0.60);
+    color-scheme: dark;
+}
+
+/* ── System dark preference fallback ───────────────────────── */
+@media (prefers-color-scheme: dark) {
+    :root:not(.light) {
+        --bg: oklch(0.12 0.014 264);
+        --bg-muted: oklch(0.15 0.014 264);
+        --bg-subtle: oklch(0.18 0.014 264);
+        --fg: oklch(0.94 0.005 264);
+        --fg-muted: oklch(0.65 0.008 264);
+        --fg-subtle: oklch(0.48 0.007 264);
+        --border: oklch(0.24 0.016 264);
+        --border-strong: oklch(0.34 0.020 264);
+        --ring: oklch(0.65 0.145 264);
+        --surface: oklch(0.15 0.014 264);
+        --surface-raised: oklch(0.19 0.015 264);
+        --overlay: oklch(0 0 0 / 0.60);
+        color-scheme: dark;
+    }
+}
+
+/* ── Base Layer ─────────────────────────────────────────────── */
+@layer base {
+
+    /* Consistent box-sizing and border colour */
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+        border-color: var(--border);
+    }
+
+    /* SEO + Performance: smooth scroll, optimised text rendering */
+    html {
+        scroll-behavior: smooth;
+        text-rendering: optimizeLegibility;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+        tab-size: 4;
+        scrollbar-gutter: stable;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        hanging-punctuation: first last;
+    }
+
+    body {
+        background-color: var(--bg);
+        color: var(--fg);
+        font-family: var(--font-sans);
+        font-size: 0.9375rem; /* 15px — optimal for Inter readability */
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        font-optical-sizing: auto;
+    }
+
+    /* Accessible focus — brand ring */
+    :focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 3px;
+        border-radius: var(--radius-sm);
+    }
+
+    :focus:not(:focus-visible) {
+        outline: none;
+    }
+
+    /* Smooth image rendering + CLS prevention */
+    img,
+    video,
+    svg {
+        display: block;
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Form elements inherit font + Inter-specific OpenType features */
+    input,
+    textarea,
+    select,
+    button {
+        font-family: inherit;
+        font-size: inherit;
+    }
+
+    /* Headings — display font, balanced wrapping */
+    h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-display);
+        font-weight: 700;
+        line-height: 1.25;
+        letter-spacing: -0.015em;
+        color: var(--fg);
+        text-wrap: balance;
+    }
+
+    h1 { font-size: 1.875rem; } /* 30px */
+    h2 { font-size: 1.5rem; }   /* 24px */
+    h3 { font-size: 1.25rem; }  /* 20px */
+    h4 { font-size: 1.1rem; }   /* ~17.6px */
+
+    @media (min-width: 640px) {
+        h1 { font-size: 2.25rem; }  /* 36px */
+        h2 { font-size: 1.75rem; }  /* 28px */
+        h3 { font-size: 1.375rem; } /* 22px */
+    }
+
+    p { text-wrap: pretty; }
+
+    a {
+        color: inherit;
+        text-decoration-skip-ink: auto;
+    }
+
+    button {
+        cursor: pointer;
+        touch-action: manipulation;
+    }
+
+    pre, code, kbd, samp {
+        font-family: var(--font-mono);
+        font-size: 0.875em;
+    }
+
+    [hidden] { display: none !important; }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--fg-subtle); }
+
+    /* Firefox scrollbar */
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--border-strong) transparent;
+    }
+
+    /* Selection highlight */
+    ::selection {
+        background: oklch(0.48 0.192 264 / 0.16);
+        color: var(--fg);
+    }
+
+    .dark ::selection {
+        background: oklch(0.65 0.145 264 / 0.28);
+    }
+
+    table {
+        text-indent: 0;
+        border-color: inherit;
+        border-collapse: collapse;
+    }
+
+    /* ── Content table cell padding (post body / prose) ── */
+    .prose th,
+    .prose td {
+        padding: 0.75rem 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+    }
+    .prose th {
+        font-weight: 600;
+        background: var(--surface-raised);
+    }
+    .prose tr:last-child td {
+        border-bottom: none;
+    }
+
+    hr {
+        border: none;
+        border-top: 1px solid var(--border);
+    }
+}
+
+/* ── Tiptap Rich Text Editor ────────────────────────────────── */
+@layer components {
+
+    .tiptap {
+        outline: none;
+        min-height: 4rem;
+        caret-color: oklch(0.48 0.192 264);
+    }
+
+    .tiptap p.is-editor-empty:first-child::before {
+        content: attr(data-placeholder);
+        float: left;
+        color: var(--fg-subtle);
+        pointer-events: none;
+        height: 0;
+        font-style: italic;
+    }
+
+    .tiptap h1, .tiptap h2, .tiptap h3, .tiptap h4 {
+        font-family: var(--font-display);
+        font-weight: 700;
+        line-height: 1.25;
+        letter-spacing: -0.025em;
+        color: var(--fg);
+        margin-top: 2em;
+        margin-bottom: 0.6em;
+    }
+
+    .tiptap h1 { font-size: clamp(1.6rem, 3.5vw, 2rem); }
+    .tiptap h2 { font-size: clamp(1.25rem, 2.5vw, 1.5rem); }
+    .tiptap h3 { font-size: clamp(1.05rem, 2vw, 1.2rem); }
+    .tiptap h4 { font-size: 1rem; }
+
+    .tiptap > :first-child { margin-top: 0 !important; }
+
+    .tiptap p { margin: 0.75em 0; line-height: 1.7; }
+
+    .tiptap ul, .tiptap ol { padding-left: 1.5rem; margin: 0.75em 0; }
+    .tiptap ul { list-style-type: disc; }
+    .tiptap ol { list-style-type: decimal; }
+    .tiptap li { margin: 0.3em 0; line-height: 1.65; }
+
+    .tiptap blockquote {
+        border-left: 3px solid var(--color-brand-500);
+        padding: 0.25rem 0 0.25rem 1.25rem;
+        margin: 1.25em 0;
+        color: var(--fg-muted);
+        font-style: italic;
+    }
+
+    .tiptap hr {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 2em 0;
+    }
+
+    .tiptap code {
+        background: var(--bg-subtle);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.1em 0.4em;
+        font-size: 0.82em;
+        font-family: var(--font-mono);
+        color: oklch(0.48 0.192 264);
+    }
+
+    .tiptap pre {
+        background: var(--bg-muted);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 1rem 1.25rem;
+        overflow-x: auto;
+        margin: 1.25em 0;
+        font-family: var(--font-mono);
+        font-size: 0.85em;
+        line-height: 1.65;
+    }
+
+    .tiptap pre code {
+        background: none;
+        border: none;
+        padding: 0;
+        color: inherit;
+        font-size: inherit;
+    }
+
+    .tiptap table { border-collapse: collapse; width: 100%; margin: 1.25em 0; font-size: 0.9em; }
+    .tiptap td, .tiptap th { border: 1px solid var(--border); padding: 0.55rem 0.85rem; text-align: left; vertical-align: top; min-width: 80px; }
+    .tiptap th { background: var(--bg-subtle); font-weight: 600; font-family: var(--font-display); letter-spacing: 0.01em; font-size: 0.85em; color: var(--fg-muted); text-transform: uppercase; }
+    .tiptap tr:hover td { background: var(--bg-muted); transition: background var(--duration-fast) ease; }
+
+    .tiptap img { max-width: 100%; height: auto; border-radius: var(--radius-lg); margin: 1.25em 0; box-shadow: var(--shadow-md); }
+
+    .tiptap a {
+        color: oklch(0.48 0.192 264);
+        text-decoration: underline;
+        text-decoration-color: oklch(0.48 0.192 264 / 0.40);
+        text-underline-offset: 2px;
+        transition: text-decoration-color var(--duration-fast) ease, color var(--duration-fast) ease;
+    }
+
+    .tiptap a:hover {
+        color: oklch(0.41 0.180 264);
+        text-decoration-color: oklch(0.41 0.180 264 / 0.80);
+    }
+
+    .tiptap .ProseMirror-selectednode {
+        outline: 2px solid oklch(0.48 0.192 264);
+        outline-offset: 2px;
+        border-radius: var(--radius-sm);
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   T1: @utility directives — Tailwind v4 compiler-aware utilities
+   Each class is individually registered for proper tree-shaking,
+   cascade ordering, and variant support (dark:, hover:, etc.).
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Keyframe animations (top-level, outside any layer) ───── */
+@keyframes fade-up {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes slide-in-right {
+    from { opacity: 0; transform: translateX(24px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scale-in {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+    from { background-position: -200% center; }
+    to   { background-position: 200% center; }
+}
+
+@keyframes spin-slow {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0 oklch(0.48 0.192 264 / 0.35); }
+    70%  { box-shadow: 0 0 0 10px oklch(0.48 0.192 264 / 0); }
+    100% { box-shadow: 0 0 0 0 oklch(0.48 0.192 264 / 0); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+}
+
+/* ── Fluid text scaling ─────────────────────────────────────── */
+@utility text-fluid-xs   { font-size: clamp(0.75rem,  1.5vw, 0.875rem); }
+@utility text-fluid-sm   { font-size: clamp(0.875rem, 2vw,   1rem); }
+@utility text-fluid-base { font-size: clamp(1rem,     2.5vw, 1.125rem); }
+@utility text-fluid-lg   { font-size: clamp(1.125rem, 3vw,   1.375rem); }
+@utility text-fluid-xl   { font-size: clamp(1.25rem,  3.5vw, 1.75rem); }
+@utility text-fluid-2xl  { font-size: clamp(1.5rem,   4vw,   2.25rem); }
+@utility text-fluid-3xl  { font-size: clamp(1.875rem, 5vw,   3rem); }
+@utility text-fluid-4xl  { font-size: clamp(2.25rem,  6vw,   4rem); }
+@utility text-fluid-5xl  { font-size: clamp(2.75rem,  7vw,   5rem); }
+
+/* ── Semantic colour utilities ──────────────────────────────── */
+@utility text-foreground        { color: var(--fg); }
+@utility text-foreground-muted  { color: var(--fg-muted); }
+@utility text-foreground-subtle { color: var(--fg-subtle); }
+@utility bg-background          { background-color: var(--bg); }
+@utility bg-background-muted    { background-color: var(--bg-muted); }
+@utility bg-background-subtle   { background-color: var(--bg-subtle); }
+@utility bg-surface             { background-color: var(--surface); }
+@utility bg-surface-raised      { background-color: var(--surface-raised); }
+@utility border-border          { border-color: var(--border); }
+@utility border-border-strong   { border-color: var(--border-strong); }
+
+/* ── Focus & GPU helpers ────────────────────────────────────── */
+@utility focus-ring {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+}
+
+@utility gpu {
+    transform: translateZ(0);
+    will-change: auto;
+
+    &:hover,
+    &:focus-within,
+    &.animating {
+        will-change: transform;
+    }
+}
+
+@utility sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* ── Animation utilities ────────────────────────────────────── */
+@utility animate-fade-up     { animation: fade-up var(--duration-slow) var(--ease-out-expo) both; }
+@utility animate-fade-in     { animation: fade-in var(--duration-slow) ease both; }
+@utility animate-slide-right { animation: slide-in-right var(--duration-slow) var(--ease-out-expo) both; }
+@utility animate-scale-in    { animation: scale-in var(--duration-base) var(--ease-spring) both; }
+@utility animate-spin-slow   { animation: spin-slow 2s linear infinite; }
+@utility animate-pulse-ring  { animation: pulse-ring 2s ease-out infinite; }
+@utility animate-float       { animation: float 3s ease-in-out infinite; }
+
+@utility delay-75  { animation-delay: 75ms; }
+@utility delay-150 { animation-delay: 150ms; }
+@utility delay-225 { animation-delay: 225ms; }
+@utility delay-300 { animation-delay: 300ms; }
+@utility delay-450 { animation-delay: 450ms; }
+@utility delay-600 { animation-delay: 600ms; }
+
+/* ── Visual effect utilities ────────────────────────────────── */
+@utility skeleton {
+    background: linear-gradient(90deg, var(--bg-muted) 25%, var(--bg-subtle) 50%, var(--bg-muted) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease infinite;
+    border-radius: var(--radius-md);
+}
+
+@utility text-gradient-brand {
+    background: linear-gradient(135deg, oklch(0.55 0.180 264), oklch(0.66 0.185 45));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+@utility bg-gradient-brand {
+    background: linear-gradient(135deg, oklch(0.48 0.192 264), oklch(0.41 0.180 264));
+}
+
+@utility bg-gradient-accent {
+    background: linear-gradient(135deg, oklch(0.66 0.185 45), oklch(0.57 0.172 42));
+}
+
+@utility bg-gradient-hero {
+    background:
+        radial-gradient(ellipse 80% 60% at 20% 0%, oklch(0.48 0.192 264 / 0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 100%, oklch(0.66 0.185 45 / 0.06) 0%, transparent 55%),
+        var(--bg);
+}
+
+@utility bg-hero {
+    background: linear-gradient(135deg, oklch(0.42 0.19 264), oklch(0.38 0.20 264) 40%, oklch(0.32 0.18 264));
+}
+
+@utility glass {
+    background: oklch(1 0 0 / 0.70);
+    backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid oklch(1 0 0 / 0.20);
+
+    .dark & {
+        background: oklch(0.15 0.014 264 / 0.70);
+        border-color: oklch(1 0 0 / 0.08);
+    }
+}
+
+@utility noise {
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+        pointer-events: none;
+        border-radius: inherit;
+    }
+}
+
+/* ── T4: Reusable structural utilities for post detail boxes ── */
+@utility icon-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: var(--radius-lg);
+}
+
+@utility step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: var(--radius-full);
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+/* ── Accessibility / media query overrides ──────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+@media (forced-colors: active) {
+    :focus-visible { outline: 3px solid ButtonText; }
+}
+
+@media print {
+    body { background: white; color: black; font-size: 12pt; }
+    .no-print { display: none !important; }
+    a[href]::after { content: " (" attr(href) ")"; }
+}
