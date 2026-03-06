@@ -84,23 +84,6 @@ const nextConfig: NextConfig = {
             value: 'max-age=63072000; includeSubDomains; preload',
           },
           {
-            key: 'Content-Security-Policy',
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "img-src 'self' data: blob: https: http:",
-              "font-src 'self' https://fonts.gstatic.com",
-              "connect-src 'self' https://*.supabase.co https://*.supabase.in https://www.google-analytics.com https://www.googletagmanager.com",
-              "frame-src 'self' https://www.googletagmanager.com",
-              "object-src 'none'",
-              "base-uri 'self'",
-              "form-action 'self'",
-              "frame-ancestors 'none'",
-              "upgrade-insecure-requests",
-            ].join('; '),
-          },
-          {
             key: 'Cross-Origin-Opener-Policy',
             value: 'same-origin-allow-popups',
           },
