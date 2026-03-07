@@ -31,9 +31,8 @@ const POST_CARD_COLUMNS = [
     'state_slug', 'state_name',
     'org_name', 'org_short_name', 'org_logo_url',
     'category_slug', 'category_name',
-    'qualification', 'total_vacancies',
+    'qualification',
     'featured_image', 'featured_image_alt',
-    'important_dates',
     'view_count', 'reading_time_min',
     'published_at', 'updated_at',
 ].join(', ')

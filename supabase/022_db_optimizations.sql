@@ -374,8 +374,8 @@ BEGIN
         FROM (
           SELECT id, type, application_status, title, slug, excerpt,
                  state_slug, state_name, org_name, org_short_name,
-                 category_slug, category_name, qualification, total_vacancies,
-                 featured_image, featured_image_alt, important_dates,
+                 category_slug, category_name, qualification,
+                 featured_image, featured_image_alt,
                  view_count, reading_time_min, published_at, updated_at
           FROM v_published_posts
           WHERE type = _type::post_type

@@ -36,20 +36,7 @@ SELECT
   p.admit_card_link,
   p.result_link,
   p.answer_key_link,
-  -- Structured content (JSONB)
-  p.important_dates,
-  p.application_fee,
-  p.vacancy_details,
-  p.eligibility,
-  p.selection_process,
-  p.how_to_apply,
-  p.pay_scale,
-  p.total_vacancies,
-  p.syllabus_sections,
-  p.exam_pattern_data,
-  p.previous_year_papers,
-  p.preparation_tips,
-  p.cut_off_marks,
+
   p.faq,
   p.related_post_ids,
   -- SEO
@@ -226,9 +213,7 @@ SELECT
   -- Why it needs attention
   CASE
     WHEN p.expires_at IS NOT NULL AND p.expires_at < NOW()            THEN 'expired'
-    WHEN p.application_status = 'open'
-         AND (p.important_dates->>'apply_end') IS NOT NULL
-         AND (p.important_dates->>'apply_end')::DATE < CURRENT_DATE   THEN 'apply_closed'
+    WHEN p.application_status = 'open' THEN 'apply_closed'
     WHEN p.seo_score < 40                                             THEN 'low_seo'
     WHEN p.last_reviewed_at < NOW() - INTERVAL '180 days'
          OR p.last_reviewed_at IS NULL                                THEN 'stale'
@@ -242,7 +227,6 @@ WHERE
     (p.expires_at IS NOT NULL AND p.expires_at < NOW())
     OR (
       p.application_status = 'open'
-      AND (p.important_dates->>'apply_end')::DATE < CURRENT_DATE
     )
     OR p.seo_score < 40
     OR p.last_reviewed_at IS NULL

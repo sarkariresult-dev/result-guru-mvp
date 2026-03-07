@@ -461,12 +461,6 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
     const [featuredImageAlt, setFeaturedImageAlt] = useState(initialData?.featured_image_alt ?? '')
 
     // ── Structured Data ──
-    const [importantDates, setImportantDates] = useState<Record<string, string>>(initialData?.important_dates ?? {})
-    const [applicationFee, setApplicationFee] = useState<Record<string, string>>(initialData?.application_fee ?? {})
-    const [vacancyDetails, setVacancyDetails] = useState<Record<string, string>>(initialData?.vacancy_details ?? {})
-    const [eligibility, setEligibility] = useState<Record<string, string>>(initialData?.eligibility ?? {})
-    const [selectionProcess, setSelectionProcess] = useState<string[]>(initialData?.selection_process ?? [])
-    const [howToApply, setHowToApply] = useState<string[]>(initialData?.how_to_apply ?? [])
     // DB stores FAQ as {q, a} — convert to {question, answer} for the form
     const [faq, setFaq] = useState<{ question: string; answer: string }[]>(
         (initialData?.faq ?? []).map((f: any) => ({
@@ -476,14 +470,6 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
     )
 
     // ── Student-Helpful ──
-    const [ageLimit, setAgeLimit] = useState<Record<string, string>>(initialData?.age_limit ?? {})
-    const [payScale, setPayScale] = useState<Record<string, string>>(initialData?.pay_scale ?? {})
-    const [totalVacancies, setTotalVacancies] = useState<string>(initialData?.total_vacancies?.toString() ?? '')
-    const [syllabusSections, setSyllabusSections] = useState<{ subject: string; topics: string[]; marks: number | null }[]>(initialData?.syllabus_sections ?? [])
-    const [examPatternData, setExamPatternData] = useState<{ paper: string; questions: number | null; marks: number | null; duration: string; type: string }[]>(initialData?.exam_pattern_data ?? [])
-    const [previousYearPapers, setPreviousYearPapers] = useState<{ year: string; title: string; pdf_url: string }[]>(initialData?.previous_year_papers ?? [])
-    const [preparationTips, setPreparationTips] = useState<string[]>(initialData?.preparation_tips ?? [])
-    const [cutOffMarks, setCutOffMarks] = useState<Record<string, string>>(initialData?.cut_off_marks ?? {})
     const [admitCardLink, setAdmitCardLink] = useState(initialData?.admit_card_link ?? '')
     const [resultLinkUrl, setResultLinkUrl] = useState(initialData?.result_link ?? '')
     const [answerKeyLink, setAnswerKeyLink] = useState(initialData?.answer_key_link ?? '')
@@ -542,11 +528,7 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
         if (!template) return
 
         const current = {
-            title, excerpt, content,
-            importantDates, applicationFee, vacancyDetails, eligibility,
-            ageLimit, payScale, selectionProcess, howToApply, faq,
-            syllabusSections, examPatternData, previousYearPapers,
-            preparationTips, cutOffMarks, totalVacancies,
+            title, excerpt, content, faq,
             metaTitle, metaDescription, focusKeyword,
             secondaryKeywords, featuredImageAlt,
         }
@@ -562,26 +544,12 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
         if ('focusKeyword' in updates) setFocusKeyword(updates.focusKeyword as string)
         if ('secondaryKeywords' in updates) setSecondaryKeywords(updates.secondaryKeywords as string[])
         if ('featuredImageAlt' in updates) setFeaturedImageAlt(updates.featuredImageAlt as string)
-        if ('importantDates' in updates) setImportantDates(updates.importantDates!)
-        if ('applicationFee' in updates) setApplicationFee(updates.applicationFee!)
-        if ('vacancyDetails' in updates) setVacancyDetails(updates.vacancyDetails!)
-        if ('eligibility' in updates) setEligibility(updates.eligibility!)
-        if ('ageLimit' in updates) setAgeLimit(updates.ageLimit!)
-        if ('payScale' in updates) setPayScale(updates.payScale!)
-        if ('selectionProcess' in updates) setSelectionProcess(updates.selectionProcess!)
-        if ('howToApply' in updates) setHowToApply(updates.howToApply!)
         if ('faq' in updates) setFaq(updates.faq!)
-        if ('syllabusSections' in updates) setSyllabusSections(updates.syllabusSections!)
-        if ('examPatternData' in updates) setExamPatternData(updates.examPatternData!)
-        if ('previousYearPapers' in updates) setPreviousYearPapers(updates.previousYearPapers!)
-        if ('preparationTips' in updates) setPreparationTips(updates.preparationTips!)
-        if ('cutOffMarks' in updates) setCutOffMarks(updates.cutOffMarks!)
-        if ('totalVacancies' in updates) setTotalVacancies(updates.totalVacancies!)
         if ('applicationStatus' in updates) setApplicationStatus(updates.applicationStatus!)
 
         setTemplateApplied(true)
         setTimeout(() => setTemplateApplied(false), 3000)
-    }, [type, title, excerpt, content, importantDates, applicationFee, vacancyDetails, eligibility, ageLimit, payScale, selectionProcess, howToApply, faq, syllabusSections, examPatternData, previousYearPapers, preparationTips, cutOffMarks, totalVacancies, metaTitle, metaDescription, focusKeyword, secondaryKeywords, featuredImageAlt])
+    }, [type, title, excerpt, content, faq, metaTitle, metaDescription, focusKeyword, secondaryKeywords, featuredImageAlt])
 
     // Auto-apply template on type change in create mode (only for empty fields)
     const prevTypeRef = useCallback((newType: string) => {
@@ -593,9 +561,7 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                 if (!template) return
 
                 const hasContent = hasStructuredContent({
-                    title, excerpt, content,
-                    importantDates, applicationFee, eligibility,
-                    selectionProcess, howToApply, faq,
+                    title, excerpt, content, faq,
                 })
 
                 if (hasContent) {
@@ -603,13 +569,7 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                 } else {
                     // Auto-apply for empty forms
                     const current = {
-                        title, excerpt, content,
-                        importantDates: {}, applicationFee: {}, vacancyDetails: {},
-                        eligibility: {}, ageLimit: {}, payScale: {},
-                        selectionProcess: [], howToApply: [], faq: [],
-                        syllabusSections: [], examPatternData: [],
-                        previousYearPapers: [], preparationTips: [],
-                        cutOffMarks: {}, totalVacancies: '',
+                        title, excerpt, content, faq: [],
                         metaTitle, metaDescription, focusKeyword,
                         secondaryKeywords: [], featuredImageAlt: '',
                     }
@@ -622,28 +582,14 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                     if ('focusKeyword' in updates) setFocusKeyword(updates.focusKeyword as string)
                     if ('secondaryKeywords' in updates) setSecondaryKeywords(updates.secondaryKeywords as string[])
                     if ('featuredImageAlt' in updates) setFeaturedImageAlt(updates.featuredImageAlt as string)
-                    if ('importantDates' in updates) setImportantDates(updates.importantDates!)
-                    if ('applicationFee' in updates) setApplicationFee(updates.applicationFee!)
-                    if ('vacancyDetails' in updates) setVacancyDetails(updates.vacancyDetails!)
-                    if ('eligibility' in updates) setEligibility(updates.eligibility!)
-                    if ('ageLimit' in updates) setAgeLimit(updates.ageLimit!)
-                    if ('payScale' in updates) setPayScale(updates.payScale!)
-                    if ('selectionProcess' in updates) setSelectionProcess(updates.selectionProcess!)
-                    if ('howToApply' in updates) setHowToApply(updates.howToApply!)
                     if ('faq' in updates) setFaq(updates.faq!)
-                    if ('syllabusSections' in updates) setSyllabusSections(updates.syllabusSections!)
-                    if ('examPatternData' in updates) setExamPatternData(updates.examPatternData!)
-                    if ('previousYearPapers' in updates) setPreviousYearPapers(updates.previousYearPapers!)
-                    if ('preparationTips' in updates) setPreparationTips(updates.preparationTips!)
-                    if ('cutOffMarks' in updates) setCutOffMarks(updates.cutOffMarks!)
-                    if ('totalVacancies' in updates) setTotalVacancies(updates.totalVacancies!)
                     if ('applicationStatus' in updates) setApplicationStatus(updates.applicationStatus!)
                     setTemplateApplied(true)
                     setTimeout(() => setTemplateApplied(false), 3000)
                 }
             }, 50)
         }
-    }, [mode, title, excerpt, content, importantDates, applicationFee, eligibility, selectionProcess, howToApply, faq, metaTitle, metaDescription, focusKeyword])
+    }, [mode, title, excerpt, content, faq, metaTitle, metaDescription, focusKeyword])
 
     // SEO checks
     const seoChecks = useMemo(() => runSeoAnalysis({ title, slug, metaTitle, metaDescription, focusKeyword, secondaryKeywords, content, excerpt, featuredImage, featuredImageAlt, type }), [title, slug, metaTitle, metaDescription, focusKeyword, secondaryKeywords, content, excerpt, featuredImage, featuredImageAlt, type])
@@ -678,20 +624,7 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                 notification_pdf: notificationPdf || null,
                 featured_image: featuredImage || null, featured_image_alt: featuredImageAlt || null,
                 // Structured content (JSONB)
-                important_dates: sanitizeKV(importantDates),
-                application_fee: sanitizeKV(applicationFee),
-                vacancy_details: sanitizeKV(vacancyDetails),
-                // Merge age limit into eligibility (no separate age_limit column in DB)
-                eligibility: Object.keys(ageLimit).length > 0
-                    ? { ...sanitizeKV(eligibility), age_limits: sanitizeKV(ageLimit) }
-                    : sanitizeKV(eligibility),
-                selection_process: selectionProcess, how_to_apply: howToApply,
                 faq: faq.map(f => ({ q: f.question, a: f.answer })),
-                pay_scale: sanitizeKV(payScale),
-                total_vacancies: totalVacancies ? parseInt(totalVacancies) : null,
-                syllabus_sections: syllabusSections, exam_pattern_data: examPatternData,
-                previous_year_papers: previousYearPapers, preparation_tips: preparationTips,
-                cut_off_marks: sanitizeKV(cutOffMarks),
                 // Key links
                 admit_card_link: admitCardLink || null, result_link: resultLinkUrl || null, answer_key_link: answerKeyLink || null,
                 // SEO
@@ -709,17 +642,46 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                 tag_ids: selectedTags.length > 0 ? selectedTags : undefined,
             }
 
-            if (mode === 'create') localStorage.removeItem('post_draft_v1')
+            const basePath = window.location.pathname.startsWith('/admin') ? '/admin' : '/author'
 
-            if (mode === 'edit' && initialData?.id) {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const result = await updatePost(initialData.id, data as any)
-                if (result?.error) setError(typeof result.error === 'string' ? result.error : 'Failed to update')
-                else router.push('/author/posts')
-            } else {
-                const result: { error?: string; success?: boolean } = await createPost(data as any)
-                if (result?.error) setError(result.error)
-                else if (result?.success) router.push('/author/posts')
+            try {
+                if (mode === 'edit' && initialData?.id) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const result = await updatePost(initialData.id, data as any)
+                    if (result?.error) setError(typeof result.error === 'string' ? result.error : 'Failed to update')
+                    else router.push(`${basePath}/posts`)
+                } else {
+                    const result: { error?: string; success?: boolean } = await createPost(data as any)
+                    if (result?.error) setError(result.error)
+                    else if (result?.success) {
+                        if (mode === 'create') {
+                            localStorage.removeItem('post_draft_v1')
+
+                            // Fully reset form state to prevent leftover data if user comes back
+                            setTitle('')
+                            setCustomSlug('')
+                            setExcerpt('')
+                            setContent('')
+                            setFaq([])
+                            setAdmitCardLink('')
+                            setResultLinkUrl('')
+                            setAnswerKeyLink('')
+                            setMetaTitle('')
+                            setMetaDescription('')
+                            setFocusKeyword('')
+                            setSecondaryKeywords([])
+                            setOgTitle('')
+                            setOgDescription('')
+                            setOgImage('')
+                            setScheduledAt('')
+                            setExpiresAt('')
+                            setNoindex(false)
+                        }
+                        router.push(`${basePath}/posts`)
+                    }
+                }
+            } catch (err: any) {
+                setError(err.message || 'An unexpected error occurred')
             }
         })
     }
@@ -827,41 +789,6 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                     {/* Structured Data */}
                     <div className="space-y-5">
                         <label className="mb-2 block text-sm font-semibold text-foreground">Structured Data</label>
-                        {/* Important Dates */}
-                        {s.dates && (
-                            <KVEditor label="Important Dates" value={importantDates} onChange={setImportantDates} keyPlaceholder="Event (e.g. Last Date)" valuePlaceholder="Date (e.g. 15 Mar 2025)" />
-                        )}
-
-                        {/* Eligibility */}
-                        {s.eligibility && (
-                            <KVEditor label="Eligibility Criteria" value={eligibility} onChange={setEligibility} keyPlaceholder="Criteria" valuePlaceholder="Details" />
-                        )}
-
-                        {/* Job/Recruitment Block */}
-                        {(s.applicationFee || s.vacancyDetails || s.totalVacancies || s.ageLimit || s.payScale) && (
-                            <>
-                                <label className="mb-2 block text-sm font-semibold text-foreground">Recruitment Details</label>
-                                {s.applicationFee && <KVEditor label="Application Fee" value={applicationFee} onChange={setApplicationFee} keyPlaceholder="Category (e.g. General)" valuePlaceholder="Fee (e.g. ₹100)" />}
-                                {s.vacancyDetails && <KVEditor label="Vacancy Details" value={vacancyDetails} onChange={setVacancyDetails} keyPlaceholder="Post Name" valuePlaceholder="Vacancies" />}
-                                {s.totalVacancies && (
-                                    <Field label="Total Vacancies">
-                                        <input type="number" value={totalVacancies} onChange={(e) => setTotalVacancies(e.target.value)} placeholder="e.g. 1500" className={inputCls} />
-                                    </Field>
-                                )}
-                                {s.ageLimit && <KVEditor label="Age Limit" value={ageLimit} onChange={setAgeLimit} keyPlaceholder="Category (e.g. General)" valuePlaceholder="Range (e.g. 18-27 yrs)" />}
-                                {s.payScale && <KVEditor label="Pay Scale / Salary" value={payScale} onChange={setPayScale} keyPlaceholder="Detail (e.g. Pay Level)" valuePlaceholder="Value (e.g. Level 6)" />}
-                            </>
-                        )}
-
-                        {/* Selection Process & How to Apply */}
-                        {(s.selectionProcess || s.howToApply) && (
-                            <>
-                                <label className="mb-2 block text-sm font-semibold text-foreground">Process & Steps</label>
-                                {s.selectionProcess && <ListEditor label="Selection Process" value={selectionProcess} onChange={setSelectionProcess} placeholder="e.g. Written Exam → Interview → Document Verification" />}
-                                {s.howToApply && <ListEditor label="How to Apply" value={howToApply} onChange={setHowToApply} placeholder="Enter step…" />}
-                            </>
-                        )}
-
                         {/* Direct Links (Admit/Result/Answer Key) */}
                         {(s.admitCardLink || s.resultLink || type === 'answer_key') && (
                             <>
@@ -881,97 +808,6 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                                         <input type="url" value={answerKeyLink} onChange={(e) => setAnswerKeyLink(e.target.value)} placeholder="https://…" className={inputCls} />
                                     </Field>
                                 )}
-                            </>
-                        )}
-
-                        {/* ── Cut Off Marks ── */}
-                        {s.cutOffMarks && (
-                            <>
-                                <label className="mb-2 block text-sm font-semibold text-foreground">Cut Off Marks</label>
-                                <KVEditor label="Category-wise Cut Off" value={cutOffMarks} onChange={setCutOffMarks} keyPlaceholder="Category (e.g. General)" valuePlaceholder="Marks (e.g. 142.5)" />
-                            </>
-                        )}
-
-                        {/* ── Syllabus Sections ── */}
-                        {s.syllabus && (
-                            <>
-                                <label className="mb-2 block text-sm font-semibold text-foreground">Syllabus</label>
-                                <div>
-                                    <div className="mb-1.5 flex items-center justify-between">
-                                        <label className="block text-xs font-medium uppercase tracking-wider text-foreground-muted">Subject-wise Syllabus</label>
-                                        <button type="button" onClick={() => setSyllabusSections([...syllabusSections, { subject: '', topics: [], marks: null }])} className="flex items-center gap-1 text-xs text-brand-600 hover:underline font-medium"><Plus className="size-3" /> Add Subject</button>
-                                    </div>
-                                    <div className="space-y-3">
-                                        {syllabusSections.map((sec, i) => (
-                                            <div key={i} className="rounded-lg border border-border bg-background p-3 space-y-2">
-                                                <div className="flex gap-2">
-                                                    <input aria-label="Syllabus Subject" placeholder="Subject name" value={sec.subject} onChange={(e) => { const c = [...syllabusSections]; c[i] = { ...c[i]!, subject: e.target.value }; setSyllabusSections(c) }} className={`flex-1 ${inputCls}`} />
-                                                    <input aria-label="Syllabus Marks" type="number" placeholder="Marks" value={sec.marks ?? ''} onChange={(e) => { const c = [...syllabusSections]; c[i] = { ...c[i]!, marks: e.target.value ? parseInt(e.target.value) : null }; setSyllabusSections(c) }} className={`w-20 ${inputCls}`} />
-                                                    <button type="button" aria-label="Remove syllabus section" onClick={() => setSyllabusSections(syllabusSections.filter((_, j) => j !== i))} className="size-9 flex items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"><Trash2 className="size-3.5" /></button>
-                                                </div>
-                                                <textarea aria-label="Syllabus Topics" placeholder="Topics (one per line)" value={sec.topics.join('\n')} onChange={(e) => { const c = [...syllabusSections]; c[i] = { ...c[i]!, topics: e.target.value.split('\n').filter(Boolean) }; setSyllabusSections(c) }} className={`${inputCls} min-h-16`} />
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </>
-                        )}
-
-                        {/* ── Exam Pattern ── */}
-                        {s.examPattern && (
-                            <>
-                                <label className="mb-2 block text-sm font-semibold text-foreground">Exam Pattern</label>
-                                <div>
-                                    <div className="mb-1.5 flex items-center justify-between">
-                                        <label className="block text-xs font-medium uppercase tracking-wider text-foreground-muted">Paper Structure</label>
-                                        <button type="button" onClick={() => setExamPatternData([...examPatternData, { paper: '', questions: null, marks: null, duration: '', type: '' }])} className="flex items-center gap-1 text-xs text-brand-600 hover:underline font-medium"><Plus className="size-3" /> Add Paper</button>
-                                    </div>
-                                    <div className="space-y-3">
-                                        {examPatternData.map((ep, i) => (
-                                            <div key={i} className="rounded-lg border border-border bg-background p-3 grid grid-cols-2 gap-2">
-                                                <input aria-label="Exam Paper Name" placeholder="Paper name (e.g. Prelims)" value={ep.paper} onChange={(e) => { const c = [...examPatternData]; c[i] = { ...c[i]!, paper: e.target.value }; setExamPatternData(c) }} className={inputCls} />
-                                                <input aria-label="Exam Type" placeholder="Type (MCQ/Descriptive)" value={ep.type} onChange={(e) => { const c = [...examPatternData]; c[i] = { ...c[i]!, type: e.target.value }; setExamPatternData(c) }} className={inputCls} />
-                                                <input aria-label="Number of Questions" type="number" placeholder="No. of questions" value={ep.questions ?? ''} onChange={(e) => { const c = [...examPatternData]; c[i] = { ...c[i]!, questions: e.target.value ? parseInt(e.target.value) : null }; setExamPatternData(c) }} className={inputCls} />
-                                                <input aria-label="Total Marks" type="number" placeholder="Total marks" value={ep.marks ?? ''} onChange={(e) => { const c = [...examPatternData]; c[i] = { ...c[i]!, marks: e.target.value ? parseInt(e.target.value) : null }; setExamPatternData(c) }} className={inputCls} />
-                                                <input aria-label="Exam Duration" placeholder="Duration (e.g. 2 hours)" value={ep.duration} onChange={(e) => { const c = [...examPatternData]; c[i] = { ...c[i]!, duration: e.target.value }; setExamPatternData(c) }} className={inputCls} />
-                                                <button type="button" aria-label="Remove exam pattern item" onClick={() => setExamPatternData(examPatternData.filter((_, j) => j !== i))} className="text-xs text-red-500 hover:underline self-center">Remove</button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </>
-                        )}
-
-                        {/* ── Preparation Tips ── */}
-                        {s.preparationTips && (
-                            <>
-                                <label className="mb-2 block text-sm font-semibold text-foreground">Preparation Tips</label>
-                                <ListEditor label="Study Tips for Students" value={preparationTips} onChange={setPreparationTips} placeholder="e.g. Start with NCERT books for basics" />
-                            </>
-                        )}
-
-                        {/* ── Previous Year Papers ── */}
-                        {s.previousPapers && (
-                            <>
-                                <label className="mb-2 block text-sm font-semibold text-foreground">Previous Year Papers</label>
-                                <div>
-                                    <div className="mb-1.5 flex items-center justify-between">
-                                        <label className="block text-xs font-medium uppercase tracking-wider text-foreground-muted">Papers with PDF Links</label>
-                                        <button type="button" onClick={() => setPreviousYearPapers([...previousYearPapers, { year: '', title: '', pdf_url: '' }])} className="flex items-center gap-1 text-xs text-brand-600 hover:underline font-medium"><Plus className="size-3" /> Add Paper</button>
-                                    </div>
-                                    <div className="space-y-3">
-                                        {previousYearPapers.map((p, i) => (
-                                            <div key={i} className="rounded-lg border border-border bg-background p-3 space-y-2">
-                                                <div className="flex gap-2">
-                                                    <input aria-label="Previous Paper Year" placeholder="Year (e.g. 2024)" value={p.year} onChange={(e) => { const c = [...previousYearPapers]; c[i] = { ...c[i]!, year: e.target.value }; setPreviousYearPapers(c) }} className={`w-24 ${inputCls}`} />
-                                                    <input aria-label="Previous Paper Title" placeholder="Paper title" value={p.title} onChange={(e) => { const c = [...previousYearPapers]; c[i] = { ...c[i]!, title: e.target.value }; setPreviousYearPapers(c) }} className={`flex-1 ${inputCls}`} />
-                                                    <button type="button" aria-label="Remove previous paper" onClick={() => setPreviousYearPapers(previousYearPapers.filter((_, j) => j !== i))} className="size-9 flex items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"><Trash2 className="size-3.5" /></button>
-                                                </div>
-                                                <input aria-label="Previous Paper PDF URL" type="url" placeholder="PDF download URL" value={p.pdf_url} onChange={(e) => { const c = [...previousYearPapers]; c[i] = { ...c[i]!, pdf_url: e.target.value }; setPreviousYearPapers(c) }} className={inputCls} />
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
                             </>
                         )}
 
@@ -999,7 +835,7 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                             <button
                                 type="button"
                                 onClick={() => {
-                                    const hasCont = hasStructuredContent({ title, excerpt, content, importantDates, applicationFee, eligibility, selectionProcess, howToApply, faq })
+                                    const hasCont = hasStructuredContent({ title, excerpt, content, faq })
                                     if (hasCont) setShowTemplateConfirm(true)
                                     else applyTemplate(true)
                                 }}

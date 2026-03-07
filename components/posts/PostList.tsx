@@ -35,9 +35,8 @@ export function PostList({ posts, themeColorClass = 'bg-brand-500' }: Props) {
                             <h3 className="line-clamp-2 text-sm font-medium text-foreground group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors leading-snug">
                                 {post.title}
                             </h3>
-                            {(post.total_vacancies || post.qualification || post.state_name) && (
+                            {(post.qualification || post.state_name) && (
                                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-foreground-subtle font-medium">
-                                    {post.total_vacancies && <span className="text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/30 px-1.5 py-0.5 rounded-sm">{post.total_vacancies} Vacancies</span>}
                                     {post.state_name && <span>{post.state_name}</span>}
                                     {post.state_name && post.qualification && <span className="size-1 rounded-full bg-border" />}
                                     {post.qualification && <span className="line-clamp-1">{post.qualification}</span>}

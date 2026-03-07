@@ -10,18 +10,6 @@ import type {
     TwitterCardType,
 } from './enums'
 import type {
-    ImportantDates,
-    ApplicationFee,
-    VacancyDetails,
-    Eligibility,
-    SelectionProcess,
-    HowToApply,
-    PayScale,
-    SyllabusSections,
-    ExamPatternData,
-    PreviousYearPapers,
-    PreparationTips,
-    CutOffMarks,
     Faq,
     Hreflang,
     BreadcrumbOverride,
@@ -65,19 +53,7 @@ export interface Post {
     answer_key_link: string | null
 
     // Structured content (JSONB)
-    important_dates: ImportantDates
-    application_fee: ApplicationFee
-    vacancy_details: VacancyDetails
-    eligibility: Eligibility
-    selection_process: SelectionProcess
-    how_to_apply: HowToApply
-    pay_scale: PayScale
-    total_vacancies: number | null
-    syllabus_sections: SyllabusSections
-    exam_pattern_data: ExamPatternData
-    previous_year_papers: PreviousYearPapers
-    preparation_tips: PreparationTips
-    cut_off_marks: CutOffMarks
+
     faq: Faq
     related_post_ids: string[] | null
 
@@ -163,10 +139,8 @@ export type PostCard = Pick<
     | 'category_slug'
     | 'category_name'
     | 'qualification'
-    | 'total_vacancies'
     | 'featured_image'
     | 'featured_image_alt'
-    | 'important_dates'
     | 'view_count'
     | 'reading_time_min'
     | 'published_at'

@@ -122,12 +122,7 @@ CREATE INDEX IF NOT EXISTS idx_posts_related_ids
   ON posts USING gin(related_post_ids);
   -- Reverse lookup: find posts that link to a given post
 
-CREATE INDEX IF NOT EXISTS idx_posts_important_dates
-  ON posts USING gin(important_dates);
-  -- JSONB containment queries on date fields
 
-CREATE INDEX IF NOT EXISTS idx_posts_vacancy
-  ON posts USING gin(vacancy_details);
   -- JSONB containment on vacancy structure
 
 -- ────────────────────────────────────────────────────────────

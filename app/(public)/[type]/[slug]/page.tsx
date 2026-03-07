@@ -4,7 +4,7 @@ import { Suspense } from 'react'
 import Image from 'next/image'
 import { getPostBySlug } from '@/lib/queries/posts'
 import { buildMetadata } from '@/lib/metadata'
-import { buildJobPostingSchema, buildBreadcrumbSchema, buildFAQPageSchema, buildGovernmentServiceSchema, buildHowToSchema, buildArticleSchema } from '@/lib/jsonld'
+import { buildJobPostingSchema, buildBreadcrumbSchema, buildFAQPageSchema, buildGovernmentServiceSchema, buildArticleSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { PostDetail, processContentHtml, sanitizeHtml } from '@/components/posts/PostDetail'
 import { RelatedPosts } from '@/components/posts/RelatedPosts'
@@ -74,17 +74,6 @@ export default async function PostDetailPage({ params }: Props) {
     const faq = publishedPost.faq as FaqItem[] | null
     if (faq && faq.length > 0) {
         jsonLdEntries.push(buildFAQPageSchema(faq))
-    }
-
-    const howTo = publishedPost.how_to_apply as string[] | null
-    if (howTo && howTo.length > 0) {
-        jsonLdEntries.push(
-            buildHowToSchema(
-                `How to Apply for ${publishedPost.title}`,
-                howTo,
-                `${SITE.url}${ROUTE_PREFIXES[typeKey]}/${slug}`,
-            )
-        )
     }
 
     jsonLdEntries.push(buildArticleSchema(publishedPost as any))

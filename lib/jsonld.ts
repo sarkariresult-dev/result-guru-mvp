@@ -11,7 +11,6 @@ type JsonLdObject = Record<string, unknown>
  */
 export function buildJobPostingSchema(post: PostDetail): JsonLdObject {
     const url = `${SITE.url}${postUrl(post.type as any, post.slug)}`
-    const dates = (post.important_dates ?? {}) as Record<string, string>
 
     const schema: JsonLdObject = {
         '@context': 'https://schema.org',
@@ -37,29 +36,6 @@ export function buildJobPostingSchema(post: PostDetail): JsonLdObject {
         },
     }
 
-    // Optional fields
-    if (dates['last_date'] || dates['last_date_to_apply']) {
-        schema.validThrough = dates['last_date'] ?? dates['last_date_to_apply']
-    }
-    if (post.total_vacancies && post.total_vacancies > 0) {
-        schema.totalJobOpenings = post.total_vacancies
-    }
-    if (post.qualification) {
-        schema.educationRequirements = {
-            '@type': 'EducationalOccupationalCredential',
-            credentialCategory: post.qualification,
-        }
-    }
-    if (post.pay_scale) {
-        schema.baseSalary = {
-            '@type': 'MonetaryAmount',
-            currency: 'INR',
-            value: { '@type': 'QuantitativeValue', value: post.pay_scale },
-        }
-    }
-    if (post.eligibility) {
-        schema.experienceRequirements = post.eligibility
-    }
 
     return schema
 }

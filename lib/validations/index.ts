@@ -96,19 +96,7 @@ export const postSchema = z.object({
     answer_key_link: z.string().nullable().optional(),
 
     // Structured content (JSONB) — DB columns are NOT NULL with defaults
-    important_dates: z.record(z.string(), z.unknown()).default({}),
-    application_fee: z.record(z.string(), z.unknown()).default({}),
-    vacancy_details: z.record(z.string(), z.unknown()).default({}),
-    eligibility: z.record(z.string(), z.unknown()).default({}),
-    selection_process: z.array(z.string()).default([]),
-    how_to_apply: z.array(z.string()).default([]),
-    pay_scale: z.record(z.string(), z.unknown()).default({}),
-    total_vacancies: z.number().int().nonnegative().nullable().optional(),
-    syllabus_sections: z.array(z.unknown()).default([]),
-    exam_pattern_data: z.array(z.unknown()).default([]),
-    previous_year_papers: z.array(z.unknown()).default([]),
-    preparation_tips: z.array(z.string()).default([]),
-    cut_off_marks: z.record(z.string(), z.unknown()).default({}),
+
     faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]),
     related_post_ids: z.array(z.string().uuid()).nullable().optional(),
 

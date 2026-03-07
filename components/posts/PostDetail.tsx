@@ -2,21 +2,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { formatDate } from '@/lib/utils'
 import { sanitizeHtml } from '@/lib/sanitize'
-import { ImportantDatesBox } from './ImportantDatesBox'
-import { ApplicationFeeBox } from './ApplicationFeeBox'
-import { VacancyDetailsBox } from './VacancyDetailsBox'
-import { SelectionProcessList } from './SelectionProcessList'
-import { HowToApplyList } from './HowToApplyList'
 import { FAQAccordion } from './FAQAccordion'
 import { ApplicationStatusBadge } from './ApplicationStatusBadge'
-import { JobSummaryBox } from './JobSummaryBox'
-import { SyllabusBox } from './SyllabusBox'
-import { ExamPatternBox } from './ExamPatternBox'
-import { PreviousPapersBox } from './PreviousPapersBox'
-import { PreparationTipsList } from './PreparationTipsList'
-import { CutOffMarksBox } from './CutOffMarksBox'
-import { EligibilityBox } from './EligibilityBox'
-import { AgeLimitBox } from './AgeLimitBox'
+
 import { AffiliateProductsBox } from './AffiliateProductsBox'
 import { ImageActionButtons } from './ImageActionButtons'
 import { AdZone } from '@/components/ads/AdZone'
@@ -30,20 +18,8 @@ import { Award, Calendar, Eye, FileText, Tag } from 'lucide-react'
 /* ── Section IDs ─────────────────────────────────────────────── */
 
 type SectionId =
-    | 'dates'
-    | 'fee'
-    | 'vacancy'
     | 'summary'
-    | 'eligibility'
-    | 'ageLimit'
     | 'content'
-    | 'selection'
-    | 'howToApply'
-    | 'syllabus'
-    | 'examPattern'
-    | 'previousPapers'
-    | 'prepTips'
-    | 'cutOff'
     | 'affiliates'
     | 'faq'
     | 'tags'
@@ -52,25 +28,25 @@ type SectionId =
 /* Org info, TOC, quick links, newsletter are now in the sidebar (page.tsx) */
 
 const SECTION_ORDER: Record<string, SectionId[]> = {
-    job: ['dates', 'fee', 'vacancy', 'summary', 'eligibility', 'ageLimit', 'content', 'selection', 'howToApply', 'affiliates', 'prepTips', 'faq', 'tags'],
-    notification: ['dates', 'fee', 'eligibility', 'ageLimit', 'vacancy', 'content', 'selection', 'howToApply', 'affiliates', 'faq', 'tags'],
-    exam: ['dates', 'fee', 'eligibility', 'ageLimit', 'content', 'syllabus', 'examPattern', 'selection', 'howToApply', 'affiliates', 'prepTips', 'faq', 'tags'],
-    result: ['dates', 'content', 'cutOff', 'affiliates', 'faq', 'tags'],
-    admit: ['dates', 'content', 'affiliates', 'faq', 'tags'],
-    'answer-key': ['dates', 'content', 'affiliates', 'faq', 'tags'],
-    answer_key: ['dates', 'content', 'affiliates', 'faq', 'tags'],
-    'cut-off': ['dates', 'cutOff', 'content', 'affiliates', 'faq', 'tags'],
-    cut_off: ['dates', 'cutOff', 'content', 'affiliates', 'faq', 'tags'],
-    syllabus: ['dates', 'syllabus', 'content', 'affiliates', 'prepTips', 'faq', 'tags'],
-    'exam-pattern': ['dates', 'examPattern', 'content', 'affiliates', 'faq', 'tags'],
-    exam_pattern: ['dates', 'examPattern', 'content', 'affiliates', 'faq', 'tags'],
-    'previous-paper': ['dates', 'previousPapers', 'content', 'affiliates', 'prepTips', 'faq', 'tags'],
-    previous_paper: ['dates', 'previousPapers', 'content', 'affiliates', 'prepTips', 'faq', 'tags'],
-    scheme: ['dates', 'fee', 'eligibility', 'content', 'howToApply', 'affiliates', 'faq', 'tags'],
-    admission: ['dates', 'fee', 'eligibility', 'content', 'selection', 'howToApply', 'affiliates', 'faq', 'tags'],
+    job: ['summary', 'content', 'affiliates', 'faq', 'tags'],
+    notification: ['content', 'affiliates', 'faq', 'tags'],
+    exam: ['content', 'affiliates', 'faq', 'tags'],
+    result: ['content', 'affiliates', 'faq', 'tags'],
+    admit: ['content', 'affiliates', 'faq', 'tags'],
+    'answer-key': ['content', 'affiliates', 'faq', 'tags'],
+    answer_key: ['content', 'affiliates', 'faq', 'tags'],
+    'cut-off': ['content', 'affiliates', 'faq', 'tags'],
+    cut_off: ['content', 'affiliates', 'faq', 'tags'],
+    syllabus: ['content', 'affiliates', 'faq', 'tags'],
+    'exam-pattern': ['content', 'affiliates', 'faq', 'tags'],
+    exam_pattern: ['content', 'affiliates', 'faq', 'tags'],
+    'previous-paper': ['content', 'affiliates', 'faq', 'tags'],
+    previous_paper: ['content', 'affiliates', 'faq', 'tags'],
+    scheme: ['content', 'affiliates', 'faq', 'tags'],
+    admission: ['content', 'affiliates', 'faq', 'tags'],
 }
 
-const DEFAULT_ORDER: SectionId[] = ['dates', 'fee', 'eligibility', 'vacancy', 'content', 'selection', 'howToApply', 'syllabus', 'examPattern', 'previousPapers', 'prepTips', 'cutOff', 'affiliates', 'faq', 'tags']
+const DEFAULT_ORDER: SectionId[] = ['content', 'affiliates', 'faq', 'tags']
 
 /* ── Component ───────────────────────────────────────────────── */
 
@@ -84,30 +60,8 @@ export function PostDetail({ post, slug, url }: Props) {
     const typeKey = post.type as PostTypeKey
     const typeMeta = POST_TYPE_CONFIG[typeKey]
 
-    /* Safely extract JSONB fields */
-    const dates = post.important_dates as Record<string, string> | null
-    const fees = post.application_fee as Record<string, string> | null
-    const vacancy = post.vacancy_details as Record<string, unknown> | null
-    const selection = post.selection_process as string[] | null
-    const howTo = post.how_to_apply as string[] | null
     const faq = post.faq as FaqItem[] | null
-    const payScale = post.pay_scale as Record<string, string> | null
-    const eligibilityData = post.eligibility as Record<string, unknown> | null
     const affiliates = (post as any).affiliates as PostAffiliateProductEntry[] | undefined
-
-    /* Build age limit display from eligibility JSONB */
-    const ageLimit: Record<string, string> = {}
-    if (eligibilityData) {
-        if (eligibilityData.age_min != null || eligibilityData.age_max != null) {
-            ageLimit['Age Range'] = `${eligibilityData.age_min ?? '—'} to ${eligibilityData.age_max ?? '—'} years`
-        }
-        const relaxation = eligibilityData.age_relaxation as Record<string, number> | undefined
-        if (relaxation) {
-            for (const [cat, years] of Object.entries(relaxation)) {
-                if (years) ageLimit[`${cat.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} Relaxation`] = `${years} years`
-            }
-        }
-    }
 
     /* Process content HTML */
     const { tocItems, processedHtml } = post.content
@@ -123,36 +77,7 @@ export function PostDetail({ post, slug, url }: Props) {
     /* ── Section renderer ──────────────────────────────────── */
     const renderSection = (section: SectionId): React.ReactNode => {
         switch (section) {
-            case 'dates':
-                if (!dates || Object.entries(dates).filter(([, v]) => v != null && String(v).trim() !== '').length === 0) return null
-                return <ImportantDatesBox key="dates" dates={dates} />
 
-            case 'fee':
-                if (!fees || Object.entries(fees).filter(([, v]) => v != null && String(v).trim() !== '').length === 0) return null
-                return <ApplicationFeeBox key="fee" fees={fees} />
-
-            case 'vacancy':
-                if (!vacancy || Object.entries(vacancy).filter(([, v]) => v != null && String(v).trim() !== '').length === 0) return null
-                return <VacancyDetailsBox key="vacancy" details={vacancy} />
-
-            case 'summary':
-                if (!post.total_vacancies && Object.keys(ageLimit).length === 0 && (!payScale || Object.keys(payScale).length === 0)) return null
-                return (
-                    <JobSummaryBox
-                        key="summary"
-                        ageLimit={ageLimit}
-                        payScale={(payScale || {}) as Record<string, string>}
-                        totalVacancies={post.total_vacancies}
-                    />
-                )
-
-            case 'eligibility':
-                if (!eligibilityData || Object.entries(eligibilityData).filter(([, v]) => v != null && String(v).trim() !== '').length === 0) return null
-                return <EligibilityBox key="eligibility" eligibility={eligibilityData} />
-
-            case 'ageLimit':
-                if (Object.keys(ageLimit).length === 0) return null
-                return <AgeLimitBox key="ageLimit" ageLimit={ageLimit} />
 
             case 'content':
                 if (!processedHtml) return null
@@ -164,33 +89,7 @@ export function PostDetail({ post, slug, url }: Props) {
                     />
                 )
 
-            case 'selection':
-                if (!selection || selection.length === 0) return null
-                return <SelectionProcessList key="selection" steps={selection} />
 
-            case 'howToApply':
-                if (!howTo || howTo.length === 0) return null
-                return <HowToApplyList key="howToApply" steps={howTo} />
-
-            case 'syllabus':
-                if (!post.syllabus_sections || (post.syllabus_sections as unknown[]).length === 0) return null
-                return <SyllabusBox key="syllabus" sections={post.syllabus_sections} />
-
-            case 'examPattern':
-                if (!post.exam_pattern_data || (post.exam_pattern_data as unknown[]).length === 0) return null
-                return <ExamPatternBox key="examPattern" patterns={post.exam_pattern_data} />
-
-            case 'previousPapers':
-                if (!post.previous_year_papers || (post.previous_year_papers as unknown[]).length === 0) return null
-                return <PreviousPapersBox key="previousPapers" papers={post.previous_year_papers} />
-
-            case 'prepTips':
-                if (!post.preparation_tips || (post.preparation_tips as unknown[]).length === 0) return null
-                return <PreparationTipsList key="prepTips" tips={post.preparation_tips} />
-
-            case 'cutOff':
-                if (!post.cut_off_marks || Object.keys(post.cut_off_marks).length === 0) return null
-                return <CutOffMarksBox key="cutOff" marks={post.cut_off_marks as Record<string, unknown>} />
 
             case 'affiliates':
                 if (!affiliates || affiliates.length === 0) return null

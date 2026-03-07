@@ -13,18 +13,7 @@ import type { PostType, PostStatus, ApplicationStatus } from '@/types/enums'
  */
 const NOT_NULL_DEFAULTS: Record<string, unknown> = {
     application_status: 'na',
-    important_dates: {},
-    application_fee: {},
-    vacancy_details: {},
-    eligibility: {},
-    selection_process: [],
-    how_to_apply: [],
-    pay_scale: {},
-    syllabus_sections: [],
-    exam_pattern_data: [],
-    previous_year_papers: [],
-    preparation_tips: [],
-    cut_off_marks: {},
+
     faq: [],
     robots_directive: 'index,follow',
     noindex: false,
@@ -75,19 +64,7 @@ interface PostPayload {
     answer_key_link?: string | null
 
     // Structured content (JSONB)
-    important_dates?: Record<string, unknown> | null
-    application_fee?: Record<string, unknown> | null
-    vacancy_details?: Record<string, unknown> | null
-    eligibility?: Record<string, unknown> | null
-    selection_process?: string[] | null
-    how_to_apply?: string[] | null
-    pay_scale?: Record<string, unknown> | null
-    total_vacancies?: number | null
-    syllabus_sections?: unknown[] | null
-    exam_pattern_data?: unknown[] | null
-    previous_year_papers?: unknown[] | null
-    preparation_tips?: string[] | null
-    cut_off_marks?: Record<string, unknown> | null
+
     faq?: Array<{ q: string; a: string }> | null
     related_post_ids?: string[] | null
 
@@ -176,20 +153,7 @@ export async function createPost(data: PostPayload) {
         result_link: data.result_link ?? null,
         answer_key_link: data.answer_key_link ?? null,
 
-        // Structured content (JSONB) — NOT NULL columns, use empty default
-        important_dates: data.important_dates ?? {},
-        application_fee: data.application_fee ?? {},
-        vacancy_details: data.vacancy_details ?? {},
-        eligibility: data.eligibility ?? {},
-        selection_process: data.selection_process ?? [],
-        how_to_apply: data.how_to_apply ?? [],
-        pay_scale: data.pay_scale ?? {},
-        total_vacancies: data.total_vacancies ?? null,
-        syllabus_sections: data.syllabus_sections ?? [],
-        exam_pattern_data: data.exam_pattern_data ?? [],
-        previous_year_papers: data.previous_year_papers ?? [],
-        preparation_tips: data.preparation_tips ?? [],
-        cut_off_marks: data.cut_off_marks ?? {},
+
         faq: data.faq ?? [],
         related_post_ids: data.related_post_ids ?? null,
 

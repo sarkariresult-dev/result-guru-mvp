@@ -36,6 +36,7 @@ COMMENT ON FUNCTION fn_author_view_count(UUID) IS
 
 -- ── C5: Paginated posts by tag via JOIN (replaces unbounded IN) ───────────
 
+DROP FUNCTION IF EXISTS public.fn_posts_by_tag(uuid, integer, integer);
 CREATE OR REPLACE FUNCTION fn_posts_by_tag(
     p_tag_id  UUID,
     p_limit   INT  DEFAULT 12,
@@ -56,10 +57,8 @@ RETURNS TABLE (
     category_slug      TEXT,
     category_name      TEXT,
     qualification      TEXT[],
-    total_vacancies    INT,
     featured_image     TEXT,
     featured_image_alt TEXT,
-    important_dates    JSONB,
     view_count         INT,
     reading_time_min   SMALLINT,
     published_at       TIMESTAMPTZ,
@@ -82,10 +81,8 @@ AS $$
         vp.category_slug,
         vp.category_name,
         vp.qualification,
-        vp.total_vacancies,
         vp.featured_image,
         vp.featured_image_alt,
-        vp.important_dates,
         vp.view_count,
         vp.reading_time_min,
         vp.published_at,

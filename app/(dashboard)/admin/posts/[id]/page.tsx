@@ -109,57 +109,6 @@ export default async function AdminPostDetailPage({
                             </div>
                         </dl>
                     </section>
-
-                    {/* Important Dates */}
-                    {post.important_dates && typeof post.important_dates === 'object' && Object.keys(post.important_dates).length > 0 && (
-                        <section className="rounded-xl border border-border bg-surface p-5 sm:p-6">
-                            <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-foreground-subtle">
-                                Important Dates
-                            </h2>
-                            <div className="grid gap-2 sm:grid-cols-2">
-                                {Object.entries(post.important_dates as Record<string, unknown>).map(([key, value]) => (
-                                    <div key={key} className="flex justify-between rounded-lg bg-background-subtle px-3 py-2 text-sm">
-                                        <span className="font-medium capitalize">{key.replace(/_/g, ' ')}</span>
-                                        <span className="text-foreground-muted">{String(value ?? '—')}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
-                    )}
-
-                    {/* Vacancy Details */}
-                    {post.vacancy_details && typeof post.vacancy_details === 'object' && Object.keys(post.vacancy_details).length > 0 && (
-                        <section className="rounded-xl border border-border bg-surface p-5 sm:p-6">
-                            <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-foreground-subtle">
-                                Vacancy Details
-                            </h2>
-                            <div className="grid gap-2 sm:grid-cols-2">
-                                {Object.entries(post.vacancy_details as Record<string, unknown>).map(([key, value]) => (
-                                    <div key={key} className="flex justify-between rounded-lg bg-background-subtle px-3 py-2 text-sm">
-                                        <span className="font-medium capitalize">{key.replace(/_/g, ' ')}</span>
-                                        <span className="text-foreground-muted">{String(value ?? '—')}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
-                    )}
-
-                    {/* Application Fee */}
-                    {post.application_fee && typeof post.application_fee === 'object' && Object.keys(post.application_fee).length > 0 && (
-                        <section className="rounded-xl border border-border bg-surface p-5 sm:p-6">
-                            <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-foreground-subtle">
-                                Application Fee
-                            </h2>
-                            <div className="grid gap-2 sm:grid-cols-2">
-                                {Object.entries(post.application_fee as Record<string, unknown>).map(([key, value]) => (
-                                    <div key={key} className="flex justify-between rounded-lg bg-background-subtle px-3 py-2 text-sm">
-                                        <span className="font-medium capitalize">{key.replace(/_/g, ' ')}</span>
-                                        <span className="text-foreground-muted">{String(value ?? '—')}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
-                    )}
                 </div>
 
                 {/* Sidebar meta */}
@@ -275,11 +224,6 @@ export default async function AdminPostDetailPage({
                                         : '—'}
                                 </dd>
                             </div>
-                            {post.total_vacancies != null && post.total_vacancies > 0 && (
-                                <InfoRow label="Total Vacancies">
-                                    {post.total_vacancies.toLocaleString()}
-                                </InfoRow>
-                            )}
                         </dl>
                     </section>
                 </div>
