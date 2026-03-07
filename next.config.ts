@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
   compress: true,
   reactStrictMode: true,
 
+  /* ── Server Dependencies ────────────────────────────────── */
+  serverExternalPackages: ['isomorphic-dompurify', 'jsdom'],
+
   /* ── Experimental ───────────────────────────────────────── */
   experimental: {
     /* Enable Turbopack file-system caching for faster dev restarts */
