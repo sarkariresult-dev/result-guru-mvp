@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { DATE_FORMAT, POST_TYPE_CONFIG } from '@/config/constants'
+import { ROUTE_PREFIXES } from '@/config/site'
 import type { PostTypeKey } from '@/config/site'
 
 // ─── Class name merging (clsx + tailwind-merge) ─────────────────────────────
@@ -71,17 +72,29 @@ export function slugify(text: string): string {
 
 /** Convert URL slug (e.g. "answer-key") → post_type enum key (e.g. "answer_key") */
 export function slugToKey(slug: string): PostTypeKey | null {
+    // Exact match in ROUTE_PREFIXES (e.g., "/admit-card" -> "admit")
+    const entry = Object.entries(ROUTE_PREFIXES).find(([_, prefix]) => prefix === `/${slug}`)
+    if (entry) return entry[0] as PostTypeKey
+
+    // Fallback block for missing prefixes or direct mapping
     const key = slug.replace(/-/g, '_')
     return key in POST_TYPE_CONFIG ? (key as PostTypeKey) : null
 }
 
 /** Convert enum key (e.g. "answer_key") → URL slug (e.g. "answer-key") */
 export function keyToSlug(key: string): string {
+    if (key in ROUTE_PREFIXES) {
+        return ROUTE_PREFIXES[key as PostTypeKey].replace(/^\//, '')
+    }
     return key.replace(/_/g, '-')
 }
 
 /** Humanise a slug: "answer-key" → "Answer Key" */
 export function humanise(slug: string): string {
+    const key = slugToKey(slug)
+    if (key && POST_TYPE_CONFIG[key]) {
+        return POST_TYPE_CONFIG[key].heading
+    }
     return slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
 }
 
