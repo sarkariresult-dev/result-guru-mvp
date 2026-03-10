@@ -186,69 +186,44 @@ export function PostDetail({ post, slug, url }: Props) {
             </header>
 
             {/* ── Featured Image with overlay badges + actions ─────── */}
-            {post.featured_image ? (
-                <figure className="relative aspect-video overflow-hidden rounded-2xl shadow-md border border-border group">
-                    <Image
-                        src={post.featured_image}
-                        alt={post.featured_image_alt ?? post.title}
-                        fill
-                        className="object-cover transition-transform duration-slow group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, 800px"
-                        priority
-                        quality={75}
-                    />
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
+            <figure className="relative aspect-video overflow-hidden rounded-2xl shadow-md border border-border group">
+                <Image
+                    src={post.featured_image || '/images/placeholder-post.png'}
+                    alt={post.featured_image_alt ?? post.title}
+                    fill
+                    className="object-cover transition-transform duration-slow group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, 800px"
+                    priority
+                    quality={75}
+                />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
 
-                    {/* Top-left: status badge */}
-                    <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-                        <ApplicationStatusBadge status={post.application_status} />
-                    </div>
+                {/* Top-left: status badge */}
+                <div className="absolute top-3 left-3 flex flex-wrap gap-2">
+                    <ApplicationStatusBadge status={post.application_status} />
+                </div>
 
-                    {/* Bottom bar */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between">
-                        {/* Bottom-left: info badges */}
-                        <div className="flex flex-wrap items-center gap-2">
-                            {post.state_name && (
-                                <span className="rounded-full bg-white/20 backdrop-blur-sm border border-white/20 px-2.5 py-0.5 text-[11px] font-semibold text-white uppercase tracking-wide">
-                                    {post.state_name}
-                                </span>
-                            )}
-                            <span className="rounded-full bg-white/20 backdrop-blur-sm border border-white/20 px-2.5 py-0.5 text-[11px] font-semibold text-white flex items-center gap-1">
-                                <FileText className="size-3" />
-                                {post.reading_time_min} min read
-                            </span>
-                            <span className="rounded-full bg-white/20 backdrop-blur-sm border border-white/20 px-2.5 py-0.5 text-[11px] font-semibold text-white flex items-center gap-1">
-                                <Eye className="size-3" />
-                                {post.view_count.toLocaleString()} views
-                            </span>
-                        </div>
-
-                        {/* Bottom-right: share, copy, save */}
-                        <ImageActionButtons
-                            postId={post.id}
-                            slug={slug}
-                            title={post.title}
-                            type={typeKey}
-                            url={url}
-                        />
-                    </div>
-                </figure>
-            ) : (
-                /* No featured image — show badges + actions inline */
-                <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-surface p-4">
-                    <div className="flex flex-wrap items-center gap-3">
-                        <ApplicationStatusBadge status={post.application_status} />
+                {/* Bottom bar */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between">
+                    {/* Bottom-left: info badges */}
+                    <div className="flex flex-wrap items-center gap-2">
                         {post.state_name && (
-                            <span className="rounded-full bg-surface-raised border border-border px-3 py-1 text-xs font-semibold tracking-wide text-foreground-muted uppercase">
+                            <span className="rounded-full bg-white/20 backdrop-blur-sm border border-white/20 px-2.5 py-0.5 text-[11px] font-semibold text-white uppercase tracking-wide">
                                 {post.state_name}
                             </span>
                         )}
-                        <span className="text-sm font-medium text-foreground-subtle flex items-center gap-1.5">
-                            <FileText className="size-4" />
+                        <span className="rounded-full bg-white/20 backdrop-blur-sm border border-white/20 px-2.5 py-0.5 text-[11px] font-semibold text-white flex items-center gap-1">
+                            <FileText className="size-3" />
                             {post.reading_time_min} min read
                         </span>
+                        <span className="rounded-full bg-white/20 backdrop-blur-sm border border-white/20 px-2.5 py-0.5 text-[11px] font-semibold text-white flex items-center gap-1">
+                            <Eye className="size-3" />
+                            {post.view_count.toLocaleString()} views
+                        </span>
                     </div>
+
+                    {/* Bottom-right: share, copy, save */}
                     <ImageActionButtons
                         postId={post.id}
                         slug={slug}
@@ -257,7 +232,7 @@ export function PostDetail({ post, slug, url }: Props) {
                         url={url}
                     />
                 </div>
-            )}
+            </figure>
 
             {/* Excerpt */}
             {post.excerpt && (

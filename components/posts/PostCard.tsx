@@ -14,21 +14,21 @@ export function PostCard({ post, priority = false }: Props) {
     const prefix = ROUTE_PREFIXES[post.type as keyof typeof ROUTE_PREFIXES] ?? `/${post.type}`
     const href = `${prefix}/${post.slug}`
 
+    const imageSrc = post.featured_image || '/images/placeholder-post.png'
+
     return (
         <article className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-surface transition-shadow duration-200 hover:shadow-lg">
-            {post.featured_image && (
-                <div className="relative aspect-video overflow-hidden bg-background-muted">
-                    <Image
-                        src={post.featured_image}
-                        alt={post.featured_image_alt ?? post.title}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                        priority={priority}
-                        quality={60}
-                    />
-                </div>
-            )}
+            <div className="relative aspect-video overflow-hidden bg-background-muted">
+                <Image
+                    src={imageSrc}
+                    alt={post.featured_image_alt ?? post.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                    priority={priority}
+                    quality={60}
+                />
+            </div>
             <div className="flex flex-1 flex-col gap-3 p-5">
                 <div className="flex flex-wrap items-center gap-2">
                     <ApplicationStatusBadge status={post.application_status} />

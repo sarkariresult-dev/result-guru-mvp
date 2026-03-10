@@ -35,7 +35,6 @@ export async function getPostCountsByType(): Promise<PostTypeCounts[]> {
     const { data, error } = await supabase.rpc('fn_post_counts_by_type' as any)
 
     if (error) {
-        console.error('[stats] fn_post_counts_by_type RPC failed:', error.message)
         return []
     }
 
@@ -63,7 +62,6 @@ export async function getHomepageSections(limit = 6): Promise<HomepageSections> 
     } as any)
 
     if (error) {
-        console.error('[stats] fn_homepage_sections RPC failed:', error.message)
         return {}
     }
 
