@@ -116,7 +116,7 @@ export async function getRecentPosts(
     return (data ?? []) as unknown as PostCard[]
 }
 
-/** Full-text search using search_vector on v_published_posts */
+/** Full-text search using search_vector on posts, hydrated from v_published_posts */
 export async function searchPosts(
     q: string,
     limit = 20,
@@ -127,15 +127,40 @@ export async function searchPosts(
 
     const supabase = createStaticClient()
 
-    const { data, error } = await supabase
-        .from('v_published_posts')
-        .select(POST_CARD_COLUMNS)
+    // 1. Find matching IDs from the base 'posts' table which holds the search_vector
+    const { data: matches, error: searchError } = await (supabase as any)
+        .from('posts')
+        .select('id')
+        .eq('status', 'published')
         .textSearch('search_vector', q, { type: 'websearch' })
         .order('published_at', { ascending: false })
         .limit(limit)
 
-    if (error) throw new Error(`searchPosts: ${error.message}`)
-    return (data ?? []) as unknown as PostCard[]
+    if (searchError) {
+        console.error(`[searchPosts] matching IDs error:`, searchError)
+        return [] // Gracefully return empty arrays on search failures to prevent UI crashing
+    }
+
+    if (!matches || matches.length === 0) return []
+
+    const ids = matches.map((m: any) => m.id)
+
+    // 2. Fetch full flattened card data using the view
+    const { data, error } = await supabase
+        .from('v_published_posts')
+        .select(POST_CARD_COLUMNS)
+        .in('id', ids)
+
+    if (error) {
+        console.error(`[searchPosts] fetching details error:`, error)
+        return []
+    }
+
+    // 3. Keep original sort order
+    const idMap = new Map((data ?? []).map(p => [(p as any).id, p]))
+    const sorted = ids.map((id: string) => idMap.get(id)).filter(Boolean)
+
+    return sorted as unknown as PostCard[]
 }
 
 /** Count matching posts (for pagination metadata) */

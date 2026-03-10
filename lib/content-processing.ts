@@ -124,3 +124,58 @@ export function processContentHtml(html: string): { tocItems: TocItem[]; process
     processed = optimizeContentImages(processed)
     return { tocItems, processedHtml: processed }
 }
+
+/**
+ * Extract "How to Apply" or "Steps to Check" from HTML content.
+ * Looks for common patterns and returns an array of strings representing steps.
+ */
+export function extractHowToSteps(html: string): string[] {
+    const steps: string[] = []
+
+    // Find a section that likely contains steps (e.g., following a heading with "Apply" or "How to")
+    const stepSectionRegex = /<h[2-3][^>]*>(?:.*?(?:Apply|How to|Steps|Check).*?)<\/h[2-3]>(.*?)<h[2-3]/si
+    const match = html.match(stepSectionRegex)
+
+    if (match && match[1]) {
+        const content = match[1]
+        // Look for <li> items within this section
+        const liRegex = /<li>(.*?)<\/li>/gi
+        let liMatch
+        while ((liMatch = liRegex.exec(content)) !== null) {
+            if (liMatch && liMatch[1]) {
+                const stepText = liMatch[1].replace(/<[^>]*>/g, '').trim()
+                if (stepText) steps.push(stepText)
+            }
+        }
+    }
+
+    // Fallback: If no section-based steps found, look for any ordered or unordered lists in the entire content
+    if (steps.length === 0) {
+        const liRegex = /<li>(.*?)<\/li>/gi
+        let liMatch
+        while ((liMatch = liRegex.exec(html)) !== null) {
+            if (liMatch && liMatch[1]) {
+                const stepText = liMatch[1].replace(/<[^>]*>/g, '').trim()
+                if (stepText && steps.length < 10) steps.push(stepText)
+            }
+        }
+    }
+
+    return steps.slice(0, 15) // Limit to 15 steps for schema sanity
+}
+
+/**
+ * Replace dynamic placeholders like [applyOnlineUrl] with actual URL values.
+ * Used to transform AI-generated templates into final published HTML.
+ */
+export function replacePlaceholders(html: string, mappings: Record<string, string | null | undefined>): string {
+    let processed = html
+    Object.entries(mappings).forEach(([placeholder, value]) => {
+        // Find both literal [placeholder] and escaped forms
+        const regex = new RegExp(`\\[${placeholder}\\]`, 'g')
+        // If value is missing, fallback to '#' to avoid broken UI
+        const replacement = value || '#'
+        processed = processed.replace(regex, replacement)
+    })
+    return processed
+}

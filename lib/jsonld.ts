@@ -12,6 +12,15 @@ type JsonLdObject = Record<string, unknown>
 export function buildJobPostingSchema(post: PostDetail): JsonLdObject {
     const url = `${SITE.url}${postUrl(post.type as any, post.slug)}`
 
+    // Calculate expiry date (validThrough)
+    // Preference: post.expires_at -> 30 days after today if not set
+    let expiryDate = post.expires_at
+    if (!expiryDate) {
+        const date = new Date()
+        date.setDate(date.getDate() + 30)
+        expiryDate = date.toISOString()
+    }
+
     const schema: JsonLdObject = {
         '@context': 'https://schema.org',
         '@type': 'JobPosting',
@@ -19,6 +28,7 @@ export function buildJobPostingSchema(post: PostDetail): JsonLdObject {
         description: post.excerpt || post.meta_description || post.title,
         url,
         datePosted: post.published_at ?? post.created_at,
+        validThrough: expiryDate,
         employmentType: 'FULL_TIME',
         hiringOrganization: {
             '@type': 'Organization',
@@ -187,6 +197,12 @@ export function buildArticleSchema(post: PostDetail): JsonLdObject {
             url: SITE.publisher.url,
             logo: { '@type': 'ImageObject', url: SITE.publisher.logo },
         },
+        // E-E-A-T: Set author to Editorial Team as a Person type for authority
+        author: {
+            '@type': 'Person',
+            name: `${SITE.name} Editorial Team`,
+            url: `${SITE.url}/about`,
+        },
         mainEntityOfPage: {
             '@type': 'WebPage',
             '@id': url,
@@ -199,13 +215,6 @@ export function buildArticleSchema(post: PostDetail): JsonLdObject {
             url: post.featured_image,
             ...(post.featured_image_width && { width: post.featured_image_width }),
             ...(post.featured_image_height && { height: post.featured_image_height }),
-        }
-    }
-
-    if (post.org_name) {
-        schema.author = {
-            '@type': 'Organization',
-            name: post.org_name,
         }
     }
 

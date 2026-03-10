@@ -4,9 +4,11 @@ import { Suspense } from 'react'
 import Image from 'next/image'
 import { getPostBySlug } from '@/lib/queries/posts'
 import { buildMetadata } from '@/lib/metadata'
-import { buildJobPostingSchema, buildBreadcrumbSchema, buildFAQPageSchema, buildGovernmentServiceSchema, buildArticleSchema } from '@/lib/jsonld'
+import { buildJobPostingSchema, buildBreadcrumbSchema, buildFAQPageSchema, buildGovernmentServiceSchema, buildArticleSchema, buildHowToSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
-import { PostDetail, processContentHtml, sanitizeHtml } from '@/components/posts/PostDetail'
+import { PostDetail } from '@/components/posts/PostDetail'
+import { processContentHtml, extractHowToSteps } from '@/lib/content-processing'
+import { sanitizeHtml } from '@/lib/sanitize'
 import { RelatedPosts } from '@/components/posts/RelatedPosts'
 import { PostDetailSkeleton } from '@/components/posts/PostCardSkeleton'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
@@ -67,6 +69,7 @@ export default async function PostDetailPage({ params }: Props) {
         buildBreadcrumbSchema([
             { name: 'Home', url: SITE.url },
             { name: config.heading, url: `${SITE.url}/${type}` },
+            ...(publishedPost.state_slug ? [{ name: publishedPost.state_name || humanise(publishedPost.state_slug), url: `${SITE.url}/states/${publishedPost.state_slug}` }] : []),
             { name: publishedPost.title, url: `${SITE.url}${ROUTE_PREFIXES[typeKey]}/${slug}` },
         ])
     )
@@ -74,6 +77,20 @@ export default async function PostDetailPage({ params }: Props) {
     const faq = publishedPost.faq as FaqItem[] | null
     if (faq && faq.length > 0) {
         jsonLdEntries.push(buildFAQPageSchema(faq))
+    }
+
+    /* ── HowTo Schema ────────────────────────────────────────── */
+    const howToSteps = publishedPost.content ? extractHowToSteps(publishedPost.content) : []
+    const canonicalUrl = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/${slug}`
+
+    if (howToSteps.length >= 3) {
+        jsonLdEntries.push(
+            buildHowToSchema(
+                `How to Apply/Check ${publishedPost.title}`,
+                howToSteps,
+                canonicalUrl
+            )
+        )
     }
 
     jsonLdEntries.push(buildArticleSchema(publishedPost as any))
@@ -101,8 +118,6 @@ export default async function PostDetailPage({ params }: Props) {
         quickLinks.push({ href: publishedPost.answer_key_link, label: 'Answer Key', icon: 'external' })
     }
 
-    const canonicalUrl = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/${slug}`
-
     return (
         <>
             <JsonLd data={jsonLdEntries} />
@@ -111,6 +126,7 @@ export default async function PostDetailPage({ params }: Props) {
                 <Breadcrumb
                     items={[
                         { label: humanise(type), href: `/${type}` },
+                        ...(publishedPost.state_slug ? [{ label: publishedPost.state_name || humanise(publishedPost.state_slug), href: `/states/${publishedPost.state_slug}` }] : []),
                         { label: publishedPost.title },
                     ]}
                 />
@@ -154,7 +170,7 @@ export default async function PostDetailPage({ params }: Props) {
                         {quickLinks.length > 0 && (
                             <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm space-y-2.5">
                                 <h3 className="text-sm font-bold uppercase tracking-wider text-foreground-muted mb-3">Quick Links</h3>
-                                {quickLinks.map((link, i) => (
+                                {quickLinks.map((link: { href: string; label: string; icon: 'external' | 'download'; primary?: boolean }, i: number) => (
                                     <a
                                         key={i}
                                         href={link.href}

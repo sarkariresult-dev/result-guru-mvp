@@ -4,6 +4,7 @@ import { PostGrid } from '@/components/posts/PostGrid'
 import { PostList } from '@/components/posts/PostList'
 import { NumberedList } from '@/components/posts/NumberedList'
 import { ArrowRight, ServerCrash, Inbox } from 'lucide-react'
+import { AdZone } from '@/components/ads/AdZone'
 import type { PostCard } from '@/types/post.types'
 
 interface HomeSectionProps {
@@ -29,6 +30,8 @@ interface HomeSectionProps {
     layout?: 'grid' | 'list' | 'numbered'
     /** Theme color class for UI accents (e.g. 'bg-brand-500', 'bg-amber-500') */
     themeColorClass?: string
+    /** Optional identifier to inject an ad below this section's content */
+    adSlot?: string
 }
 
 /**
@@ -40,7 +43,7 @@ interface HomeSectionProps {
  */
 export async function HomeSection({
     typeKey, heading, route, cta, limit, priority, posts: prefetched,
-    layout = 'grid', themeColorClass = 'bg-brand-500'
+    layout = 'grid', themeColorClass = 'bg-brand-500', adSlot
 }: HomeSectionProps) {
     let posts: PostCard[] = prefetched ?? []
     let hasError = false
@@ -121,6 +124,12 @@ export async function HomeSection({
                 {layout === 'numbered' && <NumberedList posts={posts} />}
                 {layout === 'grid' && <PostGrid posts={posts} priority={priority} />}
             </div>
+
+            {adSlot && (
+                <div className="mt-6">
+                    <AdZone zoneSlug={adSlot} className="w-full bg-surface-subtle border border-border rounded-xl min-h-[100px]" />
+                </div>
+            )}
         </section>
     )
 }

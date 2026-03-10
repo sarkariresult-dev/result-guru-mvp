@@ -6,8 +6,9 @@ import dynamic from 'next/dynamic'
 import { Button } from '@/components/ui/Button'
 import { createPost, updatePost } from '@/lib/actions/posts'
 import { FileUpload } from '@/components/dashboard/FileUpload'
-import { Save, Eye, Plus, Trash2, ChevronDown, ChevronUp, X, AlertTriangle, CheckCircle2, Link as LinkIcon, Info, Wand2 } from 'lucide-react'
-import { POST_TEMPLATES, getTemplateDefaults, hasStructuredContent } from '@/config/templates'
+import { Save, Eye, Plus, Trash2, ChevronDown, ChevronUp, X, AlertTriangle, CheckCircle2, Link as LinkIcon, Info, Wand2, Sparkles, Loader2 } from 'lucide-react'
+import { generateContentWithGemini } from '@/lib/actions/ai'
+import { processContentHtml, extractHowToSteps, replacePlaceholders } from '@/lib/content-processing'
 
 /* Heavy editor — 13 tiptap packages + 25 lucide icons → lazy-load, no SSR */
 const TiptapEditor = dynamic(
@@ -519,77 +520,104 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
     const cfg = TYPE_CONFIG[type] ?? TYPE_CONFIG.job!
     const s = cfg.sections
 
-    // ── Template Application ──
-    const [showTemplateConfirm, setShowTemplateConfirm] = useState(false)
-    const [templateApplied, setTemplateApplied] = useState(false)
+    // ── AI Generation Application ──
+    const [aiGenerated, setAiGenerated] = useState(false)
+    const [isGenerating, setIsGenerating] = useState(false)
 
-    const applyTemplate = useCallback((forceOverwrite = false) => {
-        const template = POST_TEMPLATES[type]
-        if (!template) return
-
-        const current = {
-            title, excerpt, content, faq,
-            metaTitle, metaDescription, focusKeyword,
-            secondaryKeywords, featuredImageAlt,
+    const handleGenerateAI = async () => {
+        if (!title.trim()) {
+            setError('Please enter a Post Title first to generate content.')
+            return
         }
 
-        const updates = getTemplateDefaults(template, current, { force: forceOverwrite })
+        setIsGenerating(true)
+        setError(null)
 
-        // Apply each update to its corresponding state
-        if ('title' in updates) setTitle(updates.title as string)
-        if ('excerpt' in updates) setExcerpt(updates.excerpt as string)
-        if ('content' in updates) setContent(updates.content as string)
-        if ('metaTitle' in updates) setMetaTitle(updates.metaTitle as string)
-        if ('metaDescription' in updates) setMetaDescription(updates.metaDescription as string)
-        if ('focusKeyword' in updates) setFocusKeyword(updates.focusKeyword as string)
-        if ('secondaryKeywords' in updates) setSecondaryKeywords(updates.secondaryKeywords as string[])
-        if ('featuredImageAlt' in updates) setFeaturedImageAlt(updates.featuredImageAlt as string)
-        if ('faq' in updates) setFaq(updates.faq!)
-        if ('applicationStatus' in updates) setApplicationStatus(updates.applicationStatus!)
+        try {
+            const result = await generateContentWithGemini({
+                topic: title,
+                postType: type,
+                tone: 'Informative and Urgent',
+                targetAudience: 'Government Job Seekers in India',
+                primaryKeywords: ''
+            })
 
-        setTemplateApplied(true)
-        setTimeout(() => setTemplateApplied(false), 3000)
-    }, [type, title, excerpt, content, faq, metaTitle, metaDescription, focusKeyword, secondaryKeywords, featuredImageAlt])
+            if (result.error) {
+                setError(result.error)
+            } else if (result.success && result.data) {
+                const {
+                    title: newTitle, excerpt: newExcerpt, content: newContent,
+                    metaTitle: newMetaTitle, metaDescription: newMetaDescription,
+                    slug: newSlug,
+                    focusKeyword: newFocusKeyword, secondaryKeywords: newSecondaryKeywords,
+                    faq: newFaq, suggestedTags, suggestedQualifications,
+                    officialWebsiteUrl, applyOnlineUrl, notificationPdfUrl
+                } = result.data
 
-    // Auto-apply template on type change in create mode (only for empty fields)
-    const prevTypeRef = useCallback((newType: string) => {
-        setType(newType)
-        if (mode === 'create') {
-            // Slight delay so state updates before template applies
-            setTimeout(() => {
-                const template = POST_TEMPLATES[newType]
-                if (!template) return
+                if (newTitle) setTitle(newTitle)
+                if (newSlug) setCustomSlug(newSlug)
+                if (newExcerpt) setExcerpt(newExcerpt)
 
-                const hasContent = hasStructuredContent({
-                    title, excerpt, content, faq,
-                })
-
-                if (hasContent) {
-                    setShowTemplateConfirm(true)
-                } else {
-                    // Auto-apply for empty forms
-                    const current = {
-                        title, excerpt, content, faq: [],
-                        metaTitle, metaDescription, focusKeyword,
-                        secondaryKeywords: [], featuredImageAlt: '',
-                    }
-                    const updates = getTemplateDefaults(template, current, { force: true })
-                    if ('title' in updates) setTitle(updates.title as string)
-                    if ('excerpt' in updates) setExcerpt(updates.excerpt as string)
-                    if ('content' in updates) setContent(updates.content as string)
-                    if ('metaTitle' in updates) setMetaTitle(updates.metaTitle as string)
-                    if ('metaDescription' in updates) setMetaDescription(updates.metaDescription as string)
-                    if ('focusKeyword' in updates) setFocusKeyword(updates.focusKeyword as string)
-                    if ('secondaryKeywords' in updates) setSecondaryKeywords(updates.secondaryKeywords as string[])
-                    if ('featuredImageAlt' in updates) setFeaturedImageAlt(updates.featuredImageAlt as string)
-                    if ('faq' in updates) setFaq(updates.faq!)
-                    if ('applicationStatus' in updates) setApplicationStatus(updates.applicationStatus!)
-                    setTemplateApplied(true)
-                    setTimeout(() => setTemplateApplied(false), 3000)
+                // Process content to replace dynamic placeholders [applyOnlineUrl] etc.
+                if (newContent) {
+                    const processedContent = replacePlaceholders(newContent, {
+                        officialWebsiteUrl,
+                        applyOnlineUrl,
+                        notificationPdfUrl
+                    })
+                    setContent(processedContent)
                 }
-            }, 50)
+
+                if (newMetaTitle) setMetaTitle(newMetaTitle)
+                if (newMetaDescription) setMetaDescription(newMetaDescription)
+                if (newFocusKeyword) setFocusKeyword(newFocusKeyword)
+                if (newSecondaryKeywords) setSecondaryKeywords(newSecondaryKeywords)
+                if (newFaq) setFaq(newFaq)
+
+                // Map official links
+                if (notificationPdfUrl) setNotificationPdf(notificationPdfUrl)
+                if (applyOnlineUrl) {
+                    if (type === 'admit') setAdmitCardLink(applyOnlineUrl)
+                    else if (type === 'result' || type === 'cut_off') setResultLinkUrl(applyOnlineUrl)
+                    else if (type === 'answer_key') setAnswerKeyLink(applyOnlineUrl)
+                } else if (officialWebsiteUrl) {
+                    // Fallback to official website if specific apply link not found
+                    if (type === 'admit' && !admitCardLink) setAdmitCardLink(officialWebsiteUrl)
+                    else if ((type === 'result' || type === 'cut_off') && !resultLinkUrl) setResultLinkUrl(officialWebsiteUrl)
+                    else if (type === 'answer_key' && !answerKeyLink) setAnswerKeyLink(officialWebsiteUrl)
+                }
+
+                // Map suggested taxonomic data against existing props to prevent DB relation errors
+                if (suggestedQualifications && Array.isArray(suggestedQualifications)) {
+                    const validQuals = suggestedQualifications
+                        .map(sq => sq.toLowerCase())
+                        .filter(slug => qualifications.some(q => q.value === slug))
+                    if (validQuals.length > 0) setSelectedQualifications(validQuals)
+                }
+
+                if (suggestedTags && Array.isArray(suggestedTags)) {
+                    const validTags = suggestedTags
+                        .map(st => st.toLowerCase())
+                        .filter(slug => tags.some(t => t.value === slug))
+                    if (validTags.length > 0) setSelectedTags(validTags)
+                }
+
+                // Show success
+                setAiGenerated(true)
+                setTimeout(() => setAiGenerated(false), 3000)
+            }
+        } catch (err: any) {
+            setError(err.message || 'Error communicating with AI service')
+        } finally {
+            setIsGenerating(false)
         }
-    }, [mode, title, excerpt, content, faq, metaTitle, metaDescription, focusKeyword])
+    }
+
+    // Auto-apply type changes
+    const handleTypeChange = useCallback((newType: string) => {
+        setType(newType)
+    }, [])
+
 
     // SEO checks
     const seoChecks = useMemo(() => runSeoAnalysis({ title, slug, metaTitle, metaDescription, focusKeyword, secondaryKeywords, content, excerpt, featuredImage, featuredImageAlt, type }), [title, slug, metaTitle, metaDescription, focusKeyword, secondaryKeywords, content, excerpt, featuredImage, featuredImageAlt, type])
@@ -702,32 +730,6 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                 />
             )}
 
-            {/* Template Confirmation Modal */}
-            {showTemplateConfirm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowTemplateConfirm(false)}>
-                    <div className="w-full max-w-md rounded-2xl border border-border bg-surface shadow-2xl" onClick={e => e.stopPropagation()}>
-                        <div className="flex items-center justify-between border-b border-border px-6 py-4">
-                            <h3 className="text-lg font-bold text-foreground flex items-center gap-2"><Wand2 className="size-5 text-brand-500" /> Load Template</h3>
-                            <button onClick={() => setShowTemplateConfirm(false)} className="rounded-lg p-1 hover:bg-background-subtle"><X className="size-5" /></button>
-                        </div>
-                        <div className="px-6 py-5 space-y-3">
-                            <p className="text-sm text-foreground">You have existing structured data in this form. How would you like to apply the template?</p>
-                            <div className="rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 px-3 py-2">
-                                <p className="text-xs text-yellow-700 dark:text-yellow-400 flex items-center gap-1.5">
-                                    <AlertTriangle className="size-3.5 shrink-0" />
-                                    <span>Overwriting will replace all structured data fields with template defaults.</span>
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex items-center justify-end gap-3 border-t border-border px-6 py-4">
-                            <Button variant="ghost" onClick={() => setShowTemplateConfirm(false)}>Cancel</Button>
-                            <Button variant="secondary" onClick={() => { applyTemplate(false); setShowTemplateConfirm(false) }}>Fill Empty Only</Button>
-                            <Button onClick={() => { applyTemplate(true); setShowTemplateConfirm(false) }}>Overwrite All</Button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
             {/* ────────── Top Bar ────────── */}
             <div className="sticky top-0 z-30 border-b border-border bg-surface/95 backdrop-blur-sm px-6 pb-3">
                 <div className="flex items-center gap-3">
@@ -827,24 +829,21 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                     {/* Publish Panel */}
                     <Panel title="Publish" defaultOpen>
                         <Field label="Post Type" required>
-                            <select value={type} onChange={(e) => prevTypeRef(e.target.value)} className={selectCls}>
+                            <select value={type} onChange={(e) => handleTypeChange(e.target.value)} className={selectCls}>
                                 {POST_TYPES.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                             </select>
                         </Field>
-                        {mode === 'create' && POST_TEMPLATES[type] && (
+                        {mode === 'create' && (
                             <button
                                 type="button"
-                                onClick={() => {
-                                    const hasCont = hasStructuredContent({ title, excerpt, content, faq })
-                                    if (hasCont) setShowTemplateConfirm(true)
-                                    else applyTemplate(true)
-                                }}
-                                className={`flex w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition-all ${templateApplied
-                                    ? 'border-green-300 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-900/20 dark:text-green-400'
+                                onClick={handleGenerateAI}
+                                disabled={isGenerating || !title.trim() || aiGenerated}
+                                className={`flex w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition-all ${aiGenerated
+                                    ? 'border-green-300 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-900/20 dark:text-green-400 cursor-default'
                                     : 'border-brand-200 bg-brand-50/50 text-brand-700 hover:bg-brand-100/50 dark:border-brand-800 dark:bg-brand-900/20 dark:text-brand-300 hover:dark:bg-brand-900/40'
-                                    }`}
+                                    } ${(!title.trim() || isGenerating) && !aiGenerated ? 'opacity-50 cursor-not-allowed' : ''}`}
                             >
-                                {templateApplied ? <><CheckCircle2 className="size-3.5" /> Template Applied</> : <><Wand2 className="size-3.5" /> Load Template</>}
+                                {isGenerating ? <><Loader2 className="size-3.5 animate-spin" /> Generating...</> : aiGenerated ? <><CheckCircle2 className="size-3.5" /> Content Generated</> : <><Sparkles className="size-3.5" /> Generate with AI</>}
                             </button>
                         )}
                         {cfg.showAppStatus && (

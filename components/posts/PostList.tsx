@@ -39,7 +39,7 @@ export function PostList({ posts, themeColorClass = 'bg-brand-500' }: Props) {
                                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-foreground-subtle font-medium">
                                     {post.state_name && <span>{post.state_name}</span>}
                                     {post.state_name && post.qualification && <span className="size-1 rounded-full bg-border" />}
-                                    {post.qualification && <span className="line-clamp-1">{post.qualification}</span>}
+                                    {post.qualification && <span className="line-clamp-1">{post.qualification.join(', ')}</span>}
                                 </div>
                             )}
                         </div>

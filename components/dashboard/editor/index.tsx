@@ -2,7 +2,7 @@
 
 import { useEditor, EditorContent } from '@tiptap/react'
 import { BubbleMenu } from '@tiptap/react/menus'
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
 import { getEditorExtensions } from './extensions'
 import { SlashCommandExtension } from './slash-command'
 import { LinkModal, ImageModal, TableSizePicker } from './modals'
@@ -56,7 +56,7 @@ export function TiptapEditor({
     const isInternalUpdate = useRef(false)
 
     // Build extensions with slash command hooks
-    const extensions = [
+    const extensions = useMemo(() => [
         ...getEditorExtensions(placeholder),
         SlashCommandExtension.configure({
             onActivate: (query: string, coords: { left: number; top: number; bottom: number }) => {
@@ -69,7 +69,7 @@ export function TiptapEditor({
                 setSlashQuery('')
             },
         }),
-    ]
+    ], [placeholder])
 
     const editor = useEditor({
         immediatelyRender: false,
@@ -124,7 +124,7 @@ export function TiptapEditor({
         },
     })
 
-    // ── Sync external content changes (e.g. template load) ──
+    // ── Sync external content changes (e.g. AI load) ──
     useEffect(() => {
         if (!editor || editor.isDestroyed) return
         if (isInternalUpdate.current) {
@@ -215,22 +215,20 @@ export function TiptapEditor({
                     <button
                         type="button"
                         onClick={() => setPreviewMode(false)}
-                        className={`flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition-colors ${
-                            !previewMode
-                                ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300'
-                                : 'text-foreground-muted hover:text-foreground'
-                        }`}
+                        className={`flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition-colors ${!previewMode
+                            ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300'
+                            : 'text-foreground-muted hover:text-foreground'
+                            }`}
                     >
                         <Edit3 className="size-3.5" /> Edit
                     </button>
                     <button
                         type="button"
                         onClick={() => setPreviewMode(true)}
-                        className={`flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition-colors ${
-                            previewMode
-                                ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300'
-                                : 'text-foreground-muted hover:text-foreground'
-                        }`}
+                        className={`flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition-colors ${previewMode
+                            ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300'
+                            : 'text-foreground-muted hover:text-foreground'
+                            }`}
                     >
                         <Eye className="size-3.5" /> Preview
                     </button>

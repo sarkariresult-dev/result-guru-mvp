@@ -8,7 +8,7 @@ import { ApplicationStatusBadge } from './ApplicationStatusBadge'
 import { AffiliateProductsBox } from './AffiliateProductsBox'
 import { ImageActionButtons } from './ImageActionButtons'
 import { AdZone } from '@/components/ads/AdZone'
-import { processContentHtml } from '@/lib/content-processing'
+import { processContentHtml, replacePlaceholders } from '@/lib/content-processing'
 import { POST_TYPE_CONFIG } from '@/config/constants'
 import type { PostTypeKey } from '@/config/site'
 import type { PublishedPost, PostAffiliateProductEntry } from '@/types/post.types'
@@ -64,9 +64,17 @@ export function PostDetail({ post, slug, url }: Props) {
     const affiliates = (post as any).affiliates as PostAffiliateProductEntry[] | undefined
 
     /* Process content HTML */
-    const { tocItems, processedHtml } = post.content
+    const mappings = {
+        officialWebsiteUrl: post.org_official_url,
+        applyOnlineUrl: post.admit_card_link || post.result_link || post.answer_key_link || post.org_official_url,
+        notificationPdfUrl: post.notification_pdf,
+    }
+
+    const { tocItems, processedHtml: rawHtml } = post.content
         ? processContentHtml(sanitizeHtml(post.content))
         : { tocItems: [] as any[], processedHtml: '' }
+
+    const processedHtml = replacePlaceholders(rawHtml, mappings)
 
     /* Extract tags */
     const tags = (post as any).tags as Array<{ id: string; name: string; slug: string }> | undefined

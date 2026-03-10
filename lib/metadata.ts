@@ -38,20 +38,22 @@ export function buildMetadata(post: PostDetail): Metadata {
     return {
         title,
         description,
-        keywords: post.meta_keywords ?? post.focus_keyword ?? undefined,
+        keywords: (post.meta_keywords && post.meta_keywords.length > 0)
+            ? post.meta_keywords
+            : post.focus_keyword
+                ? [post.focus_keyword]
+                : undefined,
         alternates: {
             canonical: post.canonical_url || url,
             ...(Object.keys(languages).length > 0 && { languages }),
         },
         robots: post.noindex
             ? { index: false, follow: true }
-            : post.robots_directive
-                ? { index: true, follow: true }
-                : undefined,
+            : { index: true, follow: true },
         openGraph: {
             title: post.og_title || title,
             description: post.og_description || description,
-            url,
+            url: post.canonical_url || url,
             siteName: SITE.name,
             locale: SITE.locale,
             type: 'article',
@@ -91,7 +93,7 @@ export function buildPageMetadata(opts: {
     path: string
     noindex?: boolean
 }): Metadata {
-    const url = `${SITE.url}${opts.path}`
+    const url = `${SITE.url}${opts.path.startsWith('/') ? opts.path : `/${opts.path}`}`
 
     return {
         title: `${opts.title} | ${SITE.name}`,
@@ -99,7 +101,7 @@ export function buildPageMetadata(opts: {
         alternates: { canonical: url },
         robots: opts.noindex
             ? { index: false, follow: true }
-            : undefined,
+            : { index: true, follow: true },
         openGraph: {
             title: `${opts.title} | ${SITE.name}`,
             description: opts.description,

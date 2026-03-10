@@ -10,7 +10,8 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { PAGINATION } from '@/config/constants'
-import { SITE } from '@/config/site'
+import { SITE, ROUTE_PREFIXES } from '@/config/site'
+import type { PostTypeKey } from '@/config/site'
 import { MapPin, FileText, ChevronLeft, ChevronRight, ServerCrash } from 'lucide-react'
 import type { PostCard } from '@/types/post.types'
 
@@ -23,8 +24,10 @@ interface Props {
 
 /* ── Metadata ────────────────────────────────────────────────────── */
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
     const { slug } = await params
+    const { page: pageParam } = await searchParams
+    const page = Math.max(1, Number(pageParam ?? '1'))
     let stateRecord: Awaited<ReturnType<typeof getStateBySlug>> = null
 
     try {
@@ -35,18 +38,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     if (!stateRecord) return {}
 
-    const title = stateRecord.meta_title ?? `${stateRecord.name} — Latest Govt Jobs, Results & Updates 2026`
+    const title = page > 1 ? `${stateRecord.name} - Page ${page} — Sarkari Updates 2026` : (stateRecord.meta_title ?? `${stateRecord.name} — Latest Govt Jobs, Results & Updates 2026`)
     const description = stateRecord.meta_description ?? `Find all the latest government jobs, exam results, admit cards, and recruitment notifications in ${stateRecord.name}. Updated daily with official information.`
     const url = `${SITE.url}/states/${slug}`
+    const canonical = page > 1 ? `${url}?page=${page}` : url
 
-    return {
+    // Fetch total count for prev/next calculation
+    const totalCount = await getPostsCount({ state_slug: slug }).catch(() => 0)
+    const totalPages = Math.ceil(totalCount / PAGINATION.DEFAULT_LIMIT)
+
+    const baseMetadata: Metadata = {
         title,
         description,
-        alternates: { canonical: url },
+        alternates: {
+            canonical,
+        },
         openGraph: {
             title,
             description,
-            url,
+            url: canonical,
             siteName: SITE.name,
             locale: SITE.locale,
             type: 'website',
@@ -59,6 +69,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             site: SITE.twitter.handle,
         },
     }
+
+    // Add prev/next alternates
+    if (page > 1 || page < totalPages) {
+        baseMetadata.alternates = {
+            ...baseMetadata.alternates,
+            ...(page > 1 && { prev: page === 2 ? url : `${url}?page=${page - 1}` }),
+            ...(page < totalPages && { next: `${url}?page=${page + 1}` }),
+        }
+    }
+
+    return baseMetadata
 }
 
 /* ── Pagination helpers ──────────────────────────────────────────── */
@@ -130,15 +151,24 @@ export default async function StateProfilePage({ params, searchParams }: Props) 
                 itemListElement: posts.slice(0, 10).map((post, i) => ({
                     '@type': 'ListItem',
                     position: (page - 1) * limit + i + 1,
-                    url: `${SITE.url}/${post.type}/${post.slug}`,
+                    url: `${SITE.url}${ROUTE_PREFIXES[post.type as PostTypeKey] || `/${post.type}`}/${post.slug}`,
                     name: post.title,
                 })),
             },
         }),
     }
 
+    /* ── Build rel="prev" / rel="next" for paginated pages ──────── */
+    const basePath = `/states/${slug}`
+    const prevUrl = page > 1 ? (page === 2 ? basePath : `${basePath}?page=${page - 1}`) : null
+    const nextUrl = page < totalPages ? `${basePath}?page=${page + 1}` : null
+
     return (
         <>
+            {/* Pagination link relations for crawlers */}
+            {prevUrl && <link rel="prev" href={`${SITE.url}${prevUrl}`} />}
+            {nextUrl && <link rel="next" href={`${SITE.url}${nextUrl}`} />}
+
             <JsonLd data={[breadcrumbJsonLd, collectionJsonLd]} />
 
             <div className="container mx-auto max-w-7xl px-4 py-8">

@@ -25,7 +25,7 @@ export function NumberedList({ posts }: Props) {
                 >
                     {/* Giant Number Drop-cap matching the screenshot */}
                     <span className="text-4xl font-extrabold tracking-tighter text-border/80 group-hover:text-brand-200 transition-colors dark:text-border/40 select-none">
-                        {String(index + 1).padStart(2, '0')}
+                        {index + 1}
                     </span>
 
                     <div className="flex flex-col gap-1 -mt-0.5">

@@ -33,6 +33,11 @@ const envSchema = z.object({
     // ── Rate-limiting (Upstash Redis) ─────────────────────────────────────
     UPSTASH_REDIS_REST_URL: z.string().url().optional(),
     UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
+
+    // ── AI ────────────────────────────────────────────────────────────────
+    GOOGLE_GENAI_API_KEY: z.string().optional(),
+    GOOGLE_GENAI_MODEL: z.string().optional(),
+    GOOGLE_GENAI_TEMPERATURE: z.coerce.number().optional(),
 })
 
 // ─── Validate ───────────────────────────────────────────────────────────────
@@ -61,6 +66,10 @@ const _parsed = envSchema.safeParse({
 
     UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
     UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
+
+    GOOGLE_GENAI_API_KEY: process.env.GOOGLE_GENAI_API_KEY,
+    GOOGLE_GENAI_MODEL: process.env.GOOGLE_GENAI_MODEL,
+    GOOGLE_GENAI_TEMPERATURE: process.env.GOOGLE_GENAI_TEMPERATURE,
 })
 
 if (!_parsed.success) {

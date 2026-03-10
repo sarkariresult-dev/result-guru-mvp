@@ -425,8 +425,48 @@ export default async function HomePage() {
                 </div>
             </section>
 
-            <AdZone zoneSlug="below_content" className="container mx-auto max-w-7xl px-4" />
+            <AdZone zoneSlug="below_content" className="container mx-auto max-w-7xl px-4 my-8" />
 
+            {/* SEO Content Block (500-800 words) */}
+            <section className="container mx-auto max-w-7xl px-4 py-16 bg-surface-subtle border-t border-border" aria-label="About Result Guru">
+                <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-4xl mx-auto">
+                    <h2 className="text-3xl font-extrabold tracking-tight mb-6">Latest Sarkari Result 2026 & Government Jobs in India</h2>
+                    <p>
+                        Welcome to <strong>Result Guru</strong>, India's most trusted and fastest-growing portal for the <strong>Latest Sarkari Result 2026</strong>, upcoming <strong>Government Jobs in India</strong>, and real-time <strong>Latest Govt Job Notifications</strong>. Whether you are aiming for SSC, UPSC, Railway, Banking, Police, or State-level examinations, we provide instant updates on admit cards, answer keys, syllabus, and cut-off marks to ensure you stay ahead in your preparation journey.
+                    </p>
+
+                    <h3 className="text-xl font-bold mt-8 mb-4">Why Follow Result Guru for the Latest Govt Job Notifications?</h3>
+                    <p>
+                        In today's highly competitive era, missing a single employment notification can cost aspirants a golden opportunity. Our dedicated editorial team actively tracks official government websites, employment news (Rozgar Samachar), and state-level public service commission portals (UPPSC, BPSC, MPSC, RPSC, etc.) to bring you verified and accurate <strong>Sarkari Naukri</strong> updates. We consolidate intricate notification PDFs into easy-to-read, structured formats detailing crucial dates, application fees, age limits, syllabus breakdowns, and direct application links.
+                    </p>
+
+                    <h3 className="text-xl font-bold mt-8 mb-4">Comprehensive Coverage of Govt Jobs in India</h3>
+                    <p>
+                        The landscape of <strong>Government Jobs in India</strong> is vast, ranging from Group A gazetted officer posts to Group D recruitment drives. Here is what we actively cover:
+                    </p>
+                    <ul>
+                        <li><strong>SSC & Railway Recruitment:</strong> Real-time alerts for SSC CGL, CHSL, MTS, Railway NTPC, and Group D vacancies. Follow our portal to download admit cards and check the <em>Latest Sarkari Result 2026</em> as soon as they are announced.</li>
+                        <li><strong>UPSC & State PSCs:</strong> Deep-dive overviews of UPSC Civil Services, NDA, CDS, and State Public Service Commission exams including syllabus updates and previous year question papers.</li>
+                        <li><strong>Banking & Insurance:</strong> From IBPS PO and SBI Clerk to LIC Assistant, we cover all major banking jobs, ensuring you never miss an application deadline.</li>
+                        <li><strong>Police & Defence:</strong> Updates on state police constable and SI recruitments, alongside Agniveer and paramilitary forces (CRPF, BSF, CISF).</li>
+                        <li><strong>Teaching & Eligibility Exams:</strong> Instant notifications for CTET, State TETs, TGT, PGT, and Assistant Professor vacancies across state and central universities.</li>
+                    </ul>
+
+                    <h3 className="text-xl font-bold mt-8 mb-4">Check Your Latest Sarkari Result 2026 & Admit Cards</h3>
+                    <p>
+                        We understand the anxiety students face after taking an exam. Result Guru prides itself on delivering high-speed servers and direct links to check your <strong>Latest Sarkari Result 2026</strong> without server timeouts. Furthermore, we provide immediate alerts for admit card releases, ensuring you download your hall tickets well in advance of your exam date. Our dedicated sections for Answer Keys and Cut-Off marks help you accurately estimate your performance right after the exam concludes.
+                    </p>
+
+                    <h3 className="text-xl font-bold mt-8 mb-4">Government Schemes & Admissions</h3>
+                    <p>
+                        Beyond jobs, Result Guru is dedicated to empowering students through information on <strong>Central and State Government Schemes</strong> and Scholarships. We also track top university <strong>Admissions</strong> (CUET, JEE, NEET, state counseling) to guide students transitioning from schools to higher education. By combining job alerts with educational empowerment, we serve as an all-inclusive career mentor for Indian youth.
+                    </p>
+
+                    <p className="mt-8 text-foreground-muted text-sm font-medium">
+                        Bookmark <a href="/" className="text-brand-600 hover:underline">Result Guru</a> today and take your first definitive step towards a secure government career. Join millions of students who trust our platform for authentic, timely, and organized updates on the entire spectrum of Indian public sector employment.
+                    </p>
+                </div>
+            </section>
 
         </>
     )

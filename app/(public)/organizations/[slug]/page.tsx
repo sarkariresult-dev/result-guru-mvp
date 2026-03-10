@@ -9,7 +9,8 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { NewsletterForm } from '@/components/shared/NewsletterForm'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
-import { SITE } from '@/config/site'
+import { SITE, ROUTE_PREFIXES } from '@/config/site'
+import type { PostTypeKey } from '@/config/site'
 import { PAGINATION } from '@/config/constants'
 import { Building2, MapPin, Globe, ExternalLink, FileText, ChevronLeft, ChevronRight, Bell } from 'lucide-react'
 import type { PostCard } from '@/types/post.types'
@@ -37,8 +38,10 @@ function getPageNumbers(current: number, total: number): (number | '...')[] {
 
 /* ── Metadata ────────────────────────────────────────────────────── */
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
     const { slug } = await params
+    const { page: pageParam } = await searchParams
+    const page = Math.max(1, Number(pageParam ?? '1'))
     let org: Awaited<ReturnType<typeof getOrganizationBySlug>> = null
 
     try {
@@ -49,19 +52,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     if (!org) return {}
 
-    const title = org.meta_title ?? `${org.name}${org.short_name ? ` (${org.short_name})` : ''} — Jobs, Results & Updates 2026`
+    const title = page > 1 ? `${org.name} - Page ${page} — Sarkari Update` : (org.meta_title ?? `${org.name}${org.short_name ? ` (${org.short_name})` : ''} — Jobs, Results & Updates 2026`)
     const description = org.meta_description ?? `Find all the latest government jobs, exam results, admit cards, and notifications from ${org.name} (${org.short_name ?? slug}). Updated daily.`
     const url = `${SITE.url}/organizations/${slug}`
+    const canonical = page > 1 ? `${url}?page=${page}` : url
 
-    return {
+    // Fetch total count for prev/next calculation
+    const totalCount = await getPostsCount({ organization_id: org.id }).catch(() => 0)
+    const totalPages = Math.ceil(totalCount / PAGINATION.DEFAULT_LIMIT)
+
+    const baseMetadata: Metadata = {
         title,
         description,
-        alternates: { canonical: url },
+        alternates: {
+            canonical,
+        },
         ...(org.meta_robots && { robots: org.meta_robots }),
         openGraph: {
             title,
             description,
-            url,
+            url: canonical,
             siteName: SITE.name,
             locale: SITE.locale,
             type: 'website',
@@ -74,6 +84,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             description,
         },
     }
+
+    // Add prev/next alternates
+    if (page > 1 || page < totalPages) {
+        baseMetadata.alternates = {
+            ...baseMetadata.alternates,
+            ...(page > 1 && { prev: page === 2 ? url : `${url}?page=${page - 1}` }),
+            ...(page < totalPages && { next: `${url}?page=${page + 1}` }),
+        }
+    }
+
+    return baseMetadata
 }
 
 /* ── Page ─────────────────────────────────────────────────────────── */
@@ -134,7 +155,7 @@ export default async function OrganizationProfilePage({ params, searchParams }: 
                 itemListElement: posts.slice(0, 10).map((post, i) => ({
                     '@type': 'ListItem',
                     position: (page - 1) * limit + i + 1,
-                    url: `${SITE.url}/${post.type}/${post.slug}`,
+                    url: `${SITE.url}${ROUTE_PREFIXES[post.type as PostTypeKey] || `/${post.type}`}/${post.slug}`,
                     name: post.title,
                 })),
             },
@@ -142,8 +163,17 @@ export default async function OrganizationProfilePage({ params, searchParams }: 
     }
 
 
+    /* ── Build rel="prev" / rel="next" for paginated pages ──────── */
+    const basePath = `/organizations/${slug}`
+    const prevUrl = page > 1 ? (page === 2 ? basePath : `${basePath}?page=${page - 1}`) : null
+    const nextUrl = page < totalPages ? `${basePath}?page=${page + 1}` : null
+
     return (
         <>
+            {/* Pagination link relations for crawlers */}
+            {prevUrl && <link rel="prev" href={`${SITE.url}${prevUrl}`} />}
+            {nextUrl && <link rel="next" href={`${SITE.url}${nextUrl}`} />}
+
             <JsonLd data={[breadcrumbJsonLd, orgJsonLd, collectionJsonLd]} />
 
             <div className="container mx-auto max-w-7xl px-4 py-8">
@@ -260,8 +290,8 @@ export default async function OrganizationProfilePage({ params, searchParams }: 
                                                 href={`/organizations/${slug}?page=${p}`}
                                                 aria-current={p === page ? 'page' : undefined}
                                                 className={`inline-flex size-10 items-center justify-center rounded-lg text-sm font-medium transition-colors ${p === page
-                                                        ? 'bg-brand-600 text-white shadow-sm'
-                                                        : 'border border-border bg-surface text-foreground-muted hover:bg-background-subtle'
+                                                    ? 'bg-brand-600 text-white shadow-sm'
+                                                    : 'border border-border bg-surface text-foreground-muted hover:bg-background-subtle'
                                                     }`}
                                             >
                                                 {p}
