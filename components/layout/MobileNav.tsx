@@ -105,7 +105,7 @@ export function MobileNav({ open, onClose, initialUser }: MobileNavProps) {
                     </div>
                 </nav>
 
-                {/* Bottom — Auth aware */}
+                {/* Bottom - Auth aware */}
                 <div className="shrink-0 border-t border-border px-4 py-4">
                     {showProfile ? (
                         <div className="space-y-1">

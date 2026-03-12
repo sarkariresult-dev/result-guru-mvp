@@ -40,7 +40,7 @@ export const SITE = {
     defaultOgHeight: 630,
 
     // ── Favicon / theme ──────────────────────────────────────────────────
-    themeColor: '#1d4ed8',     // indigo-700 — matches brand
+    themeColor: '#1d4ed8',     // indigo-700 - matches brand
     backgroundColor: '#ffffff',
 
     // ── Google / Ads ─────────────────────────────────────────────────────
@@ -69,7 +69,7 @@ export function siteUrl(path: string): string {
     return `${SITE.url}${path.startsWith('/') ? path : `/${path}`}`
 }
 
-/** OG image URL — defaults to site default if no custom image */
+/** OG image URL - defaults to site default if no custom image */
 export function ogImageUrl(customImage?: string | null): string {
     return customImage ? siteUrl(customImage) : SITE.defaultOgImage
 }

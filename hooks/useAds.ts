@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * useAds — Result Guru
+ * useAds - Result Guru
  *
  * Fetches active ads for a given zone slug.
  * Respects targeting context (post type, state, device).
@@ -44,7 +44,7 @@ export function useAds(zoneSlug: string, ctx: AdRenderContext = {}) {
                 .eq('zone_slug', zoneSlug)
                 .order('weight', { ascending: false })
 
-            // Device targeting — filter out ads not meant for this device
+            // Device targeting - filter out ads not meant for this device
             if (ctx.device === 'mobile') {
                 q = q.eq('is_mobile', true)
             } else if (ctx.device === 'desktop') {

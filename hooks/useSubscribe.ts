@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * useSubscribe — Result Guru
+ * useSubscribe - Result Guru
  *
  * Newsletter subscription mutation with:
  *  - Loading / success / error state

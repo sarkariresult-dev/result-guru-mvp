@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * useSearch — Result Guru
+ * useSearch - Result Guru
  *
  * Full search experience hook:
  *  - Debounced query to avoid spamming Supabase

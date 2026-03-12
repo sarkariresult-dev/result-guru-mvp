@@ -5,7 +5,7 @@ import { Logo } from '@/components/shared/Logo'
 import { FileText, Bell, Bookmark, Shield } from 'lucide-react'
 
 /**
- * Auth layout — split-screen design.
+ * Auth layout - split-screen design.
  *
  * Left panel:  Brand showcase with gradient, value props, trust signals.
  * Right panel: Scrollable auth forms (login, register, forgot/reset password).
@@ -15,7 +15,7 @@ import { FileText, Bell, Bookmark, Shield } from 'lucide-react'
  * - Desktop (lg+): 50/50 split with fixed left + scrollable right
  */
 
-/* ── SEO — auth pages must never be indexed ────────────────── */
+/* ── SEO - auth pages must never be indexed ────────────────── */
 export const metadata: Metadata = {
     robots: { index: false, follow: false },
 }
@@ -50,7 +50,7 @@ export default function AuthLayout({
 }>) {
     return (
         <div className="flex min-h-screen flex-col bg-background lg:h-screen lg:flex-row lg:overflow-hidden">
-            {/* ─────────────── Left Panel — Branding (desktop only) ─────────────── */}
+            {/* ─────────────── Left Panel - Branding (desktop only) ─────────────── */}
             <div className="relative hidden w-1/2 shrink-0 overflow-hidden bg-linear-to-br from-brand-600 via-brand-700 to-brand-900 lg:flex lg:flex-col lg:justify-between">
                 {/* Decorative elements */}
                 <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -124,7 +124,7 @@ export default function AuthLayout({
                 </div>
             </div>
 
-            {/* ─────────────── Right Panel — Auth Forms ─────────────── */}
+            {/* ─────────────── Right Panel - Auth Forms ─────────────── */}
             <div className="flex w-full flex-1 flex-col lg:w-1/2 lg:overflow-y-auto">
                 {/* Mobile brand header */}
                 <div className="flex items-center justify-between border-b border-border px-5 py-4 lg:hidden">
@@ -150,7 +150,7 @@ export default function AuthLayout({
                     </div>
                 </div>
 
-                {/* Mobile footer — compliance links (hidden on desktop, shown in left panel there) */}
+                {/* Mobile footer - compliance links (hidden on desktop, shown in left panel there) */}
                 <div className="border-t border-border px-5 py-4 lg:hidden">
                     <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-foreground-subtle">
                         <Link

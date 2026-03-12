@@ -1,23 +1,24 @@
 -- ═══════════════════════════════════════════════════════════════
--- 020_storage.sql — Result Guru
+-- 020_storage.sql - Result Guru
 -- Supabase Storage buckets + RLS policies.
 --
 -- STORAGE STRATEGY
 -- ────────────────
 -- ✅ STORED HERE:
---    posts/       — featured images, notification PDFs, inline images
---    avatars/     — user profile pictures
---    organizations/ — org logos
---    site-assets/ — OG images, logos, favicon, PWA icons
+--    posts/       - featured images, notification PDFs, inline images
+--    avatars/     - user profile pictures
+--    organizations/ - org logos
+--    site-assets/ - OG images, logos, favicon, PWA icons
+--    stories/     - Web Story covers and slide assets
 --
 -- ❌ NOT STORED (zero storage cost):
---    Syllabus     — posts of type='syllabus' with syllabus_sections JSONB;
+--    Syllabus     - posts of type='syllabus' with syllabus_sections JSONB;
 --                   PDF generated client-side on demand (html2pdf.js).
---    Previous papers — stored as external URLs in previous_year_papers JSONB.
---    Answer keys  — external URL in answer_key_link column.
---    Admit cards  — external URL in admit_card_link column.
---    Results      — external URL in result_link column.
---    Org official link — organizations.official_url (external, never stored).
+--    Previous papers - stored as external URLs in previous_year_papers JSONB.
+--    Answer keys  - external URL in answer_key_link column.
+--    Admit cards  - external URL in admit_card_link column.
+--    Results      - external URL in result_link column.
+--    Org official link - organizations.official_url (external, never stored).
 -- ═══════════════════════════════════════════════════════════════
 
 -- ────────────────────────────────────────────────────────────
@@ -63,8 +64,16 @@ VALUES (
   ]
 ) ON CONFLICT (id) DO NOTHING;
 
+-- Web Stories: covers + slide background images
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+  'stories', 'stories', TRUE,
+  10485760, -- 10 MB
+  ARRAY['image/jpeg', 'image/png', 'image/webp']
+) ON CONFLICT (id) DO NOTHING;
+
 -- ────────────────────────────────────────────────────────────
--- 2. POLICIES — posts bucket
+-- 2. POLICIES - posts bucket
 -- ────────────────────────────────────────────────────────────
 
 CREATE POLICY "posts_public_read"
@@ -104,7 +113,7 @@ CREATE POLICY "posts_auth_delete"
   );
 
 -- ────────────────────────────────────────────────────────────
--- 3. POLICIES — avatars bucket
+-- 3. POLICIES - avatars bucket
 -- ────────────────────────────────────────────────────────────
 
 CREATE POLICY "avatars_public_read"
@@ -137,7 +146,7 @@ CREATE POLICY "avatars_auth_delete"
   );
 
 -- ────────────────────────────────────────────────────────────
--- 4. POLICIES — organizations bucket (admin-only write)
+-- 4. POLICIES - organizations bucket (admin-only write)
 -- ────────────────────────────────────────────────────────────
 
 CREATE POLICY "orgs_public_read"
@@ -157,7 +166,7 @@ CREATE POLICY "orgs_admin_delete"
   USING (bucket_id = 'organizations' AND fn_is_admin());
 
 -- ────────────────────────────────────────────────────────────
--- 5. POLICIES — site-assets bucket (admin-only write)
+-- 5. POLICIES - site-assets bucket (admin-only write)
 -- ────────────────────────────────────────────────────────────
 
 CREATE POLICY "site_assets_public_read"
@@ -177,7 +186,47 @@ CREATE POLICY "site_assets_admin_delete"
   USING (bucket_id = 'site-assets' AND fn_is_admin());
 
 -- ────────────────────────────────────────────────────────────
--- FOLDER CONVENTION (for reference — enforced by app layer)
+-- 6. POLICIES - stories bucket
+-- ────────────────────────────────────────────────────────────
+
+CREATE POLICY "stories_public_read"
+  ON storage.objects FOR SELECT
+  USING (bucket_id = 'stories');
+
+-- Authors upload into their own author-{id} folder: stories/author-{id}/...
+CREATE POLICY "stories_auth_upload"
+  ON storage.objects FOR INSERT
+  WITH CHECK (
+    bucket_id = 'stories'
+    AND auth.role() = 'authenticated'
+    AND (storage.foldername(name))[1] LIKE 'author-%'
+  );
+
+-- Authors update / delete their own files; admins update any
+CREATE POLICY "stories_auth_update"
+  ON storage.objects FOR UPDATE
+  USING (
+    bucket_id = 'stories'
+    AND auth.role() = 'authenticated'
+    AND (
+      (storage.foldername(name))[1] LIKE 'author-%'
+      OR fn_is_admin()
+    )
+  );
+
+CREATE POLICY "stories_auth_delete"
+  ON storage.objects FOR DELETE
+  USING (
+    bucket_id = 'stories'
+    AND auth.role() = 'authenticated'
+    AND (
+      (storage.foldername(name))[1] LIKE 'author-%'
+      OR fn_is_admin()
+    )
+  );
+
+-- ────────────────────────────────────────────────────────────
+-- FOLDER CONVENTION (for reference - enforced by app layer)
 -- ────────────────────────────────────────────────────────────
 --
 -- posts/{auth_user_id}/{post_slug}/featured.webp
@@ -195,6 +244,9 @@ CREATE POLICY "site_assets_admin_delete"
 -- site-assets/icons/apple-touch-icon.png
 -- site-assets/logos/logo-light.svg
 -- site-assets/logos/logo-dark.svg
+--
+-- stories/author-{id}/covers/{filename}.webp
+-- stories/author-{id}/slides/{filename}.webp
 --
 -- PUBLIC URL PATTERN (via storage_public_url() function):
 --   {SUPABASE_URL}/storage/v1/object/public/{bucket}/{path}

@@ -33,7 +33,7 @@ const STATUS_FILTERS = [
 
 // ── Helpers ────────────────────────────────────────────────
 function formatCurrency(amount: number | null): string {
-    if (amount == null) return '—'
+    if (amount == null) return '-'
     return new Intl.NumberFormat('en-IN', {
         style: 'currency',
         currency: 'INR',
@@ -42,7 +42,7 @@ function formatCurrency(amount: number | null): string {
 }
 
 function formatDate(iso: string | null): string {
-    if (!iso) return '—'
+    if (!iso) return '-'
     return new Date(iso).toLocaleDateString('en-IN', {
         day: '2-digit',
         month: 'short',
@@ -160,11 +160,10 @@ export default async function AdminAdsPage({ searchParams }: PageProps) {
                             <Link
                                 key={f.label}
                                 href={buildUrl('status', f.value)}
-                                className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-                                    isActive
+                                className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${isActive
                                         ? 'bg-primary text-white'
                                         : 'bg-background-subtle text-foreground-muted hover:bg-background-subtle/80'
-                                }`}
+                                    }`}
                             >
                                 {f.label}
                             </Link>

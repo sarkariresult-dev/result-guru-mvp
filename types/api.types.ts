@@ -1,5 +1,5 @@
 // =============================================================
-// api.types.ts — Result Guru
+// api.types.ts - Result Guru
 // API response envelopes, request/query types, route params,
 // and Supabase client helpers.
 // =============================================================
@@ -41,38 +41,38 @@ export interface CursorPaginatedResponse<T> {
 // NEXT.JS ROUTE PARAMS & SEARCH PARAMS
 // ─────────────────────────────────────────────────────────────
 
-/** /[type]/[slug] — post detail page */
+/** /[type]/[slug] - post detail page */
 export interface PostPageParams {
     params: Promise<{ type: string; slug: string }>
     searchParams: Promise<Record<string, string | string[] | undefined>>
 }
 
-/** /states/[state] — states filter page */
+/** /states/[state] - states filter page */
 export interface StatePageParams {
     params: Promise<{ state: string }>
 }
 
-/** /organizations/[organization] — organisation page */
+/** /organizations/[organization] - organisation page */
 export interface OrgPageParams {
     params: Promise<{ organization: string }>
 }
 
-/** /tags/[tag] — tag page */
+/** /tags/[tag] - tag page */
 export interface TagPageParams {
     params: Promise<{ tag: string }>
 }
 
-/** /categories/[category] — category page */
+/** /categories/[category] - category page */
 export interface CategoryPageParams {
     params: Promise<{ category: string }>
 }
 
-/** /states/[state]/[category] — state + category filter page */
+/** /states/[state]/[category] - state + category filter page */
 export interface StateCategoryPageParams {
     params: Promise<{ state: string; category: string }>
 }
 
-/** /search — search results */
+/** /search - search results */
 export interface SearchPageSearchParams {
     searchParams: Promise<{
         q?: string
@@ -177,12 +177,12 @@ export interface FacetEntry {
 // AD API
 // ─────────────────────────────────────────────────────────────
 
-/** GET /api/ads — fetch ads for a zone/context */
+/** GET /api/ads - fetch ads for a zone/context */
 export type GetAdsQuery = AdRenderContext
 
 export type GetAdsResponse = ApiResponse<ActiveAd[]>
 
-/** POST /api/ads/events — record impression or click */
+/** POST /api/ads/events - record impression or click */
 export interface RecordAdEventPayload {
     ad_id: string
     zone_id?: string
@@ -305,7 +305,7 @@ export interface DynamicMetadataContext {
 // GENERIC UTILITY TYPES
 // ─────────────────────────────────────────────────────────────
 
-/** Make all nested properties optional — useful for patch payloads */
+/** Make all nested properties optional - useful for patch payloads */
 export type DeepPartial<T> = {
     [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P]
 }

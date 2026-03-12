@@ -1,5 +1,5 @@
 /**
- * Auth route loading — centered spinner matching the auth layout split.
+ * Auth route loading - centered spinner matching the auth layout split.
  */
 export default function AuthLoading() {
     return (

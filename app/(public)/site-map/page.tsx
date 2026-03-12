@@ -7,7 +7,7 @@ import { MAIN_NAV, SITE, ROUTE_PREFIXES } from '@/config/site'
 import { FileText, Building2, MapPin, Search, Scale, Bookmark, ArrowRight } from 'lucide-react'
 
 export const metadata = buildPageMetadata({
-    title: 'Sitemap — Complete Page Directory',
+    title: 'Sitemap - Complete Page Directory',
     description: `Navigate through ${SITE.name} quickly using our complete HTML sitemap. Find all pages including jobs, results, admit cards, states, organizations, and legal pages.`,
     path: '/site-map',
 })

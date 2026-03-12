@@ -11,7 +11,7 @@ import { GoogleIcon } from '@/components/shared/GoogleIcon'
 import { SITE } from '@/config/site'
 
 /**
- * Register form — email/password sign-up + Google OAuth.
+ * Register form - email/password sign-up + Google OAuth.
  *
  * Features:
  * - Client-side Zod validation (registerSchema) with per-field errors
@@ -114,7 +114,7 @@ export default function RegisterForm() {
 
     const isLoading = isPending || isGooglePending
 
-    /* ── Success state — email verification ── */
+    /* ── Success state - email verification ── */
     if (success) {
         return (
             <div className="rounded-2xl border border-border bg-surface p-6 text-center shadow-lg sm:p-8">

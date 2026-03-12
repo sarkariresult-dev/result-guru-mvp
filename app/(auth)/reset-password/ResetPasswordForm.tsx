@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 
 /**
- * Reset password form — set a new password after clicking the reset link.
+ * Reset password form - set a new password after clicking the reset link.
  *
  * Supabase flow:
  * 1. User clicks reset link in email → /callback?code=...&type=recovery

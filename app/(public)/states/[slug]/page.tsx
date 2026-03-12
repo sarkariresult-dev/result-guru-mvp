@@ -38,7 +38,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
     if (!stateRecord) return {}
 
-    const title = page > 1 ? `${stateRecord.name} - Page ${page} — Sarkari Updates 2026` : (stateRecord.meta_title ?? `${stateRecord.name} — Latest Govt Jobs, Results & Updates 2026`)
+    const title = page > 1 ? `${stateRecord.name} - Page ${page} - Sarkari Updates 2026` : (stateRecord.meta_title ?? `${stateRecord.name} - Latest Govt Jobs, Results & Updates 2026`)
     const description = stateRecord.meta_description ?? `Find all the latest government jobs, exam results, admit cards, and recruitment notifications in ${stateRecord.name}. Updated daily with official information.`
     const url = `${SITE.url}/states/${slug}`
     const canonical = page > 1 ? `${url}?page=${page}` : url
@@ -251,7 +251,7 @@ export default async function StateProfilePage({ params, searchParams }: Props) 
                     </div>
                 )}
 
-                {/* Pagination — numbered pages */}
+                {/* Pagination - numbered pages */}
                 {totalPages > 1 && !fetchError && (
                     <nav className="mt-12 flex flex-wrap items-center justify-center gap-1.5" aria-label="Pagination">
                         {page > 1 ? (

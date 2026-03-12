@@ -1,20 +1,20 @@
 'use client'
 
 /**
- * usePageView — Result Guru
+ * usePageView - Result Guru
  *
  * Fires a page view event once per post-detail page mount.
  * - Increments post_views.view_count in Supabase (via API route)
  * - Respects bot/crawler detection
  * - Deduplicated per session via sessionStorage
  *
- * Usage — call once at the top of a post page component:
+ * Usage - call once at the top of a post page component:
  *   usePageView(post.id)
  */
 
 import { useEffect, useRef } from 'react'
 
-// Bot UA patterns — skip tracking for known crawlers
+// Bot UA patterns - skip tracking for known crawlers
 const BOT_PATTERN = /bot|crawl|spider|slurp|mediapartners|adsbot|lighthouse|prerender|headless/i
 
 function isBot(): boolean {
@@ -45,7 +45,7 @@ export function usePageView(postId: string | undefined) {
             sessionStorage.setItem(sessionKey, '1')
         }
 
-        // Fire and forget — don't block render
+        // Fire and forget - don't block render
         const payload = {
             post_id: postId,
             referrer: typeof document !== 'undefined' ? document.referrer : '',
@@ -59,7 +59,7 @@ export function usePageView(postId: string | undefined) {
             // keepalive ensures the request completes even if the user navigates away
             keepalive: true,
         }).catch(() => {
-            // Silently ignore network errors — analytics must never break the page
+            // Silently ignore network errors - analytics must never break the page
         })
     }, [postId])
 }

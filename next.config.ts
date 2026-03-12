@@ -1,10 +1,10 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /* ── Turbopack (stable — default bundler in Next 16) ────── */
+  /* ── Turbopack (stable - default bundler in Next 16) ────── */
   turbopack: {},
 
-  /* ── Cache Components (Next 16 — replaces experimental.ppr) */
+  /* ── Cache Components (Next 16 - replaces experimental.ppr) */
   cacheComponents: true,
 
   /* ── Performance ────────────────────────────────────────── */
@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: '2mb',
     },
-    /* Optimize package imports — tree-shake heavy packages */
+    /* Optimize package imports - tree-shake heavy packages */
     optimizePackageImports: [
       'lucide-react',
       'date-fns',
@@ -48,6 +48,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: '**.supabase.co' },
       { protocol: 'https', hostname: '**.supabase.in' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
     ],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     /* Next 16 removed 16 from default imageSizes */
@@ -56,7 +57,7 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 30,
   },
 
-  /* ── Logging (dev only — avoid production I/O overhead) ──── */
+  /* ── Logging (dev only - avoid production I/O overhead) ──── */
   ...(process.env.NODE_ENV === 'development' && {
     logging: {
       fetches: {
@@ -96,7 +97,7 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      /* Static assets — aggressive cache */
+      /* Static assets - aggressive cache */
       {
         source: '/images/:path*',
         headers: [
@@ -106,7 +107,7 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      /* Fonts — long cache */
+      /* Fonts - long cache */
       {
         source: '/fonts/:path*',
         headers: [
@@ -116,7 +117,7 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      /* RSS Feed — Edge cache with background revalidation */
+      /* RSS Feed - Edge cache with background revalidation */
       {
         source: '/feed.xml',
         headers: [
@@ -133,6 +134,9 @@ const nextConfig: NextConfig = {
   /* ── Redirects (plural to singular + legacy) ────────────────── */
   async redirects() {
     return [
+      /* Permanent redirect for /index.php to / (Google Search Console fix) */
+      { source: '/index.php', destination: '/', statusCode: 301 },
+
       /* Plural → Singular mapping */
       { source: '/jobs', destination: '/job', permanent: true },
       { source: '/results', destination: '/result', permanent: true },

@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- 012_affiliate.sql — Result Guru
+-- 012_affiliate.sql - Result Guru
 -- Affiliate product catalogue with auto-matching rules.
 -- ═══════════════════════════════════════════════════════════════
 

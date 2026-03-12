@@ -10,9 +10,19 @@ import { SITE, postUrl, ogImageUrl } from '@/config/site'
 export function buildMetadata(post: PostDetail): Metadata {
     const title = post.meta_title || post.title
     const description =
-        post.meta_description || post.excerpt || `${post.title} — ${SITE.name}`
+        post.meta_description || post.excerpt || `${post.title} - ${SITE.name}`
     const url = `${SITE.url}${postUrl(post.type as any, post.slug)}`
-    const ogImage = ogImageUrl(post.og_image ?? post.featured_image)
+    // Phase 2: Dynamic OG image fallback - when no custom OG or featured image,
+    // generate a branded preview using /api/og with post context
+    const hasCustomImage = !!(post.og_image || post.featured_image)
+    const ogImage = hasCustomImage
+        ? ogImageUrl(post.og_image ?? post.featured_image)
+        : `${SITE.url}/api/og?${new URLSearchParams({
+            title: post.title,
+            type: post.type,
+            ...(post.org_name && { org: post.org_name }),
+            ...(post.state_name && { state: post.state_name }),
+        }).toString()}`
 
     /* ── Hreflang alternate links ─────────────────────────────── */
     const hreflang = (post.hreflang ?? []) as HreflangEntry[]
@@ -57,6 +67,8 @@ export function buildMetadata(post: PostDetail): Metadata {
             siteName: SITE.name,
             locale: SITE.locale,
             type: 'article',
+            // COUNCIL P1 (Area 2): article:author for E-E-A-T authority signals
+            authors: [`${SITE.name} Editorial Team`],
             publishedTime: post.published_at ?? undefined,
             modifiedTime: post.content_updated_at ?? post.updated_at ?? undefined,
             ...(ogSection && { section: ogSection }),

@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- 004_taxonomy.sql — Result Guru
+-- 004_taxonomy.sql - Result Guru
 -- Reference / lookup tables that classify posts.
 -- Seed data is in 005_seed_taxonomy.sql.
 -- ═══════════════════════════════════════════════════════════════
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS organizations (
   name             TEXT        NOT NULL,
   short_name       TEXT,
   state_slug       TEXT        REFERENCES states(slug) ON DELETE SET NULL,
-  official_url     TEXT,          -- Used as post's official link — no need to store on post
+  official_url     TEXT,          -- Used as post's official link - no need to store on post
   logo_url         TEXT,
   description      TEXT,
   is_active        BOOLEAN     NOT NULL DEFAULT TRUE,
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS organizations (
 );
 COMMENT ON TABLE organizations IS
   'Hiring / issuing organizations (UPSC, SSC, RRBs, State PSCs, banks …).
-   official_url surfaces on post pages via JOIN — never duplicated on posts.';
+   official_url surfaces on post pages via JOIN - never duplicated on posts.';
 
 -- ── Post categories (hierarchical) ───────────────────────────
 CREATE TABLE IF NOT EXISTS categories (

@@ -1,6 +1,6 @@
 // =============================================================
-// advertising.types.ts — Result Guru
-// Mirrors 011_advertising.sql — zones, campaigns, ads, events.
+// advertising.types.ts - Result Guru
+// Mirrors 011_advertising.sql - zones, campaigns, ads, events.
 // =============================================================
 
 import type {
@@ -103,7 +103,7 @@ export interface Ad {
     // Counters
     impression_count: number
     click_count: number
-    ctr: number          // GENERATED — click_count / impression_count
+    ctr: number          // GENERATED - click_count / impression_count
     // Timestamps
     created_at: string
     updated_at: string

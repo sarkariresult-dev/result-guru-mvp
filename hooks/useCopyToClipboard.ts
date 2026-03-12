@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * useCopyToClipboard — Result Guru
+ * useCopyToClipboard - Result Guru
  *
  * Copies text to clipboard with success/error feedback.
  * Resets the `copied` flag after `resetMs` milliseconds.

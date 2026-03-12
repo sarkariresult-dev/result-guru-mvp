@@ -77,11 +77,10 @@ export default async function AdminPostsPage({ searchParams }: {
                             <Link
                                 key={f.value}
                                 href={buildUrl({ status: f.value || undefined, page: '1' })}
-                                className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
-                                    isActive
+                                className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${isActive
                                         ? 'border-brand-600 bg-brand-50 text-brand-700 dark:bg-brand-900/20 dark:text-brand-300'
                                         : 'border-border text-foreground-muted hover:border-brand-300 hover:text-foreground'
-                                }`}
+                                    }`}
                             >
                                 {f.label}
                             </Link>
@@ -306,8 +305,8 @@ function SeoScore({ score }: { score: number }) {
         score >= 80
             ? 'text-green-700 bg-green-100 dark:bg-green-900/30 dark:text-green-400'
             : score >= 50
-              ? 'text-yellow-700 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-400'
-              : 'text-red-700 bg-red-100 dark:bg-red-900/30 dark:text-red-400'
+                ? 'text-yellow-700 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-400'
+                : 'text-red-700 bg-red-100 dark:bg-red-900/30 dark:text-red-400'
     return (
         <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${color}`}>
             {score}
@@ -321,7 +320,7 @@ import type { ApplicationStatus } from '@/types/enums'
 
 function AppStatusBadge({ status }: { status: string }) {
     const conf = APPLICATION_STATUS_CONFIG[status as ApplicationStatus]
-    if (!conf || status === 'na') return <span className="text-xs text-foreground-subtle">—</span>
+    if (!conf || status === 'na') return <span className="text-xs text-foreground-subtle">-</span>
     return (
         <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${conf.color} ${conf.textColor}`}>
             {conf.pulse && <span className={`inline-block size-1.5 rounded-full ${conf.dotColor} animate-pulse`} />}

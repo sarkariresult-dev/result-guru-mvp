@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- 017_triggers.sql — Result Guru
+-- 017_triggers.sql - Result Guru
 -- All trigger functions and their attachments.
 -- ═══════════════════════════════════════════════════════════════
 
@@ -47,7 +47,7 @@ EXCEPTION WHEN duplicate_object THEN NULL; END$$;
 -- 2. Maintain search_vector + title_lower
 -- ────────────────────────────────────────────────────────────
 -- Fires when any of the indexed text columns change.
--- Uses 'simple' tsconfig — works well for mixed Hindi/English content.
+-- Uses 'simple' tsconfig - works well for mixed Hindi/English content.
 
 CREATE OR REPLACE FUNCTION fn_update_search_fields()
 RETURNS TRIGGER LANGUAGE plpgsql

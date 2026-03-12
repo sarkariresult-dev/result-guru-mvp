@@ -1,12 +1,12 @@
 -- ═══════════════════════════════════════════════════════════════
--- 018_views.sql — Result Guru
--- All read-optimised views. Every view has NO ORDER BY —
+-- 018_views.sql - Result Guru
+-- All read-optimised views. Every view has NO ORDER BY -
 -- callers add ORDER BY + LIMIT to keep query plans flexible.
 -- ═══════════════════════════════════════════════════════════════
 
 -- ── 1. Published posts (main public listing) ──────────────────
 -- Joins state + organization so the API layer needs no extra joins.
--- official_url comes from here — it was removed from posts table.
+-- official_url comes from here - it was removed from posts table.
 DROP VIEW IF EXISTS v_published_posts CASCADE;
 CREATE VIEW v_published_posts AS
 SELECT
@@ -63,7 +63,7 @@ WHERE p.status = 'published';
 
 COMMENT ON VIEW v_published_posts IS
   'All published posts with denormalised state / org / category fields.
-   official_url surfaced from organizations.official_url — NOT stored on posts.
+   official_url surfaced from organizations.official_url - NOT stored on posts.
    Add ORDER BY + LIMIT in every query; no ORDER BY here.';
 
 -- ── 2. Active ads (ad server view) ───────────────────────────
@@ -202,7 +202,7 @@ JOIN  redirects r2
 WHERE r1.is_active = TRUE;
 
 COMMENT ON VIEW v_redirect_chains IS
-  'Two-hop redirect chains. Every row is a chain — fix by pointing original_from to final_destination directly.';
+  'Two-hop redirect chains. Every row is a chain - fix by pointing original_from to final_destination directly.';
 
 -- ── 7. Posts needing attention (CMS dashboard widget) ────────
 DROP VIEW IF EXISTS v_posts_attention CASCADE;

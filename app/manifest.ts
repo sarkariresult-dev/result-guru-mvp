@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 import { SITE } from '@/config/site'
 
 /**
- * Web App Manifest — enables PWA "Add to Home Screen" and
+ * Web App Manifest - enables PWA "Add to Home Screen" and
  * provides metadata for browsers, search engines, and app stores.
  *
  * @see https://nextjs.org/docs/app/api-reference/file-conventions/metadata/manifest

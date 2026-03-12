@@ -1,5 +1,5 @@
 // =============================================================
-// newsletter.types.ts — Result Guru
+// newsletter.types.ts - Result Guru
 // Mirrors 014_newsletter.sql.
 // =============================================================
 

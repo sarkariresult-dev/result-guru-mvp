@@ -1,6 +1,6 @@
 // =============================================================
-// seo.types.ts — Result Guru
-// Mirrors 013_seo.sql — settings, redirects, search analytics,
+// seo.types.ts - Result Guru
+// Mirrors 013_seo.sql - settings, redirects, search analytics,
 // sitemap config.
 // =============================================================
 
@@ -44,7 +44,7 @@ export interface Redirect {
     type: RedirectType
     hits: number
     is_active: boolean
-    /** TRUE when to_path itself has a redirect (chain) — set by trigger */
+    /** TRUE when to_path itself has a redirect (chain) - set by trigger */
     is_chained: boolean
     note: string | null
     created_at: string

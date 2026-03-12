@@ -5,10 +5,12 @@ import { revalidatePath, revalidateTag } from 'next/cache'
 import { postSchema } from '@/lib/validations'
 import { z } from 'zod'
 import type { PostType, PostStatus, ApplicationStatus } from '@/types/enums'
+import { pushToGoogleIndexingApi } from '@/lib/seo/indexing'
+import { SITE, ROUTE_PREFIXES, type PostTypeKey } from '@/config/site'
 
 /**
  * Columns marked NOT NULL in 007_posts.sql with their DB DEFAULT values.
- * When inserting/updating, we MUST NOT send `null` for these columns —
+ * When inserting/updating, we MUST NOT send `null` for these columns -
  * either send a real value or omit the key so the DB default applies.
  */
 const NOT_NULL_DEFAULTS: Record<string, unknown> = {
@@ -31,7 +33,7 @@ const NOT_NULL_DEFAULTS: Record<string, unknown> = {
     share_count: 0,
 }
 
-// ── Types — mirrors 007_posts.sql columns exactly ──────────
+// ── Types - mirrors 007_posts.sql columns exactly ──────────
 interface PostPayload {
     // Identity
     type: PostType
@@ -97,7 +99,7 @@ interface PostPayload {
     expires_at?: string | null
     last_reviewed_at?: string | null
 
-    // Junction table helpers (not DB columns — handled separately)
+    // Junction table helpers (not DB columns - handled separately)
     tag_ids?: string[]
 }
 
@@ -157,7 +159,7 @@ export async function createPost(data: PostPayload) {
         faq: data.faq ?? [],
         related_post_ids: data.related_post_ids ?? null,
 
-        // SEO — NOT NULL columns use DB defaults
+        // SEO - NOT NULL columns use DB defaults
         meta_title: data.meta_title ?? null,
         meta_description: data.meta_description ?? null,
         meta_keywords: data.meta_keywords ?? null,
@@ -169,7 +171,7 @@ export async function createPost(data: PostPayload) {
         structured_data_type: data.structured_data_type ?? 'auto',
         schema_json: data.schema_json ?? null,
 
-        // Open Graph / Twitter — NOT NULL columns use DB defaults
+        // Open Graph / Twitter - NOT NULL columns use DB defaults
         og_title: data.og_title ?? null,
         og_description: data.og_description ?? null,
         og_image: data.og_image ?? null,
@@ -196,7 +198,7 @@ export async function createPost(data: PostPayload) {
         return { error: error.message }
     }
 
-    // Handle tag associations if provided — with error checking
+    // Handle tag associations if provided - with error checking
     if (data.tag_ids?.length && inserted?.id) {
         const tagRows = data.tag_ids.map((tag_id) => ({
             post_id: inserted.id,
@@ -212,7 +214,7 @@ export async function createPost(data: PostPayload) {
 
     revalidatePath('/author/posts')
     revalidatePath('/')
-    revalidateTag('posts', 'default')
+    revalidateTag('posts', undefined as any)
     return { success: true, id: inserted?.id, slug: inserted?.slug }
 }
 
@@ -259,7 +261,7 @@ export async function updatePost(id: string, data: Partial<PostPayload>) {
         return { error: error.message }
     }
 
-    // Handle tag associations if provided — atomic delete + insert with error handling
+    // Handle tag associations if provided - atomic delete + insert with error handling
     if (tag_ids !== undefined) {
         // Delete existing tags first
         const { error: deleteError } = await supabase.from('post_tags').delete().eq('post_id', id)
@@ -278,17 +280,44 @@ export async function updatePost(id: string, data: Partial<PostPayload>) {
 
     revalidatePath('/author/posts')
     revalidatePath('/')
-    revalidateTag('posts', 'default')
+    revalidateTag('posts', undefined as any)
+    // COUNCIL P0 (Area 9): Revalidate sitemap on published post updates
+    if (dbFields.status === 'published' || updateRow.status === undefined) {
+        revalidateTag('sitemap', undefined as any)
+    }
     return { success: true }
 }
 
 // ── Publish Post ───────────────────────────────────────────
+// COUNCIL P0: publishPost now triggers Indexing API + sitemap revalidation
+// COUNCIL P1 (Area 10): Pre-publish validation for content quality
 export async function publishPost(id: string) {
     if (!z.string().uuid().safeParse(id).success) {
         return { error: 'Invalid post ID' }
     }
 
     const supabase = await createServerClient()
+
+    // DANIEL: Fetch post first for URL building + pre-publish validation
+    const { data: existingPost } = await supabase
+        .from('posts')
+        .select('slug, type, word_count, featured_image, seo_score')
+        .eq('id', id)
+        .single()
+
+    if (!existingPost) {
+        return { error: 'Post not found' }
+    }
+
+    // COUNCIL P1 (Area 10): Pre-publish quality warnings
+    // MARCUS: Don't block - return warnings so CMS can display them
+    const warnings: string[] = []
+    if ((existingPost.word_count ?? 0) < 300) {
+        warnings.push('Thin content: word count below 300')
+    }
+    if (!existingPost.featured_image) {
+        warnings.push('Missing featured image - reduces Discover visibility')
+    }
 
     const { error } = await supabase
         .from('posts')
@@ -302,8 +331,21 @@ export async function publishPost(id: string) {
     revalidatePath('/author/posts')
     revalidatePath('/admin/posts')
     revalidatePath('/')
-    revalidateTag('posts', 'default')
-    return { success: true }
+    revalidateTag('posts', undefined as any)
+    // COUNCIL P0 (Area 9): Revalidate sitemap immediately after publish
+    revalidateTag('sitemap', undefined as any)
+
+    // COUNCIL P0 (Area 9): Fire-and-forget Indexing API call
+    // PRIYA: Non-blocking - don't await, don't fail the publish on API error
+    const typeKey = existingPost.type as PostTypeKey
+    if (typeKey && ROUTE_PREFIXES[typeKey] && existingPost.slug) {
+        const postUrl = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/${existingPost.slug}`
+        pushToGoogleIndexingApi(postUrl, 'URL_UPDATED').catch(() => {
+            // Silently swallow - IndexingApi logs its own errors
+        })
+    }
+
+    return { success: true, warnings: warnings.length > 0 ? warnings : undefined }
 }
 
 // ── Delete Post ────────────────────────────────────────────
@@ -313,6 +355,13 @@ export async function deletePost(id: string) {
     }
 
     const supabase = await createServerClient()
+
+    // DANIEL: Fetch post before deletion for URL_DELETED notification
+    const { data: existingPost } = await supabase
+        .from('posts')
+        .select('slug, type, status')
+        .eq('id', id)
+        .single()
 
     const { error } = await supabase
         .from('posts')
@@ -326,6 +375,18 @@ export async function deletePost(id: string) {
     revalidatePath('/author/posts')
     revalidatePath('/admin/posts')
     revalidatePath('/')
-    revalidateTag('posts', 'default')
+    revalidateTag('posts', undefined as any)
+    // COUNCIL P0 (Area 9): Revalidate sitemap on deletion
+    revalidateTag('sitemap', undefined as any)
+
+    // COUNCIL P0 (Area 9): Notify Google to deindex deleted published posts
+    if (existingPost?.status === 'published' && existingPost.slug && existingPost.type) {
+        const typeKey = existingPost.type as PostTypeKey
+        if (ROUTE_PREFIXES[typeKey]) {
+            const postUrl = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/${existingPost.slug}`
+            pushToGoogleIndexingApi(postUrl, 'URL_DELETED').catch(() => { })
+        }
+    }
+
     return { success: true }
 }

@@ -3,7 +3,7 @@ import { createServerClient } from '@supabase/ssr'
 import { env } from '@/config/env'
 
 /**
- * Auth callback handler — /callback
+ * Auth callback handler - /callback
  *
  * Supabase redirects here after:
  * 1. Email verification (sign-up confirmation)
@@ -85,6 +85,6 @@ export async function GET(request: NextRequest) {
         return response
     }
 
-    /* ── No code present — redirect to login ── */
+    /* ── No code present - redirect to login ── */
     return NextResponse.redirect(new URL('/login', requestUrl.origin))
 }

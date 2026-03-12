@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 }
 
 /**
- * Register page — server component wrapper.
+ * Register page - server component wrapper.
  * Renders the client-side RegisterForm.
  */
 export default function RegisterPage() {

@@ -1,7 +1,7 @@
 import { Skeleton } from '@/components/ui/Skeleton'
 
 /**
- * Dashboard route loading — skeleton that mirrors the dashboard shell content area.
+ * Dashboard route loading - skeleton that mirrors the dashboard shell content area.
  */
 export default function DashboardLoading() {
     return (

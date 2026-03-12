@@ -11,6 +11,7 @@ import {
     ShoppingBag,
     Image,
     Search,
+    SearchCheck,
     Settings,
     BarChart3,
     Bell,
@@ -25,6 +26,7 @@ import {
     ArrowRightLeft,
     Mail,
     ChevronDown,
+    Layers,
     type LucideIcon,
 } from 'lucide-react'
 import { useState, useCallback, useEffect, useMemo } from 'react'
@@ -39,6 +41,7 @@ const iconMap: Record<string, LucideIcon> = {
     ShoppingBag,
     Image,
     Search,
+    SearchCheck,
     Settings,
     BarChart3,
     Bell,
@@ -52,6 +55,7 @@ const iconMap: Record<string, LucideIcon> = {
     Globe,
     ArrowRightLeft,
     Mail,
+    Layers,
 }
 
 /* ── Types ───────────────────────────────────────────────────── */
@@ -85,8 +89,10 @@ export const adminNavGroups: NavGroup[] = [
         items: [
             { title: 'Dashboard', href: '/admin', icon: 'LayoutDashboard' },
             { title: 'Posts', href: '/admin/posts', icon: 'FileText' },
+            { title: 'Stories', href: '/admin/stories', icon: 'Layers' },
             { title: 'Media', href: '/admin/media', icon: 'Image' },
         ],
+        defaultCollapsed: false,
     },
     {
         label: 'Taxonomy',
@@ -96,7 +102,7 @@ export const adminNavGroups: NavGroup[] = [
             { title: 'Organizations', href: '/admin/organizations', icon: 'Building2', disabled: true },
             { title: 'States', href: '/admin/states', icon: 'MapPin', disabled: true },
         ],
-        defaultCollapsed: true,
+        defaultCollapsed: false,
     },
     {
         label: 'Monetization',
@@ -104,15 +110,18 @@ export const adminNavGroups: NavGroup[] = [
             { title: 'Advertising', href: '/admin/ads', icon: 'Megaphone' },
             { title: 'Affiliates', href: '/admin/affiliates', icon: 'ShoppingBag', disabled: true },
         ],
+        defaultCollapsed: false,
     },
     {
         label: 'Growth',
         items: [
             { title: 'Subscribers', href: '/admin/subscribers', icon: 'Mail' },
             { title: 'Analytics', href: '/admin/analytics', icon: 'BarChart3', disabled: true },
-            { title: 'SEO', href: '/admin/seo', icon: 'Search', disabled: true },
-            { title: 'Redirects', href: '/admin/redirects', icon: 'ArrowRightLeft', disabled: true },
+            { title: 'SEO', href: '/admin/seo', icon: 'Search' },
+            { title: 'Redirects', href: '/admin/redirects', icon: 'ArrowRightLeft' },
+            { title: 'Search Analytics', href: '/admin/search-analytics', icon: 'SearchCheck' },
         ],
+        defaultCollapsed: false,
     },
     {
         label: 'System',
@@ -121,6 +130,7 @@ export const adminNavGroups: NavGroup[] = [
             { title: 'Automation', href: '/admin/automation', icon: 'Bot', disabled: true },
             { title: 'Settings', href: '/admin/settings', icon: 'Settings' },
         ],
+        defaultCollapsed: false,
     },
 ]
 
@@ -135,14 +145,17 @@ export const authorNavGroups: NavGroup[] = [
         items: [
             { title: 'Dashboard', href: '/author', icon: 'LayoutDashboard' },
             { title: 'My Posts', href: '/author/posts', icon: 'FileText' },
+            { title: 'Stories', href: '/author/stories', icon: 'Layers' },
             { title: 'Media', href: '/author/media', icon: 'Image', disabled: true },
         ],
+        defaultCollapsed: false,
     },
     {
         label: 'Account',
         items: [
             { title: 'Profile', href: '/author/profile', icon: 'User' },
         ],
+        defaultCollapsed: false,
     },
 ]
 
@@ -158,12 +171,14 @@ export const userNavGroups: NavGroup[] = [
             { title: 'Saved Posts', href: '/user/saved', icon: 'Bookmark' },
             { title: 'Job Alerts', href: '/user/alerts', icon: 'Bell' },
         ],
+        defaultCollapsed: false,
     },
     {
         label: 'Account',
         items: [
             { title: 'Profile', href: '/user/profile', icon: 'User' },
         ],
+        defaultCollapsed: false,
     },
 ]
 
@@ -203,7 +218,7 @@ function NavLink({
         return (
             <span
                 className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-foreground-subtle/50"
-                title={`${item.title} — coming soon`}
+                title={`${item.title} - coming soon`}
             >
                 <Icon className="size-4 shrink-0" />
                 <span>{item.title}</span>
@@ -302,7 +317,7 @@ function CollapsibleGroup({
     )
 }
 
-/* ── Sidebar (flat mode — for simple nav) ─────────────────────── */
+/* ── Sidebar (flat mode - for simple nav) ─────────────────────── */
 
 interface SidebarProps {
     items: NavItem[]
@@ -320,7 +335,7 @@ export function Sidebar({ items, className, onNavigate }: SidebarProps) {
     )
 }
 
-/* ── GroupedSidebar (for grouped nav — shows collapsible sections) ── */
+/* ── GroupedSidebar (for grouped nav - shows collapsible sections) ── */
 
 interface GroupedSidebarProps {
     groups: NavGroup[]

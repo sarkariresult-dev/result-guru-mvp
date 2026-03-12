@@ -77,7 +77,7 @@ export const postSchema = z.object({
     excerpt: z.string().max(500).nullable().optional(),
     content: z.string().nullable().optional(),
 
-    // Taxonomy — matches DB columns
+    // Taxonomy - matches DB columns
     state_slug: z.string().nullable().optional(),
     organization_id: z.string().uuid().nullable().optional(),
     qualification: z.array(z.string()).nullable().optional(),       // TEXT[] of qualification slugs
@@ -95,12 +95,12 @@ export const postSchema = z.object({
     result_link: z.string().nullable().optional(),
     answer_key_link: z.string().nullable().optional(),
 
-    // Structured content (JSONB) — DB columns are NOT NULL with defaults
+    // Structured content (JSONB) - DB columns are NOT NULL with defaults
 
     faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]),
     related_post_ids: z.array(z.string().uuid()).nullable().optional(),
 
-    // SEO — NOT NULL columns have proper defaults
+    // SEO - NOT NULL columns have proper defaults
     meta_title: z.string().max(70).nullable().optional(),
     meta_description: z.string().max(165).nullable().optional(),
     meta_keywords: z.array(z.string()).nullable().optional(),
@@ -112,7 +112,7 @@ export const postSchema = z.object({
     structured_data_type: z.string().default('auto'),
     schema_json: z.record(z.string(), z.unknown()).nullable().optional(),
 
-    // Open Graph / Twitter — NOT NULL columns have proper defaults
+    // Open Graph / Twitter - NOT NULL columns have proper defaults
     og_title: z.string().max(70).nullable().optional(),
     og_description: z.string().max(200).nullable().optional(),
     og_image: z.string().nullable().optional(),
@@ -122,7 +122,7 @@ export const postSchema = z.object({
     twitter_description: z.string().max(200).nullable().optional(),
     twitter_card_type: z.enum(['summary', 'summary_large_image', 'app', 'player']).default('summary_large_image'),
 
-    // i18n / Advanced SEO — NOT NULL columns
+    // i18n / Advanced SEO - NOT NULL columns
     hreflang: z.array(z.unknown()).default([]),
     breadcrumb_override: z.array(z.unknown()).default([]),
 

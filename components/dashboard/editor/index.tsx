@@ -107,7 +107,7 @@ export function TiptapEditor({
                     'prose-td:border prose-td:border-border prose-td:p-2 ' +
                     'prose-th:border prose-th:border-border prose-th:p-2',
             },
-            // Clean up pasted content — strip Word/Google Docs junk
+            // Clean up pasted content - strip Word/Google Docs junk
             handlePaste(view, event) {
                 const html = event.clipboardData?.getData('text/html')
                 if (html) {

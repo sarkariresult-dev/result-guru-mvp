@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * useDebounce — Result Guru
+ * useDebounce - Result Guru
  *
  * Delays updating the returned value until `delay` ms have passed
  * since the last change. Ideal for search inputs and auto-save.

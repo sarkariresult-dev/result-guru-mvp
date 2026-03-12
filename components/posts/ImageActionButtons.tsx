@@ -50,7 +50,7 @@ export function ImageActionButtons({ postId, slug, title, type, url }: Props) {
     }, [shareOpen])
 
     const encodedUrl = encodeURIComponent(url)
-    const encodedTitle = encodeURIComponent(`${title} — ${SITE.name}`)
+    const encodedTitle = encodeURIComponent(`${title} - ${SITE.name}`)
     const whatsappUrl = `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`
     const telegramUrl = `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`

@@ -5,7 +5,7 @@ import { generalLimiter, getClientIp, rateLimitResponse } from '@/lib/rate-limit
 /**
  * POST /api/ads/track
  * Records an ad impression or click event into ad_events.
- * Legacy alias for /api/ads/event — both are identical.
+ * Legacy alias for /api/ads/event - both are identical.
  *
  * Body: { ad_id, event_type, zone_id, post_id?, device? }
  */

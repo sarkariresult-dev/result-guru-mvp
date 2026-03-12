@@ -1,6 +1,6 @@
 // =============================================================
-// media.types.ts — Result Guru
-// Mirrors 010_media.sql — central media / asset library.
+// media.types.ts - Result Guru
+// Mirrors 010_media.sql - central media / asset library.
 // =============================================================
 
 // ── Media record ───────────────────────────────────────────

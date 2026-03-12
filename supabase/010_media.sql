@@ -1,7 +1,7 @@
 -- ═══════════════════════════════════════════════════════════════
--- 010_media.sql — Result Guru
+-- 010_media.sql - Result Guru
 -- Central media / asset library. All uploads go through this
--- table — posts reference storage paths, not raw URLs.
+-- table - posts reference storage paths, not raw URLs.
 -- ═══════════════════════════════════════════════════════════════
 
 CREATE TABLE IF NOT EXISTS media (

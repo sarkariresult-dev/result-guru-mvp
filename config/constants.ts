@@ -21,7 +21,7 @@ export const PAGINATION = {
 // ─── Cache / revalidation TTLs (seconds) ────────────────────────────────────
 
 export const CACHE_TTL = {
-    /** Home page — refresh often for latest posts */
+    /** Home page - refresh often for latest posts */
     HOME: 300,        // 5 min
     /** Listing pages */
     LISTING: 600,        // 10 min
@@ -234,7 +234,7 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, StatusConfig> 
         pulse: true,
     },
     na: {
-        label: '—',
+        label: '-',
         color: 'bg-gray-100',
         textColor: 'text-gray-500',
         dotColor: 'bg-gray-300',
@@ -250,6 +250,11 @@ export const POST_STATUS_CONFIG: Record<PostStatus, { label: string; color: stri
     scheduled: { label: 'Scheduled', color: 'bg-purple-100', textColor: 'text-purple-800' },
     published: { label: 'Published', color: 'bg-green-100', textColor: 'text-green-800' },
     archived: { label: 'Archived', color: 'bg-red-100', textColor: 'text-red-700' },
+}
+
+export const STORY_STATUS_CONFIG: Record<'draft' | 'published', { label: string; color: string; textColor: string }> = {
+    draft: { label: 'Draft', color: 'bg-gray-100', textColor: 'text-gray-600' },
+    published: { label: 'Published', color: 'bg-green-100', textColor: 'text-green-800' },
 }
 
 // ─── Date formats ────────────────────────────────────────────────────────────
@@ -430,7 +435,7 @@ export const POST_STATUSES = (
     textColor: POST_STATUS_CONFIG[key].textColor,
 }))
 
-/** Placeholder — hydrate from DB via getStates() for real data. */
+/** Placeholder - hydrate from DB via getStates() for real data. */
 export const STATES_MAP: Record<string, string> = {}
 
 export const QUALIFICATION_MAP: Record<string, string> = Object.fromEntries(

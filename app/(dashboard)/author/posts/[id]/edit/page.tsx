@@ -30,7 +30,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
     const authorId = profile.id as string
     const userRole = profile.role as string
 
-    // Verify ownership — author can only edit their own posts, admins can edit any
+    // Verify ownership - author can only edit their own posts, admins can edit any
     if (post.author_id !== authorId && userRole !== 'admin') {
         redirect('/author/posts')
     }

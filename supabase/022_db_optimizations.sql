@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════════════
--- 022_db_optimizations.sql — Result Guru
+-- 022_db_optimizations.sql - Result Guru
 -- DATABASE OPTIMIZATION: D1 – D6
 --
 -- Run this ONCE in the Supabase SQL Editor.
@@ -152,7 +152,7 @@ COMMENT ON FUNCTION fn_site_stats() IS
 -- ║  Fix: Add targeted indexes for the actual query shapes.            ║
 -- ╚═══════════════════════════════════════════════════════════════════════╝
 
--- ── D2a: Slug + Type lookup (detail page — most critical query) ──────
+-- ── D2a: Slug + Type lookup (detail page - most critical query) ──────
 -- getPostBySlug() queries: WHERE slug = :slug AND type = :type
 CREATE INDEX IF NOT EXISTS idx_posts_slug_type
   ON posts (slug, type);
@@ -183,7 +183,7 @@ CREATE INDEX IF NOT EXISTS idx_posts_qual_pub
   -- Covers: .contains('qualification', ['graduation']).order('published_at', desc)
   -- Replaces idx_posts_qualification which lacks the partial WHERE clause
 
--- ── D2f: Post views — post_id index on each partition ────────────────
+-- ── D2f: Post views - post_id index on each partition ────────────────
 -- The parent table has idx_post_views_post but partitions may not inherit it
 -- Supabase handles partition index propagation, but let's be explicit:
 DO $$
@@ -203,19 +203,19 @@ BEGIN
   END LOOP;
 END$$;
 
--- ── D2g: Search queries — date + query for analytics ─────────────────
+-- ── D2g: Search queries - date + query for analytics ─────────────────
 CREATE INDEX IF NOT EXISTS idx_search_queries_date_query
   ON search_queries (searched_at, query)
   WHERE query IS NOT NULL;
   -- Covers: "top searches today" analytics dashboard
   -- Range queries like: WHERE searched_at >= current_date AND searched_at < current_date + 1
 
--- ── D2h: Tags — name trigram for admin tag search ────────────────────
+-- ── D2h: Tags - name trigram for admin tag search ────────────────────
 CREATE INDEX IF NOT EXISTS idx_tags_name_trgm
   ON tags USING gin (lower(name) gin_trgm_ops);
   -- Covers: admin tag autocomplete / search
 
--- ── D2i: Organizations — state + name for state-filtered org lists ───
+-- ── D2i: Organizations - state + name for state-filtered org lists ───
 CREATE INDEX IF NOT EXISTS idx_orgs_state_name
   ON organizations (state_slug, name);
   -- Covers: /states/:slug → list organizations in that state
@@ -228,14 +228,14 @@ CREATE INDEX IF NOT EXISTS idx_orgs_state_name
 -- ║  Fix: Aggressive autovacuum on posts, post_views, ad_events.       ║
 -- ╚═══════════════════════════════════════════════════════════════════════╝
 
--- ── D3a: posts table — frequent UPDATEs (view_count, seo_score, status)
+-- ── D3a: posts table - frequent UPDATEs (view_count, seo_score, status)
 ALTER TABLE posts SET (
   autovacuum_vacuum_scale_factor = 0.05,       -- vacuum after 5% rows change (default 20%)
   autovacuum_analyze_scale_factor = 0.02,      -- analyze after 2% rows change (default 10%)
   autovacuum_vacuum_cost_delay = 5             -- less delay = faster vacuum (default 2ms, but more aggressive)
 );
 
--- ── D3b: post_views — INSERT-heavy (every page view)
+-- ── D3b: post_views - INSERT-heavy (every page view)
 -- post_views is partitioned, so we must set storage params on each leaf partition
 DO $$
 DECLARE _part TEXT;
@@ -252,7 +252,7 @@ BEGIN
   END LOOP;
 END$$;
 
--- ── D3c: ad_events — INSERT-heavy (ad impressions/clicks)
+-- ── D3c: ad_events - INSERT-heavy (ad impressions/clicks)
 -- ad_events is partitioned, so we must set storage params on each leaf partition
 DO $$
 DECLARE _part TEXT;
@@ -269,13 +269,13 @@ BEGIN
   END LOOP;
 END$$;
 
--- ── D3d: post_tags — many INSERT/DELETE during post saves
+-- ── D3d: post_tags - many INSERT/DELETE during post saves
 ALTER TABLE post_tags SET (
   autovacuum_vacuum_scale_factor = 0.05,
   autovacuum_analyze_scale_factor = 0.05
 );
 
--- ── D3e: search_queries — INSERT-only, append-heavy
+-- ── D3e: search_queries - INSERT-only, append-heavy
 ALTER TABLE search_queries SET (
   autovacuum_vacuum_scale_factor = 0.02,
   autovacuum_analyze_scale_factor = 0.02
@@ -300,25 +300,25 @@ ANALYZE subscribers;
 -- ║  On Supabase, some of these may need the Dashboard Settings panel. ║
 -- ╚═══════════════════════════════════════════════════════════════════════╝
 
--- ── D4a: Anon role — max 10s per statement (prevents abuse) ──────────
+-- ── D4a: Anon role - max 10s per statement (prevents abuse) ──────────
 DO $$ BEGIN
   EXECUTE 'ALTER ROLE anon SET statement_timeout = ''10000''';      -- 10s
 EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'Could not ALTER ROLE anon — set via Supabase Dashboard > Database > Roles';
+  RAISE NOTICE 'Could not ALTER ROLE anon - set via Supabase Dashboard > Database > Roles';
 END$$;
 
--- ── D4b: Authenticated role — max 30s ────────────────────────────────
+-- ── D4b: Authenticated role - max 30s ────────────────────────────────
 DO $$ BEGIN
   EXECUTE 'ALTER ROLE authenticated SET statement_timeout = ''30000'''; -- 30s
 EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'Could not ALTER ROLE authenticated — set via Dashboard';
+  RAISE NOTICE 'Could not ALTER ROLE authenticated - set via Dashboard';
 END$$;
 
--- ── D4c: Service role — max 120s (for admin & maintenance tasks) ─────
+-- ── D4c: Service role - max 120s (for admin & maintenance tasks) ─────
 DO $$ BEGIN
   EXECUTE 'ALTER ROLE service_role SET statement_timeout = ''120000'''; -- 2min
 EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'Could not ALTER ROLE service_role — set via Dashboard';
+  RAISE NOTICE 'Could not ALTER ROLE service_role - set via Dashboard';
 END$$;
 
 -- ── D4d: Increase work_mem for complex sort/hash operations ──────────
@@ -327,7 +327,7 @@ END$$;
 DO $$ BEGIN
   EXECUTE 'ALTER DATABASE postgres SET work_mem = ''8MB''';
 EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'Could not ALTER DATABASE — set via Supabase Dashboard > Settings > Database';
+  RAISE NOTICE 'Could not ALTER DATABASE - set via Supabase Dashboard > Settings > Database';
 END$$;
 
 -- ── D4e: Enable JIT for complex aggregation queries ──────────────────
@@ -335,7 +335,7 @@ DO $$ BEGIN
   EXECUTE 'ALTER DATABASE postgres SET jit = on';
   EXECUTE 'ALTER DATABASE postgres SET jit_above_cost = 500000';
 EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'Could not enable JIT — may need Supabase Dashboard';
+  RAISE NOTICE 'Could not enable JIT - may need Supabase Dashboard';
 END$$;
 
 

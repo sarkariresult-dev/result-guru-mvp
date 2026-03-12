@@ -2,7 +2,7 @@ import { PostCardSkeleton } from '@/components/posts/PostCardSkeleton'
 import { Skeleton } from '@/components/ui/Skeleton'
 
 /**
- * Public route loading state — shows a page-level skeleton
+ * Public route loading state - shows a page-level skeleton
  * that mirrors the actual category/listing layout.
  */
 export default function PublicLoading() {

@@ -1,5 +1,5 @@
 // =============================================================
-// post.types.ts — Result Guru
+// post.types.ts - Result Guru
 // Mirrors 007_posts.sql and the v_published_posts view.
 // =============================================================
 
@@ -45,7 +45,7 @@ export interface Post {
     featured_image_alt: string | null
     featured_image_width: number | null
     featured_image_height: number | null
-    notification_pdf: string | null    // Storage path — build URL via helper
+    notification_pdf: string | null    // Storage path - build URL via helper
 
     // Key links (external URLs, type-specific)
     admit_card_link: string | null
@@ -103,12 +103,12 @@ export interface Post {
     created_at: string
     updated_at: string
 
-    // Search (internal — usually not returned to clients)
+    // Search (internal - usually not returned to clients)
     search_vector?: unknown
     title_lower?: string | null
 }
 
-// ── v_published_posts (view — adds joined fields) ─────────
+// ── v_published_posts (view - adds joined fields) ─────────
 // This is the shape returned by the Supabase view.
 // Use this for all public-facing queries.
 export interface PublishedPost extends Post {
@@ -122,7 +122,7 @@ export interface PublishedPost extends Post {
     category_slug: string | null
 }
 
-// ── Post card (lightweight — used in listing pages) ───────
+// ── Post card (lightweight - used in listing pages) ───────
 export type PostCard = Pick<
     PublishedPost,
     | 'id'
@@ -150,7 +150,7 @@ export type PostCard = Pick<
 /** @deprecated Use PostCard */
 export type PostSummary = PostCard
 
-// ── Post detail (full data — used on detail pages) ────────
+// ── Post detail (full data - used on detail pages) ────────
 export type PostDetail = PublishedPost & {
     tags?: PostTagEntry[]
     author?: { id: string; name: string; avatar_url: string | null } | null
@@ -268,9 +268,9 @@ export interface PostFilters {
     search?: string
     author_id?: string
     noindex?: boolean
-    /** ISO date string — published_at >= this */
+    /** ISO date string - published_at >= this */
     published_after?: string
-    /** ISO date string — published_at <= this */
+    /** ISO date string - published_at <= this */
     published_before?: string
 }
 

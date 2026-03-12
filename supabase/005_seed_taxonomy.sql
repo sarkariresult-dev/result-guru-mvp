@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- 005_seed_taxonomy.sql — Result Guru
+-- 005_seed_taxonomy.sql - Result Guru
 -- Reference data: states, qualifications, categories, tags,
 -- organizations. All inserts are idempotent (ON CONFLICT DO NOTHING).
 -- ═══════════════════════════════════════════════════════════════

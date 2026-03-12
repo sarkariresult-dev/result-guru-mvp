@@ -177,9 +177,11 @@ export function PostDetail({ post, slug, url }: Props) {
                             Published {formatDate(post.published_at)}
                         </time>
                     )}
-                    {(post as any).updated_at && (post as any).updated_at !== post.published_at && (
-                        <time dateTime={new Date((post as any).updated_at).toISOString()} className="flex items-center gap-1.5 text-foreground-subtle">
-                            Updated {formatDate((post as any).updated_at)}
+                    {/* COUNCIL P2 (Area 5): Show content_updated_at (meaningful edits) not updated_at (any DB write) */}
+                    {/* MARCUS: Google penalizes cosmetic-only date bumps - only show real content changes */}
+                    {post.content_updated_at && post.content_updated_at !== post.published_at && (
+                        <time dateTime={new Date(post.content_updated_at).toISOString()} className="flex items-center gap-1.5 text-foreground-subtle">
+                            Updated {formatDate(post.content_updated_at)}
                         </time>
                     )}
                 </div>

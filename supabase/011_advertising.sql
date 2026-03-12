@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- 011_advertising.sql — Result Guru
+-- 011_advertising.sql - Result Guru
 -- Full ad management: zones → campaigns → ads → events → daily stats.
 -- ═══════════════════════════════════════════════════════════════
 
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS advertisers (
   is_active  BOOLEAN     NOT NULL DEFAULT TRUE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-COMMENT ON TABLE advertisers IS 'Ad buyers. Optional — direct ad inserts may skip this table.';
+COMMENT ON TABLE advertisers IS 'Ad buyers. Optional - direct ad inserts may skip this table.';
 
 -- ── Campaigns ─────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS ad_campaigns (
@@ -171,14 +171,14 @@ COMMENT ON TABLE ad_stats_daily IS
 INSERT INTO ad_zones
   (slug, name, position, width, height, appears_on, is_active, sort_order)
 VALUES
-  ('below-header-desktop',   'Below Header — Leaderboard 728×90',      'below_header',          728, 90,  ARRAY['all'],                                           TRUE,  10),
-  ('below-header-mobile',    'Below Header — Mobile 320×50',           'below_header',          320, 50,  ARRAY['all'],                                           TRUE,  11),
+  ('below-header-desktop',   'Below Header - Leaderboard 728×90',      'below_header',          728, 90,  ARRAY['all'],                                           TRUE,  10),
+  ('below-header-mobile',    'Below Header - Mobile 320×50',           'below_header',          320, 50,  ARRAY['all'],                                           TRUE,  11),
   ('sidebar-top',            'Sidebar Top Rectangle 300×250',          'sidebar_top',           300, 250, ARRAY['post_detail'],                                   TRUE,  20),
   ('sidebar-sticky',         'Sidebar Sticky 300×600',                 'sidebar_sticky',        300, 600, ARRAY['post_detail'],                                   TRUE,  21),
   ('below-dates-box',        'Below Dates Box 300×250',                'below_dates_box',       300, 250, ARRAY['post_detail'],                                   TRUE,  30),
   ('mid-content',            'Mid Content Rectangle 300×250',          'mid_content',           300, 250, ARRAY['post_detail'],                                   TRUE,  40),
   ('below-content',          'Below Content Leaderboard 728×90',       'below_content',         728, 90,  ARRAY['post_detail'],                                   TRUE,  50),
-  ('listing-between-cards',  'Between Cards — Listing Pages 320×100',  'listing_between_cards', 320, 100, ARRAY['job_listing','result_listing','admit_listing'],  TRUE,  60),
+  ('listing-between-cards',  'Between Cards - Listing Pages 320×100',  'listing_between_cards', 320, 100, ARRAY['job_listing','result_listing','admit_listing'],  TRUE,  60),
   ('above-faq',              'Above FAQ Leaderboard 728×90',           'above_faq',             728, 90,  ARRAY['post_detail'],                                   TRUE,  70),
   ('footer-top',             'Footer Leaderboard 728×90',              'footer_top',            728, 90,  ARRAY['all'],                                           TRUE,  80),
   ('floating-bottom-mobile', 'Floating Bottom Bar Mobile 320×50',      'floating_bottom',       320, 50,  ARRAY['all'],                                           FALSE, 90)

@@ -1,6 +1,6 @@
 // =============================================================
-// index.ts — Result Guru Types
-// Single entry point — import everything from here.
+// index.ts - Result Guru Types
+// Single entry point - import everything from here.
 //
 // Usage:
 //   import type { Post, PostCard, PostType } from '@/types'

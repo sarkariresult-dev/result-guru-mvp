@@ -1,6 +1,6 @@
 -- ═══════════════════════════════════════════════════════════════
--- 002_enums.sql — Result Guru
--- All custom enum types. Idempotent — safe to re-run.
+-- 002_enums.sql - Result Guru
+-- All custom enum types. Idempotent - safe to re-run.
 -- ═══════════════════════════════════════════════════════════════
 
 -- ── Post type ────────────────────────────────────────────────
@@ -103,9 +103,9 @@ EXCEPTION WHEN duplicate_object THEN NULL; END$$;
 -- ── Redirect HTTP code ───────────────────────────────────────
 DO $$ BEGIN
   CREATE TYPE redirect_type AS ENUM (
-    '301',   -- Permanent — passes PageRank
-    '302',   -- Temporary — no PageRank transfer
-    '410'    -- Gone — tells Google to deindex immediately
+    '301',   -- Permanent - passes PageRank
+    '302',   -- Temporary - no PageRank transfer
+    '410'    -- Gone - tells Google to deindex immediately
   );
 EXCEPTION WHEN duplicate_object THEN NULL; END$$;
 

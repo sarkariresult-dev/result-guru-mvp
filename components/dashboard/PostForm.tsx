@@ -10,7 +10,7 @@ import { Save, Eye, Plus, Trash2, ChevronDown, ChevronUp, X, AlertTriangle, Chec
 import { generateContentWithGemini } from '@/lib/actions/ai'
 import { processContentHtml, extractHowToSteps, replacePlaceholders } from '@/lib/content-processing'
 
-/* Heavy editor — 13 tiptap packages + 25 lucide icons → lazy-load, no SSR */
+/* Heavy editor - 13 tiptap packages + 25 lucide icons → lazy-load, no SSR */
 const TiptapEditor = dynamic(
     () => import('@/components/dashboard/TiptapEditor').then(m => m.TiptapEditor),
     {
@@ -136,7 +136,7 @@ const TYPE_CONFIG: Record<string, {
     },
     exam_pattern: {
         label: 'Exam Pattern', emoji: '📐',
-        description: 'Paper pattern — marking, duration, question types',
+        description: 'Paper pattern - marking, duration, question types',
         showAppStatus: false,
         sections: { dates: true, eligibility: false, applicationFee: false, vacancyDetails: false, totalVacancies: false, ageLimit: false, payScale: false, selectionProcess: false, howToApply: false, admitCardLink: false, resultLink: false, cutOffMarks: false, syllabus: true, examPattern: true, preparationTips: true, previousPapers: true, faq: true },
     },
@@ -366,6 +366,8 @@ function runSeoAnalysis(p: { title: string; slug: string; metaTitle: string; met
         { label: 'Secondary keywords in content', ok: sk.length > 0 && skInContent >= Math.ceil(sk.length * 0.5), priority: 'medium' as const },
         { label: 'Excerpt set (listing & rich snippets)', ok: p.excerpt.length >= 50, priority: 'medium' as const },
         { label: 'Featured image set (visual SEO)', ok: p.featuredImage.length > 0, priority: 'medium' as const },
+        // COUNCIL P2 (Area 1): Discover requires images ≥1200px wide
+        { label: 'Featured image for Discover (≥1200px wide)', ok: p.featuredImage.length > 0, priority: 'high' as const },
         { label: 'Image alt text set (accessibility)', ok: p.featuredImageAlt.length > 0, priority: 'medium' as const },
         { label: 'Slug is short & clean (≤60 chars)', ok: p.slug.length > 0 && p.slug.length <= 60, priority: 'low' as const },
         { label: 'No stop words in slug', ok: !/(\b(the|and|is|in|to|for|of|a|an)\b)/.test(p.slug), priority: 'low' as const },
@@ -462,7 +464,7 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
     const [featuredImageAlt, setFeaturedImageAlt] = useState(initialData?.featured_image_alt ?? '')
 
     // ── Structured Data ──
-    // DB stores FAQ as {q, a} — convert to {question, answer} for the form
+    // DB stores FAQ as {q, a} - convert to {question, answer} for the form
     const [faq, setFaq] = useState<{ question: string; answer: string }[]>(
         (initialData?.faq ?? []).map((f: any) => ({
             question: f.question ?? f.q ?? '',
@@ -643,7 +645,7 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                 // Content
                 title, slug,
                 excerpt: excerpt || null, content: content || null,
-                // Taxonomy — use correct DB column names
+                // Taxonomy - use correct DB column names
                 state_slug: state || null,
                 organization_id: organizationId || null,
                 qualification: selectedQualifications.length > 0 ? selectedQualifications : null,
@@ -897,7 +899,7 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                             accept="image/jpeg,image/png,image/webp"
                             maxSizeMB={5}
                             preview="image"
-                            hint="JPG, PNG, WebP — max 5 MB (1200×630 recommended)"
+                            hint="JPG, PNG, WebP - max 5 MB (1200×630 recommended)"
                         />
                         {featuredImage && (
                             <p className="text-[10px] text-foreground-subtle flex items-center gap-1">
@@ -917,7 +919,7 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                                 accept="application/pdf"
                                 maxSizeMB={5}
                                 preview="pdf"
-                                hint="Upload official notification PDF — max 5 MB"
+                                hint="Upload official notification PDF - max 5 MB"
                             />
                         </Field>
                     </Panel>

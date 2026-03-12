@@ -82,11 +82,10 @@ export default async function AdminUsersPage({
                         <Link
                             key={f.value}
                             href={buildUrl({ role: f.value || undefined, page: '1' })}
-                            className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
-                                isActive
+                            className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${isActive
                                     ? 'border-brand-600 bg-brand-50 text-brand-700 dark:bg-brand-900/20 dark:text-brand-300'
                                     : 'border-border text-foreground-muted hover:border-brand-300 hover:text-foreground'
-                            }`}
+                                }`}
                         >
                             {f.label}
                         </Link>
@@ -140,11 +139,10 @@ export default async function AdminUsersPage({
                                                 <UserRoleSelect userId={user.id} currentRole={user.role} />
                                             </td>
                                             <td className="px-4 py-3">
-                                                <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium ${
-                                                    user.is_active
+                                                <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium ${user.is_active
                                                         ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                                                         : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
-                                                }`}>
+                                                    }`}>
                                                     <span className={`inline-block size-1.5 rounded-full ${user.is_active ? 'bg-green-500' : 'bg-gray-400'}`} />
                                                     {user.is_active ? 'Active' : 'Inactive'}
                                                 </span>
@@ -152,7 +150,7 @@ export default async function AdminUsersPage({
                                             <td className="whitespace-nowrap px-4 py-3 text-xs text-foreground-subtle">
                                                 {user.last_login_at
                                                     ? new Date(user.last_login_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
-                                                    : '—'}
+                                                    : '-'}
                                             </td>
                                             <td className="whitespace-nowrap px-4 py-3 text-xs text-foreground-subtle">
                                                 {new Date(user.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
@@ -174,11 +172,10 @@ export default async function AdminUsersPage({
                                         <p className="truncate font-medium">{user.name}</p>
                                         <p className="truncate text-xs text-foreground-muted">{user.email}</p>
                                     </div>
-                                    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                                        user.is_active
+                                    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${user.is_active
                                             ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                                             : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
-                                    }`}>
+                                        }`}>
                                         {user.is_active ? 'Active' : 'Inactive'}
                                     </span>
                                 </div>

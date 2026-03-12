@@ -9,11 +9,11 @@ const eslintConfig = defineConfig([
   /* Project-specific rules */
   {
     rules: {
-      /* Warn on console.log (allow warn/error) — prevents leaked debug logs */
+      /* Warn on console.log (allow warn/error) - prevents leaked debug logs */
       "no-console": ["warn", { allow: ["warn", "error"] }],
       /* Prefer const over let when variable is never reassigned */
       "prefer-const": "error",
-      /* Unused vars — allow underscore prefix for intentionally unused */
+      /* Unused vars - allow underscore prefix for intentionally unused */
       "@typescript-eslint/no-unused-vars": [
         "warn",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
@@ -22,7 +22,7 @@ const eslintConfig = defineConfig([
       "@typescript-eslint/no-explicit-any": "warn",
       /* Enforce exhaustive deps in useEffect */
       "react-hooks/exhaustive-deps": "warn",
-      /* No img — enforce next/image for optimisation + CLS */
+      /* No img - enforce next/image for optimisation + CLS */
       "@next/next/no-img-element": "error",
     },
   },

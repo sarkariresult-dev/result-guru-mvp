@@ -1,5 +1,5 @@
 import 'server-only'
-import { cacheLife, cacheTag } from 'next/cache'
+import { unstable_cache } from 'next/cache'
 import { createStaticClient } from '@/lib/supabase/static'
 import { createServerClient } from '@/lib/supabase/server'
 import type { PostCard, Post, PostFilters } from '@/types/post.types'
@@ -52,136 +52,142 @@ function applyFilters(query: any, filters: PostFilters): any {
 // ── Public queries ─────────────────────────────────────────────────────────
 
 /** Paginated post listing from v_published_posts */
-export async function getPosts(
-    filters: PostFilters = {},
-    page: number = 1,
-    limit: number = PAGINATION.DEFAULT_LIMIT,
-): Promise<PostCard[]> {
-    'use cache'
-    cacheLife('minutes')
-    cacheTag('posts', `posts-page-${page}`)
+export const getPosts = unstable_cache(
+    async (
+        filters: PostFilters = {},
+        page: number = 1,
+        limit: number = PAGINATION.DEFAULT_LIMIT,
+    ): Promise<PostCard[]> => {
+        const supabase = createStaticClient()
+        let query = supabase.from('v_published_posts').select(POST_CARD_COLUMNS)
+        query = applyFilters(query, filters)
 
-    const supabase = createStaticClient()
+        const { data, error } = await query
+            .order('published_at', { ascending: false })
+            .range((page - 1) * limit, page * limit - 1)
 
-    let query = supabase
-        .from('v_published_posts')
-        .select(POST_CARD_COLUMNS)
-
-    query = applyFilters(query, filters)
-
-    const { data, error } = await query
-        .order('published_at', { ascending: false })
-        .range((page - 1) * limit, page * limit - 1)
-
-    if (error) throw new Error(`getPosts: ${error.message}`)
-    return (data ?? []) as unknown as PostCard[]
-}
+        if (error) throw new Error(`getPosts: ${error.message}`)
+        return (data ?? []) as unknown as PostCard[]
+    },
+    ['posts-list'], // Cache key segment
+    {
+        revalidate: 600, // 10 minutes default
+        tags: ['posts'],
+    }
+)
 
 /** Single post by slug (full row from v_published_posts) */
-export async function getPostBySlug(
-    slug: string,
-    type?: string,
-): Promise<Post | null> {
-    'use cache'
-    cacheLife('hours')
-    cacheTag('posts', `post-${slug}`)
+export const getPostBySlug = unstable_cache(
+    async (
+        slug: string,
+        type?: string,
+    ): Promise<Post | null> => {
+        const supabase = createStaticClient()
+        let query = supabase.from('v_published_posts').select('*').eq('slug', slug)
+        if (type) query = query.eq('type', type)
 
-    const supabase = createStaticClient()
-
-    let query = supabase.from('v_published_posts').select('*').eq('slug', slug)
-    if (type) query = query.eq('type', type)
-
-    const { data } = await query.single()
-    return (data as unknown as Post) ?? null
-}
+        const { data } = await query.single()
+        return (data as unknown as Post) ?? null
+    },
+    ['post-by-slug'],
+    {
+        revalidate: 3600, // 1 hour
+        tags: ['posts'],
+    }
+)
 
 /** Recent posts by type (for homepage sections, footer, etc.) */
-export async function getRecentPosts(
-    type: string,
-    limit = 5,
-): Promise<PostCard[]> {
-    'use cache'
-    cacheLife('minutes')
-    cacheTag('posts', `recent-${type}`)
+export const getRecentPosts = unstable_cache(
+    async (
+        type: string,
+        limit = 5,
+    ): Promise<PostCard[]> => {
+        const supabase = createStaticClient()
+        const { data } = await supabase
+            .from('v_published_posts')
+            .select(POST_CARD_COLUMNS)
+            .eq('type', type)
+            .order('published_at', { ascending: false })
+            .limit(limit)
 
-    const supabase = createStaticClient()
-
-    const { data } = await supabase
-        .from('v_published_posts')
-        .select(POST_CARD_COLUMNS)
-        .eq('type', type)
-        .order('published_at', { ascending: false })
-        .limit(limit)
-
-    return (data ?? []) as unknown as PostCard[]
-}
+        return (data ?? []) as unknown as PostCard[]
+    },
+    ['recent-posts'],
+    {
+        revalidate: 600,
+        tags: ['posts'],
+    }
+)
 
 /** Full-text search using search_vector on posts, hydrated from v_published_posts */
-export async function searchPosts(
-    q: string,
-    limit = 20,
-): Promise<PostCard[]> {
-    'use cache'
-    cacheLife('seconds')
-    cacheTag('search')
+export const searchPosts = unstable_cache(
+    async (
+        q: string,
+        limit = 20,
+    ): Promise<PostCard[]> => {
+        const supabase = createStaticClient()
 
-    const supabase = createStaticClient()
+        // 1. Find matching IDs from the base 'posts' table which holds the search_vector
+        const { data: matches, error: searchError } = await (supabase as any)
+            .from('posts')
+            .select('id')
+            .eq('status', 'published')
+            .textSearch('search_vector', q, { type: 'websearch' })
+            .order('published_at', { ascending: false })
+            .limit(limit)
 
-    // 1. Find matching IDs from the base 'posts' table which holds the search_vector
-    const { data: matches, error: searchError } = await (supabase as any)
-        .from('posts')
-        .select('id')
-        .eq('status', 'published')
-        .textSearch('search_vector', q, { type: 'websearch' })
-        .order('published_at', { ascending: false })
-        .limit(limit)
+        if (searchError) {
+            console.error(`[searchPosts] matching IDs error:`, searchError)
+            return [] // Gracefully return empty arrays on search failures to prevent UI crashing
+        }
 
-    if (searchError) {
-        console.error(`[searchPosts] matching IDs error:`, searchError)
-        return [] // Gracefully return empty arrays on search failures to prevent UI crashing
+        if (!matches || matches.length === 0) return []
+        const ids = matches.map((m: any) => m.id)
+
+        // 2. Fetch full flattened card data using the view
+        const { data, error } = await supabase
+            .from('v_published_posts')
+            .select(POST_CARD_COLUMNS)
+            .in('id', ids)
+
+        if (error) {
+            console.error(`[searchPosts] fetching details error:`, error)
+            return []
+        }
+
+        // 3. Keep original sort order
+        const idMap = new Map((data ?? []).map(p => [(p as any).id, p]))
+        const sorted = ids.map((id: string) => idMap.get(id)).filter(Boolean)
+
+        return sorted as unknown as PostCard[]
+    },
+    ['search-posts'],
+    {
+        revalidate: 60, // 1 minute caching for search
+        tags: ['search'],
     }
-
-    if (!matches || matches.length === 0) return []
-
-    const ids = matches.map((m: any) => m.id)
-
-    // 2. Fetch full flattened card data using the view
-    const { data, error } = await supabase
-        .from('v_published_posts')
-        .select(POST_CARD_COLUMNS)
-        .in('id', ids)
-
-    if (error) {
-        console.error(`[searchPosts] fetching details error:`, error)
-        return []
-    }
-
-    // 3. Keep original sort order
-    const idMap = new Map((data ?? []).map(p => [(p as any).id, p]))
-    const sorted = ids.map((id: string) => idMap.get(id)).filter(Boolean)
-
-    return sorted as unknown as PostCard[]
-}
+)
 
 /** Count matching posts (for pagination metadata) */
-export async function getPostsCount(
-    filters: PostFilters = {},
-): Promise<number> {
-    'use cache'
-    cacheLife('minutes')
-    cacheTag('posts', 'posts-count')
+export const getPostsCount = unstable_cache(
+    async (
+        filters: PostFilters = {},
+    ): Promise<number> => {
+        const supabase = createStaticClient()
+        let query = supabase
+            .from('v_published_posts')
+            .select('id', { count: 'estimated', head: true })
 
-    const supabase = createStaticClient()
-
-    let query = supabase
-        .from('v_published_posts')
-        .select('id', { count: 'estimated', head: true })
-
-    query = applyFilters(query, filters)
-
-    const { count } = await query
-    return count ?? 0
-}
+        query = applyFilters(query, filters)
+        const { count } = await query
+        return count ?? 0
+    },
+    ['posts-count'],
+    {
+        revalidate: 600,
+        tags: ['posts', 'posts-count'],
+    }
+)
 
 // ── Admin / Author queries (reads from `posts` table, all statuses) ────────
 
@@ -255,7 +261,7 @@ export async function getAuthorPosts(
     return { data: (data ?? []) as AdminPost[], count: count ?? 0 }
 }
 
-/** Full post row by ID (for edit page) — includes post_tags join */
+/** Full post row by ID (for edit page) - includes post_tags join */
 export async function getPostById(id: string): Promise<(Post & { post_tags?: { post_id: string; tag_id: string }[] }) | null> {
     const supabase = await createServerClient()
     const { data } = await supabase

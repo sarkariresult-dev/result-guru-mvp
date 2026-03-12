@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- 003_helper_functions.sql — Result Guru
+-- 003_helper_functions.sql - Result Guru
 -- Pure utility functions used by triggers and queries.
 -- All are IMMUTABLE / STABLE so they are safe in indexes.
 -- ═══════════════════════════════════════════════════════════════

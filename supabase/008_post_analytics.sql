@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- 008_post_analytics.sql — Result Guru
+-- 008_post_analytics.sql - Result Guru
 -- Partitioned page-view event store.
 -- Extend partitions each quarter using the maintenance procedure
 -- in 018_maintenance.sql.

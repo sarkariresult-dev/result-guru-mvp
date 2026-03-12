@@ -5,7 +5,7 @@ import { cookies } from 'next/headers'
  * Server-side Supabase client (RSC / API routes / Server Actions).
  * Reads & writes auth cookies using the Next.js `cookies()` API.
  *
- * Always `await` the return value — `cookies()` is async in Next.js 15+.
+ * Always `await` the return value - `cookies()` is async in Next.js 15+.
  */
 export async function createServerClient() {
     const cookieStore = await cookies()
@@ -22,7 +22,7 @@ export async function createServerClient() {
                             cookieStore.set(name, value, options),
                         )
                     } catch {
-                        // `cookies().set()` throws in RSC — safe to ignore.
+                        // `cookies().set()` throws in RSC - safe to ignore.
                         // The middleware (proxy.ts) will refresh cookies.
                     }
                 },

@@ -46,7 +46,7 @@ export default function Error({ error, reset }: ErrorProps) {
         })
     }, [error])
 
-    /* Auto-retry countdown — only if under max retries */
+    /* Auto-retry countdown - only if under max retries */
     useEffect(() => {
         if (retryCount >= maxRetries) return
 
@@ -88,7 +88,7 @@ export default function Error({ error, reset }: ErrorProps) {
                     <p className="mx-auto max-w-sm text-sm leading-relaxed text-foreground-muted">
                         {isNetwork
                             ? 'Could not connect to the server. Please check your internet connection and try again.'
-                            : error.message || 'An unexpected error occurred. We\'re working on it — please try again.'}
+                            : error.message || 'An unexpected error occurred. We\'re working on it - please try again.'}
                     </p>
 
                     {/* Auto-retry indicator */}

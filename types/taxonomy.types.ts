@@ -1,6 +1,6 @@
 // =============================================================
-// taxonomy.types.ts — Result Guru
-// Mirrors 004_taxonomy.sql — states, qualifications,
+// taxonomy.types.ts - Result Guru
+// Mirrors 004_taxonomy.sql - states, qualifications,
 // organizations, categories, tags.
 // =============================================================
 
@@ -43,7 +43,7 @@ export interface Organization {
     name: string
     short_name: string | null
     state_slug: string | null
-    /** Canonical source URL — shown on post pages, NOT stored on posts */
+    /** Canonical source URL - shown on post pages, NOT stored on posts */
     official_url: string | null
     logo_url: string | null
     description: string | null

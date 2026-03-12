@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * useAuth — Result Guru
+ * useAuth - Result Guru
  *
  * Wraps Supabase Auth with:
  *  - Real-time session / user state via onAuthStateChange
@@ -24,7 +24,7 @@ import type { UserRole } from '@/types/enums'
 // ─── Types ──────────────────────────────────────────────────────────────────
 
 export interface AuthUser extends User {
-    /** From public.users.role — populated after profile load */
+    /** From public.users.role - populated after profile load */
     role?: UserRole
     /** Display name from public.users or OAuth metadata */
     displayName?: string
@@ -82,7 +82,7 @@ export function useAuth(): UseAuthReturn {
                 avatarUrl: data?.avatar_url ?? authUser.user_metadata?.avatar_url,
             }
         } catch {
-            // Profile not yet created — return base user
+            // Profile not yet created - return base user
             return {
                 ...authUser,
                 role: undefined as UserRole | undefined,
@@ -152,7 +152,7 @@ export function useAuth(): UseAuthReturn {
     const signOut = useCallback(async () => {
         setError(null)
         await supabase.auth.signOut()
-        // Full cache flush on sign-out — important for admin / private data
+        // Full cache flush on sign-out - important for admin / private data
         queryClient.clear()
     }, [supabase, queryClient])
 

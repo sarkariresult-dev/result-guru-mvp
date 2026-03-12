@@ -33,7 +33,7 @@ export interface TopPost {
 export async function getDashboardStats(): Promise<DashboardStats> {
     const supabase = await createServerClient()
 
-    // D1/D5: Use fn_site_stats() — single RPC reads from mv_site_stats
+    // D1/D5: Use fn_site_stats() - single RPC reads from mv_site_stats
     // Falls back to individual queries if MV doesn't exist yet
     const { data: mvStats, error: mvError } = await supabase.rpc('fn_site_stats')
 

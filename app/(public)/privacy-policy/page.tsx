@@ -5,7 +5,7 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { SITE } from '@/config/site'
 
 export const metadata = buildPageMetadata({
-    title: 'Privacy Policy — Your Data & Privacy',
+    title: 'Privacy Policy - Your Data & Privacy',
     description: `Privacy Policy for ${SITE.name}. Learn how we collect, use, store, and protect your personal data. We respect your privacy and comply with data protection regulations.`,
     path: '/privacy-policy',
 })

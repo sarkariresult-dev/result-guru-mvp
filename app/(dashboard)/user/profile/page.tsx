@@ -346,13 +346,13 @@ export default function UserProfilePage() {
                             <p className="mt-0.5 text-sm font-medium text-foreground">
                                 {profile.memberSince
                                     ? new Date(
-                                          profile.memberSince,
-                                      ).toLocaleDateString('en-IN', {
-                                          day: 'numeric',
-                                          month: 'long',
-                                          year: 'numeric',
-                                      })
-                                    : '—'}
+                                        profile.memberSince,
+                                    ).toLocaleDateString('en-IN', {
+                                        day: 'numeric',
+                                        month: 'long',
+                                        year: 'numeric',
+                                    })
+                                    : '-'}
                             </p>
                         </div>
                     </div>
@@ -410,8 +410,8 @@ export default function UserProfilePage() {
                         {saveStatus === 'saving'
                             ? 'Saving…'
                             : saveStatus === 'saved'
-                              ? 'Saved!'
-                              : 'Save Changes'}
+                                ? 'Saved!'
+                                : 'Save Changes'}
                     </button>
                     {saveStatus === 'saved' && (
                         <span className="text-sm text-green-600">

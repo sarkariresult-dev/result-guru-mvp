@@ -13,7 +13,7 @@ type ConsentState = 'pending' | 'accepted' | 'rejected'
  *
  * When user hasn't consented, GTM/GA4 scripts in root layout
  * still load (they're SSR'd). For full compliance at scale, you'd gate
- * those behind consent too — this banner records user preference and
+ * those behind consent too - this banner records user preference and
  * sends a consent signal to GTM via dataLayer.
  */
 export function CookieConsent() {

@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- 019_maintenance.sql — Result Guru
+-- 019_maintenance.sql - Result Guru
 -- Scheduled maintenance functions. Call via pg_cron or an
 -- external scheduler (GitHub Actions, Inngest, etc.).
 --
@@ -68,7 +68,7 @@ BEGIN
         clicks      = EXCLUDED.clicks;
 
   -- 2. Recompute running totals from the full ad_stats_daily history.
-  --    This is idempotent — re-running for the same date won't double-count.
+  --    This is idempotent - re-running for the same date won't double-count.
   UPDATE ads a
   SET    impression_count = COALESCE(agg.total_impressions, 0),
          click_count      = COALESCE(agg.total_clicks, 0)
@@ -209,7 +209,7 @@ COMMENT ON FUNCTION fn_create_quarterly_partitions(INT, INT) IS
 
 -- ── QUERY REFERENCE ────────────────────────────────────────────
 --
--- Full-text search (simple config — works for Hindi transliteration):
+-- Full-text search (simple config - works for Hindi transliteration):
 --   SELECT * FROM v_published_posts
 --   WHERE  search_vector @@ plainto_tsquery('simple','ssc cgl 2025')
 --   ORDER BY ts_rank(search_vector, plainto_tsquery('simple','ssc cgl 2025')) DESC

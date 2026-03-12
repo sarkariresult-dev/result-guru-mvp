@@ -72,7 +72,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
         },
         twitter: {
             card: SITE.twitter.cardType,
-            title: `${config.heading} — Latest Update`,
+            title: `${config.heading} - Latest Update`,
             description: config.description,
             site: SITE.twitter.handle,
         },
@@ -223,7 +223,7 @@ export default async function PostListingPage({ params, searchParams }: Props) {
                     </div>
                 )}
 
-                {/* Pagination — numbered pages with ellipsis */}
+                {/* Pagination - numbered pages with ellipsis */}
                 {totalPages > 1 && !fetchError && (
                     <nav className="mt-12 flex flex-wrap items-center justify-center gap-1.5" aria-label="Pagination">
                         {/* Previous */}

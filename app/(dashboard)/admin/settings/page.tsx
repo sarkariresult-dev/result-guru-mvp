@@ -48,8 +48,8 @@ const ENV_GROUPS = [
         label: 'Analytics & Ads',
         icon: Code,
         items: [
-            { key: 'GTM ID', value: env.NEXT_PUBLIC_GTM_ID ?? '—', secret: false },
-            { key: 'GA4 ID', value: env.NEXT_PUBLIC_GA_ID ?? '—', secret: false },
+            { key: 'GTM ID', value: env.NEXT_PUBLIC_GTM_ID ?? '-', secret: false },
+            { key: 'GA4 ID', value: env.NEXT_PUBLIC_GA_ID ?? '-', secret: false },
         ],
     },
     {
@@ -100,14 +100,14 @@ export default async function AdminSettingsPage() {
     // Build a settings map for lookup
     const settingsMap = new Map(settings.map(s => [s.key, s]))
 
-    // Keys managed exclusively via ENV vars — never show in editable UI
+    // Keys managed exclusively via ENV vars - never show in editable UI
     const ENV_MANAGED_KEYS = new Set([
         'site_name', 'site_tagline', 'site_url', 'twitter_handle',
         'google_tag_id',
         'google_verification', 'bing_verification',
     ])
 
-    // Group settings — put ungrouped ones at the end, excluding env-managed
+    // Group settings - put ungrouped ones at the end, excluding env-managed
     const groupedKeys: Set<string> = new Set(SETTING_GROUPS.flatMap(g => [...g.keys]))
     const ungroupedSettings = settings.filter(
         s => !groupedKeys.has(s.key) && !ENV_MANAGED_KEYS.has(s.key)
@@ -156,7 +156,7 @@ export default async function AdminSettingsPage() {
                                                 {item.key}
                                             </span>
                                             <span className="flex items-center gap-1 text-xs">
-                                                {item.value === '—' || item.value.startsWith('✗') ? (
+                                                {item.value === '-' || item.value.startsWith('✗') ? (
                                                     <span className="text-foreground-subtle">{item.value}</span>
                                                 ) : item.value.startsWith('✓') ? (
                                                     <span className="flex items-center gap-1 text-green-600">
@@ -250,7 +250,7 @@ export default async function AdminSettingsPage() {
                                     <tr key={r.id} className="transition-colors hover:bg-background-subtle">
                                         <td className="px-4 py-2.5 font-mono text-xs">{r.from_path}</td>
                                         <td className="px-4 py-2.5 font-mono text-xs text-foreground-muted">
-                                            {r.to_path ?? '—'}
+                                            {r.to_path ?? '-'}
                                         </td>
                                         <td className="px-4 py-2.5">
                                             <Badge className="bg-blue-100 text-blue-700">

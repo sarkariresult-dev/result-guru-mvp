@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 import { SITE } from '@/config/site'
 
 /**
- * robots.txt — SEO crawl directives
+ * robots.txt - SEO crawl directives
  *
  * Strategy:
  * - Allow all public content for maximum indexing
@@ -79,7 +79,7 @@ export default function robots(): MetadataRoute.Robots {
             },
         ],
 
-        sitemap: `${baseUrl}/sitemap.xml`,
+        sitemap: [`${baseUrl}/sitemap.xml`, `${baseUrl}/stories-sitemap.xml`],
         host: baseUrl,
     }
 }

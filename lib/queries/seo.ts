@@ -82,3 +82,70 @@ export async function getSitemapConfig(): Promise<SitemapConfig[]> {
         .order('priority', { ascending: false })
     return (data ?? []) as SitemapConfig[]
 }
+
+// ── Phase 2: SEO Dashboard queries ──────────────────────────────
+
+/**
+ * Fetch SEO audit data from v_seo_audit view (posts with issue flags).
+ */
+export async function getSeoAuditPosts(limit = 50) {
+    const supabase = await createServerClient()
+    const { data, error } = await supabase
+        .from('v_seo_audit')
+        .select('*')
+        .order('seo_score', { ascending: true })
+        .limit(limit)
+
+    if (error) {
+        console.error('Failed to fetch v_seo_audit:', error)
+        return []
+    }
+    return data ?? []
+}
+
+/**
+ * Fetch posts needing attention from v_posts_attention view.
+ */
+export async function getPostsNeedingAttention(limit = 30) {
+    const supabase = await createServerClient()
+    const { data, error } = await supabase
+        .from('v_posts_attention')
+        .select('*')
+        .order('updated_at', { ascending: false })
+        .limit(limit)
+
+    if (error) {
+        console.error('Failed to fetch v_posts_attention:', error)
+        return []
+    }
+    return data ?? []
+}
+
+/**
+ * Get SEO score distribution for dashboard overview cards.
+ */
+export async function getSeoScoreDistribution(): Promise<{
+    critical: number    // 0-39
+    warning: number     // 40-69
+    good: number        // 70-100
+    total: number
+}> {
+    const supabase = await createServerClient()
+    const { data, error } = await supabase
+        .from('v_seo_audit')
+        .select('seo_score')
+
+    if (error || !data) {
+        return { critical: 0, warning: 0, good: 0, total: 0 }
+    }
+
+    let critical = 0, warning = 0, good = 0
+    for (const row of data) {
+        const score = (row as { seo_score: number | null }).seo_score ?? 0
+        if (score < 40) critical++
+        else if (score < 70) warning++
+        else good++
+    }
+
+    return { critical, warning, good, total: data.length }
+}

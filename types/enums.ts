@@ -1,7 +1,7 @@
 // =============================================================
-// enums.ts — Result Guru
+// enums.ts - Result Guru
 // Mirrors 002_enums.sql exactly.
-// Use these everywhere — never use raw strings for enum values.
+// Use these everywhere - never use raw strings for enum values.
 // =============================================================
 
 // ── Post type ──────────────────────────────────────────────

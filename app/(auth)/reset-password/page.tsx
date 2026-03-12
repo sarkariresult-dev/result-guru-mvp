@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 }
 
 /**
- * Reset password page — server component wrapper.
+ * Reset password page - server component wrapper.
  * Renders the client-side ResetPasswordForm.
  */
 export default function ResetPasswordPage() {

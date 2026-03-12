@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 
 /**
  * Admin Supabase client using the SERVICE_ROLE key.
- * Bypasses RLS — use only in trusted server-side code (cron jobs, webhooks).
+ * Bypasses RLS - use only in trusted server-side code (cron jobs, webhooks).
  *
  * Do NOT expose to client-side code.
  */

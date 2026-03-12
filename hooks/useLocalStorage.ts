@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * useLocalStorage — Result Guru
+ * useLocalStorage - Result Guru
  *
  * SSR-safe localStorage hook with:
  *  - Lazy initialisation (avoids hydration mismatch)
@@ -30,7 +30,7 @@ export function useLocalStorage<T>(
     const serialize = options?.serializer ?? JSON.stringify
     const deserialize = options?.deserializer ?? ((raw) => JSON.parse(raw) as T)
 
-    // Read once, lazily — avoids SSR / hydration mismatch
+    // Read once, lazily - avoids SSR / hydration mismatch
     const readValue = useCallback((): T => {
         if (typeof window === 'undefined') return initialValue
         try {
@@ -71,7 +71,7 @@ export function useLocalStorage<T>(
                 try {
                     window.localStorage.setItem(key, serialize(next))
                 } catch {
-                    // Quota exceeded or private mode — silently ignore
+                    // Quota exceeded or private mode - silently ignore
                 }
                 return next
             })

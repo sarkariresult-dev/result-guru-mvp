@@ -32,7 +32,7 @@ export async function GET() {
 
         const { data: posts } = await supabase
             .from('v_published_posts')
-            .select('slug, type, title, excerpt, published_at, updated_at, category_name, org_name')
+            .select('slug, type, title, excerpt, published_at, updated_at, category_name, org_name, featured_image, featured_image_width, featured_image_height')
             .order('published_at', { ascending: false })
             .limit(50)
 
@@ -48,6 +48,9 @@ export async function GET() {
                         published_at: string | null
                         category_name: string | null
                         org_name: string | null
+                        featured_image: string | null
+                        featured_image_width: number | null
+                        featured_image_height: number | null
                     }) => {
                         const url = `${baseUrl}/${TYPE_SEGMENT[post.type]}/${post.slug}`
                         const pubDate = post.published_at
@@ -59,13 +62,24 @@ export async function GET() {
                             .map((c) => `<category>${escapeXml(c!)}</category>`)
                             .join('')
 
+                        // MARCUS: media:content is CRITICAL for Discover feed ingestion
+                        // Without it, images are invisible to Google Discover pipeline
+                        const imageUrl = post.featured_image
+                            ? (post.featured_image.startsWith('http') ? post.featured_image : `${baseUrl}${post.featured_image}`)
+                            : null
+                        const mediaTag = imageUrl
+                            ? `<media:content url="${escapeXml(imageUrl)}" medium="image" type="image/jpeg"${post.featured_image_width ? ` width="${post.featured_image_width}"` : ''}${post.featured_image_height ? ` height="${post.featured_image_height}"` : ''} />`
+                            : ''
+
                         return `    <item>
       <title>${escapeXml(post.title)}</title>
       <link>${url}</link>
       <guid isPermaLink="true">${url}</guid>
       <description>${escapeXml(description)}</description>
       <pubDate>${pubDate}</pubDate>
+      <dc:creator>${escapeXml(SITE.name)}</dc:creator>
       ${categories}
+      ${mediaTag}
     </item>`
                     },
                 )
@@ -78,7 +92,7 @@ export async function GET() {
     const lastBuildDate = new Date().toUTCString()
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
     <title>${escapeXml(SITE.name)}</title>
     <link>${baseUrl}</link>

@@ -28,7 +28,7 @@ export function PostList({ posts, themeColorClass = 'bg-brand-500' }: Props) {
                         className={`group relative flex flex-col justify-center px-4 py-3.5 transition-colors hover:bg-surface-subtle ${!isLast ? 'border-b border-border/50' : ''}`}
                     >
                         {/* The thick colored left border accent */}
-                        {/* The thick colored left border accent — persistent but subtle, full on hover */}
+                        {/* The thick colored left border accent - persistent but subtle, full on hover */}
                         <div className={`absolute left-0 top-0 bottom-0 w-[4px] ${themeColorClass} opacity-30 transition-opacity group-hover:opacity-100`} />
 
                         <div className="flex flex-col gap-1.5 pr-6 min-w-0">

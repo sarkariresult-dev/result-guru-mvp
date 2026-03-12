@@ -1,16 +1,16 @@
 'use client'
 
 /**
- * usePosts / usePost / useInfinitePosts — Result Guru
+ * usePosts / usePost / useInfinitePosts - Result Guru
  *
  * React Query wrappers for Supabase post queries.
  *
  * Exports:
- *  - usePosts(filters, page, limit) — paginated listing
- *  - useInfinitePosts(filters)       — infinite scroll
- *  - usePost(slug)                   — single post detail
- *  - useRelatedPosts(post, limit)    — related posts by type/state
- *  - useTrendingPosts(limit)         — v_trending_posts view
+ *  - usePosts(filters, page, limit) - paginated listing
+ *  - useInfinitePosts(filters)       - infinite scroll
+ *  - usePost(slug)                   - single post detail
+ *  - useRelatedPosts(post, limit)    - related posts by type/state
+ *  - useTrendingPosts(limit)         - v_trending_posts view
  */
 
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query'

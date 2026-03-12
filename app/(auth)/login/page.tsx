@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 }
 
 /**
- * Login page — server component wrapper.
+ * Login page - server component wrapper.
  * Renders the client-side LoginForm inside Suspense (required for useSearchParams).
  */
 export default function LoginPage() {

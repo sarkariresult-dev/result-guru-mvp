@@ -336,11 +336,11 @@ export default function AuthorProfilePage() {
                             <p className="mt-0.5 text-sm font-medium text-foreground">
                                 {profile.memberSince
                                     ? new Date(profile.memberSince).toLocaleDateString('en-IN', {
-                                          day: 'numeric',
-                                          month: 'long',
-                                          year: 'numeric',
-                                      })
-                                    : '—'}
+                                        day: 'numeric',
+                                        month: 'long',
+                                        year: 'numeric',
+                                    })
+                                    : '-'}
                             </p>
                         </div>
                     </div>

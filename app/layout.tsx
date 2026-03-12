@@ -8,7 +8,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import { SITE } from '@/config/site'
 import './globals.css'
 
-/* ── Fonts — next/font self-hosts for zero layout shift ────── */
+/* ── Fonts - next/font self-hosts for zero layout shift ────── */
 const fontSans = Inter({
     subsets: ['latin'],
     display: 'swap',
@@ -32,12 +32,12 @@ const fontMono = JetBrains_Mono({
     preload: false,
 })
 
-/* ── Metadata — comprehensive SEO + OG + Twitter ───────────── */
+/* ── Metadata - comprehensive SEO + OG + Twitter ───────────── */
 export const metadata: Metadata = {
     metadataBase: new URL(SITE.url),
 
     title: {
-        default: `${SITE.name} — Govt Result, Job & Admit Card 2026`,
+        default: `${SITE.name} - Govt Result, Job & Admit Card 2026`,
         template: `%s | ${SITE.name} `,
     },
     description: SITE.description,
@@ -65,12 +65,12 @@ export const metadata: Metadata = {
     creator: SITE.name,
     publisher: SITE.publisher.name,
 
-    /* Open Graph — optimised for Facebook, WhatsApp, Telegram sharing */
+    /* Open Graph - optimised for Facebook, WhatsApp, Telegram sharing */
     openGraph: {
         type: 'website',
         locale: SITE.locale,
         siteName: SITE.name,
-        title: `${SITE.name} — Govt Result, Job & Admit Card 2026`,
+        title: `${SITE.name} - Govt Result, Job & Admit Card 2026`,
         description: SITE.description,
         url: SITE.url,
         images: [
@@ -78,7 +78,7 @@ export const metadata: Metadata = {
                 url: SITE.defaultOgImage,
                 width: SITE.defaultOgWidth,
                 height: SITE.defaultOgHeight,
-                alt: `${SITE.name} — India's Government Job Portal`,
+                alt: `${SITE.name} - India's Government Job Portal`,
                 type: 'image/png',
             },
         ],
@@ -89,19 +89,19 @@ export const metadata: Metadata = {
         card: SITE.twitter.cardType,
         site: SITE.twitter.handle,
         creator: SITE.twitter.handle,
-        title: `${SITE.name} — Govt Result, Job & Admit Card 2026`,
+        title: `${SITE.name} - Govt Result, Job & Admit Card 2026`,
         description: SITE.description,
         images: [
             {
                 url: `${SITE.url}/twitter-image.png`,
                 width: 1200,
                 height: 630,
-                alt: `${SITE.name} — India's Government Job Portal`,
+                alt: `${SITE.name} - India's Government Job Portal`,
             },
         ],
     },
 
-    /* Crawl directives — maximise indexing */
+    /* Crawl directives - maximise indexing */
     robots: {
         index: SITE.robots.index,
         follow: SITE.robots.follow,
@@ -114,7 +114,7 @@ export const metadata: Metadata = {
         },
     },
 
-    /* Canonical — root points to base */
+    /* Canonical - root points to base */
     alternates: {
         canonical: '/',
         types: {
@@ -124,10 +124,10 @@ export const metadata: Metadata = {
         },
     },
 
-    /* PWA manifest — served by app/manifest.ts */
+    /* PWA manifest - served by app/manifest.ts */
     manifest: '/manifest.webmanifest',
 
-    /* Favicons — complete set */
+    /* Favicons - complete set */
     icons: {
         icon: [
             { url: '/favicon.ico', sizes: '48x48' },
@@ -143,7 +143,7 @@ export const metadata: Metadata = {
     /* Category hint for search engines */
     category: 'government information',
 
-    /* Search engine verification — from env.ts via SITE config */
+    /* Search engine verification - from env.ts via SITE config */
     verification: {
         google: SITE.verification.google,
         yandex: SITE.verification.yandex,
@@ -156,7 +156,7 @@ export const metadata: Metadata = {
     formatDetection: { telephone: false, email: false, address: false },
 }
 
-/* ── Viewport — separate export (Next.js 14+) ──────────────── */
+/* ── Viewport - separate export (Next.js 14+) ──────────────── */
 export const viewport: Viewport = {
     themeColor: [
         { media: '(prefers-color-scheme: light)', color: SITE.backgroundColor },
@@ -238,7 +238,7 @@ export default function RootLayout({
                 <link rel="dns-prefetch" href="https://www.google-analytics.com" />
 
 
-                {/* Structured Data — WebSite schema for sitelinks search box */}
+                {/* Structured Data - WebSite schema for sitelinks search box */}
                 <WebsiteJsonLd />
             </head>
             <body className="min-h-screen font-sans antialiased" suppressHydrationWarning>
@@ -252,7 +252,7 @@ export default function RootLayout({
                     <CookieConsent />
                 </Providers>
 
-                {/* Google Tag Manager — loaded after hydration for perf */}
+                {/* Google Tag Manager - loaded after hydration for perf */}
                 {SITE.gtmId && (
                     <Script
                         id="gtm-script"
@@ -263,7 +263,7 @@ export default function RootLayout({
                     />
                 )}
 
-                {/* Google Analytics 4 — loaded after interactive */}
+                {/* Google Analytics 4 - loaded after interactive */}
                 {SITE.gaId && !SITE.gtmId && (
                     <>
                         <Script

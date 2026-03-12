@@ -4,7 +4,7 @@ import { cacheLife, cacheTag } from 'next/cache'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
 
 /**
- * sitemap.xml — SEO index for all public pages
+ * sitemap.xml - SEO index for all public pages
  *
  * Strategy:
  * - Sitemap index: id=0 static+taxonomy, id=1+ dynamic post chunks
@@ -41,16 +41,16 @@ const STATIC_PAGES: Array<{
     changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency']
     priority: number
 }> = [
-        /* Homepage — highest priority, changes daily */
+        /* Homepage - highest priority, changes daily */
         { path: '', changeFrequency: 'daily', priority: 1.0 },
 
-        /* Core content categories — change daily */
+        /* Core content categories - change daily */
         { path: '/job', changeFrequency: 'daily', priority: 0.9 },
         { path: '/result', changeFrequency: 'daily', priority: 0.9 },
         { path: '/admit-card', changeFrequency: 'daily', priority: 0.9 },
         { path: '/answer-key', changeFrequency: 'daily', priority: 0.8 },
 
-        /* Exam-related — change frequently */
+        /* Exam-related - change frequently */
         { path: '/syllabus', changeFrequency: 'weekly', priority: 0.7 },
         { path: '/exam-pattern', changeFrequency: 'weekly', priority: 0.7 },
         { path: '/cut-off', changeFrequency: 'weekly', priority: 0.7 },
@@ -68,7 +68,7 @@ const STATIC_PAGES: Array<{
         { path: '/organizations', changeFrequency: 'monthly', priority: 0.5 },
         { path: '/site-map', changeFrequency: 'weekly', priority: 0.3 },
 
-        /* Info pages — rarely change */
+        /* Info pages - rarely change */
         { path: '/about', changeFrequency: 'monthly', priority: 0.4 },
         { path: '/contact', changeFrequency: 'monthly', priority: 0.4 },
         { path: '/privacy-policy', changeFrequency: 'yearly', priority: 0.2 },
@@ -76,131 +76,96 @@ const STATIC_PAGES: Array<{
         { path: '/disclaimer', changeFrequency: 'yearly', priority: 0.2 },
     ]
 
-/**
- * generateSitemaps — Generate the sitemap index.
- * 
- * Logic:
- * - id 0: Static pages + Taxonomy (states, orgs, tags)
- * - id 1+: Groups of posts (10,000 per chunk)
- */
-export async function generateSitemaps() {
-    const supabase = createStaticClient()
-    const { count } = await supabase
-        .from('v_published_posts')
-        .select('*', { count: 'exact', head: true })
+/* ── Combined Sitemap Generation ────────────────────────── */
 
-    const postCount = count ?? 0
-    const numPostSitemaps = Math.ceil(postCount / CHUNK_SIZE)
+export const revalidate = 3600 // revalidate at most every hour
+export const dynamic = 'force-static'
 
-    // We always have sitemap 0 (static + taxonomy)
-    const sitemaps = [{ id: 0 }]
-
-    // Add post sitemaps
-    for (let i = 1; i <= numPostSitemaps; i++) {
-        sitemaps.push({ id: i })
-    }
-
-    return sitemaps
-}
-
-/* ── Chunked Sitemap Generation ────────────────────────── */
-
-export default async function sitemap({ id }: { id: number }): Promise<MetadataRoute.Sitemap> {
-    'use cache'
-    cacheLife('hours')
-    cacheTag('sitemap')
-
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = SITE.url
     const now = new Date()
 
-    if (id === 0) {
-        /* ── Sitemap 0: Static + Taxonomy ── */
-        const staticEntries: MetadataRoute.Sitemap = STATIC_PAGES.map(
-            ({ path, changeFrequency, priority }) => ({
-                url: `${baseUrl}${path}`,
-                lastModified: now,
-                changeFrequency,
-                priority,
-            })
-        )
+    /* ── Static + Taxonomy ── */
+    const staticEntries: MetadataRoute.Sitemap = STATIC_PAGES.map(
+        ({ path, changeFrequency, priority }) => ({
+            url: `${baseUrl}${path}`,
+            lastModified: now,
+            changeFrequency,
+            priority,
+        })
+    )
 
-        let stateEntries: MetadataRoute.Sitemap = []
-        let orgEntries: MetadataRoute.Sitemap = []
-        let tagEntries: MetadataRoute.Sitemap = []
+    let stateEntries: MetadataRoute.Sitemap = []
+    let orgEntries: MetadataRoute.Sitemap = []
+    let tagEntries: MetadataRoute.Sitemap = []
 
-        try {
-            const supabase = createStaticClient()
+    try {
+        const supabase = createStaticClient()
 
-            const [statesResult, orgsResult, tagsResult] = await Promise.allSettled([
-                supabase
-                    .from('states')
-                    .select('slug, created_at')
-                    .eq('is_active', true)
-                    .order('name'),
-                supabase
-                    .from('organizations')
-                    .select('slug, created_at')
-                    .eq('is_active', true)
-                    .order('name'),
-                supabase
-                    .from('tags')
-                    .select('slug, created_at')
-                    .eq('is_active', true)
-                    .order('name'),
-            ])
+        const [statesResult, orgsResult, tagsResult] = await Promise.allSettled([
+            supabase
+                .from('states')
+                .select('slug, created_at')
+                .eq('is_active', true)
+                .order('name'),
+            supabase
+                .from('organizations')
+                .select('slug, created_at')
+                .eq('is_active', true)
+                .order('name'),
+            supabase
+                .from('tags')
+                .select('slug, created_at')
+                .eq('is_active', true)
+                .order('name'),
+        ])
 
-            if (statesResult.status === 'fulfilled') {
-                const { data: states } = statesResult.value
-                if (states?.length) {
-                    stateEntries = states.map(
-                        (state: { slug: string; created_at: string | null }) => ({
-                            url: `${baseUrl}/states/${state.slug}`,
-                            lastModified: new Date(state.created_at ?? now),
-                            changeFrequency: 'weekly' as const,
-                            priority: 0.6,
-                        })
-                    )
-                }
+        if (statesResult.status === 'fulfilled') {
+            const { data: states } = statesResult.value
+            if (states?.length) {
+                stateEntries = states.map(
+                    (state: { slug: string; created_at: string | null }) => ({
+                        url: `${baseUrl}/states/${state.slug}`,
+                        lastModified: new Date(state.created_at ?? now),
+                        changeFrequency: 'weekly' as const,
+                        priority: 0.6,
+                    })
+                )
             }
-
-            if (orgsResult.status === 'fulfilled') {
-                const { data: orgs } = orgsResult.value
-                if (orgs?.length) {
-                    orgEntries = orgs.map(
-                        (org: { slug: string; created_at: string | null }) => ({
-                            url: `${baseUrl}/organizations/${org.slug}`,
-                            lastModified: new Date(org.created_at ?? now),
-                            changeFrequency: 'monthly' as const,
-                            priority: 0.5,
-                        })
-                    )
-                }
-            }
-
-            if (tagsResult.status === 'fulfilled') {
-                const { data: tags } = tagsResult.value
-                if (tags?.length) {
-                    tagEntries = tags.map(
-                        (tag: { slug: string; created_at: string | null }) => ({
-                            url: `${baseUrl}/tag/${tag.slug}`,
-                            lastModified: new Date(tag.created_at ?? now),
-                            changeFrequency: 'weekly' as const,
-                            priority: 0.4,
-                        })
-                    )
-                }
-            }
-        } catch (err) {
-            console.error('[sitemap] Failed to fetch taxonomy:', err)
         }
 
-        return [...staticEntries, ...stateEntries, ...orgEntries, ...tagEntries]
+        if (orgsResult.status === 'fulfilled') {
+            const { data: orgs } = orgsResult.value
+            if (orgs?.length) {
+                orgEntries = orgs.map(
+                    (org: { slug: string; created_at: string | null }) => ({
+                        url: `${baseUrl}/organizations/${org.slug}`,
+                        lastModified: new Date(org.created_at ?? now),
+                        changeFrequency: 'monthly' as const,
+                        priority: 0.5,
+                    })
+                )
+            }
+        }
+
+        if (tagsResult.status === 'fulfilled') {
+            const { data: tags } = tagsResult.value
+            if (tags?.length) {
+                tagEntries = tags.map(
+                    (tag: { slug: string; created_at: string | null }) => ({
+                        url: `${baseUrl}/tag/${tag.slug}`,
+                        lastModified: new Date(tag.created_at ?? now),
+                        changeFrequency: 'weekly' as const,
+                        priority: 0.4,
+                    })
+                )
+            }
+        }
+    } catch (err) {
+        console.error('[sitemap] Failed to fetch taxonomy:', err)
     }
 
-    /* ── Sitemap 1+: Post Chunks ── */
-    const startRange = (id - 1) * CHUNK_SIZE
-    const endRange = startRange + CHUNK_SIZE - 1
-
+    /* ── Posts (Up to 45,000 for safety) ── */
     let postEntries: MetadataRoute.Sitemap = []
 
     try {
@@ -210,10 +175,10 @@ export default async function sitemap({ id }: { id: number }): Promise<MetadataR
             .from('v_published_posts')
             .select('slug, type, updated_at, published_at, content_updated_at')
             .order('published_at', { ascending: false })
-            .range(startRange, endRange)
+            .limit(45_000)
 
         if (error) {
-            console.error(`[sitemap] Posts chunk ${id} error:`, error.message)
+            console.error(`[sitemap] Posts error:`, error.message)
         } else if (posts?.length) {
             postEntries = posts
                 .filter(
@@ -238,8 +203,9 @@ export default async function sitemap({ id }: { id: number }): Promise<MetadataR
                 )
         }
     } catch (err) {
-        console.error(`[sitemap] Failed to fetch post chunk ${id}:`, err)
+        console.error(`[sitemap] Failed to fetch posts:`, err)
     }
 
-    return postEntries
+    return [...staticEntries, ...stateEntries, ...orgEntries, ...tagEntries, ...postEntries]
 }
+

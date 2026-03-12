@@ -22,16 +22,16 @@ export function cn(...inputs: ClassValue[]) {
  *
  * @param date - ISO string, Date, or null/undefined
  * @param format - One of the DATE_FORMAT presets or a custom Intl.DateTimeFormatOptions
- * @returns Formatted string, or '—' for null/undefined
+ * @returns Formatted string, or '-' for null/undefined
  */
 export function formatDate(
     date: string | Date | null | undefined,
     format: keyof typeof DATE_FORMAT | Intl.DateTimeFormatOptions = 'DISPLAY',
 ): string {
-    if (!date) return '—'
+    if (!date) return '-'
 
     const d = typeof date === 'string' ? new Date(date) : date
-    if (isNaN(d.getTime())) return '—'
+    if (isNaN(d.getTime())) return '-'
 
     // Preset formats
     const presets: Record<string, Intl.DateTimeFormatOptions> = {

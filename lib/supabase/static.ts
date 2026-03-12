@@ -6,12 +6,12 @@ import { createClient } from '@supabase/supabase-js'
  *
  * Next.js 16 forbids calling `cookies()` (a dynamic data source) inside
  * `'use cache'` functions. This client uses the public anon key WITHOUT
- * touching cookies — making it safe for cached server queries.
+ * touching cookies - making it safe for cached server queries.
  *
  * ▸ Use `createStaticClient()` in any function annotated with `'use cache'`.
  * ▸ Use `createServerClient()`  for auth-gated or mutating operations.
  *
- * The anon key + RLS still apply — only publicly visible rows are returned.
+ * The anon key + RLS still apply - only publicly visible rows are returned.
  */
 let _client: ReturnType<typeof createClient> | null = null
 

@@ -1,5 +1,5 @@
 // =============================================================
-// analytics.types.ts — Result Guru
+// analytics.types.ts - Result Guru
 // Mirrors 008_post_analytics.sql and analytics-related views.
 // =============================================================
 

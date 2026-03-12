@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * useMediaQuery — Result Guru
+ * useMediaQuery - Result Guru
  *
  * SSR-safe media query hook with Tailwind-aligned breakpoints.
  *
@@ -17,7 +17,7 @@ import { useState, useEffect } from 'react'
 // ─── Generic ─────────────────────────────────────────────────────────────────
 
 export function useMediaQuery(query: string): boolean {
-    // SSR: default false — avoid hydration mismatch
+    // SSR: default false - avoid hydration mismatch
     const [matches, setMatches] = useState(false)
 
     useEffect(() => {
@@ -48,20 +48,20 @@ export const useIsLg = () => useMediaQuery('(min-width: 1024px)')
 /** True when viewport ≥ 1280px */
 export const useIsXl = () => useMediaQuery('(min-width: 1280px)')
 
-/** Convenience alias — mobile-first: viewport < 768px */
+/** Convenience alias - mobile-first: viewport < 768px */
 export const useIsMobile = () => useMediaQuery('(max-width: 767px)')
 
-/** Convenience alias — tablet range: 768–1023px */
+/** Convenience alias - tablet range: 768–1023px */
 export const useIsTablet = () => useMediaQuery('(min-width: 768px) and (max-width: 1023px)')
 
-/** Convenience alias — desktop: ≥ 1024px */
+/** Convenience alias - desktop: ≥ 1024px */
 export const useIsDesktop = () => useMediaQuery('(min-width: 1024px)')
 
 /** System dark mode preference */
 export const usePrefersDark = () => useMediaQuery('(prefers-color-scheme: dark)')
 
-/** System reduced-motion preference — use for disabling animations */
+/** System reduced-motion preference - use for disabling animations */
 export const usePrefersReducedMotion = () => useMediaQuery('(prefers-reduced-motion: reduce)')
 
-/** Touch device — hides hover-only UI on touch devices */
+/** Touch device - hides hover-only UI on touch devices */
 export const useIsTouch = () => useMediaQuery('(pointer: coarse)')

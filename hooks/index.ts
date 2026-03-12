@@ -1,5 +1,5 @@
 /**
- * hooks/index.ts — Result Guru
+ * hooks/index.ts - Result Guru
  * Barrel export for all custom hooks.
  *
  * Usage:

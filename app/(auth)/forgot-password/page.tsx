@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 }
 
 /**
- * Forgot password page — server component wrapper.
+ * Forgot password page - server component wrapper.
  * Renders the client-side ForgotPasswordForm.
  */
 export default function ForgotPasswordPage() {

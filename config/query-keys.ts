@@ -1,5 +1,5 @@
 /**
- * query-keys.ts — Result Guru
+ * query-keys.ts - Result Guru
  *
  * Centralised React Query key factory.
  * Using factory functions keeps keys consistent across hooks and

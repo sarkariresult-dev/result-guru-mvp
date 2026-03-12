@@ -127,11 +127,10 @@ export default async function AdminSubscribersPage({ searchParams }: PageProps) 
                             <Link
                                 key={f.label}
                                 href={buildUrl({ status: f.value })}
-                                className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-                                    isActive
+                                className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${isActive
                                         ? 'bg-primary text-white'
                                         : 'bg-background-subtle text-foreground-muted hover:bg-background-subtle/80'
-                                }`}
+                                    }`}
                             >
                                 {f.label}
                             </Link>
@@ -189,7 +188,7 @@ export default async function AdminSubscribersPage({ searchParams }: PageProps) 
                                                     {sub.phone}
                                                 </span>
                                             ) : (
-                                                '—'
+                                                '-'
                                             )}
                                         </td>
                                         <td className="px-4 py-3 text-center">
@@ -198,14 +197,14 @@ export default async function AdminSubscribersPage({ searchParams }: PageProps) 
                                                     <MessageSquare className="size-3.5" />
                                                 </span>
                                             ) : (
-                                                <span className="text-foreground-subtle">—</span>
+                                                <span className="text-foreground-subtle">-</span>
                                             )}
                                         </td>
                                         <td className="px-4 py-3 text-center">
                                             {sub.telegram_user_id ? (
                                                 <span className="text-blue-600 text-xs font-medium">Yes</span>
                                             ) : (
-                                                <span className="text-foreground-subtle">—</span>
+                                                <span className="text-foreground-subtle">-</span>
                                             )}
                                         </td>
                                         <td className="px-4 py-3">

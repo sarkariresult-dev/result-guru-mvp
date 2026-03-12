@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/Input'
 import { SITE } from '@/config/site'
 
 /**
- * Forgot password form — sends a password reset link to the user's email.
+ * Forgot password form - sends a password reset link to the user's email.
  *
  * Features:
  * - Client-side Zod validation

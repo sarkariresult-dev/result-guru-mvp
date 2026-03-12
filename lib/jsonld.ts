@@ -176,18 +176,22 @@ export function buildHowToSchema(
     }
 }
 
-// ── Article Schema ─────────────────────────────────────────
+// ── NewsArticle Schema ─────────────────────────────────────
 /**
- * Build schema.org/Article for any post type.
- * Produces rich search results with headline, image, date, author.
+ * Build schema.org/NewsArticle for published posts.
+ * NewsArticle (not Article) enables Google Discover Top Stories
+ * carousel and AMP-free news surfaces.
+ * - Championed by MARCUS (SEO Purist), approved unanimously by COUNCIL.
  */
-export function buildArticleSchema(post: PostDetail): JsonLdObject {
+export function buildNewsArticleSchema(post: PostDetail): JsonLdObject {
     const url = `${SITE.url}${postUrl(post.type as any, post.slug)}`
     const schema: JsonLdObject = {
         '@context': 'https://schema.org',
-        '@type': 'Article',
+        '@type': 'NewsArticle',
         headline: post.title,
         description: post.excerpt || post.meta_description || post.title,
+        // SARA: isAccessibleForFree signals free content to Discover
+        isAccessibleForFree: true,
         url,
         datePublished: post.published_at ?? post.created_at,
         dateModified: post.content_updated_at ?? post.updated_at,
@@ -203,6 +207,8 @@ export function buildArticleSchema(post: PostDetail): JsonLdObject {
             name: `${SITE.name} Editorial Team`,
             url: `${SITE.url}/about`,
         },
+        // SARA: dateline adds regional authority signal
+        ...(post.state_name && { dateline: post.state_name }),
         mainEntityOfPage: {
             '@type': 'WebPage',
             '@id': url,

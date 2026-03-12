@@ -22,7 +22,7 @@ interface HomeSectionProps {
     priority?: number
     /**
      * Pre-fetched posts from fn_homepage_sections() batched RPC.
-     * When provided, skips the individual getRecentPosts() call — zero DB queries.
+     * When provided, skips the individual getRecentPosts() call - zero DB queries.
      * When omitted, falls back to fetching independently (backward compatible).
      */
     posts?: PostCard[]
@@ -36,10 +36,10 @@ interface HomeSectionProps {
 
 /**
  * Async Server Component for a homepage content section.
- * Each instance streams independently via Suspense — no waterfall.
+ * Each instance streams independently via Suspense - no waterfall.
  *
  * Performance: when `posts` prop is provided (from batched RPC),
- * this component does ZERO database work — pure rendering only.
+ * this component does ZERO database work - pure rendering only.
  */
 export async function HomeSection({
     typeKey, heading, route, cta, limit, priority, posts: prefetched,

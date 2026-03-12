@@ -24,7 +24,7 @@ const BUCKET_FILTERS = [
 ] as const
 
 function formatBytes(bytes: number | null): string {
-    if (bytes == null) return '—'
+    if (bytes == null) return '-'
     if (bytes < 1024) return `${bytes} B`
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
@@ -140,11 +140,10 @@ export default async function AdminMediaPage({ searchParams }: PageProps) {
                             <Link
                                 key={f.label}
                                 href={buildUrl({ bucket: f.value })}
-                                className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-                                    isActive
+                                className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${isActive
                                         ? 'bg-primary text-white'
                                         : 'bg-background-subtle text-foreground-muted hover:bg-background-subtle/80'
-                                }`}
+                                    }`}
                             >
                                 {f.label}
                             </Link>

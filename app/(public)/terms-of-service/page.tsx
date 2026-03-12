@@ -5,7 +5,7 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { SITE } from '@/config/site'
 
 export const metadata = buildPageMetadata({
-    title: 'Terms of Service — Usage Agreement',
+    title: 'Terms of Service - Usage Agreement',
     description: `Terms of Service for ${SITE.name}. By accessing the website, you agree to these terms and conditions governing the use of our services and content.`,
     path: '/terms-of-service',
 })

@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- 009_automation.sql — Result Guru
+-- 009_automation.sql - Result Guru
 -- AI content pipeline: raw topic queue, LLM prompt templates,
 -- and JSON-LD schema templates.
 -- ═══════════════════════════════════════════════════════════════
@@ -73,7 +73,7 @@ INSERT INTO schema_templates (name, post_type, schema_type, template, descriptio
 
   ('FAQ Page', NULL, 'FAQPage',
    '{"@context":"https://schema.org","@type":"FAQPage","mainEntity":"{{faq_items}}"}',
-   'FAQPage schema — injected when post.faq has ≥1 item'),
+   'FAQPage schema - injected when post.faq has ≥1 item'),
 
   ('Article', 'notification', 'Article',
    '{"@context":"https://schema.org","@type":"Article",

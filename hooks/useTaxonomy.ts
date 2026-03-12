@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * useTaxonomy — Result Guru
+ * useTaxonomy - Result Guru
  *
  * React Query hooks for all taxonomy entities:
  *  - useStates / useState_hook
@@ -9,7 +9,7 @@
  *  - useCategories
  *  - useQualifications
  *  - useTags / useTag
- *  - useTaxonomySummary — all in one (for filter dropdowns)
+ *  - useTaxonomySummary - all in one (for filter dropdowns)
  *
  * All taxonomy data has a long stale time since it rarely changes.
  */

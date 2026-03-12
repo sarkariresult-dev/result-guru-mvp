@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- 001_extensions.sql — Result Guru
+-- 001_extensions.sql - Result Guru
 -- PostgreSQL extensions required by the full schema.
 -- Run ONCE against the target database before all other migrations.
 -- ═══════════════════════════════════════════════════════════════
@@ -19,5 +19,5 @@ CREATE EXTENSION IF NOT EXISTS "unaccent"         WITH SCHEMA public;
 -- GiST indexes for range exclusion and JSONB containment
 CREATE EXTENSION IF NOT EXISTS "btree_gist"       WITH SCHEMA public;
 
--- Slow-query profiling — enable in production, optional in dev
+-- Slow-query profiling - enable in production, optional in dev
 CREATE EXTENSION IF NOT EXISTS "pg_stat_statements";

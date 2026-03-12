@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic'
 
-/* Below-fold client components — lazy-loaded with ssr:false to reduce initial bundle.
+/* Below-fold client components - lazy-loaded with ssr:false to reduce initial bundle.
    Wrapped in a Client Component because next/dynamic ssr:false is disallowed in Server Components. */
 
 export const AdZone = dynamic(

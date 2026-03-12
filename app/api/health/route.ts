@@ -10,14 +10,14 @@ export async function GET() {
     const start = Date.now()
 
     try {
-        // Quick Supabase connectivity check — lightweight query
+        // Quick Supabase connectivity check - lightweight query
         const supabase = createStaticClient()
         const { error } = await supabase.from('states').select('id').limit(1).single()
 
         const latency = Date.now() - start
 
         if (error && error.code !== 'PGRST116') {
-            // PGRST116 = "no rows returned" — still means DB is reachable
+            // PGRST116 = "no rows returned" - still means DB is reachable
             return NextResponse.json(
                 {
                     status: 'degraded',

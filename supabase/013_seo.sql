@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- 013_seo.sql — Result Guru
+-- 013_seo.sql - Result Guru
 -- Global SEO config, URL redirects, internal search analytics,
 -- and sitemap configuration.
 -- ═══════════════════════════════════════════════════════════════
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS redirects (
   created_at  TIMESTAMPTZ   NOT NULL DEFAULT NOW()
 );
 COMMENT ON TABLE redirects IS
-  'URL redirect rules. is_chained flag set by trigger — always fix chains.
+  'URL redirect rules. is_chained flag set by trigger - always fix chains.
    410 (Gone) tells Googlebot to deindex the URL immediately.';
 
 -- ── Internal site search analytics ───────────────────────────
@@ -120,9 +120,9 @@ INSERT INTO sitemap_config (url_pattern, changefreq, priority, include, note) VA
   ('/disclaimer',        'monthly', 0.3, TRUE,  'Disclaimer'),
 
   -- Excluded
-  ('/search',            'daily',   0.0, FALSE, 'Search results — noindex'),
-  ('/admin/%',           'daily',   0.0, FALSE, 'Admin — always excluded'),
-  ('/api/%',             'daily',   0.0, FALSE, 'API routes — excluded')
+  ('/search',            'daily',   0.0, FALSE, 'Search results - noindex'),
+  ('/admin/%',           'daily',   0.0, FALSE, 'Admin - always excluded'),
+  ('/api/%',             'daily',   0.0, FALSE, 'API routes - excluded')
 ON CONFLICT (url_pattern) DO NOTHING;
 
 -- ── Plural → Singular internal redirects ─────────────────────

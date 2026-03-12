@@ -90,5 +90,5 @@ export const isProduction = env.NODE_ENV === 'production'
 // True in development
 export const isDevelopment = !isProduction
 
-// Canonical origin — defaults to http://localhost:3000 if not set
+// Canonical origin - defaults to http://localhost:3000 if not set
 export const appUrl = env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'

@@ -1,8 +1,8 @@
 -- ═══════════════════════════════════════════════════════════════════════════
--- 021_rpc_functions.sql — RPC helper functions
+-- 021_rpc_functions.sql - RPC helper functions
 -- ═══════════════════════════════════════════════════════════════════════════
--- C4: fn_total_view_count / fn_author_view_count — SUM view_count in SQL
--- C5: fn_posts_by_tag — joined query replacing unbounded IN clause
+-- C4: fn_total_view_count / fn_author_view_count - SUM view_count in SQL
+-- C5: fn_posts_by_tag - joined query replacing unbounded IN clause
 -- ═══════════════════════════════════════════════════════════════════════════
 
 -- ── C4: Total view count for all published posts ──────────────────────────

@@ -6,7 +6,7 @@ import { SITE } from '@/config/site'
 import { Mail, MapPin, HelpCircle, Clock } from 'lucide-react'
 
 export const metadata = buildPageMetadata({
-    title: 'Contact Us — Support & Inquiries',
+    title: 'Contact Us - Support & Inquiries',
     description: `Get in touch with the ${SITE.name} team for support, partnerships, advertising, feedback, or corrections. We typically reply within 24-48 hours.`,
     path: '/contact',
 })

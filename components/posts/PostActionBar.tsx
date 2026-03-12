@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * PostActionBar — Result Guru
+ * PostActionBar - Result Guru
  *
  * Floating action bar on post detail pages with:
  *  - Copy link (useCopyToClipboard)
@@ -32,11 +32,11 @@ interface Props {
     title: string
     type: string
     initialViewCount: number
-    /** Full canonical URL — built server-side */
+    /** Full canonical URL - built server-side */
     url: string
 }
 
-// ── Twitter / X icon (inline — avoids extra dependency) ──────────────────
+// ── Twitter / X icon (inline - avoids extra dependency) ──────────────────
 
 function XIcon({ className }: { className?: string }) {
     return (
@@ -100,7 +100,7 @@ export function PostActionBar({ postId, slug, title, type, initialViewCount, url
 
     // ── Share URLs ────────────────────────────────────────────────────────
     const encodedUrl = encodeURIComponent(url)
-    const encodedTitle = encodeURIComponent(`${title} — ${SITE.name}`)
+    const encodedTitle = encodeURIComponent(`${title} - ${SITE.name}`)
     const whatsappUrl = `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`
     const telegramUrl = `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`
@@ -184,11 +184,10 @@ export function PostActionBar({ postId, slug, title, type, initialViewCount, url
             <button
                 type="button"
                 onClick={() => toggle({ slug, title, type })}
-                className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                    bookmarked
+                className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${bookmarked
                         ? 'bg-brand-50 text-brand-700 dark:bg-brand-900/20 dark:text-brand-300'
                         : 'text-foreground-muted hover:bg-background-subtle hover:text-foreground'
-                }`}
+                    }`}
                 aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark this post'}
                 aria-pressed={bookmarked}
             >

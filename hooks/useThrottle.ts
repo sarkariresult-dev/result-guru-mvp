@@ -1,9 +1,9 @@
 'use client'
 
 /**
- * useThrottle — Result Guru
+ * useThrottle - Result Guru
  *
- * Returns a throttled version of a value — updates at most once
+ * Returns a throttled version of a value - updates at most once
  * every `limit` ms. Useful for scroll/resize handlers.
  *
  * Usage:
@@ -28,10 +28,10 @@ export function useThrottle<T>(value: T, limit = 100): T {
             return
         }
         const timer = setTimeout(() => {
-                setThrottled(value)
-                lastRan.current = Date.now()
-            }, limit - elapsed)
-            return () => clearTimeout(timer)
+            setThrottled(value)
+            lastRan.current = Date.now()
+        }, limit - elapsed)
+        return () => clearTimeout(timer)
     }, [value, limit])
 
     return throttled

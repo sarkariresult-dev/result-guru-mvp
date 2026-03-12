@@ -1,11 +1,11 @@
 -- ═══════════════════════════════════════════════════════════════
--- 015_indexes.sql — Result Guru
+-- 015_indexes.sql - Result Guru
 -- All indexes. Created after all tables exist.
 -- Every index has a comment explaining which query it serves.
 -- ═══════════════════════════════════════════════════════════════
 
 -- ────────────────────────────────────────────────────────────
--- POSTS — scalar
+-- POSTS - scalar
 -- ────────────────────────────────────────────────────────────
 
 CREATE INDEX IF NOT EXISTS idx_posts_slug
@@ -53,7 +53,7 @@ CREATE INDEX IF NOT EXISTS idx_posts_view_count
 CREATE INDEX IF NOT EXISTS idx_posts_seo_score
   ON posts(seo_score ASC)
   WHERE status = 'published';
-  -- SEO audit — worst-scoring posts first
+  -- SEO audit - worst-scoring posts first
 
 CREATE INDEX IF NOT EXISTS idx_posts_scheduled
   ON posts(scheduled_at)
@@ -76,7 +76,7 @@ CREATE INDEX IF NOT EXISTS idx_posts_content_updated
   -- Stale-content audit (posts not updated in >180 days)
 
 -- ────────────────────────────────────────────────────────────
--- POSTS — compound (covers common listing query shapes)
+-- POSTS - compound (covers common listing query shapes)
 -- ────────────────────────────────────────────────────────────
 
 CREATE INDEX IF NOT EXISTS idx_posts_type_pub
@@ -99,7 +99,7 @@ CREATE INDEX IF NOT EXISTS idx_posts_org_type_pub
   -- /org/upsc?type=result
 
 -- ────────────────────────────────────────────────────────────
--- POSTS — full-text and fuzzy search
+-- POSTS - full-text and fuzzy search
 -- ────────────────────────────────────────────────────────────
 
 CREATE INDEX IF NOT EXISTS idx_posts_fts
@@ -111,7 +111,7 @@ CREATE INDEX IF NOT EXISTS idx_posts_title_trgm
   -- title ILIKE '%ssc%' trigram autocomplete
 
 -- ────────────────────────────────────────────────────────────
--- POSTS — JSONB / array columns
+-- POSTS - JSONB / array columns
 -- ────────────────────────────────────────────────────────────
 
 CREATE INDEX IF NOT EXISTS idx_posts_qualification

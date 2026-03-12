@@ -3,15 +3,15 @@ import Image from 'next/image'
 interface LogoProps {
     /** 'full' renders the full wordmark, 'icon' renders the compact RG icon */
     variant?: 'full' | 'icon'
-    /** Height in pixels — width auto-scales from the SVG aspect ratio */
+    /** Height in pixels - width auto-scales from the SVG aspect ratio */
     height?: number
     className?: string
-    /** Force a specific theme — skips the automatic dark: swap */
+    /** Force a specific theme - skips the automatic dark: swap */
     forceDark?: boolean
 }
 
 /**
- * Brand logo — renders the correct SVG for light/dark mode.
+ * Brand logo - renders the correct SVG for light/dark mode.
  *
  * Uses Tailwind `dark:hidden` / `hidden dark:block` to swap logos
  * without any client-side JS.
@@ -28,7 +28,7 @@ export function Logo({ variant = 'full', height = 40, className = '', forceDark 
     const darkSrc = `/logo/logo-dark${suffix}.svg`
     const alt = 'Result Guru'
 
-    // Approximate width from the SVG's 1:1 viewBox (2000x2000) — actual content is wider
+    // Approximate width from the SVG's 1:1 viewBox (2000x2000) - actual content is wider
     // The SVG preserveAspectRatio will handle sizing; we just need a reasonable width hint
     const width = variant === 'icon' ? height : height * 4
 

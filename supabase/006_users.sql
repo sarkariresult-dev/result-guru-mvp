@@ -1,12 +1,12 @@
 -- ═══════════════════════════════════════════════════════════════
--- 006_users.sql — Result Guru
+-- 006_users.sql - Result Guru
 -- CMS user accounts, mirroring Supabase Auth (auth.users).
 -- Includes JWT role claims sync for zero-DB-query middleware.
 -- ═══════════════════════════════════════════════════════════════
 
 CREATE TABLE IF NOT EXISTS users (
   id            UUID        PRIMARY KEY DEFAULT uuid_generate_v4(),
-  -- Links to auth.users — NULL until the auth account is created
+  -- Links to auth.users - NULL until the auth account is created
   auth_user_id  UUID        UNIQUE,
   email         TEXT        UNIQUE NOT NULL,
   name          TEXT        NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
   role          user_role   NOT NULL DEFAULT 'user',
   is_active     BOOLEAN     NOT NULL DEFAULT TRUE,
   last_login_at TIMESTAMPTZ,
-  -- Granular permission overrides (future use — role covers 99% of cases)
+  -- Granular permission overrides (future use - role covers 99% of cases)
   permissions   JSONB       NOT NULL DEFAULT '{}',
   created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()

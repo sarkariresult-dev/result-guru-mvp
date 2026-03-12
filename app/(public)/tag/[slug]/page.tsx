@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     if (!tag) return {}
 
-    const title = tag.meta_title ?? `${tag.name} — Latest Government Jobs, Results & Updates 2026`
+    const title = tag.meta_title ?? `${tag.name} - Latest Government Jobs, Results & Updates 2026`
     const description = tag.meta_description ?? `Browse all posts tagged "${tag.name}". Find the latest Sarkari Jobs, exam results, admit cards, and notifications related to ${tag.name}.`
     const url = `${SITE.url}/tag/${slug}`
 
@@ -120,13 +120,13 @@ export default async function TagPage({ params, searchParams }: Props) {
 
     const collectionJsonLd = totalCount > 0
         ? {
-              '@context': 'https://schema.org',
-              '@type': 'CollectionPage',
-              name: `${tag.name} — Posts`,
-              url: `${SITE.url}/tag/${slug}`,
-              description: tag.description ?? `All posts tagged with ${tag.name}`,
-              numberOfItems: totalCount,
-          }
+            '@context': 'https://schema.org',
+            '@type': 'CollectionPage',
+            name: `${tag.name} - Posts`,
+            url: `${SITE.url}/tag/${slug}`,
+            description: tag.description ?? `All posts tagged with ${tag.name}`,
+            numberOfItems: totalCount,
+        }
         : null
 
     return (
@@ -198,11 +198,10 @@ export default async function TagPage({ params, searchParams }: Props) {
                                             key={p}
                                             href={`/tag/${slug}?page=${p}`}
                                             aria-current={p === page ? 'page' : undefined}
-                                            className={`inline-flex size-10 items-center justify-center rounded-lg text-sm font-medium transition-colors ${
-                                                p === page
+                                            className={`inline-flex size-10 items-center justify-center rounded-lg text-sm font-medium transition-colors ${p === page
                                                     ? 'bg-brand-600 text-white shadow-sm'
                                                     : 'border border-border bg-surface text-foreground-muted hover:bg-background-subtle'
-                                            }`}
+                                                }`}
                                         >
                                             {p}
                                         </Link>

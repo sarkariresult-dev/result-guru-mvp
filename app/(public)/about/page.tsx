@@ -6,7 +6,7 @@ import { SITE } from '@/config/site'
 import { ShieldCheck, Target, Zap, Users, BarChart2, Clock, Globe } from 'lucide-react'
 
 export const metadata = buildPageMetadata({
-    title: 'About Us — Our Mission & Values',
+    title: 'About Us - Our Mission & Values',
     description: `Learn about ${SITE.name}, India's trusted platform for Sarkari Jobs, Exam Results, Admit Cards, and Government Schemes. Our mission, values, and what makes us different.`,
     path: '/about',
 })
@@ -97,7 +97,7 @@ export default function AboutPage() {
                                     Millions of students across India prepare for government examinations every year. The process is tough, but finding the right information at the right time shouldn&apos;t be.
                                 </p>
                                 <p className="text-foreground-muted leading-relaxed">
-                                    <strong>{SITE.name}</strong> was built to solve the fragmentation of information. We centralize everything into one beautiful, easy-to-use platform so you can focus on what actually matters — your preparation.
+                                    <strong>{SITE.name}</strong> was built to solve the fragmentation of information. We centralize everything into one beautiful, easy-to-use platform so you can focus on what actually matters - your preparation.
                                 </p>
                             </div>
                             <div className="bg-background-subtle p-8 sm:p-12 flex items-center justify-center min-h-75">

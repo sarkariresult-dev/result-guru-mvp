@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * useTheme — Result Guru
+ * useTheme - Result Guru
  *
  * Re-exports next-themes `useTheme` and adds:
  *  - `isDark` / `isLight` booleans

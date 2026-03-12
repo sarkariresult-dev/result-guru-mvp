@@ -21,7 +21,7 @@ export type HomepageSections = Record<string, PostCard[]>
  * Fetch post counts grouped by type from the `mv_post_type_counts`
  * materialized view via the `fn_post_counts_by_type()` RPC.
  *
- * Returns O(1) data — the MV is refreshed every 15 min by pg_cron.
+ * Returns O(1) data - the MV is refreshed every 15 min by pg_cron.
  * Falls back gracefully to an empty array on error so the homepage
  * renders with zero-state UI instead of crashing.
  */
@@ -48,7 +48,7 @@ export async function getPostCountsByType(): Promise<PostTypeCounts[]> {
  * `{ "job": [...], "result": [...], "admit": [...], ... }`
  *
  * Replaces 5–6 separate `getRecentPosts()` calls, reducing TTFB by 200-400ms.
- * Falls back to empty object on error — each section renders its empty state.
+ * Falls back to empty object on error - each section renders its empty state.
  */
 export async function getHomepageSections(limit = 6): Promise<HomepageSections> {
     'use cache'

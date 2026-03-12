@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * useScrollPosition — Result Guru
+ * useScrollPosition - Result Guru
  *
  * Tracks window scroll position with throttling.
  * Returns scrollY, direction, and a showBackToTop flag.

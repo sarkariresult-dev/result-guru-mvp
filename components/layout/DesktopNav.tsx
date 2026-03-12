@@ -71,7 +71,7 @@ export function DesktopNav({ recentPosts, organizations, states }: DesktopNavPro
                                     <div className="flex items-center justify-between border-b border-border pb-2">
                                         <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
                                             <FileText className="size-4 text-brand-500" />
-                                            {link.label} — Latest
+                                            {link.label} - Latest
                                         </h3>
                                     </div>
                                     <div className="grid grid-cols-2 gap-2 max-h-[60vh] overflow-y-auto pr-2 pb-2">

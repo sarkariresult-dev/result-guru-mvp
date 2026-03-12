@@ -1,5 +1,5 @@
 // =============================================================
-// user.types.ts — Result Guru
+// user.types.ts - Result Guru
 // Mirrors 006_users.sql.
 // =============================================================
 
@@ -8,7 +8,7 @@ import type { UserRole } from './enums'
 // ── Base user (DB row) ─────────────────────────────────────
 export interface User {
     id: string
-    /** Maps to Supabase auth.users.id — may be null until auth account is created */
+    /** Maps to Supabase auth.users.id - may be null until auth account is created */
     auth_user_id: string | null
     email: string
     name: string

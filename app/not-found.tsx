@@ -4,13 +4,13 @@ import { Home, Search, ArrowRight, Briefcase, FileText, CreditCard, Key, BookOpe
 import { ROUTE_PREFIXES } from '@/config/site'
 
 export const metadata: Metadata = {
-    title: '404 — Page Not Found',
+    title: '404 - Page Not Found',
     description:
         'The page you\'re looking for doesn\'t exist or has been moved. Browse our latest Results, Government Jobs, and Admit Cards.',
     robots: { index: false, follow: true },
 }
 
-/* Quick-links — high-traffic sections to retain visitors */
+/* Quick-links - high-traffic sections to retain visitors */
 const quickLinks = [
     { label: 'Latest Jobs', href: ROUTE_PREFIXES.job, Icon: Briefcase },
     { label: 'Exam Results', href: ROUTE_PREFIXES.result, Icon: FileText },
@@ -66,7 +66,7 @@ export default function NotFound() {
                     </Link>
                 </div>
 
-                {/* Quick-nav grid — reduces bounce rate */}
+                {/* Quick-nav grid - reduces bounce rate */}
                 <div className="w-full border-t border-border pt-8">
                     <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-foreground-subtle">
                         Popular Sections

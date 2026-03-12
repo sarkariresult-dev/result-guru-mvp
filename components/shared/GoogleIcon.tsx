@@ -1,5 +1,5 @@
 /**
- * Google "G" logo — inline SVG to avoid external dependencies.
+ * Google "G" logo - inline SVG to avoid external dependencies.
  * Uses official brand colours from Google's identity guidelines.
  */
 export function GoogleIcon({ className = 'size-4' }: { className?: string }) {

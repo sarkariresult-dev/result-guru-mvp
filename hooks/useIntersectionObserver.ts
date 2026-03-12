@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * useIntersectionObserver — Result Guru
+ * useIntersectionObserver - Result Guru
  *
  * Thin wrapper around IntersectionObserver. Common uses:
  *  - Trigger infinite scroll when sentinel element enters viewport

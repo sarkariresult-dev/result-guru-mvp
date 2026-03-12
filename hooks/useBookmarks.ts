@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * useBookmarks — Result Guru
+ * useBookmarks - Result Guru
  *
  * Persist bookmarked post slugs in localStorage.
  * Works offline and without a user account.

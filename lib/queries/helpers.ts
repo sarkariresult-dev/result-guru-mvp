@@ -31,7 +31,7 @@ export function unwrapQuery<T>(
     error: { message: string; code?: string } | null,
 ): T {
     if (error) {
-        // PGRST116 = "no rows found" — return null for .single() queries
+        // PGRST116 = "no rows found" - return null for .single() queries
         if (error.code === 'PGRST116') return null as T
         throw new QueryError(context, error.message, error.code)
     }

@@ -1,5 +1,5 @@
 /**
- * config/index.ts — Result Guru
+ * config/index.ts - Result Guru
  * Barrel export for all config modules.
  *
  * Usage:

@@ -12,7 +12,7 @@ import { GoogleIcon } from '@/components/shared/GoogleIcon'
 import { SITE } from '@/config/site'
 
 /**
- * Login form — email/password + Google OAuth.
+ * Login form - email/password + Google OAuth.
  *
  * Features:
  * - Client-side Zod validation before server action

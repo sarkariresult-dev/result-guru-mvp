@@ -1,5 +1,5 @@
 // =============================================================
-// affiliate.types.ts — Result Guru
+// affiliate.types.ts - Result Guru
 // Mirrors 012_affiliate.sql.
 // =============================================================
 

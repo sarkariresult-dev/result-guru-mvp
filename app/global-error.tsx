@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * Global Error Boundary — catches errors in the root layout itself.
+ * Global Error Boundary - catches errors in the root layout itself.
  * This MUST provide its own <html>/<body> since the root layout is broken.
  * Only triggered when app/layout.tsx or Providers crash.
  */
@@ -28,7 +28,7 @@ export default function GlobalError({
             <head>
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <title>Something went wrong — Result Guru</title>
+                <title>Something went wrong - Result Guru</title>
             </head>
             <body
                 style={{
@@ -54,7 +54,7 @@ export default function GlobalError({
                         gap: 24,
                     }}
                 >
-                    {/* Inline SVG — no external deps */}
+                    {/* Inline SVG - no external deps */}
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="56"

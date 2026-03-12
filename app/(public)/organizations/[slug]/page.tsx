@@ -52,7 +52,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
     if (!org) return {}
 
-    const title = page > 1 ? `${org.name} - Page ${page} — Sarkari Update` : (org.meta_title ?? `${org.name}${org.short_name ? ` (${org.short_name})` : ''} — Jobs, Results & Updates 2026`)
+    const title = page > 1 ? `${org.name} - Page ${page} - Sarkari Update` : (org.meta_title ?? `${org.name}${org.short_name ? ` (${org.short_name})` : ''} - Jobs, Results & Updates 2026`)
     const description = org.meta_description ?? `Find all the latest government jobs, exam results, admit cards, and notifications from ${org.name} (${org.short_name ?? slug}). Updated daily.`
     const url = `${SITE.url}/organizations/${slug}`
     const canonical = page > 1 ? `${url}?page=${page}` : url

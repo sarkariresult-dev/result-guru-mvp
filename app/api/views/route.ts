@@ -4,7 +4,7 @@ import { viewLimiter, getClientIp, rateLimitResponse } from '@/lib/rate-limit'
 
 /**
  * POST /api/views
- * Simple view counter — uses fn_increment_post_view() RPC.
+ * Simple view counter - uses fn_increment_post_view() RPC.
  * Accepts { postId } or { post_id } for backward compatibility.
  */
 export async function POST(request: NextRequest) {

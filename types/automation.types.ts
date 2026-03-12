@@ -1,6 +1,6 @@
 // =============================================================
-// automation.types.ts — Result Guru
-// Mirrors 009_automation.sql — AI pipeline, templates.
+// automation.types.ts - Result Guru
+// Mirrors 009_automation.sql - AI pipeline, templates.
 // =============================================================
 
 import type { PostType } from './enums'

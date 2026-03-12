@@ -178,7 +178,7 @@ export function ImageModal({ uploadBucket, uploadFolder, onSubmit, onCancel }: I
                                     <span className="font-medium text-brand-600">Click to upload</span> or drag &amp;
                                     drop
                                 </p>
-                                <p className="text-[10px] text-foreground-subtle">JPG, PNG, WebP, GIF — max 5 MB</p>
+                                <p className="text-[10px] text-foreground-subtle">JPG, PNG, WebP, GIF - max 5 MB</p>
                             </>
                         )}
                     </div>
@@ -272,9 +272,8 @@ export function TableSizePicker({ onSelect, onClose }: TableSizePickerProps) {
                     return (
                         <div
                             key={i}
-                            className={`size-5 rounded-sm border cursor-pointer transition-colors ${
-                                active ? 'border-brand-500 bg-brand-500/20' : 'border-border hover:border-brand-300'
-                            }`}
+                            className={`size-5 rounded-sm border cursor-pointer transition-colors ${active ? 'border-brand-500 bg-brand-500/20' : 'border-border hover:border-brand-300'
+                                }`}
                             onMouseEnter={() => setHover({ r, c })}
                             onClick={() => {
                                 onSelect(r, c)

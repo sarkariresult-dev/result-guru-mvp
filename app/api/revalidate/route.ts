@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
         }
 
         if (tag) {
-            // Next.js 16: revalidateTag(tag, profile) — use 'default' profile
+            // Next.js 16: revalidateTag(tag, profile) - use 'default' profile
             revalidateTag(tag, 'default')
             return NextResponse.json({ revalidated: true, tag })
         }
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
 
 /**
  * GET /api/revalidate
- * Vercel Cron handler — runs every 15 minutes to keep homepage content fresh.
+ * Vercel Cron handler - runs every 15 minutes to keep homepage content fresh.
  *
  * Vercel sends: Authorization: Bearer <CRON_SECRET>
  * Set CRON_SECRET in Vercel project settings.

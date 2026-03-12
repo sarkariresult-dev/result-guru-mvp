@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- 023_webhooks.sql — Result Guru
+-- 023_webhooks.sql - Result Guru
 -- Trigger to send a webhook to Next.js /api/revalidate when posts change.
 -- Needs `pg_net` extension enabled on Supabase.
 -- ═══════════════════════════════════════════════════════════════

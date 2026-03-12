@@ -136,7 +136,7 @@ export default async function AdminPostDetailPage({
                             <InfoRow label="Application">
                                 {appStatusConf && post.application_status !== 'na'
                                     ? appStatusConf.label
-                                    : '—'}
+                                    : '-'}
                             </InfoRow>
                             <InfoRow label="Views">
                                 <span className="inline-flex items-center gap-1">
@@ -187,19 +187,19 @@ export default async function AdminPostDetailPage({
                         <dl className="space-y-3 text-sm">
                             <div>
                                 <dt className="text-foreground-muted">Meta Title</dt>
-                                <dd className="mt-1 wrap-break-word">{post.meta_title || '—'}</dd>
+                                <dd className="mt-1 wrap-break-word">{post.meta_title || '-'}</dd>
                             </div>
                             <div>
                                 <dt className="text-foreground-muted">Meta Description</dt>
-                                <dd className="mt-1 wrap-break-word text-xs">{post.meta_description || '—'}</dd>
+                                <dd className="mt-1 wrap-break-word text-xs">{post.meta_description || '-'}</dd>
                             </div>
                             <div>
                                 <dt className="text-foreground-muted">Focus Keyword</dt>
-                                <dd className="mt-1">{post.focus_keyword || '—'}</dd>
+                                <dd className="mt-1">{post.focus_keyword || '-'}</dd>
                             </div>
                             <div>
                                 <dt className="text-foreground-muted">Canonical URL</dt>
-                                <dd className="mt-1 truncate text-xs font-mono">{post.canonical_url || '—'}</dd>
+                                <dd className="mt-1 truncate text-xs font-mono">{post.canonical_url || '-'}</dd>
                             </div>
                         </dl>
                     </section>
@@ -210,8 +210,8 @@ export default async function AdminPostDetailPage({
                             Taxonomy
                         </h2>
                         <dl className="space-y-3 text-sm">
-                            <InfoRow label="State">{post.state_slug ?? '—'}</InfoRow>
-                            <InfoRow label="Organization">{post.org_name ?? '—'}</InfoRow>
+                            <InfoRow label="State">{post.state_slug ?? '-'}</InfoRow>
+                            <InfoRow label="Organization">{post.org_name ?? '-'}</InfoRow>
                             <div>
                                 <dt className="text-foreground-muted">Qualifications</dt>
                                 <dd className="mt-1 flex flex-wrap gap-1">
@@ -221,11 +221,12 @@ export default async function AdminPostDetailPage({
                                                 {q}
                                             </span>
                                         ))
-                                        : '—'}
+                                        : '-'}
                                 </dd>
                             </div>
                         </dl>
                     </section>
+
                 </div>
             </div>
         </div>

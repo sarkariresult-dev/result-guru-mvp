@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- 016_rls.sql — Result Guru
+-- 016_rls.sql - Result Guru
 -- Row Level Security (RLS) policies.
 -- Principle of least privilege: anon gets read-only on public
 -- data; authors manage their own content; admins manage all.
@@ -36,7 +36,7 @@ ALTER TABLE organizations           ENABLE ROW LEVEL SECURITY;
 -- Functions and server-side jobs can always operate freely.
 
 -- ────────────────────────────────────────────────────────────
--- REFERENCE TABLES — public read, admin write
+-- REFERENCE TABLES - public read, admin write
 -- ────────────────────────────────────────────────────────────
 
 CREATE POLICY "ref_public_read" ON tags           FOR SELECT USING (TRUE);
@@ -124,7 +124,7 @@ CREATE POLICY "users_insert_any"    ON users FOR INSERT WITH CHECK (TRUE);  -- f
 CREATE POLICY "users_service"       ON users FOR ALL   USING (auth.role() = 'service_role');
 
 -- ────────────────────────────────────────────────────────────
--- PAGE VIEWS — insert-only for anon
+-- PAGE VIEWS - insert-only for anon
 -- ────────────────────────────────────────────────────────────
 
 CREATE POLICY "post_views_anon_insert"   ON post_views FOR INSERT WITH CHECK (TRUE);

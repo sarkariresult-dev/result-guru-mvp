@@ -1,6 +1,6 @@
 /* ============================================================
-   globals.css — Tailwind CSS v4 · Next.js 16
-   Result Guru — India's Government Jobs & Results Portal
+   globals.css - Tailwind CSS v4 · Next.js 16
+   Result Guru - India's Government Jobs & Results Portal
    ============================================================ */
 
 @import "tailwindcss";
@@ -175,7 +175,7 @@
         background-color: var(--bg);
         color: var(--fg);
         font-family: var(--font-sans);
-        font-size: 0.9375rem; /* 15px — optimal for Inter readability */
+        font-size: 0.9375rem; /* 15px - optimal for Inter readability */
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
@@ -184,7 +184,7 @@
         font-optical-sizing: auto;
     }
 
-    /* Accessible focus — brand ring */
+    /* Accessible focus - brand ring */
     :focus-visible {
         outline: 2px solid var(--ring);
         outline-offset: 3px;
@@ -213,7 +213,7 @@
         font-size: inherit;
     }
 
-    /* Headings — display font, balanced wrapping */
+    /* Headings - display font, balanced wrapping */
     h1, h2, h3, h4, h5, h6 {
         font-family: var(--font-display);
         font-weight: 700;
@@ -416,7 +416,7 @@
 }
 
 /* ══════════════════════════════════════════════════════════════
-   T1: @utility directives — Tailwind v4 compiler-aware utilities
+   T1: @utility directives - Tailwind v4 compiler-aware utilities
    Each class is individually registered for proper tree-shaking,
    cascade ordering, and variant support (dark:, hover:, etc.).
    ══════════════════════════════════════════════════════════════ */

@@ -5,7 +5,7 @@ import { viewLimiter, getClientIp, rateLimitResponse } from '@/lib/rate-limit'
 /**
  * POST /api/analytics/view
  * Records a post page-view with referrer & device metadata.
- * Called by usePageView hook — fire-and-forget.
+ * Called by usePageView hook - fire-and-forget.
  *
  * Uses fn_increment_post_view() which atomically:
  *   1. Inserts a row into post_views
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
         const supabase = await createServerClient()
 
-        // fn_increment_post_view is SECURITY DEFINER — safe for anon role.
+        // fn_increment_post_view is SECURITY DEFINER - safe for anon role.
         // It inserts into post_views AND increments view_count atomically.
         const { error } = await supabase.rpc('fn_increment_post_view', {
             p_post_id: post_id,

@@ -1,30 +1,30 @@
 -- ═══════════════════════════════════════════════════════════════
--- 007_posts.sql — Result Guru
+-- 007_posts.sql - Result Guru
 -- Core content table + junction tables.
 --
 -- DESIGN DECISIONS
 -- ────────────────
--- ✅ official_link REMOVED — always read from organizations.official_url
+-- ✅ official_link REMOVED - always read from organizations.official_url
 --    via JOIN (avoids stale duplicates, single source of truth).
 --
 -- ✅ JSONB content sections are type-driven:
---    • important_dates   — job, exam, admit, result, admission
---    • application_fee   — job, exam, admission
---    • vacancy_details   — job
---    • eligibility       — job, exam, scheme, admission
---    • selection_process — job, exam (ordered text array)
---    • how_to_apply      — job, scheme, admission (ordered steps)
---    • age_limit         — job, exam
---    • pay_scale         — job
---    • syllabus_sections — syllabus, exam
---    • exam_pattern_data — exam_pattern, exam
---    • previous_year_papers — previous_paper
---    • cut_off_marks     — cut_off, result
---    • preparation_tips  — any
---    • faq               — any
+--    • important_dates   - job, exam, admit, result, admission
+--    • application_fee   - job, exam, admission
+--    • vacancy_details   - job
+--    • eligibility       - job, exam, scheme, admission
+--    • selection_process - job, exam (ordered text array)
+--    • how_to_apply      - job, scheme, admission (ordered steps)
+--    • age_limit         - job, exam
+--    • pay_scale         - job
+--    • syllabus_sections - syllabus, exam
+--    • exam_pattern_data - exam_pattern, exam
+--    • previous_year_papers - previous_paper
+--    • cut_off_marks     - cut_off, result
+--    • preparation_tips  - any
+--    • faq               - any
 --
 -- ✅ notification_pdf stored as a path inside the 'posts' Storage
---    bucket (not a full URL — built at render time via storage_public_url()).
+--    bucket (not a full URL - built at render time via storage_public_url()).
 --
 -- ✅ search_vector + title_lower are trigger-maintained columns
 --    (not generated / immutable) so trigger can call unaccent().
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS posts (
   notification_pdf     TEXT,                                         -- Storage path (posts bucket)
 
   -- ── Key links (type-specific external URLs) ───────────────
-  -- official_link intentionally OMITTED — read from organizations.official_url
+  -- official_link intentionally OMITTED - read from organizations.official_url
   admit_card_link      TEXT,                                         -- External URL
   result_link          TEXT,                                         -- External URL
   answer_key_link      TEXT,                                         -- External URL (new)
@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS posts (
   updated_at           TIMESTAMPTZ        NOT NULL DEFAULT NOW(),
 
   -- ── Trigger-maintained search columns ─────────────────────
-  -- (plain columns — triggers call unaccent() which is not IMMUTABLE)
+  -- (plain columns - triggers call unaccent() which is not IMMUTABLE)
   search_vector        TSVECTOR,
   title_lower          TEXT,
 
@@ -144,7 +144,7 @@ CREATE TABLE IF NOT EXISTS posts (
 );
 
 COMMENT ON TABLE posts IS
-  'Central content table. All post types share this table — type column
+  'Central content table. All post types share this table - type column
    drives which JSONB sections are populated. official_link lives on
    organizations.official_url and is surfaced via JOIN.
    search_vector + title_lower are trigger-maintained.';

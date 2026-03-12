@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- 014_newsletter.sql — Result Guru
+-- 014_newsletter.sql - Result Guru
 -- Email / WhatsApp / Telegram subscriber list and broadcast log.
 -- ═══════════════════════════════════════════════════════════════
 

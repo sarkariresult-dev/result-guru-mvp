@@ -1,7 +1,7 @@
 // =============================================================
-// post-content.types.ts — Result Guru
+// post-content.types.ts - Result Guru
 // Typed shapes for every JSONB column on the posts table.
-// These are the most important types — they drive all frontend
+// These are the most important types - they drive all frontend
 // post-detail rendering.
 // =============================================================
 

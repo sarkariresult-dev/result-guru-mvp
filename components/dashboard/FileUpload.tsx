@@ -90,7 +90,7 @@ export function FileUpload({
                     await supabase.storage.from(bucket).remove([urlParts[1]])
                 }
             } catch {
-                // Silently fail — file might not exist
+                // Silently fail - file might not exist
             }
         }
         onChange('')
