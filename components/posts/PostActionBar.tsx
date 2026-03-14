@@ -107,11 +107,6 @@ export function PostActionBar({ postId, slug, title, type, initialViewCount, url
 
     return (
         <div className="flex flex-wrap items-center gap-2 rounded-xl border border-border bg-surface px-4 py-2.5 shadow-sm">
-            {/* View count (display only) */}
-            <span className="mr-auto text-xs font-medium text-foreground-subtle tabular-nums">
-                {initialViewCount.toLocaleString()} views
-            </span>
-
             {/* Share dropdown */}
             <div className="relative" ref={shareRef}>
                 <button

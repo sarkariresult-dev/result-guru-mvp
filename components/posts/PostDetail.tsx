@@ -219,10 +219,6 @@ export function PostDetail({ post, slug, url }: Props) {
                             <FileText className="size-3" />
                             {post.reading_time_min} min read
                         </span>
-                        <span className="rounded-full bg-white/20 backdrop-blur-sm border border-white/20 px-2.5 py-0.5 text-[11px] font-semibold text-white flex items-center gap-1">
-                            <Eye className="size-3" />
-                            {post.view_count.toLocaleString()} views
-                        </span>
                     </div>
 
                     {/* Bottom-right: share, copy, save */}

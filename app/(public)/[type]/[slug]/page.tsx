@@ -133,9 +133,7 @@ export default async function PostDetailPage({ params }: Props) {
 
                 <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_340px]">
 
-                    {/* ═══════════════════════════════════════════
-                         MAIN CONTENT COLUMN
-                        ═══════════════════════════════════════════ */}
+                    {/* ═══════════════════════════════════════════ MAIN CONTENT COLUMN ═══════════════════════════════════════════ */}
                     <article>
                         {/* Main post detail */}
                         <PostDetail post={publishedPost} slug={slug} url={canonicalUrl} />
