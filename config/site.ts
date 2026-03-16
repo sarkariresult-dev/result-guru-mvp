@@ -114,7 +114,7 @@ export function tagUrl(tagSlug: string): string {
     return siteUrl(`/tag/${tagSlug}`)
 }
 
-// ─── Primary navigation ─────────────────────────────────────────────────────
+// ─── Navigation types ───────────────────────────────────────────────────────
 
 export interface NavItem {
     label: string
@@ -127,6 +127,14 @@ export interface NavGroup {
     label: string
     items: NavItem[]
 }
+
+export const TOP_NAV_LINKS: NavItem[] = [
+    { label: 'Home', href: '/' },
+    { label: 'About', href: '/about' },
+    { label: 'Organizations', href: '/organizations' },
+    { label: 'States', href: '/states' },
+    { label: 'Contact', href: '/contact' },
+]
 
 export const MAIN_NAV: NavItem[] = [
     { label: 'Job', href: ROUTE_PREFIXES.job, icon: 'Briefcase' },

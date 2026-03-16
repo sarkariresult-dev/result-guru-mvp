@@ -175,13 +175,22 @@
         background-color: var(--bg);
         color: var(--fg);
         font-family: var(--font-sans);
-        font-size: 0.9375rem; /* 15px - optimal for Inter readability */
+        font-size: 0.9375rem;
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         overflow-wrap: break-word;
         word-break: break-word;
         font-optical-sizing: auto;
+    }
+
+    /* Hide default search cancel button in Webkit/Chrome */
+    input[type="search"]::-webkit-search-cancel-button,
+    input[type="search"]::-webkit-search-decoration,
+    input[type="search"]::-webkit-search-results-button,
+    input[type="search"]::-webkit-search-results-decoration {
+        -webkit-appearance: none;
+        display: none;
     }
 
     /* Accessible focus - brand ring */
@@ -214,7 +223,12 @@
     }
 
     /* Headings - display font, balanced wrapping */
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
         font-family: var(--font-display);
         font-weight: 700;
         line-height: 1.25;
@@ -223,18 +237,48 @@
         text-wrap: balance;
     }
 
-    h1 { font-size: 1.875rem; } /* 30px */
-    h2 { font-size: 1.5rem; }   /* 24px */
-    h3 { font-size: 1.25rem; }  /* 20px */
-    h4 { font-size: 1.1rem; }   /* ~17.6px */
-
-    @media (min-width: 640px) {
-        h1 { font-size: 2.25rem; }  /* 36px */
-        h2 { font-size: 1.75rem; }  /* 28px */
-        h3 { font-size: 1.375rem; } /* 22px */
+    h1 {
+        font-size: 1.875rem;
     }
 
-    p { text-wrap: pretty; }
+    /* 30px */
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    /* 24px */
+    h3 {
+        font-size: 1.25rem;
+    }
+
+    /* 20px */
+    h4 {
+        font-size: 1.1rem;
+    }
+
+    /* ~17.6px */
+
+    @media (min-width: 640px) {
+        h1 {
+            font-size: 2.25rem;
+        }
+
+        /* 36px */
+        h2 {
+            font-size: 1.75rem;
+        }
+
+        /* 28px */
+        h3 {
+            font-size: 1.375rem;
+        }
+
+        /* 22px */
+    }
+
+    p {
+        text-wrap: pretty;
+    }
 
     a {
         color: inherit;
@@ -246,18 +290,36 @@
         touch-action: manipulation;
     }
 
-    pre, code, kbd, samp {
+    pre,
+    code,
+    kbd,
+    samp {
         font-family: var(--font-mono);
         font-size: 0.875em;
     }
 
-    [hidden] { display: none !important; }
+    [hidden] {
+        display: none !important;
+    }
 
     /* Custom scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--fg-subtle); }
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--border-strong);
+        border-radius: 9999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--fg-subtle);
+    }
 
     /* Firefox scrollbar */
     * {
@@ -288,10 +350,12 @@
         text-align: left;
         border-bottom: 1px solid var(--border);
     }
+
     .prose th {
         font-weight: 600;
         background: var(--surface-raised);
     }
+
     .prose tr:last-child td {
         border-bottom: none;
     }
@@ -320,7 +384,10 @@
         font-style: italic;
     }
 
-    .tiptap h1, .tiptap h2, .tiptap h3, .tiptap h4 {
+    .tiptap h1,
+    .tiptap h2,
+    .tiptap h3,
+    .tiptap h4 {
         font-family: var(--font-display);
         font-weight: 700;
         line-height: 1.25;
@@ -330,19 +397,49 @@
         margin-bottom: 0.6em;
     }
 
-    .tiptap h1 { font-size: clamp(1.6rem, 3.5vw, 2rem); }
-    .tiptap h2 { font-size: clamp(1.25rem, 2.5vw, 1.5rem); }
-    .tiptap h3 { font-size: clamp(1.05rem, 2vw, 1.2rem); }
-    .tiptap h4 { font-size: 1rem; }
+    .tiptap h1 {
+        font-size: clamp(1.6rem, 3.5vw, 2rem);
+    }
 
-    .tiptap > :first-child { margin-top: 0 !important; }
+    .tiptap h2 {
+        font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+    }
 
-    .tiptap p { margin: 0.75em 0; line-height: 1.7; }
+    .tiptap h3 {
+        font-size: clamp(1.05rem, 2vw, 1.2rem);
+    }
 
-    .tiptap ul, .tiptap ol { padding-left: 1.5rem; margin: 0.75em 0; }
-    .tiptap ul { list-style-type: disc; }
-    .tiptap ol { list-style-type: decimal; }
-    .tiptap li { margin: 0.3em 0; line-height: 1.65; }
+    .tiptap h4 {
+        font-size: 1rem;
+    }
+
+    .tiptap> :first-child {
+        margin-top: 0 !important;
+    }
+
+    .tiptap p {
+        margin: 0.75em 0;
+        line-height: 1.7;
+    }
+
+    .tiptap ul,
+    .tiptap ol {
+        padding-left: 1.5rem;
+        margin: 0.75em 0;
+    }
+
+    .tiptap ul {
+        list-style-type: disc;
+    }
+
+    .tiptap ol {
+        list-style-type: decimal;
+    }
+
+    .tiptap li {
+        margin: 0.3em 0;
+        line-height: 1.65;
+    }
 
     .tiptap blockquote {
         border-left: 3px solid var(--color-brand-500);
@@ -388,12 +485,44 @@
         font-size: inherit;
     }
 
-    .tiptap table { border-collapse: collapse; width: 100%; margin: 1.25em 0; font-size: 0.9em; }
-    .tiptap td, .tiptap th { border: 1px solid var(--border); padding: 0.55rem 0.85rem; text-align: left; vertical-align: top; min-width: 80px; }
-    .tiptap th { background: var(--bg-subtle); font-weight: 600; font-family: var(--font-display); letter-spacing: 0.01em; font-size: 0.85em; color: var(--fg-muted); text-transform: uppercase; }
-    .tiptap tr:hover td { background: var(--bg-muted); transition: background var(--duration-fast) ease; }
+    .tiptap table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 1.25em 0;
+        font-size: 0.9em;
+    }
 
-    .tiptap img { max-width: 100%; height: auto; border-radius: var(--radius-lg); margin: 1.25em 0; box-shadow: var(--shadow-md); }
+    .tiptap td,
+    .tiptap th {
+        border: 1px solid var(--border);
+        padding: 0.55rem 0.85rem;
+        text-align: left;
+        vertical-align: top;
+        min-width: 80px;
+    }
+
+    .tiptap th {
+        background: var(--bg-subtle);
+        font-weight: 600;
+        font-family: var(--font-display);
+        letter-spacing: 0.01em;
+        font-size: 0.85em;
+        color: var(--fg-muted);
+        text-transform: uppercase;
+    }
+
+    .tiptap tr:hover td {
+        background: var(--bg-muted);
+        transition: background var(--duration-fast) ease;
+    }
+
+    .tiptap img {
+        max-width: 100%;
+        height: auto;
+        border-radius: var(--radius-lg);
+        margin: 1.25em 0;
+        box-shadow: var(--shadow-md);
+    }
 
     .tiptap a {
         color: oklch(0.48 0.192 264);
@@ -423,67 +552,180 @@
 
 /* ── Keyframe animations (top-level, outside any layer) ───── */
 @keyframes fade-up {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @keyframes fade-in {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes slide-in-right {
-    from { opacity: 0; transform: translateX(24px); }
-    to   { opacity: 1; transform: translateX(0); }
+    from {
+        opacity: 0;
+        transform: translateX(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes drawer-in-left {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
 }
 
 @keyframes scale-in {
-    from { opacity: 0; transform: scale(0.96); }
-    to   { opacity: 1; transform: scale(1); }
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 @keyframes shimmer {
-    from { background-position: -200% center; }
-    to   { background-position: 200% center; }
+    from {
+        background-position: -200% center;
+    }
+
+    to {
+        background-position: 200% center;
+    }
 }
 
 @keyframes spin-slow {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes pulse-ring {
-    0%   { box-shadow: 0 0 0 0 oklch(0.48 0.192 264 / 0.35); }
-    70%  { box-shadow: 0 0 0 10px oklch(0.48 0.192 264 / 0); }
-    100% { box-shadow: 0 0 0 0 oklch(0.48 0.192 264 / 0); }
+    0% {
+        box-shadow: 0 0 0 0 oklch(0.48 0.192 264 / 0.35);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px oklch(0.48 0.192 264 / 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 oklch(0.48 0.192 264 / 0);
+    }
 }
 
 @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-6px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
 }
 
 /* ── Fluid text scaling ─────────────────────────────────────── */
-@utility text-fluid-xs   { font-size: clamp(0.75rem,  1.5vw, 0.875rem); }
-@utility text-fluid-sm   { font-size: clamp(0.875rem, 2vw,   1rem); }
-@utility text-fluid-base { font-size: clamp(1rem,     2.5vw, 1.125rem); }
-@utility text-fluid-lg   { font-size: clamp(1.125rem, 3vw,   1.375rem); }
-@utility text-fluid-xl   { font-size: clamp(1.25rem,  3.5vw, 1.75rem); }
-@utility text-fluid-2xl  { font-size: clamp(1.5rem,   4vw,   2.25rem); }
-@utility text-fluid-3xl  { font-size: clamp(1.875rem, 5vw,   3rem); }
-@utility text-fluid-4xl  { font-size: clamp(2.25rem,  6vw,   4rem); }
-@utility text-fluid-5xl  { font-size: clamp(2.75rem,  7vw,   5rem); }
+@utility text-fluid-xs {
+    font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+}
+
+@utility text-fluid-sm {
+    font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+@utility text-fluid-base {
+    font-size: clamp(1rem, 2.5vw, 1.125rem);
+}
+
+@utility text-fluid-lg {
+    font-size: clamp(1.125rem, 3vw, 1.375rem);
+}
+
+@utility text-fluid-xl {
+    font-size: clamp(1.25rem, 3.5vw, 1.75rem);
+}
+
+@utility text-fluid-2xl {
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+}
+
+@utility text-fluid-3xl {
+    font-size: clamp(1.875rem, 5vw, 3rem);
+}
+
+@utility text-fluid-4xl {
+    font-size: clamp(2.25rem, 6vw, 4rem);
+}
+
+@utility text-fluid-5xl {
+    font-size: clamp(2.75rem, 7vw, 5rem);
+}
 
 /* ── Semantic colour utilities ──────────────────────────────── */
-@utility text-foreground        { color: var(--fg); }
-@utility text-foreground-muted  { color: var(--fg-muted); }
-@utility text-foreground-subtle { color: var(--fg-subtle); }
-@utility bg-background          { background-color: var(--bg); }
-@utility bg-background-muted    { background-color: var(--bg-muted); }
-@utility bg-background-subtle   { background-color: var(--bg-subtle); }
-@utility bg-surface             { background-color: var(--surface); }
-@utility bg-surface-raised      { background-color: var(--surface-raised); }
-@utility border-border          { border-color: var(--border); }
-@utility border-border-strong   { border-color: var(--border-strong); }
+@utility text-foreground {
+    color: var(--fg);
+}
+
+@utility text-foreground-muted {
+    color: var(--fg-muted);
+}
+
+@utility text-foreground-subtle {
+    color: var(--fg-subtle);
+}
+
+@utility bg-background {
+    background-color: var(--bg);
+}
+
+@utility bg-background-muted {
+    background-color: var(--bg-muted);
+}
+
+@utility bg-background-subtle {
+    background-color: var(--bg-subtle);
+}
+
+@utility bg-surface {
+    background-color: var(--surface);
+}
+
+@utility bg-surface-raised {
+    background-color: var(--surface-raised);
+}
+
+@utility border-border {
+    border-color: var(--border);
+}
+
+@utility border-border-strong {
+    border-color: var(--border-strong);
+}
 
 /* ── Focus & GPU helpers ────────────────────────────────────── */
 @utility focus-ring {
@@ -515,20 +757,61 @@
 }
 
 /* ── Animation utilities ────────────────────────────────────── */
-@utility animate-fade-up     { animation: fade-up var(--duration-slow) var(--ease-out-expo) both; }
-@utility animate-fade-in     { animation: fade-in var(--duration-slow) ease both; }
-@utility animate-slide-right { animation: slide-in-right var(--duration-slow) var(--ease-out-expo) both; }
-@utility animate-scale-in    { animation: scale-in var(--duration-base) var(--ease-spring) both; }
-@utility animate-spin-slow   { animation: spin-slow 2s linear infinite; }
-@utility animate-pulse-ring  { animation: pulse-ring 2s ease-out infinite; }
-@utility animate-float       { animation: float 3s ease-in-out infinite; }
+@utility animate-fade-up {
+    animation: fade-up var(--duration-slow) var(--ease-out-expo) both;
+}
 
-@utility delay-75  { animation-delay: 75ms; }
-@utility delay-150 { animation-delay: 150ms; }
-@utility delay-225 { animation-delay: 225ms; }
-@utility delay-300 { animation-delay: 300ms; }
-@utility delay-450 { animation-delay: 450ms; }
-@utility delay-600 { animation-delay: 600ms; }
+@utility animate-fade-in {
+    animation: fade-in var(--duration-slow) ease both;
+}
+
+@utility animate-slide-right {
+    animation: slide-in-right var(--duration-slow) var(--ease-out-expo) both;
+}
+
+@utility animate-drawer-in {
+    animation: drawer-in-left var(--duration-slow) var(--ease-out-expo) both;
+}
+
+@utility animate-scale-in {
+    animation: scale-in var(--duration-base) var(--ease-spring) both;
+}
+
+@utility animate-spin-slow {
+    animation: spin-slow 2s linear infinite;
+}
+
+@utility animate-pulse-ring {
+    animation: pulse-ring 2s ease-out infinite;
+}
+
+@utility animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+@utility delay-75 {
+    animation-delay: 75ms;
+}
+
+@utility delay-150 {
+    animation-delay: 150ms;
+}
+
+@utility delay-225 {
+    animation-delay: 225ms;
+}
+
+@utility delay-300 {
+    animation-delay: 300ms;
+}
+
+@utility delay-450 {
+    animation-delay: 450ms;
+}
+
+@utility delay-600 {
+    animation-delay: 600ms;
+}
 
 /* ── Visual effect utilities ────────────────────────────────── */
 @utility skeleton {
@@ -608,9 +891,23 @@
     font-weight: 700;
 }
 
+.scrollbar-hide {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
 /* ── Accessibility / media query overrides ──────────────────── */
 @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+
+    *,
+    *::before,
+    *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
@@ -619,11 +916,23 @@
 }
 
 @media (forced-colors: active) {
-    :focus-visible { outline: 3px solid ButtonText; }
+    :focus-visible {
+        outline: 3px solid ButtonText;
+    }
 }
 
 @media print {
-    body { background: white; color: black; font-size: 12pt; }
-    .no-print { display: none !important; }
-    a[href]::after { content: " (" attr(href) ")"; }
+    body {
+        background: white;
+        color: black;
+        font-size: 12pt;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    a[href]::after {
+        content: " (" attr(href) ")";
+    }
 }

@@ -67,7 +67,7 @@ export default async function SearchPage({ searchParams }: Props) {
                 )}
             </div>
 
-            <SearchBar className="mb-8 max-w-xl" />
+            <SearchBar className="mb-8 max-w-xl" initialValue={trimmedQuery} />
 
             {trimmedQuery ? (
                 fetchError ? (

@@ -60,7 +60,7 @@ export default async function HomePage() {
     /* Fetch all homepage data in parallel for fastest TTFB */
     const [statesResult, orgsResult, countsResult, sectionsResult] = await Promise.allSettled([
         getStates(),
-        getPopularOrganizations(12),
+        getPopularOrganizations(30),
         getPostCountsByType(),
         getHomepageSections(6),
     ])
@@ -118,45 +118,40 @@ export default async function HomePage() {
                 </div>
             </section>
 
-            {/* Stats Cards - real data from mv_post_type_counts */}
+            {/* Stats Cards */}
             <section className="container mx-auto max-w-6xl px-4 -mt-10 relative z-10 mb-8">
                 <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 animate-scale-in delay-300">
                     {STAT_CARDS.map((card) => {
                         const counts = countsMap.get(card.type)
-                        // DEMO FALLBACK DATA
-                        const fallbackValues: Record<string, { total: string, change: string }> = {
-                            'job': { total: '1,245', change: '85 Open' },
-                            'result': { total: '8,430', change: '12 Today' },
-                            'admit': { total: '3,102', change: '45 Active' },
-                            'admission': { total: '5,020', change: '120 Open' }
-                        }
-
-                        const isDemo = !counts
-                        const fallback = fallbackValues[card.type]
-
-                        const value = isDemo ? fallback?.total : counts.total_count.toLocaleString('en-IN')
-                        const change = isDemo ? fallback?.change : formatChange(counts)
+                        const href = ROUTE_PREFIXES[card.type as keyof typeof ROUTE_PREFIXES] || '#'
+                        
+                        const value = counts ? counts.total_count.toLocaleString('en-IN') : '0'
+                        const changeLabel = formatChange(counts)
 
                         return (
-                            <div
+                            <Link
                                 key={card.type}
-                                className="flex flex-col rounded-2xl border border-border bg-surface p-4 shadow-lg sm:p-5"
+                                href={href}
+                                className="group flex flex-col rounded-2xl border border-border bg-surface p-4 shadow-lg sm:p-5 transition-all hover:border-brand-300 hover:shadow-xl hover:-translate-y-1 active:scale-[0.98]"
                             >
                                 <div className="flex items-center justify-between">
                                     <span className="text-[10px] font-semibold uppercase tracking-widest text-foreground-muted sm:text-xs">
                                         {card.label}
                                     </span>
-                                    <div className={`flex size-8 items-center justify-center rounded-lg ${card.bg} sm:size-9`}>
-                                        <card.icon className={`size-4 ${card.color} sm:size-4.5`} />
+                                    <div className={`flex size-8 items-center justify-center rounded-lg ${card.bg} sm:size-9 transition-colors group-hover:bg-brand-500 group-hover:text-white`}>
+                                        <card.icon className={`size-4 ${card.color} sm:size-4.5 group-hover:text-white transition-colors`} />
                                     </div>
                                 </div>
-                                <span className="mt-2 text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
+                                <span className="mt-2 text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl group-hover:text-brand-600 transition-colors">
                                     {value}
                                 </span>
-                                <span className="mt-0.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-400 sm:text-xs">
-                                    {change}
-                                </span>
-                            </div>
+                                <div className="mt-0.5 flex items-center justify-between">
+                                    <span className="text-[11px] font-medium text-emerald-700 dark:text-emerald-400 sm:text-xs">
+                                        {changeLabel}
+                                    </span>
+                                    <ArrowRight className="size-3 text-brand-500 opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0" />
+                                </div>
+                            </Link>
                         )
                     })}
                 </div>
@@ -165,55 +160,45 @@ export default async function HomePage() {
             {/* Popular Organizations */}
             {organizations.length > 0 && (
                 <section className="container mx-auto max-w-7xl px-4 py-10" aria-label="Browse by organization">
-                    <div className="mb-8 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="flex size-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-900/30">
-                                <Building2 className="size-5 text-brand-600 dark:text-brand-400" />
-                            </div>
-                            <h2 className="text-2xl font-bold tracking-tight text-foreground">
-                                Popular Organizations
-                            </h2>
-                        </div>
-                        <Link
-                            href="/organizations"
-                            className="group flex items-center gap-1.5 text-sm font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300 transition-colors"
-                        >
-                            View All
-                            <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-                        </Link>
-                    </div>
-                    <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6 sm:gap-4">
-                        {organizations.map((org) => (
-                            <Link
-                                key={org.id}
-                                href={`/organizations/${org.slug}`}
-                                className="group flex flex-col items-center gap-2.5 rounded-2xl border border-border bg-surface p-4 text-center transition-all hover:border-brand-300 hover:shadow-md dark:hover:border-brand-700 hover:-translate-y-0.5"
-                            >
-                                {org.logo_url ? (
-                                    <Image
-                                        src={org.logo_url}
-                                        alt={org.name}
-                                        width={48}
-                                        height={48}
-                                        className="size-12 object-contain"
-                                    />
-                                ) : (
-                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-brand-600 dark:bg-brand-700 text-sm font-bold text-white shadow-sm">
-                                        {(org.short_name || org.name).substring(0, 2).toUpperCase()}
-                                    </div>
-                                )}
-                                <div className="min-w-0 w-full">
-                                    <h3 className="text-[11px] font-bold text-foreground group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors line-clamp-1 leading-snug">
-                                        {org.short_name || org.name}
-                                    </h3>
-                                    {org.short_name && (
-                                        <p className="mt-0.5 text-[9px] text-foreground-subtle line-clamp-1 leading-tight">
-                                            {org.name}
-                                        </p>
+                    <div className="relative group/scroll">
+                        <div className="flex overflow-x-auto flex-nowrap gap-3 pb-6 pt-2 scrollbar-hide snap-x snap-proximity scroll-smooth px-1">
+                            {organizations.map((org) => (
+                                <Link
+                                    key={org.id}
+                                    href={`/organizations/${org.slug}`}
+                                    className="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-surface p-4 text-center transition-all hover:border-brand-300 hover:shadow-lg dark:hover:border-brand-700 hover:-translate-y-1 snap-start shrink-0 w-[140px] sm:w-[160px]"
+                                >
+                                    {org.logo_url ? (
+                                        <div className="relative flex size-14 sm:size-16 items-center justify-center rounded-xl bg-white p-2 shadow-xs group-hover:shadow-md transition-shadow">
+                                            <Image
+                                                src={org.logo_url}
+                                                alt={org.name}
+                                                width={64}
+                                                height={64}
+                                                className="size-full object-contain"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="flex size-14 sm:size-16 shrink-0 items-center justify-center rounded-xl bg-brand-600 dark:bg-brand-700 text-lg font-bold text-white shadow-sm transition-transform group-hover:scale-105">
+                                            {(org.short_name || org.name).substring(0, 2).toUpperCase()}
+                                        </div>
                                     )}
-                                </div>
-                            </Link>
-                        ))}
+                                    <div className="min-w-0 w-full space-y-0.5">
+                                        <h3 className="text-[12px] font-bold text-foreground group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors line-clamp-1 leading-snug">
+                                            {org.short_name || org.name}
+                                        </h3>
+                                        {org.short_name && (
+                                            <p className="text-[10px] text-foreground-muted line-clamp-1 leading-tight font-medium opacity-80 group-hover:opacity-100 transition-opacity">
+                                                {org.name}
+                                            </p>
+                                        )}
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                        {/* Gradient Fades for Scroll Indication */}
+                        <div className="absolute inset-y-0 left-0 w-8 bg-linear-to-r from-background to-transparent pointer-events-none opacity-0 group-hover/scroll:opacity-100 transition-opacity hidden sm:block" />
+                        <div className="absolute inset-y-0 right-0 w-8 bg-linear-to-l from-background to-transparent pointer-events-none opacity-0 group-hover/scroll:opacity-100 transition-opacity hidden sm:block" />
                     </div>
                 </section>
             )}
@@ -307,7 +292,7 @@ export default async function HomePage() {
                                     </p>
 
                                     <Link
-                                        href="https://t.me/resultgurucoin"
+                                        href="https://t.me/resultguru247"
                                         target="_blank"
                                         className="group flex items-center justify-center gap-2.5 w-full bg-white text-[#0088CC] hover:bg-blue-50 py-3.5 rounded-2xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-black/10"
                                     >

@@ -2,43 +2,17 @@
 
 import { useState, useRef, useEffect, useTransition } from 'react'
 import Link from 'next/link'
-import {
-    ChevronDown,
-    LogOut,
-    LayoutDashboard,
-    User as UserIcon,
-    Loader2,
-    Briefcase,
-    Trophy,
-    CreditCard,
-    Key,
-    BarChart2,
-    BookOpen,
-    ClipboardList,
-    FileText,
-    Star,
-    CalendarCheck,
-    GraduationCap,
-    Bell,
-    type LucideIcon,
-} from 'lucide-react'
+import { ChevronDown, LogOut, LayoutDashboard, User as UserIcon, Loader2, Briefcase, Trophy, CreditCard, Key, BarChart2, BookOpen, ClipboardList, FileText, Star, CalendarCheck, GraduationCap, Bell, type LucideIcon, } from 'lucide-react'
 import { ThemeToggle } from './ThemeToggle'
 import { MobileNavClient } from './MobileNavClient'
 import { Logo } from '@/components/shared/Logo'
-import { ROUTE_PREFIXES } from '@/config/site'
+import { ROUTE_PREFIXES, TOP_NAV_LINKS } from '@/config/site'
 import { POST_TYPE_CONFIG } from '@/config/constants'
 import { useAuth } from '@/hooks/useAuth'
 import { signOut } from '@/lib/actions/auth'
 import type { PostTypeKey } from '@/config/site'
 import type { PublicUser } from '@/types/user.types'
 
-const NAV_LINKS = [
-    { label: 'Home', href: '/' },
-    { label: 'About', href: '/about' },
-    { label: 'Organizations', href: '/organizations' },
-    { label: 'States', href: '/states' },
-    { label: 'Contact', href: '/contact' },
-]
 
 /* Icon map for post types */
 const ICON_MAP: Record<string, LucideIcon> = {
@@ -127,7 +101,7 @@ export function Header({ initialUser }: HeaderProps) {
 
                 {/* Desktop Nav */}
                 <nav className="hidden items-center gap-1 lg:flex">
-                    {NAV_LINKS.slice(0, 2).map((item) => (
+                    {TOP_NAV_LINKS.slice(0, 2).map((item) => (
                         <Link
                             key={item.href}
                             href={item.href}
@@ -180,7 +154,7 @@ export function Header({ initialUser }: HeaderProps) {
                         )}
                     </div>
 
-                    {NAV_LINKS.slice(2).map((item) => (
+                    {TOP_NAV_LINKS.slice(2).map((item) => (
                         <Link
                             key={item.href}
                             href={item.href}

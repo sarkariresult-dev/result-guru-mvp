@@ -1,35 +1,31 @@
-export default function Loading() {
+export default function RootLoading() {
     return (
-        <div
+        <div 
+            className="flex min-h-screen flex-col items-center justify-center bg-background"
             role="status"
-            aria-label="Loading content"
-            aria-live="polite"
-            className="flex min-h-[60vh] flex-col items-center justify-center gap-6 px-4"
+            aria-label="Initializing application"
         >
-            {/* Brand-coloured spinner with layered rings */}
-            <div className="relative size-12">
-                {/* Outer static ring */}
-                <div className="absolute inset-0 rounded-full border-2 border-brand-100 dark:border-brand-900/40" />
-                {/* Middle pulsing ring */}
-                <div className="absolute inset-1 animate-pulse rounded-full border border-brand-200/50 dark:border-brand-800/30" />
-                {/* Inner spinning arc */}
-                <div className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-brand-600 border-r-brand-400" />
-                {/* Center dot */}
-                <div className="absolute inset-0 m-auto size-2 animate-pulse rounded-full bg-brand-600" />
-            </div>
+            <div className="relative flex flex-col items-center gap-8">
+                {/* Brand Logo or Silhouette Logo would go here, using a stylized icon-like loader for now */}
+                <div className="relative size-20">
+                    <div className="absolute inset-0 animate-spin rounded-3xl border-4 border-brand-100 border-t-brand-600 dark:border-brand-900/40 dark:border-t-brand-500" />
+                    <div className="absolute inset-4 animate-ping rounded-2xl bg-brand-600/10 dark:bg-brand-400/10" />
+                    <div className="absolute inset-0 flex items-center justify-center font-black text-brand-600 text-xl">
+                        RG
+                    </div>
+                </div>
 
-            {/* Pulse text */}
-            <div className="flex flex-col items-center gap-1.5">
-                <p className="animate-pulse text-sm font-medium text-foreground-subtle">
-                    Loading…
-                </p>
-                <div className="h-0.5 w-16 overflow-hidden rounded-full bg-brand-100 dark:bg-brand-900/40">
-                    <div className="h-full w-1/2 animate-shimmer rounded-full bg-brand-500" />
+                <div className="flex flex-col items-center gap-2">
+                    <div className="h-1.5 w-32 overflow-hidden rounded-full bg-brand-50 dark:bg-brand-950">
+                        <div className="h-full w-1/3 animate-shimmer rounded-full bg-linear-to-r from-brand-600 to-brand-400" />
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground-muted animate-pulse">
+                        Result Guru
+                    </span>
                 </div>
             </div>
-
-            {/* Accessible hidden text for screen readers */}
-            <span className="sr-only">Content is loading, please wait.</span>
+            
+            <span className="sr-only">Loading application, please wait.</span>
         </div>
     )
 }

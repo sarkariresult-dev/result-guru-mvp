@@ -32,13 +32,53 @@ export async function getPostCountsByType(): Promise<PostTypeCounts[]> {
 
     const supabase = createStaticClient()
 
+    // Try fetching from the materialized view via RPC first (O(1))
     const { data, error } = await supabase.rpc('fn_post_counts_by_type' as any)
 
-    if (error) {
+    // If RPC succeeds and returns data, use it.
+    if (!error && data && (data as any[]).length > 0) {
+        return data as PostTypeCounts[]
+    }
+
+    // FALLBACK: If the materialized view is empty or RPC fails, fetch raw counts
+    // from the posts table. This ensures the homepage stats are ALWAYS functional.
+    const { data: fallbackData, error: rawError } = await supabase
+        .from('posts')
+        .select('type, application_status, published_at')
+        .eq('status', 'published')
+
+    if (rawError || !fallbackData) {
         return []
     }
 
-    return (data ?? []) as PostTypeCounts[]
+    const rawCounts = fallbackData as any[]
+
+    // Group and aggregate manually
+    const map = new Map<string, PostTypeCounts>()
+    
+    rawCounts.forEach((p) => {
+        const type = p.type as string
+        const current = map.get(type) || {
+            type,
+            total_count: 0,
+            open_count: 0,
+            latest_published: null as string | null
+        }
+
+        current.total_count++
+        if (p.application_status === 'open') {
+            current.open_count++
+        }
+
+        // Keep track of latest published date
+        if (p.published_at && (!current.latest_published || p.published_at > current.latest_published)) {
+            current.latest_published = p.published_at
+        }
+
+        map.set(type, current)
+    })
+
+    return Array.from(map.values())
 }
 
 /**

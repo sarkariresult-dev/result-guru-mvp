@@ -17,7 +17,7 @@ export function Footer() {
                             <Logo height={32} />
                         </Link>
                         <p className="mt-3 text-sm leading-relaxed text-foreground-muted max-w-xs">
-                            {SITE.description.slice(0, 140)}…
+                            {SITE.description}
                         </p>
                     </div>
 
