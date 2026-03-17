@@ -77,7 +77,6 @@ export function Header({ initialUser }: HeaderProps) {
         return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current) }
     }, [])
 
-    // Use server-provided user during loading to avoid skeleton flash
     const showProfile = loading ? !!initialUser : isLoggedIn && !!user
     const showLoading = loading && !initialUser
 
@@ -85,9 +84,7 @@ export function Header({ initialUser }: HeaderProps) {
     const effectiveIsAuthor = loading ? (initialUser?.role === 'author' || initialUser?.role === 'admin') : isAuthor
     const dashboardHref = effectiveIsAdmin ? '/admin' : effectiveIsAuthor ? '/author' : '/user'
 
-    const displayName = loading
-        ? (initialUser?.name || 'User')
-        : (user?.displayName || user?.email?.split('@')[0] || 'User')
+    const displayName = loading ? (initialUser?.name || 'User') : (user?.displayName || user?.email?.split('@')[0] || 'User')
     const initials = displayName.substring(0, 2).toUpperCase()
     const avatarUrl = loading ? initialUser?.avatar_url : user?.avatarUrl
 

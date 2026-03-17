@@ -247,7 +247,6 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, StatusConfig> 
 export const POST_STATUS_CONFIG: Record<PostStatus, { label: string; color: string; textColor: string }> = {
     draft: { label: 'Draft', color: 'bg-gray-100', textColor: 'text-gray-600' },
     review: { label: 'In Review', color: 'bg-yellow-100', textColor: 'text-yellow-800' },
-    scheduled: { label: 'Scheduled', color: 'bg-purple-100', textColor: 'text-purple-800' },
     published: { label: 'Published', color: 'bg-green-100', textColor: 'text-green-800' },
     archived: { label: 'Archived', color: 'bg-red-100', textColor: 'text-red-700' },
 }

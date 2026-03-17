@@ -18,6 +18,7 @@ import { getHomepageSections } from '@/lib/queries/stats'
 import type { PostTypeCounts } from '@/lib/queries/stats'
 import { Briefcase, CreditCard, ArrowRight, Trophy, Users, Building2, MapPin, BookOpen, Bell, GraduationCap, Key, ClipboardList, FileText, Star, ShieldCheck, Clock, Sparkles, Send, MessageCircle } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import console from 'console'
 
 /* SEO Metadata */
 
@@ -76,7 +77,6 @@ export default async function HomePage() {
 
     /* Pre-fetched homepage sections from fn_homepage_sections() - 1 DB call for all 6 sections */
     const sections = sectionsResult.status === 'fulfilled' ? sectionsResult.value : {}
-
     return (
         <>
             <JsonLd data={[websiteJsonLd, organizationJsonLd]} />
@@ -124,7 +124,7 @@ export default async function HomePage() {
                     {STAT_CARDS.map((card) => {
                         const counts = countsMap.get(card.type)
                         const href = ROUTE_PREFIXES[card.type as keyof typeof ROUTE_PREFIXES] || '#'
-                        
+
                         const value = counts ? counts.total_count.toLocaleString('en-IN') : '0'
                         const changeLabel = formatChange(counts)
 

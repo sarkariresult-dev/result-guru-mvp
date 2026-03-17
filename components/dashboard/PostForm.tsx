@@ -488,9 +488,7 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
     const [ogDescription, setOgDescription] = useState(initialData?.og_description ?? '')
     const [ogImage, setOgImage] = useState(initialData?.og_image ?? '')
 
-    // ── Publishing ──
-    const [scheduledAt, setScheduledAt] = useState(initialData?.scheduled_at ?? '')
-    const [expiresAt, setExpiresAt] = useState(initialData?.expires_at ?? '')
+
 
     // ── Auto-Save to Local Storage ──
     useEffect(() => {
@@ -574,6 +572,7 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                 if (newMetaDescription) setMetaDescription(newMetaDescription)
                 if (newFocusKeyword) setFocusKeyword(newFocusKeyword)
                 if (newSecondaryKeywords) setSecondaryKeywords(newSecondaryKeywords)
+
                 if (newFaq) setFaq(newFaq)
 
                 // Map official links
@@ -667,7 +666,6 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                 // Publishing
                 author_id: authorId,
                 published_at: pendingSaveAs === 'published' ? new Date().toISOString() : null,
-                scheduled_at: scheduledAt || null, expires_at: expiresAt || null,
                 // Tags (handled separately by createPost/updatePost)
                 tag_ids: selectedTags.length > 0 ? selectedTags : undefined,
             }
@@ -703,8 +701,7 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                             setOgTitle('')
                             setOgDescription('')
                             setOgImage('')
-                            setScheduledAt('')
-                            setExpiresAt('')
+
                             setNoindex(false)
                         }
                         router.push(`${basePath}/posts`)
@@ -855,14 +852,7 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                                 </select>
                             </Field>
                         )}
-                        <div className="grid grid-cols-2 gap-2">
-                            <Field label="Schedule">
-                                <input type="datetime-local" value={scheduledAt ? scheduledAt.slice(0, 16) : ''} onChange={(e) => setScheduledAt(e.target.value ? new Date(e.target.value).toISOString() : '')} className={`${inputCls} text-xs`} />
-                            </Field>
-                            <Field label="Expires">
-                                <input type="datetime-local" value={expiresAt ? expiresAt.slice(0, 16) : ''} onChange={(e) => setExpiresAt(e.target.value ? new Date(e.target.value).toISOString() : '')} className={`${inputCls} text-xs`} />
-                            </Field>
-                        </div>
+
                     </Panel>
 
                     {/* Taxonomy Panel */}

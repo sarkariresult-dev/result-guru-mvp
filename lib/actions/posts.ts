@@ -95,8 +95,6 @@ interface PostPayload {
     // Publishing
     author_id?: string | null
     published_at?: string | null
-    scheduled_at?: string | null
-    expires_at?: string | null
     last_reviewed_at?: string | null
 
     // Junction table helpers (not DB columns - handled separately)
@@ -184,8 +182,6 @@ export async function createPost(data: PostPayload) {
         // Publishing
         author_id: data.author_id ?? null,
         published_at: data.published_at ?? null,
-        scheduled_at: data.scheduled_at ?? null,
-        expires_at: data.expires_at ?? null,
     }
 
     const { data: inserted, error } = await supabase

@@ -10,7 +10,7 @@ const STATUS_FILTERS = [
     { value: '', label: 'All' },
     { value: 'draft', label: 'Draft' },
     { value: 'review', label: 'In Review' },
-    { value: 'scheduled', label: 'Scheduled' },
+
     { value: 'published', label: 'Published' },
     { value: 'archived', label: 'Archived' },
 ] as const
