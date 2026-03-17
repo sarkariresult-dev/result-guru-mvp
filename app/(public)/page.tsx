@@ -66,12 +66,8 @@ export default async function HomePage() {
         getHomepageSections(6),
     ])
 
-    const states = statesResult.status === 'fulfilled'
-        ? statesResult.value.map((s) => ({ slug: s.slug, name: s.name, abbr: s.abbr }))
-        : []
-
+    const states = statesResult.status === 'fulfilled' ? statesResult.value.map((s) => ({ slug: s.slug, name: s.name, abbr: s.abbr })) : []
     const organizations = orgsResult.status === 'fulfilled' ? orgsResult.value : []
-
     const postCounts = countsResult.status === 'fulfilled' ? countsResult.value : []
     const countsMap = new Map(postCounts.map((c) => [c.type, c]))
 
@@ -98,7 +94,7 @@ export default async function HomePage() {
                     </p>
 
                     {/* Search Bar */}
-                    <div className="relative z-10 mx-auto mt-8 max-w-3xl animate-fade-up delay-150">
+                    <div className="relative z-20 mx-auto mt-8 max-w-3xl animate-fade-up delay-150">
                         <HeroSearchBar states={states} />
                     </div>
 
