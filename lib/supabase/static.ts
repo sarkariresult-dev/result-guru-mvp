@@ -33,24 +33,6 @@ export function createStaticClient() {
                 autoRefreshToken: false,
                 persistSession: false,
             },
-            global: {
-                fetch: async (reqUrl, options) => {
-                    // WORKAROUND: Next.js 15 `use cache` aggressively intercepts and sometimes
-                    // drops streaming POST requests (which Supabase uses for RPCs).
-                    // We clone the options and force no-store at the fetch level to let
-                    // the outer `use cache` boundary handle the caching instead of the fetch layer.
-                    const fetchOptions = { ...options }
-                    if (fetchOptions.method === 'POST') {
-                        fetchOptions.cache = 'no-store'
-                    }
-
-                    try {
-                        return await fetch(reqUrl, fetchOptions)
-                    } catch (error: any) {
-                        throw error
-                    }
-                }
-            }
         })
     }
 

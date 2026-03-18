@@ -36,7 +36,13 @@ export function withErrorHandling<TReq extends Request | NextRequest, TContext =
     return async (req: TReq, context: TContext) => {
         try {
             return await handler(req, context)
-        } catch (error) {
+        } catch (error: any) {
+            // Next.js 15+ and standard fetch throw AbortError when a request is cancelled.
+            // In dev mode (HMR) or during fast navigation, this is common and shouldn't be logged as a server error.
+            if (error?.name === 'AbortError' || error?.code === 20 || error?.name === 'CanceledError') {
+                return new NextResponse(null, { status: 499 }) // 499 Client Closed Request
+            }
+
             console.error(`[API Error] ${req.url}:`, error)
             return errorResponse(error)
         }

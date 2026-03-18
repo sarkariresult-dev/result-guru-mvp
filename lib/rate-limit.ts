@@ -7,48 +7,58 @@ import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
 import { NextRequest, NextResponse } from 'next/server'
 
-// Ensure env variables exist (validated in env.ts, so this is safe)
-const redis = new Redis({
-    url: process.env.UPSTASH_REDIS_REST_URL!,
-    token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-})
+// Guard against missing Redis credentials in local dev
+const isRedisConfigured = Boolean(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
+
+const redis = isRedisConfigured 
+    ? new Redis({
+        url: process.env.UPSTASH_REDIS_REST_URL!,
+        token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+      })
+    : null
+
 
 /* ── Pre-configured limiters for different API routes ────────────────────── */
 
 /** Newsletter subscribe: 5 requests per minute per IP */
-export const subscribeLimiter = new Ratelimit({
+export const subscribeLimiter = redis ? new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(5, '1 m'),
     analytics: true,
-})
+}) : { limit: async () => ({ success: true }) } as any
+
 
 /** View tracking: 30 requests per minute per IP */
-export const viewLimiter = new Ratelimit({
+export const viewLimiter = redis ? new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(30, '1 m'),
     analytics: true,
-})
+}) : { limit: async () => ({ success: true }) } as any
+
 
 /** Revalidate: 10 requests per minute per IP */
-export const revalidateLimiter = new Ratelimit({
+export const revalidateLimiter = redis ? new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(10, '1 m'),
     analytics: true,
-})
+}) : { limit: async () => ({ success: true }) } as any
+
 
 /** Search: 20 requests per minute per IP */
-export const searchLimiter = new Ratelimit({
+export const searchLimiter = redis ? new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(20, '1 m'),
     analytics: true,
-})
+}) : { limit: async () => ({ success: true }) } as any
+
 
 /** General API: 60 requests per minute per IP */
-export const generalLimiter = new Ratelimit({
+export const generalLimiter = redis ? new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(60, '1 m'),
     analytics: true,
-})
+}) : { limit: async () => ({ success: true }) } as any
+
 
 /* ── Helper to extract client IP from NextRequest ────────────────────────── */
 
