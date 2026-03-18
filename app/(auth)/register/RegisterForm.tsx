@@ -3,11 +3,11 @@
 import Link from 'next/link'
 import { useState, useTransition, useMemo } from 'react'
 import { Eye, EyeOff, Mail, Lock, User, Loader2, CheckCircle2 } from 'lucide-react'
-import { signUp, signInWithGoogle } from '@/lib/actions/auth'
+import { signUp, signInWithGoogle } from '@/features/auth/actions'
 import { registerSchema } from '@/lib/validations'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { GoogleIcon } from '@/components/shared/GoogleIcon'
+import { GoogleIcon } from '@/features/shared/components/GoogleIcon'
 import { SITE } from '@/config/site'
 
 /**

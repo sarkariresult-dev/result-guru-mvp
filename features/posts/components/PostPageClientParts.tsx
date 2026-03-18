@@ -11,11 +11,11 @@ export const AdZone = dynamic(
 )
 
 export const NewsletterForm = dynamic(
-    () => import('@/components/shared/NewsletterForm').then(m => m.NewsletterForm),
+    () => import('@/features/shared/components/NewsletterForm').then(m => m.NewsletterForm),
     { ssr: false },
 )
 
 export const PostActionBar = dynamic(
-    () => import('@/components/posts/PostActionBar').then(m => m.PostActionBar),
+    () => import('@/features/posts/components/PostActionBar').then(m => m.PostActionBar),
     { ssr: false },
 )

@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, Outfit, JetBrains_Mono } from 'next/font/google'
 import Script from 'next/script'
 import { Providers } from '@/components/providers'
-import { CookieConsent } from '@/components/shared/CookieConsent'
+import { CookieConsent } from '@/features/shared/components/CookieConsent'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { SITE } from '@/config/site'
@@ -168,48 +168,6 @@ export const viewport: Viewport = {
     colorScheme: 'light dark',
 }
 
-/* ── WebSite structured data (JSON-LD) for Google rich results ── */
-function WebsiteJsonLd() {
-    const jsonLd = {
-        '@context': 'https://schema.org',
-        '@type': 'WebSite',
-        name: SITE.name,
-        alternateName: `${SITE.name} India`,
-        url: SITE.url,
-        description: SITE.description,
-        inLanguage: `${SITE.language}-${SITE.country}`,
-        potentialAction: {
-            '@type': 'SearchAction',
-            target: {
-                '@type': 'EntryPoint',
-                urlTemplate: `${SITE.url}/search?q={search_term_string}`,
-            },
-            'query-input': 'required name=search_term_string',
-        },
-        publisher: {
-            '@type': 'Organization',
-            name: SITE.publisher.name,
-            url: SITE.publisher.url,
-            logo: {
-                '@type': 'ImageObject',
-                url: SITE.publisher.logo,
-                width: 512,
-                height: 512,
-            },
-            ...(SITE.publisher.sameAs.length > 0 && {
-                sameAs: SITE.publisher.sameAs,
-            }),
-        },
-    }
-
-    return (
-        <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-    )
-}
-
 /* ── Root Layout ────────────────────────────────────────────── */
 export default function RootLayout({
     children,
@@ -236,10 +194,6 @@ export default function RootLayout({
                 )}
                 <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
                 <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-
-
-                {/* Structured Data - WebSite schema for sitelinks search box */}
-                <WebsiteJsonLd />
             </head>
             <body className="min-h-screen font-sans antialiased" suppressHydrationWarning>
                 {/* Skip-to-content link is in each route group layout (public/dashboard)
@@ -279,8 +233,6 @@ export default function RootLayout({
                         />
                     </>
                 )}
-
-
 
                 {/* GTM noscript fallback */}
                 {SITE.gtmId && (

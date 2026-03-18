@@ -1,4 +1,4 @@
-import { PostCardSkeleton } from '@/components/posts/PostCardSkeleton'
+import { PostCardSkeleton } from '@/features/posts/components/PostCardSkeleton'
 import { Skeleton } from '@/components/ui/Skeleton'
 
 interface HomeSectionSkeletonProps {

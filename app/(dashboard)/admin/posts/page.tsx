@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { getAdminPosts } from '@/lib/queries/posts'
-import { PostActions } from '@/components/dashboard/PostActions'
+import { getAdminPosts } from '@/features/posts/queries'
+import { PostActions } from '@/features/dashboard/components/PostActions'
 import { POST_TYPE_CONFIG, POST_STATUS_CONFIG, PAGINATION } from '@/config/constants'
 import { Search, FileText, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { PostTypeKey } from '@/config/site'

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { subscribe } from '@/lib/actions/subscribers'
+import { subscribe } from '@/features/subscribers/actions'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Select } from '@/components/ui/Select'
@@ -35,13 +35,14 @@ export function AlertPreferencesForm({ userEmail }: Props) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         startTransition(async () => {
-            const result = await subscribe({
-                email: userEmail,
-                whatsapp_opt_in: whatsapp,
-                preferences: { post_types: selectedTypes },
-                phone: phone || undefined,
-            } as any)
-            if ('error' in result) setMessage('Failed to save preferences')
+            const formData = new FormData()
+            formData.append('email', userEmail)
+            formData.append('whatsapp_opt_in', String(whatsapp))
+            formData.append('preferences', JSON.stringify({ post_types: selectedTypes }))
+            if (phone) formData.append('phone', phone)
+
+            const result = await subscribe(null, formData)
+            if (!result.success) setMessage(result.error || 'Failed to save preferences')
             else setMessage('Alert preferences saved!')
             setTimeout(() => setMessage(''), 3000)
         })

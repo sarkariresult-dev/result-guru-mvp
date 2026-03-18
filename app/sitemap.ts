@@ -81,104 +81,106 @@ const STATIC_PAGES: Array<{
 export const revalidate = 3600 // revalidate at most every hour
 export const dynamic = 'force-static'
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+const POSTS_PER_SITEMAP = 10000
+
+export async function generateSitemaps() {
+    try {
+        const supabase = createStaticClient()
+        // Get total published posts count
+        const { count } = await supabase
+            .from('v_published_posts')
+            .select('*', { count: 'exact', head: true })
+
+        if (!count) return [{ id: 0 }]
+
+        // e.g 45_000 -> 5 chunks (0, 1, 2, 3, 4)
+        const totalChunks = Math.ceil(count / POSTS_PER_SITEMAP)
+        return Array.from({ length: totalChunks }, (_, i) => ({ id: i }))
+    } catch {
+        return [{ id: 0 }]
+    }
+}
+
+export default async function sitemap(props: { id?: number | Promise<number> } = {}): Promise<MetadataRoute.Sitemap> {
+    const rawId = props?.id ?? 0;
+    const id = typeof rawId === 'object' && rawId !== null && 'then' in rawId ? await rawId : rawId;
     const baseUrl = SITE.url
     const now = new Date()
 
-    /* ── Static + Taxonomy ── */
-    const staticEntries: MetadataRoute.Sitemap = STATIC_PAGES.map(
-        ({ path, changeFrequency, priority }) => ({
-            url: `${baseUrl}${path}`,
-            lastModified: now,
-            changeFrequency,
-            priority,
-        })
-    )
-
+    let staticEntries: MetadataRoute.Sitemap = []
     let stateEntries: MetadataRoute.Sitemap = []
     let orgEntries: MetadataRoute.Sitemap = []
     let tagEntries: MetadataRoute.Sitemap = []
-
-    try {
-        const supabase = createStaticClient()
-
-        const [statesResult, orgsResult, tagsResult] = await Promise.allSettled([
-            supabase
-                .from('states')
-                .select('slug, created_at')
-                .eq('is_active', true)
-                .order('name'),
-            supabase
-                .from('organizations')
-                .select('slug, created_at')
-                .eq('is_active', true)
-                .order('name'),
-            supabase
-                .from('tags')
-                .select('slug, created_at')
-                .eq('is_active', true)
-                .order('name'),
-        ])
-
-        if (statesResult.status === 'fulfilled') {
-            const { data: states } = statesResult.value
-            if (states?.length) {
-                stateEntries = states.map(
-                    (state: { slug: string; created_at: string | null }) => ({
-                        url: `${baseUrl}/states/${state.slug}`,
-                        lastModified: new Date(state.created_at ?? now),
-                        changeFrequency: 'weekly' as const,
-                        priority: 0.6,
-                    })
-                )
-            }
-        }
-
-        if (orgsResult.status === 'fulfilled') {
-            const { data: orgs } = orgsResult.value
-            if (orgs?.length) {
-                orgEntries = orgs.map(
-                    (org: { slug: string; created_at: string | null }) => ({
-                        url: `${baseUrl}/organizations/${org.slug}`,
-                        lastModified: new Date(org.created_at ?? now),
-                        changeFrequency: 'monthly' as const,
-                        priority: 0.5,
-                    })
-                )
-            }
-        }
-
-        if (tagsResult.status === 'fulfilled') {
-            const { data: tags } = tagsResult.value
-            if (tags?.length) {
-                tagEntries = tags.map(
-                    (tag: { slug: string; created_at: string | null }) => ({
-                        url: `${baseUrl}/tag/${tag.slug}`,
-                        lastModified: new Date(tag.created_at ?? now),
-                        changeFrequency: 'weekly' as const,
-                        priority: 0.4,
-                    })
-                )
-            }
-        }
-    } catch (err) {
-        console.error('[sitemap] Failed to fetch taxonomy:', err)
-    }
-
-    /* ── Posts (Up to 45,000 for safety) ── */
     let postEntries: MetadataRoute.Sitemap = []
 
+    // 1. Only include static and taxonomy links in the FIRST sitemap (id = 0)
+    if (id === 0) {
+        /* ── Static Pages ── */
+        staticEntries = STATIC_PAGES.map(
+            ({ path, changeFrequency, priority }) => ({
+                url: `${baseUrl}${path}`,
+                lastModified: now,
+                changeFrequency,
+                priority,
+            })
+        )
+
+        /* ── Taxonomy (States, Orgs, Tags) ── */
+        try {
+            const supabase = createStaticClient()
+            const [statesResult, orgsResult, tagsResult] = await Promise.allSettled([
+                supabase.from('states').select('slug, created_at, updated_at').eq('is_active', true).order('name'),
+                supabase.from('organizations').select('slug, created_at, updated_at').eq('is_active', true).order('name'),
+                supabase.from('tags').select('slug, created_at, updated_at').eq('is_active', true).order('name'),
+            ])
+
+            if (statesResult.status === 'fulfilled' && statesResult.value.data) {
+                stateEntries = statesResult.value.data.map((state: any) => ({
+                    url: `${baseUrl}/states/${state.slug}`,
+                    lastModified: new Date(state.updated_at ?? state.created_at ?? now),
+                    changeFrequency: 'weekly' as const,
+                    priority: 0.6,
+                }))
+            }
+
+            if (orgsResult.status === 'fulfilled' && orgsResult.value.data) {
+                orgEntries = orgsResult.value.data.map((org: any) => ({
+                    url: `${baseUrl}/organizations/${org.slug}`,
+                    lastModified: new Date(org.updated_at ?? org.created_at ?? now),
+                    changeFrequency: 'monthly' as const,
+                    priority: 0.5,
+                }))
+            }
+
+            if (tagsResult.status === 'fulfilled' && tagsResult.value.data) {
+                tagEntries = tagsResult.value.data.map((tag: any) => ({
+                    url: `${baseUrl}/tag/${tag.slug}`,
+                    lastModified: new Date(tag.updated_at ?? tag.created_at ?? now),
+                    changeFrequency: 'weekly' as const,
+                    priority: 0.4,
+                }))
+            }
+        } catch (err) {
+            console.error(`[sitemap] Failed to fetch taxonomy data:`, err)
+        }
+    }
+
+    /* ── Posts ── */
     try {
         const supabase = createStaticClient()
+        
+        // Calculate pagination range based on sitemap id chunk
+        const from = id * POSTS_PER_SITEMAP
+        const to = from + POSTS_PER_SITEMAP - 1
 
         const { data: posts, error } = await supabase
             .from('v_published_posts')
             .select('slug, type, updated_at, published_at, content_updated_at')
             .order('published_at', { ascending: false })
-            .limit(45_000)
+            .range(from, to)
 
         if (error) {
-            console.error(`[sitemap] Posts error:`, error.message)
+            console.error(`[sitemap-${id}] Posts error:`, error.message)
         } else if (posts?.length) {
             postEntries = posts
                 .filter(
@@ -203,9 +205,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                 )
         }
     } catch (err) {
-        console.error(`[sitemap] Failed to fetch posts:`, err)
+        console.error(`[sitemap-${id}] Failed to fetch posts:`, err)
     }
 
     return [...staticEntries, ...stateEntries, ...orgEntries, ...tagEntries, ...postEntries]
 }
-

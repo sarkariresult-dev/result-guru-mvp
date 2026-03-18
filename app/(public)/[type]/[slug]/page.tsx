@@ -1,32 +1,68 @@
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import Image from 'next/image'
-import { getPostBySlug } from '@/lib/queries/posts'
+import { getPostBySlug } from '@/features/posts/queries'
 import { buildMetadata } from '@/lib/metadata'
 import { buildJobPostingSchema, buildBreadcrumbSchema, buildFAQPageSchema, buildGovernmentServiceSchema, buildNewsArticleSchema, buildHowToSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
-import { PostDetail } from '@/components/posts/PostDetail'
+import { PostDetail } from '@/features/posts/components/PostDetail'
 import { processContentHtml, extractHowToSteps } from '@/lib/content-processing'
 import { sanitizeHtml } from '@/lib/sanitize'
-import { RelatedPosts } from '@/components/posts/RelatedPosts'
-import { PostDetailSkeleton } from '@/components/posts/PostCardSkeleton'
+import { RelatedPosts } from '@/features/posts/components/RelatedPosts'
+import { PostDetailSkeleton } from '@/features/posts/components/PostCardSkeleton'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
-import { TableOfContents } from '@/components/posts/TableOfContents'
-import { OrgInfoBox } from '@/components/posts/OrgInfoBox'
-import { AdZone, NewsletterForm } from '@/components/posts/PostPageClientParts'
+import { TableOfContents } from '@/features/posts/components/TableOfContents'
+import { OrgInfoBox } from '@/features/posts/components/OrgInfoBox'
+import { AdZone, NewsletterForm } from '@/features/posts/components/PostPageClientParts'
 import { POST_TYPE_CONFIG } from '@/config/constants'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
 import type { PostTypeKey } from '@/config/site'
 import type { PublishedPost } from '@/types/post.types'
 import type { FaqItem } from '@/types/post-content.types'
-import { slugToKey, humanise } from '@/lib/utils'
+import { slugToKey, humanise, keyToSlug } from '@/lib/utils'
 import { ExternalLink, Download, Bell } from 'lucide-react'
 
 /* ── Types ───────────────────────────────────────────────────────── */
 
 interface Props {
     params: Promise<{ type: string; slug: string }>
+}
+
+/* ── Static params (SSG + ISR for all published posts) ──────────── */
+
+/**
+ * Pre-render all published post pages at build time.
+ * New posts published after build are rendered on-demand and cached.
+ * Falls back to empty array if DB query fails (all pages on-demand).
+ */
+export async function generateStaticParams() {
+    try {
+        const { createClient } = await import('@supabase/supabase-js')
+        const supabase = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        )
+        const { data } = await supabase
+            .from('v_published_posts')
+            .select('slug, type')
+            .order('published_at', { ascending: false })
+            // Limit to 100 to prevent OOM errors during build. Next.js ISR will generate the rest on-demand.
+            .limit(100)
+
+        if (!data) return []
+
+        return data
+            .filter((p: { slug: string | null; type: string | null }) => p.slug && p.type)
+            .map((p: { slug: string; type: string }) => ({
+                type: keyToSlug(p.type),
+                slug: p.slug,
+            }))
+    } catch {
+        // If DB is unreachable during build, fall back to on-demand rendering
+        return []
+    }
 }
 
 /* ── Metadata ────────────────────────────────────────────────────── */
@@ -295,9 +331,9 @@ export default async function PostDetailPage({ params }: Props) {
                                     </p>
                                     <div className="flex flex-col gap-2">
                                         {siloConfig.links.map((link, i) => (
-                                            <a key={i} href={link.href} className="text-brand-600 hover:underline text-sm font-medium">
+                                            <Link key={i} href={link.href} className="text-brand-600 hover:underline text-sm font-medium">
                                                 {link.label}
-                                            </a>
+                                            </Link>
                                         ))}
                                     </div>
                                 </div>

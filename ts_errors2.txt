@@ -1,4 +1,0 @@
-﻿app/(dashboard)/admin/settings/page.tsx(43,31): error TS18048: 'name' is possibly 'undefined'.
-app/(dashboard)/admin/settings/page.tsx(43,62): error TS18048: 'name' is possibly 'undefined'.
-app/(public)/category/[slug]/page.tsx(7,33): error TS2307: Cannot find module '@/components/shared/PostCardMinimal' or its corresponding type declarations.
-lib/queries/tags.ts(65,33): error TS2345: Argument of type '{ p_tag_id: string; p_limit: 20; p_offset: number; }' is not assignable to parameter of type 'undefined'.

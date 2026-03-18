@@ -10,7 +10,7 @@ import {
     CheckCircle2,
 } from 'lucide-react'
 import { getMediaItems } from '@/lib/queries/media'
-import { StatsCard } from '@/components/dashboard/StatsCard'
+import { StatsCard } from '@/features/dashboard/components/StatsCard'
 import { Badge } from '@/components/ui/Badge'
 
 const ITEMS_PER_PAGE = 24 // Multiple of common grid columns (2/3/4/6)

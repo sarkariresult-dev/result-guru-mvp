@@ -1,8 +1,7 @@
 'use client'
 
-import { useState, useTransition, useRef } from 'react'
-import { useRouter } from 'next/navigation'
-import { updateProfile } from '@/lib/actions/users'
+import { useState, useRef, useActionState } from 'react'
+import { updateProfile } from '@/features/dashboard/actions'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -16,33 +15,33 @@ interface Props {
 }
 
 export function ProfileForm({ userId, authUserId, initialName, initialAvatar }: Props) {
-    const [name, setName] = useState(initialName)
     const [avatar, setAvatar] = useState(initialAvatar ?? '')
     const [uploading, setUploading] = useState(false)
-    const [isPending, startTransition] = useTransition()
-    const [message, setMessage] = useState('')
+    const [uploadMsg, setUploadMsg] = useState('')
     const fileRef = useRef<HTMLInputElement>(null)
-    const router = useRouter()
+    
+    // Bind userId to the action for useActionState
+    const updateProfileAction = updateProfile.bind(null, userId)
+    const [state, formAction, isPending] = useActionState(updateProfileAction, null)
 
     const handleAvatarUpload = async (file: File) => {
         if (file.size > 2 * 1024 * 1024) {
-            setMessage('Error: File too large. Max 2 MB.')
+            setUploadMsg('Error: File too large. Max 2 MB.')
             return
         }
         if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-            setMessage('Error: Only JPG, PNG, WebP allowed.')
+            setUploadMsg('Error: Only JPG, PNG, WebP allowed.')
             return
         }
 
         setUploading(true)
-        setMessage('')
+        setUploadMsg('')
         try {
             const supabase = createClient()
             const ext = file.name.split('.').pop() || 'jpg'
             const fileName = `avatar-${Date.now()}.${ext}`
             const filePath = `${authUserId}/${fileName}`
 
-            // Delete old avatar if exists
             if (avatar) {
                 const parts = avatar.split('/storage/v1/object/public/avatars/')
                 if (parts[1]) {
@@ -55,14 +54,14 @@ export function ProfileForm({ userId, authUserId, initialName, initialAvatar }: 
                 .upload(filePath, file, { cacheControl: '3600', upsert: true })
 
             if (uploadError) {
-                setMessage(`Error: ${uploadError.message}`)
+                setUploadMsg(`Error: ${uploadError.message}`)
                 return
             }
 
             const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(filePath)
             setAvatar(urlData.publicUrl)
         } catch (err: any) {
-            setMessage(`Error: ${err.message || 'Upload failed'}`)
+            setUploadMsg(`Error: ${err.message || 'Upload failed'}`)
         } finally {
             setUploading(false)
         }
@@ -81,21 +80,11 @@ export function ProfileForm({ userId, authUserId, initialName, initialAvatar }: 
         setAvatar('')
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        setMessage('')
-        startTransition(async () => {
-            const result = await updateProfile(userId, { name, avatar_url: avatar || null })
-            if (result.error) setMessage(`Error: ${result.error}`)
-            else {
-                setMessage('Profile updated!')
-                router.refresh()
-            }
-        })
-    }
-
     return (
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form action={formAction} className="space-y-8">
+            {/* Hidden field to pass avatar_url to formData */}
+            <input type="hidden" name="avatar_url" value={avatar} />
+
             {/* Avatar Upload */}
             <div className="flex items-start gap-6">
                 <div className="relative group shrink-0">
@@ -136,7 +125,7 @@ export function ProfileForm({ userId, authUserId, initialName, initialAvatar }: 
                         <button
                             type="button"
                             onClick={() => fileRef.current?.click()}
-                            disabled={uploading}
+                            disabled={uploading || isPending}
                             className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground-muted hover:bg-background-subtle transition-colors disabled:opacity-50"
                         >
                             {uploading ? 'Uploading…' : 'Change Photo'}
@@ -145,19 +134,21 @@ export function ProfileForm({ userId, authUserId, initialName, initialAvatar }: 
                             <button
                                 type="button"
                                 onClick={handleRemoveAvatar}
-                                className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-900/20 transition-colors"
+                                disabled={isPending}
+                                className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50"
                             >
                                 <Trash2 className="inline size-3 mr-1" />Remove
                             </button>
                         )}
                     </div>
+                    {uploadMsg && <p className="text-xs font-medium text-rose-500">{uploadMsg}</p>}
                 </div>
             </div>
 
             {/* Name Field */}
             <div>
                 <label htmlFor="name" className="mb-1.5 block text-sm font-medium">Display Name</label>
-                <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Your name" />
+                <Input id="name" name="name" defaultValue={initialName} required placeholder="Your name" disabled={isPending} />
                 <p className="mt-1 text-xs text-foreground-subtle">This name will be shown as the author on your posts.</p>
             </div>
 
@@ -167,10 +158,11 @@ export function ProfileForm({ userId, authUserId, initialName, initialAvatar }: 
                 <p className="text-sm text-foreground-subtle">Managed by your login provider. Contact admin to change.</p>
             </div>
 
-            {message && (
-                <p className={`text-sm font-medium ${message.startsWith('Error') ? 'text-red-600' : 'text-green-600'}`}>
-                    {message}
-                </p>
+            {state?.message && (
+                <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">{state.message}</p>
+            )}
+            {state?.error && (
+                <p className="text-sm font-medium text-rose-500">{state.error}</p>
             )}
 
             <div className="flex items-center gap-3 border-t border-border pt-6">

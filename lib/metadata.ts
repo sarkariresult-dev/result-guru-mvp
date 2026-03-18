@@ -108,7 +108,7 @@ export function buildPageMetadata(opts: {
     const url = `${SITE.url}${opts.path.startsWith('/') ? opts.path : `/${opts.path}`}`
 
     return {
-        title: `${opts.title} | ${SITE.name}`,
+        title: opts.title,
         description: opts.description,
         alternates: { canonical: url },
         robots: opts.noindex

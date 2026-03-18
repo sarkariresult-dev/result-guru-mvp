@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { createServerClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { DashboardShell } from '@/components/dashboard/DashboardShell'
+import { DashboardShell } from '@/features/dashboard/components/DashboardShell'
 import { adminNavGroups, authorNavGroups, userNavGroups } from '@/components/layout/Sidebar'
 import type { PublicUser } from '@/types/user.types'
 

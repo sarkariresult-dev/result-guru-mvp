@@ -4,15 +4,15 @@ import { useTransition, useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { Button } from '@/components/ui/Button'
-import { createPost, updatePost } from '@/lib/actions/posts'
-import { FileUpload } from '@/components/dashboard/FileUpload'
+import { createPost, updatePost } from '@/features/posts/actions'
+import { FileUpload } from '@/features/dashboard/components/FileUpload'
 import { Save, Eye, Plus, Trash2, ChevronDown, ChevronUp, X, AlertTriangle, CheckCircle2, Link as LinkIcon, Info, Wand2, Sparkles, Loader2 } from 'lucide-react'
 import { generateContentWithGemini } from '@/lib/actions/ai'
 import { processContentHtml, extractHowToSteps, replacePlaceholders } from '@/lib/content-processing'
 
 /* Heavy editor - 13 tiptap packages + 25 lucide icons → lazy-load, no SSR */
 const TiptapEditor = dynamic(
-    () => import('@/components/dashboard/TiptapEditor').then(m => m.TiptapEditor),
+    () => import('@/features/dashboard/components/TiptapEditor').then(m => m.TiptapEditor),
     {
         ssr: false,
         loading: () => (

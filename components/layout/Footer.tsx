@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { SITE, FOOTER_NAV } from '@/config/site'
-import { Logo } from '@/components/shared/Logo'
+import { Logo } from '@/features/shared/components/Logo'
 
 export function Footer() {
     const year = new Date().getFullYear()

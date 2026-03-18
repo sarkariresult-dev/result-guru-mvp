@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
 
   /* ── Server Dependencies ────────────────────────────────── */
-  serverExternalPackages: ['isomorphic-dompurify', 'jsdom'],
+  serverExternalPackages: [],
 
   /* ── Experimental ───────────────────────────────────────── */
   experimental: {
@@ -95,6 +95,21 @@ const nextConfig: NextConfig = {
             key: 'Cross-Origin-Resource-Policy',
             value: 'same-origin',
           },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://va.vercel-scripts.com",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "img-src 'self' data: blob: https: http:",
+              "font-src 'self' https://fonts.gstatic.com",
+              "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://vitals.vercel-insights.com https://va.vercel-scripts.com",
+              "frame-src 'self' https://www.googletagmanager.com",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join('; '),
+          },
         ],
       },
       /* Static assets - aggressive cache */
@@ -135,7 +150,7 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       /* Permanent redirect for /index.php to / (Google Search Console fix) */
-      { source: '/index.php', destination: '/', statusCode: 301 },
+      { source: '/index.php', destination: '/', permanent: true },
 
       /* Plural → Singular mapping */
       { source: '/jobs', destination: '/job', permanent: true },

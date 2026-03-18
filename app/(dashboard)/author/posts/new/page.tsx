@@ -3,7 +3,7 @@ import { getStates } from '@/lib/queries/states'
 import { getOrganizations } from '@/lib/queries/organizations'
 import { getCategories, getQualifications } from '@/lib/queries/taxonomy'
 import { getTags } from '@/lib/queries/tags'
-import { PostForm } from '@/components/dashboard/PostForm'
+import { PostForm } from '@/features/dashboard/components/PostForm'
 import { redirect } from 'next/navigation'
 
 export default async function AuthorNewPostPage() {

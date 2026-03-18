@@ -1,5 +1,5 @@
 import { PostCard } from './PostCard'
-import { getPosts, getRecentPosts } from '@/lib/queries/posts'
+import { getPosts, getRecentPosts } from '@/features/posts/queries'
 import type { PublishedPost } from '@/types/post.types'
 import { PostType } from '@/types/enums'
 

@@ -2,7 +2,7 @@
 
 import { useTransition } from 'react'
 import { LogOut } from 'lucide-react'
-import { signOut } from '@/lib/actions/auth'
+import { signOut } from '@/features/auth/actions'
 
 export function LogoutButton({ variant = 'icon' }: { variant?: 'icon' | 'full' }) {
     const [isPending, startTransition] = useTransition()

@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState, useTransition } from 'react'
 import { Eye, EyeOff, Lock, CheckCircle2 } from 'lucide-react'
-import { resetPassword } from '@/lib/actions/auth'
+import { resetPassword } from '@/features/auth/actions'
 import { resetPasswordSchema } from '@/lib/validations'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'

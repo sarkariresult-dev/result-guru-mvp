@@ -1,6 +1,6 @@
 import { createServerClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { StoryForm } from '@/components/dashboard/stories/StoryForm'
+import { StoryForm } from '@/features/dashboard/components/stories/StoryForm'
 
 export default async function AuthorNewWebStoryPage() {
     const supabase = await createServerClient()

@@ -3,8 +3,8 @@ import { getStates } from '@/lib/queries/states'
 import { getOrganizations } from '@/lib/queries/organizations'
 import { getCategories, getQualifications } from '@/lib/queries/taxonomy'
 import { getTags } from '@/lib/queries/tags'
-import { getPostById } from '@/lib/queries/posts'
-import { PostForm } from '@/components/dashboard/PostForm'
+import { getPostById } from '@/features/posts/queries'
+import { PostForm } from '@/features/dashboard/components/PostForm'
 import { redirect, notFound } from 'next/navigation'
 
 export default async function EditPostPage({ params }: { params: Promise<{ id: string }> }) {

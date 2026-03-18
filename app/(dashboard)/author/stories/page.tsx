@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { getStories } from '@/lib/queries/stories'
-import { WebStoryList } from '@/components/dashboard/stories/WebStoryList'
+import { WebStoryList } from '@/features/dashboard/components/stories/WebStoryList'
 import { Plus, Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { createServerClient } from '@/lib/supabase/server'

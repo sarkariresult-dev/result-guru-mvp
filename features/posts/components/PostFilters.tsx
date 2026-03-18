@@ -2,8 +2,8 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { APPLICATION_STATUSES } from '@/config/constants'
-import { StateSelector } from '@/components/shared/StateSelector'
-import { QualificationFilter } from '@/components/shared/QualificationFilter'
+import { StateSelector } from '@/features/shared/components/StateSelector'
+import { QualificationFilter } from '@/features/shared/components/QualificationFilter'
 
 export function PostFilters({ basePath }: { basePath: string }) {
     const router = useRouter()

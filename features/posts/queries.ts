@@ -3,6 +3,7 @@ import { unstable_cache } from 'next/cache'
 import { createStaticClient } from '@/lib/supabase/static'
 import { createServerClient } from '@/lib/supabase/server'
 import type { PostCard, Post, PostFilters } from '@/types/post.types'
+import { toPostCardDTO, toAdminPostDTO } from '@/lib/dal/mappers'
 import { PAGINATION } from '@/config/constants'
 
 // ── Column projection matching v_published_posts + PostCard ────────────────
@@ -67,7 +68,7 @@ export const getPosts = unstable_cache(
             .range((page - 1) * limit, page * limit - 1)
 
         if (error) throw new Error(`getPosts: ${error.message}`)
-        return (data ?? []) as unknown as PostCard[]
+        return (data ?? []).map(toPostCardDTO)
     },
     ['posts-list'], // Cache key segment
     {
@@ -86,8 +87,8 @@ export const getPostBySlug = unstable_cache(
         let query = supabase.from('v_published_posts').select('*').eq('slug', slug)
         if (type) query = query.eq('type', type)
 
-        const { data } = await query.single()
-        return (data as unknown as Post) ?? null
+        const { data } = await query.returns<Post[]>().single()
+        return data ?? null
     },
     ['post-by-slug'],
     {
@@ -110,7 +111,7 @@ export const getRecentPosts = unstable_cache(
             .order('published_at', { ascending: false })
             .limit(limit)
 
-        return (data ?? []) as unknown as PostCard[]
+        return (data ?? []).map(toPostCardDTO)
     },
     ['recent-posts'],
     {
@@ -159,7 +160,7 @@ export const searchPosts = unstable_cache(
         const idMap = new Map((data ?? []).map(p => [(p as any).id, p]))
         const sorted = ids.map((id: string) => idMap.get(id)).filter(Boolean)
 
-        return sorted as unknown as PostCard[]
+        return sorted.map(toPostCardDTO)
     },
     ['search-posts'],
     {
@@ -228,13 +229,16 @@ export async function getAdminPosts(opts: {
 
     if (opts.status) query = query.eq('status', opts.status)
     if (opts.type) query = query.eq('type', opts.type)
-    if (opts.search) query = query.ilike('title', `%${opts.search}%`)
+    if (opts.search) {
+        const sanitized = opts.search.replace(/[%_]/g, '\\$&')
+        query = query.ilike('title', `%${sanitized}%`)
+    }
 
     const { data, count } = await query
         .order('created_at', { ascending: false })
         .range((page - 1) * limit, page * limit - 1)
 
-    return { data: (data ?? []) as AdminPost[], count: count ?? 0 }
+    return { data: (data ?? []).map(toAdminPostDTO), count: count ?? 0 }
 }
 
 export async function getAuthorPosts(
@@ -252,13 +256,16 @@ export async function getAuthorPosts(
 
     if (opts.status) query = query.eq('status', opts.status)
     if (opts.type) query = query.eq('type', opts.type)
-    if (opts.search) query = query.ilike('title', `%${opts.search}%`)
+    if (opts.search) {
+        const sanitized = opts.search.replace(/[%_]/g, '\\$&')
+        query = query.ilike('title', `%${sanitized}%`)
+    }
 
     const { data, count } = await query
         .order('created_at', { ascending: false })
         .range((page - 1) * limit, page * limit - 1)
 
-    return { data: (data ?? []) as AdminPost[], count: count ?? 0 }
+    return { data: (data ?? []).map(toAdminPostDTO), count: count ?? 0 }
 }
 
 /** Full post row by ID (for edit page) - includes post_tags join */
@@ -268,6 +275,7 @@ export async function getPostById(id: string): Promise<(Post & { post_tags?: { p
         .from('posts')
         .select('*, post_tags(post_id, tag_id)')
         .eq('id', id)
+        .returns<(Post & { post_tags?: { post_id: string; tag_id: string }[] })[]>()
         .single()
-    return (data as unknown as (Post & { post_tags?: { post_id: string; tag_id: string }[] })) ?? null
+    return data ?? null
 }

@@ -10,44 +10,54 @@ type JsonLdObject = Record<string, unknown>
  * Falls back gracefully when optional fields are missing.
  */
 export function buildJobPostingSchema(post: PostDetail): JsonLdObject {
-    const url = `${SITE.url}${postUrl(post.type as any, post.slug)}`
+    try {
+        const url = `${SITE.url}${postUrl(post.type as any, post.slug)}`
 
-    // Calculate expiry date (validThrough)
-    // Preference: post.expires_at -> 30 days after today if not set
-    let expiryDate = post.expires_at
-    if (!expiryDate) {
-        const date = new Date()
-        date.setDate(date.getDate() + 30)
-        expiryDate = date.toISOString()
-    }
+        // Calculate expiry date (validThrough)
+        // Preference: post.expires_at -> 30 days after today if not set
+        let expiryDate = post.expires_at
+        if (!expiryDate) {
+            // Next.js 15 strictly bans `new Date()` or `Date.now()` inside Static routes
+            // Using DB timestamp to remain 100% deterministic for SSG
+            const fallbackStr = post.published_at || post.created_at || '2026-01-01T00:00:00Z'
+            const date = new Date(fallbackStr)
+            date.setDate(date.getDate() + 30)
+            expiryDate = date.toISOString()
+        }
 
-    const schema: JsonLdObject = {
-        '@context': 'https://schema.org',
-        '@type': 'JobPosting',
-        title: post.title,
-        description: post.excerpt || post.meta_description || post.title,
-        url,
-        datePosted: post.published_at ?? post.created_at,
-        validThrough: expiryDate,
-        employmentType: 'FULL_TIME',
-        hiringOrganization: {
-            '@type': 'Organization',
-            name: post.org_name ?? SITE.name,
-            sameAs: post.org_official_url ?? undefined,
-            logo: post.org_logo_url ?? SITE.publisher.logo,
-        },
-        jobLocation: {
-            '@type': 'Place',
-            address: {
-                '@type': 'PostalAddress',
-                addressRegion: post.state_name ?? 'India',
-                addressCountry: 'IN',
+        return {
+            '@context': 'https://schema.org',
+            '@type': 'JobPosting',
+            title: post.title,
+            description: post.excerpt || post.meta_description || post.title,
+            url,
+            datePosted: post.published_at ?? post.created_at,
+            validThrough: expiryDate,
+            employmentType: 'FULL_TIME',
+            hiringOrganization: {
+                '@type': 'Organization',
+                name: post.org_name ?? SITE.name,
+                sameAs: post.org_official_url ?? undefined,
+                logo: post.org_logo_url ?? SITE.publisher.logo,
             },
-        },
+            jobLocation: {
+                '@type': 'Place',
+                address: {
+                    '@type': 'PostalAddress',
+                    addressRegion: post.state_name ?? 'India',
+                    addressCountry: 'IN',
+                },
+            },
+        }
+    } catch {
+        // Graceful fallback — return minimal valid schema rather than crash the page
+        return {
+            '@context': 'https://schema.org',
+            '@type': 'JobPosting',
+            title: post.title ?? 'Government Job',
+            description: post.title ?? '',
+        }
     }
-
-
-    return schema
 }
 
 // ── BreadcrumbList Schema ──────────────────────────────────
@@ -133,23 +143,31 @@ export function buildFAQPageSchema(
  * Build schema.org/GovernmentService for scheme posts.
  */
 export function buildGovernmentServiceSchema(post: PostDetail): JsonLdObject {
-    const url = `${SITE.url}${postUrl(post.type as any, post.slug)}`
-    return {
-        '@context': 'https://schema.org',
-        '@type': 'GovernmentService',
-        name: post.title,
-        description: post.excerpt || post.meta_description || post.title,
-        url,
-        serviceType: 'Government Scheme',
-        provider: {
-            '@type': 'GovernmentOrganization',
-            name: post.org_name ?? 'Government of India',
-            ...(post.org_official_url && { url: post.org_official_url }),
-        },
-        areaServed: {
-            '@type': 'Country',
-            name: 'India',
-        },
+    try {
+        const url = `${SITE.url}${postUrl(post.type as any, post.slug)}`
+        return {
+            '@context': 'https://schema.org',
+            '@type': 'GovernmentService',
+            name: post.title,
+            description: post.excerpt || post.meta_description || post.title,
+            url,
+            serviceType: 'Government Scheme',
+            provider: {
+                '@type': 'GovernmentOrganization',
+                name: post.org_name ?? 'Government of India',
+                ...(post.org_official_url && { url: post.org_official_url }),
+            },
+            areaServed: {
+                '@type': 'Country',
+                name: 'India',
+            },
+        }
+    } catch {
+        return {
+            '@context': 'https://schema.org',
+            '@type': 'GovernmentService',
+            name: post.title ?? 'Government Scheme',
+        }
     }
 }
 
@@ -184,49 +202,54 @@ export function buildHowToSchema(
  * - Championed by MARCUS (SEO Purist), approved unanimously by COUNCIL.
  */
 export function buildNewsArticleSchema(post: PostDetail): JsonLdObject {
-    const url = `${SITE.url}${postUrl(post.type as any, post.slug)}`
-    const schema: JsonLdObject = {
-        '@context': 'https://schema.org',
-        '@type': 'NewsArticle',
-        headline: post.title,
-        description: post.excerpt || post.meta_description || post.title,
-        // SARA: isAccessibleForFree signals free content to Discover
-        isAccessibleForFree: true,
-        url,
-        datePublished: post.published_at ?? post.created_at,
-        dateModified: post.content_updated_at ?? post.updated_at,
-        publisher: {
-            '@type': 'Organization',
-            name: SITE.publisher.name,
-            url: SITE.publisher.url,
-            logo: { '@type': 'ImageObject', url: SITE.publisher.logo },
-        },
-        // E-E-A-T: Set author to Editorial Team as a Person type for authority
-        author: {
-            '@type': 'Person',
-            name: `${SITE.name} Editorial Team`,
-            url: `${SITE.url}/about`,
-        },
-        // SARA: dateline adds regional authority signal
-        ...(post.state_name && { dateline: post.state_name }),
-        mainEntityOfPage: {
-            '@type': 'WebPage',
-            '@id': url,
-        },
-    }
+    try {
+        const url = `${SITE.url}${postUrl(post.type as any, post.slug)}`
+        const schema: JsonLdObject = {
+            '@context': 'https://schema.org',
+            '@type': 'NewsArticle',
+            headline: post.title,
+            description: post.excerpt || post.meta_description || post.title,
+            isAccessibleForFree: true,
+            url,
+            datePublished: post.published_at ?? post.created_at,
+            dateModified: post.content_updated_at ?? post.updated_at,
+            publisher: {
+                '@type': 'Organization',
+                name: SITE.publisher.name,
+                url: SITE.publisher.url,
+                logo: { '@type': 'ImageObject', url: SITE.publisher.logo },
+            },
+            author: {
+                '@type': 'Person',
+                name: `${SITE.name} Editorial Team`,
+                url: `${SITE.url}/about`,
+            },
+            ...(post.state_name && { dateline: post.state_name }),
+            mainEntityOfPage: {
+                '@type': 'WebPage',
+                '@id': url,
+            },
+        }
 
-    if (post.featured_image) {
-        schema.image = {
-            '@type': 'ImageObject',
-            url: post.featured_image,
-            ...(post.featured_image_width && { width: post.featured_image_width }),
-            ...(post.featured_image_height && { height: post.featured_image_height }),
+        if (post.featured_image) {
+            schema.image = {
+                '@type': 'ImageObject',
+                url: post.featured_image,
+                ...(post.featured_image_width && { width: post.featured_image_width }),
+                ...(post.featured_image_height && { height: post.featured_image_height }),
+            }
+        }
+
+        if (post.word_count) {
+            schema.wordCount = post.word_count
+        }
+
+        return schema
+    } catch {
+        return {
+            '@context': 'https://schema.org',
+            '@type': 'NewsArticle',
+            headline: post.title ?? '',
         }
     }
-
-    if (post.word_count) {
-        schema.wordCount = post.word_count
-    }
-
-    return schema
 }

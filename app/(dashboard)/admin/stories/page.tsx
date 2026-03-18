@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { getStories } from '@/lib/queries/stories'
-import { WebStoryList } from '@/components/dashboard/stories/WebStoryList'
+import { WebStoryList } from '@/features/dashboard/components/stories/WebStoryList'
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { PAGINATION } from '@/config/constants'

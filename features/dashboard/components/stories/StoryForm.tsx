@@ -4,7 +4,7 @@ import { useState, useTransition, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { WebStory, WebStorySlide } from '@/types/stories.types'
 import { createWebStory, updateWebStory, saveStorySlides, publishStory } from '@/lib/actions/stories'
-import { FileUpload } from '@/components/dashboard/FileUpload'
+import { FileUpload } from '@/features/dashboard/components/FileUpload'
 import { Button } from '@/components/ui/Button'
 import {
     Save, Eye, EyeOff, Plus, Trash2, ArrowLeft,

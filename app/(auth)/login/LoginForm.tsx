@@ -4,11 +4,11 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useState, useTransition, useEffect } from 'react'
 import { Eye, EyeOff, Mail, Lock, Loader2 } from 'lucide-react'
-import { signIn, signInWithGoogle } from '@/lib/actions/auth'
+import { signIn, signInWithGoogle } from '@/features/auth/actions'
 import { loginSchema } from '@/lib/validations'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { GoogleIcon } from '@/components/shared/GoogleIcon'
+import { GoogleIcon } from '@/features/shared/components/GoogleIcon'
 import { SITE } from '@/config/site'
 
 /**

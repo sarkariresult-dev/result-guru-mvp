@@ -1,10 +1,10 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Suspense } from 'react'
-import { HomeSection } from '@/components/posts/HomeSection'
-import { HomeSectionSkeleton } from '@/components/posts/HomeSectionSkeleton'
-import { HeroSearchBar } from '@/components/shared/HeroSearchBar'
-import { NewsletterForm } from '@/components/shared/NewsletterForm'
+import { HomeSection } from '@/features/posts/components/HomeSection'
+import { HomeSectionSkeleton } from '@/features/posts/components/HomeSectionSkeleton'
+import { HeroSearchBar } from '@/features/shared/components/HeroSearchBar'
+import { NewsletterForm } from '@/features/shared/components/NewsletterForm'
 import { AdZone } from '@/components/ads/AdZone'
 import { StoriesSection } from '@/components/stories/StoriesSection'
 import { ROUTE_PREFIXES } from '@/config/site'
@@ -13,12 +13,12 @@ import { buildWebSiteSchema, buildOrganizationSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { getStates } from '@/lib/queries/states'
 import { getPopularOrganizations } from '@/lib/queries/organizations'
-import { getPostCountsByType } from '@/lib/queries/stats'
-import { getHomepageSections } from '@/lib/queries/stats'
-import type { PostTypeCounts } from '@/lib/queries/stats'
+import { getPostCountsByType } from '@/features/stats/queries'
+import { getHomepageSections } from '@/features/stats/queries'
+import type { PostTypeCounts } from '@/features/stats/queries'
 import { Briefcase, CreditCard, ArrowRight, Trophy, Users, Building2, MapPin, BookOpen, Bell, GraduationCap, Key, ClipboardList, FileText, Star, ShieldCheck, Clock, Sparkles, Send, MessageCircle } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import console from 'console'
+
 
 /* SEO Metadata */
 
@@ -419,12 +419,7 @@ export default async function HomePage() {
                         </div>
                     </div>
 
-                    {/* SEO Invisible Keywords (For Indexing) */}
-                    <div className="mt-16 pt-8 border-t border-border/50 opacity-40 text-[10px] uppercase tracking-widest font-bold text-center space-x-4 flex justify-center flex-wrap">
-                        {['Sarkari Result', 'Latest Jobs', 'UPSC', 'SSC CGL', 'Railway NTPC', 'UPPSC', 'BPSC', 'Admit Card', 'Answer Key'].map(kw => (
-                            <span key={kw}>{kw}</span>
-                        ))}
-                    </div>
+
                 </div>
             </section>
 

@@ -5,7 +5,7 @@ import {
     Bookmark, Bell, User, Briefcase, FileText,
     CreditCard, TrendingUp, ArrowRight, Search,
 } from 'lucide-react'
-import { getRecentPosts } from '@/lib/queries/posts'
+import { getRecentPosts } from '@/features/posts/queries'
 import { ROUTE_PREFIXES, SITE } from '@/config/site'
 import { Badge } from '@/components/ui/Badge'
 import type { PostCard } from '@/types/post.types'

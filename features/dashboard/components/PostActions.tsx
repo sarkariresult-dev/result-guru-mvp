@@ -2,7 +2,7 @@
 
 import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { publishPost, deletePost } from '@/lib/actions/posts'
+import { publishPost, deletePost } from '@/features/posts/actions'
 import { Button } from '@/components/ui/Button'
 
 interface Props {

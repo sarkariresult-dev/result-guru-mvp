@@ -2,7 +2,7 @@
 
 import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { updateUser } from '@/lib/actions/users'
+import { updateUser } from '@/features/dashboard/actions'
 import { Select } from '@/components/ui/Select'
 import type { UserRole } from '@/types/enums'
 

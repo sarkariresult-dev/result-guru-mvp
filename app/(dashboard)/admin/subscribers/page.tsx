@@ -12,7 +12,7 @@ import {
     ChevronRight,
 } from 'lucide-react'
 import { getSubscribers, getSubscriberCount } from '@/lib/queries/subscribers'
-import { StatsCard } from '@/components/dashboard/StatsCard'
+import { StatsCard } from '@/features/dashboard/components/StatsCard'
 import { Badge } from '@/components/ui/Badge'
 import { SubscriberStatus } from '@/types/enums'
 

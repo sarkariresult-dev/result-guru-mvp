@@ -1,6 +1,6 @@
 import { notFound, redirect } from 'next/navigation'
 import { getStoryById, getStorySlides } from '@/lib/queries/stories'
-import { StoryForm } from '@/components/dashboard/stories/StoryForm'
+import { StoryForm } from '@/features/dashboard/components/stories/StoryForm'
 import { createServerClient } from '@/lib/supabase/server'
 
 export default async function EditWebStoryPage({

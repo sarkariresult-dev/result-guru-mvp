@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useTransition } from 'react'
 import { LogOut, User as UserIcon, LayoutDashboard, Loader2 } from 'lucide-react'
-import { signOut } from '@/lib/actions/auth'
+import { signOut } from '@/features/auth/actions'
 import { Dropdown } from '@/components/ui/Dropdown'
 
 interface UserMenuProps {

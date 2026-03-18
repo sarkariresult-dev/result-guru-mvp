@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import { getUsers } from '@/lib/queries/users'
+import { getUsers } from '@/features/dashboard/queries'
 import { Avatar } from '@/components/ui/Avatar'
-import { UserRoleSelect } from '@/components/dashboard/UserRoleSelect'
+import { UserRoleSelect } from '@/features/dashboard/components/UserRoleSelect'
 import { Search, Users, ChevronLeft, ChevronRight, Shield, ShieldCheck, ShieldAlert } from 'lucide-react'
 import type { UserRole } from '@/types/enums'
 

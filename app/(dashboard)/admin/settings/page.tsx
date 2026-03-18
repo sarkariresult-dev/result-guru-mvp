@@ -1,5 +1,5 @@
 import { getSeoSettings, getRedirects } from '@/lib/queries/seo'
-import { SeoSettingsForm } from '@/components/dashboard/SeoSettingsForm'
+import { SeoSettingsForm } from '@/features/dashboard/components/SeoSettingsForm'
 import { SITE } from '@/config/site'
 import { env } from '@/config/env'
 import {

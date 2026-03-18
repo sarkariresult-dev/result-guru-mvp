@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { SITE } from '@/config/site'
-import { Logo } from '@/components/shared/Logo'
+import { Logo } from '@/features/shared/components/Logo'
 import { FileText, Bell, Bookmark, Shield } from 'lucide-react'
 
 /**

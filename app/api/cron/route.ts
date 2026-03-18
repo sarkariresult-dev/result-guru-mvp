@@ -3,11 +3,12 @@ import { createServerClient } from '@/lib/supabase/server'
 import { revalidateTag } from 'next/cache'
 import { pushToGoogleIndexingApi } from '@/lib/seo/indexing'
 import { SITE, ROUTE_PREFIXES, type PostTypeKey } from '@/config/site'
+import { withErrorHandling, successResponse, errorResponse } from '@/lib/api-response'
 
-export async function GET(request: Request) {
+export const GET = withErrorHandling(async (request: Request) => {
     const authHeader = request.headers.get('authorization')
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+        return errorResponse('Unauthorized', 401)
     }
 
     const supabase = await createServerClient()
@@ -68,7 +69,7 @@ export async function GET(request: Request) {
             typeCounts: typeStatsRes.error,
             siteStats: siteStatsRes.error
         })
-        return NextResponse.json({ error: 'Failed to refresh some materialized views', publishedCount }, { status: 500 })
+        return errorResponse('Failed to refresh some materialized views', 500)
     }
 
     // ── Phase 3: Flag stale content ─────────────────────────────
@@ -98,10 +99,10 @@ export async function GET(request: Request) {
         }
     }
 
-    return NextResponse.json({
+    return successResponse({
         message: 'Cron completed successfully',
         publishedCount,
         staleFlaggedCount,
         viewsRefreshed: true,
     })
-}
+})

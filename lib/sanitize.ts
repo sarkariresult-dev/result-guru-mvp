@@ -65,14 +65,24 @@ const ALLOWED_ATTRS = [
 export function sanitizeHtml(html: string): string {
     if (!html) return ''
 
-    return sanitizeHtmlLib(html, {
-        allowedTags: ALLOWED_TAGS,
-        allowedAttributes: {
-            '*': ALLOWED_ATTRS, // Allow these specific attributes on any allowed tag
-        },
-        allowedSchemes: ['http', 'https', 'ftp', 'mailto', 'tel', 'data'],
-        allowProtocolRelative: true,
-        enforceHtmlBoundary: false,
-    })
+    // Next.js 15 SSG strictly restricts Math.random(). `sanitize-html` invokes it internally.
+    // We temporarily stub it with a deterministic output to prevent the builder from aborting Static Generation.
+    const originalRandom = Math.random
+    Math.random = () => 0.5
+
+    try {
+        return sanitizeHtmlLib(html, {
+            allowedTags: ALLOWED_TAGS,
+            allowedAttributes: {
+                '*': ALLOWED_ATTRS, // Allow these specific attributes on any allowed tag
+            },
+            allowedSchemes: ['http', 'https', 'ftp', 'mailto', 'tel', 'data'],
+            allowProtocolRelative: true,
+            enforceHtmlBoundary: false,
+        })
+    } finally {
+        // Always restore the original Next.js Sandbox Math.random (whether successful or error)
+        Math.random = originalRandom
+    }
 }
 

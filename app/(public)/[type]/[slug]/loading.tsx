@@ -12,9 +12,9 @@ export default function DetailLoading() {
                 <Skeleton className="h-4 w-32" />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_340px]">
                 {/* Main Content Column */}
-                <div className="lg:col-span-8 space-y-8">
+                <div className="space-y-8">
                     {/* Header */}
                     <div className="space-y-4">
                         <div className="flex gap-2">
@@ -50,7 +50,7 @@ export default function DetailLoading() {
                 </div>
 
                 {/* Sidebar Column */}
-                <div className="lg:col-span-4 space-y-8">
+                <div className="hidden lg:block space-y-8">
                     {/* Quick Access / CTA */}
                     <div className="rounded-2xl border border-border bg-surface p-6 space-y-4">
                         <Skeleton className="h-6 w-32 rounded-lg" />

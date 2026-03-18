@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { subscribe } from '@/lib/actions/subscribers'
+import { subscribe } from '@/features/subscribers/actions'
 import { POST_TYPE_CONFIG } from '@/config/constants'
 import type { SubscriberPreferences } from '@/types/newsletter.types'
 import {
@@ -74,12 +74,13 @@ export default function UserAlertsPage() {
         setSaveStatus('saving')
         setErrorMsg(null)
 
-        const result = await subscribe({
-            email,
-            phone: phone || undefined,
-            whatsapp_opt_in: whatsappOptIn,
-            preferences: preferences as Record<string, unknown>,
-        })
+        const formData = new FormData()
+        formData.append('email', email)
+        if (phone) formData.append('phone', phone)
+        formData.append('whatsapp_opt_in', String(whatsappOptIn))
+        formData.append('preferences', JSON.stringify(preferences))
+
+        const result = await subscribe(null, formData)
 
         if (result.success) {
             setSaveStatus('saved')

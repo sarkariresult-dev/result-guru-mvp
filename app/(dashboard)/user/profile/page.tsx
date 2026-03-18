@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { updateProfile } from '@/lib/actions/users'
+import { updateProfile } from '@/features/dashboard/actions'
 import { profileSchema } from '@/lib/validations'
 import { Avatar } from '@/components/ui/Avatar'
 import {
@@ -131,10 +131,11 @@ export default function UserProfilePage() {
         setAvatarUrl(newUrl)
 
         /* Persist to DB immediately */
-        const result = await updateProfile(profile.id, {
-            name,
-            avatar_url: publicUrl,
-        })
+        const fbFormData = new FormData()
+        fbFormData.append('name', name)
+        if (publicUrl) fbFormData.append('avatar_url', publicUrl)
+        
+        const result = await updateProfile(profile.id, null, fbFormData)
 
         if (result.error) {
             setErrorMsg(result.error)
@@ -162,10 +163,11 @@ export default function UserProfilePage() {
         setSaveStatus('saving')
         setErrorMsg(null)
 
-        const result = await updateProfile(profile.id, {
-            name: name.trim(),
-            avatar_url: avatarUrl,
-        })
+        const saveFormData = new FormData()
+        saveFormData.append('name', name.trim())
+        if (avatarUrl) saveFormData.append('avatar_url', avatarUrl)
+
+        const result = await updateProfile(profile.id, null, saveFormData)
 
         if (result.error) {
             setErrorMsg(result.error)

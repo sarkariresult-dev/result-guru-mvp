@@ -10,7 +10,7 @@ import {
     Calendar,
     Target,
 } from 'lucide-react'
-import { StatsCard } from '@/components/dashboard/StatsCard'
+import { StatsCard } from '@/features/dashboard/components/StatsCard'
 import { Badge } from '@/components/ui/Badge'
 import type { AdCampaign } from '@/types/advertising.types'
 import { AdStatus } from '@/types/enums'
