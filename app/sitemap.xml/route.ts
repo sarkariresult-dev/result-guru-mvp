@@ -46,6 +46,7 @@ const STATIC_PAGES = [
     { path: '/search', changeFrequency: 'weekly', priority: 0.5 },
     { path: '/states', changeFrequency: 'monthly', priority: 0.5 },
     { path: '/organizations', changeFrequency: 'monthly', priority: 0.5 },
+    { path: '/stories', changeFrequency: 'daily', priority: 0.6 },
     { path: '/site-map', changeFrequency: 'weekly', priority: 0.3 },
     { path: '/about', changeFrequency: 'monthly', priority: 0.4 },
     { path: '/contact', changeFrequency: 'monthly', priority: 0.4 },
@@ -89,33 +90,41 @@ export async function GET() {
         entries.push(urlEntry(`${baseUrl}${page.path}`, now, page.changeFrequency, page.priority))
     }
 
-    /* ── Taxonomy (States, Orgs, Tags) ── */
+    /* ── Taxonomy (States, Orgs, Tags, Categories) ── */
     try {
         const supabase = createStaticClient()
-        const [statesResult, orgsResult, tagsResult] = await Promise.allSettled([
-            supabase.from('states').select('slug, created_at, updated_at').eq('is_active', true).order('name'),
-            supabase.from('organizations').select('slug, created_at, updated_at').eq('is_active', true).order('name'),
-            supabase.from('tags').select('slug, created_at, updated_at').eq('is_active', true).order('name'),
+        const [statesResult, orgsResult, tagsResult, catsResult] = await Promise.allSettled([
+            supabase.from('states').select('slug, created_at').eq('is_active', true).order('name'),
+            supabase.from('organizations').select('slug, created_at').eq('is_active', true).order('name'),
+            supabase.from('tags').select('slug, created_at').eq('is_active', true).order('name'),
+            supabase.from('categories').select('slug, created_at').eq('is_active', true).order('name'),
         ])
 
         if (statesResult.status === 'fulfilled' && statesResult.value.data) {
             for (const state of statesResult.value.data as any[]) {
-                const mod = new Date(state.updated_at ?? state.created_at ?? now).toISOString()
+                const mod = new Date(state.created_at ?? now).toISOString()
                 entries.push(urlEntry(`${baseUrl}/states/${state.slug}`, mod, 'weekly', 0.6))
             }
         }
 
         if (orgsResult.status === 'fulfilled' && orgsResult.value.data) {
             for (const org of orgsResult.value.data as any[]) {
-                const mod = new Date(org.updated_at ?? org.created_at ?? now).toISOString()
+                const mod = new Date(org.created_at ?? now).toISOString()
                 entries.push(urlEntry(`${baseUrl}/organizations/${org.slug}`, mod, 'monthly', 0.5))
             }
         }
 
         if (tagsResult.status === 'fulfilled' && tagsResult.value.data) {
             for (const tag of tagsResult.value.data as any[]) {
-                const mod = new Date(tag.updated_at ?? tag.created_at ?? now).toISOString()
+                const mod = new Date(tag.created_at ?? now).toISOString()
                 entries.push(urlEntry(`${baseUrl}/tag/${tag.slug}`, mod, 'weekly', 0.4))
+            }
+        }
+
+        if (catsResult.status === 'fulfilled' && catsResult.value.data) {
+            for (const cat of catsResult.value.data as any[]) {
+                const mod = new Date(cat.created_at ?? now).toISOString()
+                entries.push(urlEntry(`${baseUrl}/category/${cat.slug}`, mod, 'weekly', 0.6))
             }
         }
     } catch (err) {
