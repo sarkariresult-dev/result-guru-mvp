@@ -28,3 +28,8 @@ Write a detailed 300-word section analyzing the category-wise cut-off (Gen/OBC/S
 List the details candidates should verify (Name, Roll Number, Category Marks, Qualifying Status). Explain what to do if there is an error in the result.
 
 Ensure the JSON output strictly matches the required schema structure. Final content must feel comprehensive.
+
+
+**CRITICAL SEO RULES (Must Follow):**
+1. **Headings:** You MUST use HTML `<h3>` and `<h4>` tags within the `<h2>` sections to organize the detailed points. Do not just use `<h2>` and `<li>`.
+2. **Contextual Links:** Naturally inject 2-3 HTML links (`<a href="/...">`) to related topics (e.g. /syllabus, /admit-card, /previous-paper) within your body paragraphs. Do not only put them in the final table.

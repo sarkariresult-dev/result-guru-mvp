@@ -33,7 +33,11 @@ export function buildJobPostingSchema(post: PostDetail): JsonLdObject {
             url,
             datePosted: post.published_at ?? post.created_at,
             validThrough: expiryDate,
-            employmentType: 'FULL_TIME',
+            employmentType: post.title.match(/part\s?-?time/i) 
+                ? 'PART_TIME' 
+                : post.title.match(/contract/i) 
+                    ? 'CONTRACTOR' 
+                    : 'FULL_TIME',
             hiringOrganization: {
                 '@type': 'Organization',
                 name: post.org_name ?? SITE.name,
@@ -44,6 +48,8 @@ export function buildJobPostingSchema(post: PostDetail): JsonLdObject {
                 '@type': 'Place',
                 address: {
                     '@type': 'PostalAddress',
+                    // Future-proofing: map addressLocality if city_name is added to PostDetail
+                    ...( (post as any).city_name && { addressLocality: (post as any).city_name } ),
                     addressRegion: post.state_name ?? 'India',
                     addressCountry: 'IN',
                 },

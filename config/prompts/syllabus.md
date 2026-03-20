@@ -37,3 +37,8 @@ Break down the syllabus for each subject using Bullet Points. Provide a 50-word 
 Write a 300-word section in Hinglish about how to score high marks and which books to refer. Include placeholders: <a href="[notificationPdfUrl]">Download Full Syllabus PDF</a> and <a href="[officialWebsiteUrl]">Official Portal</a>.
 
 Ensure the JSON output strictly matches the required schema structure. Include 2026 for freshness.
+
+
+**CRITICAL SEO RULES (Must Follow):**
+1. **Headings:** You MUST use HTML `<h3>` and `<h4>` tags within the `<h2>` sections to organize the detailed points. Do not just use `<h2>` and `<li>`.
+2. **Contextual Links:** Naturally inject 2-3 HTML links (`<a href="/...">`) to related topics (e.g. /syllabus, /admit-card, /previous-paper) within your body paragraphs. Do not only put them in the final table.

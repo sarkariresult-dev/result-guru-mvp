@@ -29,3 +29,8 @@ Explain the marking scheme in detail (e.g., +1 for correct, -0.25 for negative m
 Create an HTML table with key links: Download Answer Key PDF, Official Website, and Objection Portal.
 
 Ensure the JSON output strictly matches the required schema structure. Include 2026 for freshness.
+
+
+**CRITICAL SEO RULES (Must Follow):**
+1. **Headings:** You MUST use HTML `<h3>` and `<h4>` tags within the `<h2>` sections to organize the detailed points. Do not just use `<h2>` and `<li>`.
+2. **Contextual Links:** Naturally inject 2-3 HTML links (`<a href="/...">`) to related topics (e.g. /syllabus, /admit-card, /previous-paper) within your body paragraphs. Do not only put them in the final table.

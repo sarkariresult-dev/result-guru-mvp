@@ -136,6 +136,21 @@ export default async function PostDetailPage({ params }: Props) {
         ? processContentHtml(sanitizeHtml(publishedPost.content))
         : { tocItems: [] as any[] }
 
+    /* ── Fetch Dynamic Sidebar Silo Links ── */
+    const { getPosts } = await import('@/features/posts/queries')
+    const siloFilters: Record<string, string> = {}
+    if (publishedPost.organization_id) {
+        siloFilters.organization_id = publishedPost.organization_id
+    } else if (publishedPost.state_slug) {
+        siloFilters.state_slug = publishedPost.state_slug
+    } else if (publishedPost.category_id) {
+        siloFilters.category_id = publishedPost.category_id
+    }
+    const rawSiloPosts = await getPosts(siloFilters, 1, 6)
+    const siloPosts = rawSiloPosts
+        .filter(p => p.id !== publishedPost.id)
+        .slice(0, 5)
+
     /* ── Quick action links ──────────────────────────────────── */
     const quickLinks: Array<{ href: string; label: string; icon: 'external' | 'download'; primary?: boolean }> = []
     if (publishedPost.org_official_url) {
@@ -227,118 +242,21 @@ export default async function PostDetailPage({ params }: Props) {
                         )}
 
                         {/* ── SEO Silo Links (Content Strategy) ── */}
-                        {/* COUNCIL P1 (Area 8): Expanded from result-only to all types */}
-                        {/* SARA: Cross-type internal linking builds topical authority */}
-                        {(() => {
-                            const SILO_LINKS: Record<string, { description: string; links: { href: string; label: string }[] }> = {
-                                job: {
-                                    description: 'Preparing for this recruitment? Explore related resources.',
-                                    links: [
-                                        { href: '/result', label: 'Check Latest Results →' },
-                                        { href: '/admit-card', label: 'Download Admit Cards →' },
-                                        { href: '/syllabus', label: 'Get Exam Syllabus →' },
-                                    ],
-                                },
-                                result: {
-                                    description: 'Preparing for the next stage or reviewing your performance?',
-                                    links: [
-                                        { href: '/answer-key', label: 'Browse Official Answer Keys →' },
-                                        { href: '/syllabus', label: 'Download Latest Syllabus →' },
-                                        { href: '/cut-off', label: 'Check Cut Off Marks →' },
-                                    ],
-                                },
-                                admit: {
-                                    description: 'Exam day preparation resources.',
-                                    links: [
-                                        { href: '/result', label: 'Check Exam Results →' },
-                                        { href: '/answer-key', label: 'View Answer Keys →' },
-                                        { href: '/exam-pattern', label: 'Review Exam Pattern →' },
-                                    ],
-                                },
-                                answer_key: {
-                                    description: 'Track your exam outcome.',
-                                    links: [
-                                        { href: '/result', label: 'Check Final Results →' },
-                                        { href: '/cut-off', label: 'View Cut Off Marks →' },
-                                    ],
-                                },
-                                syllabus: {
-                                    description: 'Study resources for your exam preparation.',
-                                    links: [
-                                        { href: '/exam-pattern', label: 'Check Exam Pattern →' },
-                                        { href: '/previous-paper', label: 'Download Previous Papers →' },
-                                        { href: '/job', label: 'Browse Latest Jobs →' },
-                                    ],
-                                },
-                                exam_pattern: {
-                                    description: 'Master the exam format.',
-                                    links: [
-                                        { href: '/syllabus', label: 'Get Detailed Syllabus →' },
-                                        { href: '/previous-paper', label: 'Practice with Past Papers →' },
-                                    ],
-                                },
-                                previous_paper: {
-                                    description: 'Enhance your preparation.',
-                                    links: [
-                                        { href: '/syllabus', label: 'Review Syllabus →' },
-                                        { href: '/exam-pattern', label: 'Understand Exam Pattern →' },
-                                    ],
-                                },
-                                cut_off: {
-                                    description: 'Understand the selection criteria.',
-                                    links: [
-                                        { href: '/result', label: 'Check Final Results →' },
-                                        { href: '/answer-key', label: 'Review Answer Keys →' },
-                                    ],
-                                },
-                                scheme: {
-                                    description: 'Explore government benefits.',
-                                    links: [
-                                        { href: '/job', label: 'Browse Government Jobs →' },
-                                        { href: '/admission', label: 'Find Admissions →' },
-                                    ],
-                                },
-                                admission: {
-                                    description: 'Complete your admission journey.',
-                                    links: [
-                                        { href: '/result', label: 'Check Entrance Results →' },
-                                        { href: '/syllabus', label: 'Get Entrance Syllabus →' },
-                                    ],
-                                },
-                                notification: {
-                                    description: 'Stay informed on government updates.',
-                                    links: [
-                                        { href: '/job', label: 'Browse Latest Jobs →' },
-                                        { href: '/scheme', label: 'Explore Govt Schemes →' },
-                                    ],
-                                },
-                                exam: {
-                                    description: 'Prepare for your upcoming exam.',
-                                    links: [
-                                        { href: '/syllabus', label: 'Get Exam Syllabus →' },
-                                        { href: '/exam-pattern', label: 'Review Exam Pattern →' },
-                                        { href: '/admit-card', label: 'Download Admit Card →' },
-                                    ],
-                                },
-                            }
-                            const siloConfig = SILO_LINKS[typeKey]
-                            if (!siloConfig) return null
-                            return (
-                                <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm space-y-3">
-                                    <h3 className="text-sm font-bold uppercase tracking-wider text-foreground-muted">Related Resources</h3>
-                                    <p className="text-sm text-foreground-muted">
-                                        {siloConfig.description}
-                                    </p>
-                                    <div className="flex flex-col gap-2">
-                                        {siloConfig.links.map((link, i) => (
-                                            <Link key={i} href={link.href} className="text-brand-600 hover:underline text-sm font-medium">
-                                                {link.label}
-                                            </Link>
-                                        ))}
-                                    </div>
+                        {/* Dynamic Related Posts mapped for topical schema silos */}
+                        {siloPosts.length > 0 && (
+                            <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm space-y-3">
+                                <h3 className="text-sm font-bold uppercase tracking-wider text-foreground-muted">
+                                    More from {publishedPost.org_short_name || publishedPost.state_name || 'Category'}
+                                </h3>
+                                <div className="flex flex-col gap-2">
+                                    {siloPosts.map((p) => (
+                                        <Link key={p.id} href={`${ROUTE_PREFIXES[p.type as PostTypeKey]}/${p.slug}`} className="text-brand-600 hover:underline text-sm font-medium line-clamp-2" title={p.title}>
+                                            {p.title}
+                                        </Link>
+                                    ))}
                                 </div>
-                            )
-                        })()}
+                            </div>
+                        )}
 
                         {/* ── Table of Contents ────────────────── */}
                         {tocItems.length >= 2 && (

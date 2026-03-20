@@ -68,7 +68,8 @@ export function buildMetadata(post: PostDetail): Metadata {
             locale: SITE.locale,
             type: 'article',
             // COUNCIL P1 (Area 2): article:author for E-E-A-T authority signals
-            authors: [`${SITE.name} Editorial Team`],
+            // Resolves Task 3: Use real author name when available for better E-E-A-T footprint
+            authors: [post.author?.name || `${SITE.name} Editorial Team`],
             publishedTime: post.published_at ?? undefined,
             modifiedTime: post.content_updated_at ?? post.updated_at ?? undefined,
             ...(ogSection && { section: ogSection }),
