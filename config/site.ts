@@ -7,7 +7,7 @@ export const SITE = {
     name: env.NEXT_PUBLIC_APP_NAME ?? 'Result Guru',
     tagline: env.NEXT_PUBLIC_APP_TAGLINE ?? 'India\'s trusted source for Sarkari Updates',
     description:
-        'Get the latest Sarkari Result, Job, Admit Card, Answer Key, Syllabus, and Exam Pattern notifications. Result Guru covers all central and state government recruitment updates.',
+        'Result Guru - India\'s #1 platform for Sarkari Result 2026, Govt Jobs, Admit Cards & Answer Keys. Get instant, verified notifications from SSC, UPSC, Railway & all state commissions. Updated daily.',
     url: appUrl,
     locale: 'en_IN',
     language: 'en',
@@ -89,6 +89,7 @@ export const ROUTE_PREFIXES = {
     scheme: '/scheme',
     exam: '/exam',
     admission: '/admission',
+    scholarship: '/scholarship',
     notification: '/notification',
 } as const
 
@@ -144,6 +145,7 @@ export const MAIN_NAV: NavItem[] = [
     { label: 'Syllabus', href: ROUTE_PREFIXES.syllabus, icon: 'BookOpen' },
     { label: 'Exam Pattern', href: ROUTE_PREFIXES.exam_pattern, icon: 'ClipboardList' },
     { label: 'Admission', href: ROUTE_PREFIXES.admission, icon: 'GraduationCap' },
+    { label: 'Scholarship', href: ROUTE_PREFIXES.scholarship, icon: 'Award' },
     { label: 'Scheme', href: ROUTE_PREFIXES.scheme, icon: 'Star' },
 ]
 
@@ -172,6 +174,7 @@ export const FOOTER_NAV: NavGroup[] = [
             { label: 'Organizations', href: '/organizations' },
             { label: 'States', href: '/states' },
             { label: 'Admission', href: ROUTE_PREFIXES.admission },
+            { label: 'Scholarship', href: ROUTE_PREFIXES.scholarship },
             { label: 'Govt Scheme', href: ROUTE_PREFIXES.scheme },
         ],
     },

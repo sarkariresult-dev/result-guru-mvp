@@ -97,7 +97,7 @@ export default async function PostDetailPage({ params }: Props) {
     if (typeKey === 'job') {
         jsonLdEntries.push(buildJobPostingSchema(publishedPost))
     }
-    if (typeKey === 'scheme') {
+    if (typeKey === 'scheme' || typeKey === 'scholarship') {
         jsonLdEntries.push(buildGovernmentServiceSchema(publishedPost))
     }
 

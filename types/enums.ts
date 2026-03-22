@@ -17,6 +17,7 @@ export enum PostType {
     Scheme = 'scheme',
     Exam = 'exam',
     Admission = 'admission',
+    Scholarship = 'scholarship',
     Notification = 'notification',
 }
 

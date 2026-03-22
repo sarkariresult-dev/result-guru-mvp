@@ -163,6 +163,7 @@ const nextConfig: NextConfig = {
       { source: '/schemes', destination: '/scheme', permanent: true },
       { source: '/exams', destination: '/exam', permanent: true },
       { source: '/admissions', destination: '/admission', permanent: true },
+      { source: '/scholarships', destination: '/scholarship', permanent: true },
       { source: '/notifications', destination: '/notification', permanent: true },
 
       /* Legacy route prefixes → new clean routes */

@@ -68,6 +68,7 @@ export default function SitemapPage() {
                             <li><Link href={ROUTE_PREFIXES.previous_paper} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Previous Papers</Link></li>
                             <li><Link href={ROUTE_PREFIXES.scheme} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Government Schemes</Link></li>
                             <li><Link href={ROUTE_PREFIXES.admission} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Admissions</Link></li>
+                            <li><Link href={ROUTE_PREFIXES.scholarship} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Scholarships</Link></li>
                             <li><Link href={ROUTE_PREFIXES.notification} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Notifications</Link></li>
                             <li><Link href={ROUTE_PREFIXES.exam} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Exams</Link></li>
                         </ul>

@@ -48,6 +48,7 @@ const TYPE_TO_TAG_TYPES: Record<string, string[]> = {
     exam_pattern: ['exam_pattern', 'syllabus'],
     previous_paper: ['previous_paper', 'exam'],
     cut_off: ['cut_off', 'result'],
+    scholarship: ['scholarship', 'admission'],
 }
 
 function slugify(text: string) {
@@ -151,6 +152,12 @@ const TYPE_CONFIG: Record<string, {
         description: 'Category-wise cut-off marks for exams',
         showAppStatus: false,
         sections: { dates: true, eligibility: false, applicationFee: false, vacancyDetails: false, totalVacancies: false, ageLimit: false, payScale: false, selectionProcess: false, howToApply: false, admitCardLink: false, resultLink: true, cutOffMarks: true, syllabus: false, examPattern: false, preparationTips: false, previousPapers: false, faq: true },
+    },
+    scholarship: {
+        label: 'Scholarship', emoji: '🏅',
+        description: 'Government central or state scholarship / fellowship',
+        showAppStatus: true,
+        sections: { dates: true, eligibility: true, applicationFee: true, vacancyDetails: false, totalVacancies: false, ageLimit: true, payScale: false, selectionProcess: true, howToApply: true, admitCardLink: false, resultLink: false, cutOffMarks: false, syllabus: false, examPattern: false, preparationTips: false, previousPapers: false, faq: true },
     },
 }
 

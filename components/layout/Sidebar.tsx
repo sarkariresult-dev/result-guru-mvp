@@ -21,6 +21,7 @@ import {
     Building2,
     FolderTree,
     Tag,
+    GraduationCap,
     Bot,
     Globe,
     ArrowRightLeft,
@@ -56,6 +57,7 @@ const iconMap: Record<string, LucideIcon> = {
     ArrowRightLeft,
     Mail,
     Layers,
+    GraduationCap,
 }
 
 /* ── Types ───────────────────────────────────────────────────── */
@@ -97,10 +99,11 @@ export const adminNavGroups: NavGroup[] = [
     {
         label: 'Taxonomy',
         items: [
-            { title: 'Categories', href: '/admin/categories', icon: 'FolderTree', disabled: true },
-            { title: 'Tags', href: '/admin/tags', icon: 'Tag', disabled: true },
-            { title: 'Organizations', href: '/admin/organizations', icon: 'Building2', disabled: true },
-            { title: 'States', href: '/admin/states', icon: 'MapPin', disabled: true },
+            { title: 'Organizations', href: '/admin/organizations', icon: 'Building2' },
+            { title: 'Qualifications', href: '/admin/qualifications', icon: 'GraduationCap' },
+            { title: 'Categories', href: '/admin/categories', icon: 'FolderTree' },
+            { title: 'States', href: '/admin/states', icon: 'MapPin' },
+            { title: 'Tags', href: '/admin/tags', icon: 'Tag' },
         ],
         defaultCollapsed: false,
     },
@@ -279,10 +282,12 @@ function CollapsibleGroup({
 
     const [isOpen, setIsOpen] = useState(!group.defaultCollapsed || hasActiveChild)
 
-    /* If user navigates to a child in a collapsed group, expand it */
+    /* Auto-expand only when a child becomes active (navigation) */
     useEffect(() => {
-        if (hasActiveChild && !isOpen) setIsOpen(true)
-    }, [hasActiveChild, isOpen])
+        if (hasActiveChild) {
+            setIsOpen(true)
+        }
+    }, [hasActiveChild])
 
     return (
         <div>

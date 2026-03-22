@@ -9,7 +9,7 @@ import { AdZone } from '@/components/ads/AdZone'
 import { StoriesSection } from '@/components/stories/StoriesSection'
 import { ROUTE_PREFIXES } from '@/config/site'
 import { buildPageMetadata } from '@/lib/metadata'
-import { buildWebSiteSchema, buildOrganizationSchema } from '@/lib/jsonld'
+import { buildWebSiteSchema, buildOrganizationSchema, buildSiteNavigationSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { getStates } from '@/lib/queries/states'
 import { getPopularOrganizations } from '@/lib/queries/organizations'
@@ -23,8 +23,8 @@ import type { LucideIcon } from 'lucide-react'
 /* SEO Metadata */
 
 export const metadata = buildPageMetadata({
-    title: 'Sarkari Jobs, Results & Admit Cards - Latest Govt Updates 2026',
-    description: 'Your one-stop destination for latest government jobs, exam results, admit cards, answer keys, syllabus, and government schemes across India. Updated daily with verified information from official sources.',
+    title: 'Result Guru \u2014 Sarkari Result 2026 | Latest Govt Jobs, Admit Card & Answer Key',
+    description: 'Result Guru \u2014 India\'s #1 Sarkari Result portal. Get instant alerts for Govt Jobs 2026, Admit Cards, Answer Keys, Syllabus & Exam Pattern from SSC, UPSC, Railway & state commissions. \u2705 100% Verified.',
     path: '/',
 })
 
@@ -57,6 +57,7 @@ export default async function HomePage() {
     /* JSON-LD: WebSite + SearchAction (for Google sitelinks search box) + Organization (for Knowledge Panel) */
     const websiteJsonLd = buildWebSiteSchema()
     const organizationJsonLd = buildOrganizationSchema()
+    const navigationJsonLd = buildSiteNavigationSchema()
 
     /* Fetch all homepage data in parallel for fastest TTFB */
     const [statesResult, orgsResult, countsResult, sectionsResult] = await Promise.allSettled([
@@ -75,7 +76,7 @@ export default async function HomePage() {
     const sections = sectionsResult.status === 'fulfilled' ? sectionsResult.value : {}
     return (
         <>
-            <JsonLd data={[websiteJsonLd, organizationJsonLd]} />
+            <JsonLd data={[websiteJsonLd, organizationJsonLd, navigationJsonLd]} />
 
             {/*  Hero */}
             <section className="relative bg-hero">
@@ -242,6 +243,7 @@ export default async function HomePage() {
                             <Suspense fallback={<HomeSectionSkeleton count={5} />}>
                                 <HomeSection typeKey="admission" heading="Admission" route={ROUTE_PREFIXES.admission} cta="View All" limit={5} layout="list" themeColorClass="bg-fuchsia-500" posts={sections.admission} />
                             </Suspense>
+
                         </div>
                     </div>
 
@@ -255,7 +257,7 @@ export default async function HomePage() {
                                     heading="Notification"
                                     route={ROUTE_PREFIXES.notification}
                                     cta="All Updates"
-                                    limit={7}
+                                    limit={8}
                                     layout="numbered"
                                     themeColorClass="bg-brand-500"
                                     posts={sections.notification}
@@ -313,7 +315,7 @@ export default async function HomePage() {
                                     heading="Govt Scheme"
                                     route={ROUTE_PREFIXES.scheme}
                                     cta="View All"
-                                    limit={5}
+                                    limit={8}
                                     layout="list"
                                     themeColorClass="bg-pink-500"
                                     posts={sections.scheme}
@@ -364,6 +366,20 @@ export default async function HomePage() {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Scholarship List */}
+                            <Suspense fallback={<HomeSectionSkeleton count={5} />}>
+                                <HomeSection
+                                    typeKey="scholarship"
+                                    heading="Scholarship"
+                                    route={ROUTE_PREFIXES.scholarship}
+                                    cta="View All"
+                                    limit={8}
+                                    layout="list"
+                                    themeColorClass="bg-amber-500"
+                                    posts={sections.scholarship}
+                                />
+                            </Suspense>
 
                         </aside>
                     </div>

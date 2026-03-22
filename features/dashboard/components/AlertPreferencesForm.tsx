@@ -17,6 +17,7 @@ const postTypes = [
     { value: 'scheme', label: 'Schemes' },
     { value: 'exam', label: 'Exams' },
     { value: 'answer_key', label: 'Answer Keys' },
+    { value: 'scholarship', label: 'Scholarships' },
 ]
 
 export function AlertPreferencesForm({ userEmail }: Props) {

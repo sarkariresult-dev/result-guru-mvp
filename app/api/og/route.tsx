@@ -15,6 +15,7 @@ const TYPE_COLORS: Record<string, { from: string; to: string; badge: string }> =
     scheme:         { from: '#b91c1c', to: '#ef4444', badge: '#fee2e2' },
     exam:           { from: '#0e7490', to: '#06b6d4', badge: '#cffafe' },
     admission:      { from: '#4d7c0f', to: '#84cc16', badge: '#ecfccb' },
+    scholarship:    { from: '#92400e', to: '#f59e0b', badge: '#fef3c7' },
     notification:   { from: '#334155', to: '#64748b', badge: '#f1f5f9' },
 }
 
@@ -22,7 +23,7 @@ const TYPE_LABELS: Record<string, string> = {
     job: 'JOB', result: 'RESULT', admit: 'ADMIT CARD', answer_key: 'ANSWER KEY',
     cut_off: 'CUT OFF', syllabus: 'SYLLABUS', exam_pattern: 'EXAM PATTERN',
     previous_paper: 'PREVIOUS PAPER', scheme: 'SCHEME', exam: 'EXAM',
-    admission: 'ADMISSION', notification: 'NOTIFICATION',
+    admission: 'ADMISSION', scholarship: 'SCHOLARSHIP', notification: 'NOTIFICATION',
 }
 
 const FALLBACK = { from: '#1e3a5f', to: '#3b82f6', badge: '#dbeafe' }

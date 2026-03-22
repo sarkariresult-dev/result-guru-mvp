@@ -98,8 +98,22 @@ export function buildOrganizationSchema(): JsonLdObject {
         logo: {
             '@type': 'ImageObject',
             url: SITE.publisher.logo,
+            width: 512,
+            height: 512,
         },
         sameAs: SITE.publisher.sameAs,
+        description: SITE.description,
+        foundingDate: '2024',
+        areaServed: {
+            '@type': 'Country',
+            name: 'India',
+        },
+        contactPoint: {
+            '@type': 'ContactPoint',
+            contactType: 'customer support',
+            url: `${SITE.url}/contact`,
+            availableLanguage: ['English', 'Hindi'],
+        },
     }
 }
 
@@ -111,6 +125,13 @@ export function buildWebSiteSchema(): JsonLdObject {
         name: SITE.name,
         url: SITE.url,
         description: SITE.description,
+        inLanguage: 'en-IN',
+        publisher: {
+            '@type': 'Organization',
+            name: SITE.publisher.name,
+            url: SITE.publisher.url,
+            logo: { '@type': 'ImageObject', url: SITE.publisher.logo },
+        },
         potentialAction: {
             '@type': 'SearchAction',
             target: {
@@ -119,6 +140,28 @@ export function buildWebSiteSchema(): JsonLdObject {
             },
             'query-input': 'required name=search_term_string',
         },
+    }
+}
+
+// ── SiteNavigationElement Schema ───────────────────────────
+/**
+ * Build schema.org/SiteNavigationElement to help Google
+ * generate sitelinks under the main search result.
+ */
+export function buildSiteNavigationSchema(): JsonLdObject {
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'SiteNavigationElement',
+        name: [
+            'Latest Jobs', 'Results', 'Admit Card',
+            'Answer Key', 'Syllabus', 'Exam Pattern',
+            'Admission', 'Scholarship', 'Govt Schemes',
+        ],
+        url: [
+            `${SITE.url}/job`, `${SITE.url}/result`, `${SITE.url}/admit-card`,
+            `${SITE.url}/answer-key`, `${SITE.url}/syllabus`, `${SITE.url}/exam-pattern`,
+            `${SITE.url}/admission`, `${SITE.url}/scholarship`, `${SITE.url}/scheme`,
+        ],
     }
 }
 

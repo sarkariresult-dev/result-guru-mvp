@@ -19,6 +19,7 @@ DO $$ BEGIN
     'scheme',         -- Government scheme / yojana
     'exam',           -- Upcoming exam notification
     'admission',      -- College / university admission
+    'scholarship',    -- Government central / state scholarship
     'notification'    -- General government notice / circular
   );
 EXCEPTION WHEN duplicate_object THEN NULL; END$$;

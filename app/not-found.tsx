@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { Home, Search, ArrowRight, Briefcase, FileText, CreditCard, Key, BookOpen, Star } from 'lucide-react'
+import { Home, Search, ArrowRight, Briefcase, FileText, CreditCard, Key, BookOpen, Star, Award } from 'lucide-react'
 import { ROUTE_PREFIXES } from '@/config/site'
 
 export const metadata: Metadata = {
@@ -18,6 +18,7 @@ const quickLinks = [
     { label: 'Answer Keys', href: ROUTE_PREFIXES.answer_key, Icon: Key },
     { label: 'Syllabus', href: ROUTE_PREFIXES.syllabus, Icon: BookOpen },
     { label: 'Schemes', href: ROUTE_PREFIXES.scheme, Icon: Star },
+    { label: 'Scholarships', href: ROUTE_PREFIXES.scholarship, Icon: Award },
 ] as const
 
 export default function NotFound() {

@@ -48,11 +48,11 @@ export type ProfileInput = z.infer<typeof profileSchema>
 // ── Post ───────────────────────────────────────────────────
 // Mirrors 002_enums.sql + 007_posts.sql columns exactly.
 
-/** All 12 post_type enum values from 002_enums.sql */
+/** All 13 post_type enum values from 002_enums.sql */
 const POST_TYPES = [
     'job', 'result', 'admit', 'answer_key', 'cut_off',
     'syllabus', 'exam_pattern', 'previous_paper',
-    'scheme', 'exam', 'admission', 'notification',
+    'scheme', 'exam', 'admission', 'scholarship', 'notification',
 ] as const
 
 /** All 5 post_status enum values from 002_enums.sql */
@@ -174,3 +174,95 @@ export const revalidateSchema = z.object({
     tag: z.string().optional(),
     path: z.string().optional(),
 })
+
+// ── Taxonomy: Category ─────────────────────────────────────
+
+const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+
+export const categorySchema = z.object({
+    name: z.string().min(2, 'Name must be at least 2 characters').max(100),
+    slug: z.string().min(2).max(100).regex(SLUG_REGEX, 'Invalid slug format'),
+    parent_id: z.string().uuid().nullable().optional(),
+    description: z.string().max(500).nullable().optional(),
+    icon: z.string().max(50).nullable().optional(),
+    sort_order: z.coerce.number().int().min(0).max(9999).default(0),
+    is_active: z.boolean().default(true),
+    meta_title: z.string().max(70).nullable().optional(),
+    meta_description: z.string().max(165).nullable().optional(),
+    meta_robots: z.string().default('index,follow'),
+    h1_override: z.string().max(200).nullable().optional(),
+    intro_html: z.string().nullable().optional(),
+})
+export type CategoryInput = z.infer<typeof categorySchema>
+
+// ── Taxonomy: Tag ──────────────────────────────────────────
+
+const TAG_TYPES = ['general', 'job', 'exam', 'result', 'admission', 'scheme', 'scholarship'] as const
+
+export const tagSchema = z.object({
+    name: z.string().min(2, 'Name must be at least 2 characters').max(100),
+    slug: z.string().min(2).max(100).regex(SLUG_REGEX, 'Invalid slug format'),
+    description: z.string().max(500).nullable().optional(),
+    tag_type: z.enum(TAG_TYPES).default('general'),
+    is_active: z.boolean().default(true),
+    canonical_tag_id: z.string().uuid().nullable().optional(),
+    meta_title: z.string().max(70).nullable().optional(),
+    meta_description: z.string().max(165).nullable().optional(),
+    meta_robots: z.string().default('index,follow'),
+})
+export type TagInput = z.infer<typeof tagSchema>
+
+// ── Taxonomy: Organization ─────────────────────────────────
+
+export const organizationSchema = z.object({
+    name: z.string().min(2, 'Name must be at least 2 characters').max(200),
+    slug: z.string().min(2).max(200).regex(SLUG_REGEX, 'Invalid slug format'),
+    short_name: z.string().max(50).nullable().optional(),
+    state_slug: z.string().nullable().optional(),
+    official_url: z.string().url('Invalid URL').nullable().optional().or(z.literal('')),
+    logo_url: z.string().nullable().optional(),
+    description: z.string().max(1000).nullable().optional(),
+    is_active: z.boolean().default(true),
+    meta_title: z.string().max(70).nullable().optional(),
+    meta_description: z.string().max(165).nullable().optional(),
+    meta_robots: z.string().default('index,follow'),
+    schema_json: z.union([
+        z.string().transform((str, ctx) => {
+            if (!str || !str.trim()) return null;
+            try { return JSON.parse(str); }
+            catch (e) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Invalid JSON format' }); return z.NEVER; }
+        }),
+        z.record(z.string(), z.unknown())
+    ]).nullable().optional(),
+})
+export type OrganizationInput = z.infer<typeof organizationSchema>
+
+// ── Taxonomy: State ────────────────────────────────────────
+
+export const stateSchema = z.object({
+    slug: z.string().min(2).max(50).regex(SLUG_REGEX, 'Invalid slug format'),
+    name: z.string().min(2, 'Name must be at least 2 characters').max(100),
+    abbr: z.string().max(2).nullable().optional(),
+    is_active: z.boolean().default(true),
+    sort_order: z.coerce.number().int().min(0).max(9999).default(0),
+    meta_title: z.string().max(70).nullable().optional(),
+    meta_description: z.string().max(165).nullable().optional(),
+    meta_robots: z.string().default('index,follow'),
+    h1_override: z.string().max(200).nullable().optional(),
+    intro_html: z.string().nullable().optional(),
+})
+export type StateInput = z.infer<typeof stateSchema>
+
+// ── Taxonomy: Qualification ────────────────────────────────
+
+export const qualificationSchema = z.object({
+    slug: z.string().min(1).max(100).regex(SLUG_REGEX, 'Invalid slug format'),
+    name: z.string().min(2, 'Name must be at least 2 characters').max(100),
+    short_name: z.string().max(50).nullable().optional(),
+    sort_order: z.coerce.number().int().min(0).max(9999).default(0),
+    is_active: z.boolean().default(true),
+    meta_title: z.string().max(70).nullable().optional(),
+    meta_description: z.string().max(165).nullable().optional(),
+    meta_robots: z.string().default('index,follow'),
+})
+export type QualificationInput = z.infer<typeof qualificationSchema>

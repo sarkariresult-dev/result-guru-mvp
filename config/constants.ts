@@ -185,6 +185,16 @@ export const POST_TYPE_CONFIG: Record<PostTypeKey, PostTypeConfig> = {
         priority: 0.6,
         changefreq: 'weekly',
     },
+    scholarship: {
+        label: 'Scholarship',
+        heading: 'Scholarship',
+        description: 'Government central and state scholarship',
+        color: 'bg-amber-100',
+        textColor: 'text-amber-800',
+        icon: 'Award',
+        priority: 0.7,
+        changefreq: 'weekly',
+    },
 }
 
 // ─── Application status badge config ────────────────────────────────────────

@@ -116,7 +116,7 @@ export function buildPageMetadata(opts: {
             ? { index: false, follow: true }
             : { index: true, follow: true },
         openGraph: {
-            title: `${opts.title} | ${SITE.name}`,
+            title: opts.title,
             description: opts.description,
             url,
             siteName: SITE.name,
@@ -126,7 +126,7 @@ export function buildPageMetadata(opts: {
         },
         twitter: {
             card: SITE.twitter.cardType as any,
-            title: `${opts.title} | ${SITE.name}`,
+            title: opts.title,
             description: opts.description,
             site: SITE.twitter.handle,
         },

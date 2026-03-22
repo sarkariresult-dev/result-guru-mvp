@@ -44,6 +44,7 @@ const SECTION_ORDER: Record<string, SectionId[]> = {
     previous_paper: ['content', 'affiliates', 'faq', 'tags'],
     scheme: ['content', 'affiliates', 'faq', 'tags'],
     admission: ['content', 'affiliates', 'faq', 'tags'],
+    scholarship: ['content', 'affiliates', 'faq', 'tags'],
 }
 
 const DEFAULT_ORDER: SectionId[] = ['content', 'affiliates', 'faq', 'tags']

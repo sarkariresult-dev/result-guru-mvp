@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     metadataBase: new URL(SITE.url),
 
     title: {
-        default: `${SITE.name} - Govt Result, Job & Admit Card 2026`,
+        default: `${SITE.name} — Sarkari Result 2026 | Govt Jobs & Admit Cards`,
         template: `%s | ${SITE.name} `,
     },
     description: SITE.description,
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
         type: 'website',
         locale: SITE.locale,
         siteName: SITE.name,
-        title: `${SITE.name} - Govt Result, Job & Admit Card 2026`,
+        title: `${SITE.name} — Sarkari Result 2026 | Govt Jobs & Admit Cards`,
         description: SITE.description,
         url: SITE.url,
         images: [
@@ -89,7 +89,7 @@ export const metadata: Metadata = {
         card: SITE.twitter.cardType,
         site: SITE.twitter.handle,
         creator: SITE.twitter.handle,
-        title: `${SITE.name} - Govt Result, Job & Admit Card 2026`,
+        title: `${SITE.name} — Sarkari Result 2026 | Govt Jobs & Admit Cards`,
         description: SITE.description,
         images: [
             {
