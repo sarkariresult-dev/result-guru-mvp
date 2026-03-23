@@ -34,13 +34,23 @@ export function formatTitle(title: string): string {
 }
 
 /**
+ * Truncates meta descriptions to SEO-compliant lengths (150-160 chars).
+ */
+export function formatDescription(description: string, limit = 160): string {
+    if (!description) return ''
+    if (description.length <= limit) return description
+    return `${description.slice(0, limit - 3)}...`
+}
+
+/**
  * Build a complete Next.js Metadata object from a PostDetail.
  * Used by dynamic [type]/[slug] pages.
  */
 export function buildMetadata(post: PostDetail): Metadata {
     const title = formatTitle(post.meta_title || post.title)
-    const description =
+    const description = formatDescription(
         post.meta_description || post.excerpt || `${post.title} - ${SITE.name}`
+    )
     const url = `${SITE.url}${postUrl(post.type as any, post.slug)}`
     // Phase 2: Dynamic OG image fallback - when no custom OG or featured image,
     // generate a branded preview using /api/og with post context
@@ -91,8 +101,8 @@ export function buildMetadata(post: PostDetail): Metadata {
             ? { index: false, follow: true }
             : { index: true, follow: true },
         openGraph: {
-            title: post.og_title || title,
-            description: post.og_description || description,
+            title: formatTitle(post.og_title || title),
+            description: formatDescription(post.og_description || description),
             url: post.canonical_url || url,
             siteName: SITE.name,
             locale: SITE.locale,
@@ -119,8 +129,8 @@ export function buildMetadata(post: PostDetail): Metadata {
         },
         twitter: {
             card: (post.twitter_card_type as any) ?? SITE.twitter.cardType,
-            title: post.twitter_title || post.og_title || title,
-            description: post.twitter_description || post.og_description || description,
+            title: formatTitle(post.twitter_title || post.og_title || title),
+            description: formatDescription(post.twitter_description || post.og_description || description),
             images: [ogImage],
             site: SITE.twitter.handle,
         },
@@ -138,17 +148,18 @@ export function buildPageMetadata(opts: {
 }): Metadata {
     const url = `${SITE.url}${opts.path.startsWith('/') ? opts.path : `/${opts.path}`}`
     const title = formatTitle(opts.title)
+    const description = formatDescription(opts.description)
 
     return {
         title,
-        description: opts.description,
+        description,
         alternates: { canonical: url },
         robots: opts.noindex
             ? { index: false, follow: true }
             : { index: true, follow: true },
         openGraph: {
-            title: opts.title,
-            description: opts.description,
+            title,
+            description,
             url,
             siteName: SITE.name,
             locale: SITE.locale,
@@ -157,8 +168,8 @@ export function buildPageMetadata(opts: {
         },
         twitter: {
             card: SITE.twitter.cardType as any,
-            title: opts.title,
-            description: opts.description,
+            title,
+            description,
             site: SITE.twitter.handle,
         },
     }
