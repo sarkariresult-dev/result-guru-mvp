@@ -189,26 +189,25 @@ export function PostDetail({ post, slug, url }: Props) {
             </header>
 
             {/* ── Featured Image with overlay badges + actions ─────── */}
-            <figure className="relative aspect-video overflow-hidden rounded-2xl shadow-md border border-border group">
+            <figure className="relative overflow-hidden rounded-2xl shadow-md border border-border group bg-background-muted flex flex-col items-center justify-center">
                 <Image
                     src={post.featured_image || '/images/placeholder-post.png'}
                     alt={post.featured_image_alt ?? post.title}
-                    fill
-                    className="object-cover transition-transform duration-slow group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, 800px"
+                    width={1200}
+                    height={675}
+                    className="w-full h-auto transition-transform duration-slow group-hover:scale-[1.01]"
+                    sizes="(max-width: 768px) 100vw, 1200px"
                     priority
                     quality={75}
                 />
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
-
-                {/* Top-left: status badge */}
+                
+                {/* Top-left: status badge (overlay) */}
                 <div className="absolute top-3 left-3 flex flex-wrap gap-2">
                     <ApplicationStatusBadge status={post.application_status} />
                 </div>
 
-                {/* Bottom bar */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between">
+                {/* Bottom bar (overlay) */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between bg-linear-to-t from-black/60 via-black/20 to-transparent">
                     {/* Bottom-left: info badges */}
                     <div className="flex flex-wrap items-center gap-2">
                         {post.state_name && (

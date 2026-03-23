@@ -18,13 +18,14 @@ export function PostCard({ post, priority = false }: Props) {
 
     return (
         <article className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-surface transition-shadow duration-200 hover:shadow-lg">
-            <div className="relative aspect-video overflow-hidden bg-background-muted">
+            <div className="relative overflow-hidden bg-background-muted flex flex-col">
                 <Image
                     src={imageSrc}
                     alt={post.featured_image_alt ?? post.title}
-                    fill
+                    width={600}
+                    height={338}
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                    className="w-full h-auto transition-transform duration-300 group-hover:scale-[1.02]"
                     priority={priority}
                     quality={60}
                 />
