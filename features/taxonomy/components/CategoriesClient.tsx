@@ -81,7 +81,7 @@ export function CategoriesClient({ categories, parentOptions, count, children }:
                                             </div>
                                         </td>
                                         <td className="px-4 py-3 text-foreground-muted">
-                                            {cat.parent_name ?? <span className="text-foreground-subtle">—</span>}
+                                            {cat.parent_name ?? <span className="text-foreground-subtle">-</span>}
                                         </td>
                                         <td className="px-4 py-3 tabular-nums text-foreground-muted">{cat.sort_order}</td>
                                         <td className="px-4 py-3">
