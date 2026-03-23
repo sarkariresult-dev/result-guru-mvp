@@ -14,8 +14,6 @@ import { SITE, ROUTE_PREFIXES, type PostTypeKey } from '@/config/site'
  * either send a real value or omit the key so the DB default applies.
  */
 const NOT_NULL_DEFAULTS: Record<string, unknown> = {
-    application_status: 'na',
-
     faq: [],
     robots_directive: 'index,follow',
     noindex: false,
@@ -38,7 +36,8 @@ interface PostPayload {
     // Identity
     type: PostType
     status: PostStatus
-    application_status?: ApplicationStatus
+    application_start_date?: string | null
+    application_end_date?: string | null
 
     // Content
     title: string
@@ -127,7 +126,8 @@ export async function createPost(data: PostPayload) {
         // Identity
         type: data.type,
         status: data.status,
-        application_status: data.application_status ?? 'na',
+        application_start_date: data.application_start_date ?? null,
+        application_end_date: data.application_end_date ?? null,
 
         // Content
         title: data.title,

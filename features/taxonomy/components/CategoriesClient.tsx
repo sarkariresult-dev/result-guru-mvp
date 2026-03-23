@@ -99,6 +99,9 @@ export function CategoriesClient({ categories, parentOptions, count, children }:
                                         </td>
                                         <td className="px-4 py-3 text-right">
                                             <TaxonomyActions
+
+
+
                                                 entityId={cat.id}
                                                 entityName={cat.name}
                                                 onEdit={() => handleEdit(cat)}

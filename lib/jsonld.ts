@@ -33,10 +33,10 @@ export function buildJobPostingSchema(post: PostDetail): JsonLdObject {
             url,
             datePosted: post.published_at ?? post.created_at,
             validThrough: expiryDate,
-            employmentType: post.title.match(/part\s?-?time/i) 
-                ? 'PART_TIME' 
-                : post.title.match(/contract/i) 
-                    ? 'CONTRACTOR' 
+            employmentType: post.title.match(/part\s?-?time/i)
+                ? 'PART_TIME'
+                : post.title.match(/contract/i)
+                    ? 'CONTRACTOR'
                     : 'FULL_TIME',
             hiringOrganization: {
                 '@type': 'Organization',
@@ -49,14 +49,14 @@ export function buildJobPostingSchema(post: PostDetail): JsonLdObject {
                 address: {
                     '@type': 'PostalAddress',
                     // Future-proofing: map addressLocality if city_name is added to PostDetail
-                    ...( (post as any).city_name && { addressLocality: (post as any).city_name } ),
+                    ...((post as any).city_name && { addressLocality: (post as any).city_name }),
                     addressRegion: post.state_name ?? 'India',
                     addressCountry: 'IN',
                 },
             },
         }
     } catch {
-        // Graceful fallback — return minimal valid schema rather than crash the page
+        // Graceful fallback - return minimal valid schema rather than crash the page
         return {
             '@context': 'https://schema.org',
             '@type': 'JobPosting',

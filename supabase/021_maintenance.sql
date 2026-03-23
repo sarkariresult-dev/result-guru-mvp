@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- 019_maintenance.sql - Result Guru
+-- 021_maintenance.sql - Result Guru
 -- Scheduled maintenance functions. Call via pg_cron or an
 -- external scheduler (GitHub Actions, Inngest, etc.).
 --
@@ -13,6 +13,7 @@
 -- ═══════════════════════════════════════════════════════════════
 
 -- ── Atomic page-view counter (callable by anon via RPC) ───────
+-- ── 1. Page View Recording ──────────────────────────────────
 CREATE OR REPLACE FUNCTION fn_increment_post_view(
   p_post_id  UUID,
   p_referrer TEXT DEFAULT NULL,
@@ -44,6 +45,7 @@ COMMENT ON FUNCTION fn_increment_post_view(UUID, TEXT, TEXT) IS
 -- ── Nightly ad stats rollup ───────────────────────────────────
 -- Idempotent: safe to re-run for the same date without double-counting.
 -- Running totals are recomputed from ad_stats_daily (not incremented).
+-- ── 2. Ad Stats Rollup ──────────────────────────────────────
 CREATE OR REPLACE FUNCTION fn_aggregate_ad_stats(
   for_date DATE DEFAULT CURRENT_DATE - 1
 )
@@ -87,6 +89,7 @@ COMMENT ON FUNCTION fn_aggregate_ad_stats(DATE) IS
   'Rolls up ad_events into ad_stats_daily and recomputes running totals idempotently. Schedule: nightly.';
 
 -- ── Purge raw ad events ───────────────────────────────────────
+-- ── 3. Data Retention: Ad Events ────────────────────────────
 CREATE OR REPLACE FUNCTION fn_purge_old_ad_events(
   older_than_days INT DEFAULT 90
 )
@@ -107,6 +110,7 @@ COMMENT ON FUNCTION fn_purge_old_ad_events(INT) IS
   'Deletes raw ad_events older than N days. Run after fn_aggregate_ad_stats. Schedule: weekly.';
 
 -- ── Purge old page-view events ────────────────────────────────
+-- ── 4. Data Retention: Page Views ───────────────────────────
 CREATE OR REPLACE FUNCTION fn_purge_old_post_views(
   older_than_days INT DEFAULT 365
 )
@@ -126,55 +130,12 @@ $$;
 COMMENT ON FUNCTION fn_purge_old_post_views(INT) IS
   'Deletes raw post_views older than N days. Schedule: monthly.';
 
--- ── Auto-close expired application windows ────────────────────
--- Transitions open jobs/exams to 'closed' when apply_end has passed.
-CREATE OR REPLACE FUNCTION fn_auto_close_applications()
-RETURNS INT
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public
-AS $$
-DECLARE _n INT;
-BEGIN
-  UPDATE posts
-  SET    application_status = 'closed'
-  WHERE  status             = 'published'
-    AND  application_status IN ('open', 'closing_soon')
-    AND  (important_dates->>'apply_end') IS NOT NULL
-    AND  (important_dates->>'apply_end')::DATE < CURRENT_DATE;
-
-  GET DIAGNOSTICS _n = ROW_COUNT;
-  RETURN _n;
-END;
-$$;
-COMMENT ON FUNCTION fn_auto_close_applications() IS
-  'Closes job/exam posts whose apply_end date has passed. Schedule: nightly.';
-
--- ── Mark "closing soon" (≤7 days remaining) ───────────────────
-CREATE OR REPLACE FUNCTION fn_mark_closing_soon()
-RETURNS INT
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public
-AS $$
-DECLARE _n INT;
-BEGIN
-  UPDATE posts
-  SET    application_status = 'closing_soon'
-  WHERE  status             = 'published'
-    AND  application_status = 'open'
-    AND  (important_dates->>'apply_end') IS NOT NULL
-    AND  (important_dates->>'apply_end')::DATE BETWEEN CURRENT_DATE AND CURRENT_DATE + 7;
-
-  GET DIAGNOSTICS _n = ROW_COUNT;
-  RETURN _n;
-END;
-$$;
-COMMENT ON FUNCTION fn_mark_closing_soon() IS
-  'Sets application_status = closing_soon for posts with ≤7 days left. Schedule: nightly (run before fn_auto_close_applications).';
+-- NOTE: fn_auto_close_applications and fn_mark_closing_soon are DEPRECATED.
+-- Application status is now dynamically calculated in views based on dates.
 
 -- ── Quarterly partition creator ────────────────────────────────
 -- Call at the start of each quarter with the new year/quarter values.
+-- ── 5. Dynamic Partition Management ─────────────────────────
 CREATE OR REPLACE FUNCTION fn_create_quarterly_partitions(
   p_year INT,
   p_quarter INT   -- 1, 2, 3, or 4

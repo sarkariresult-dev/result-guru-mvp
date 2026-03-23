@@ -6,7 +6,9 @@ import { POST_TYPE_CONFIG, POST_STATUS_CONFIG, APPLICATION_STATUS_CONFIG } from 
 import { ArrowLeft, ExternalLink, Eye, Clock, FileText } from 'lucide-react'
 import { ROUTE_PREFIXES } from '@/config/site'
 import type { PostTypeKey } from '@/config/site'
-import type { PostStatus, ApplicationStatus } from '@/types/enums'
+import { PostStatus, ApplicationStatus } from '@/types/enums'
+
+import { calculateApplicationStatus } from '@/lib/utils'
 
 export default async function AdminPostDetailPage({
     params,
@@ -19,7 +21,10 @@ export default async function AdminPostDetailPage({
 
     const typeConf = POST_TYPE_CONFIG[post.type as PostTypeKey]
     const statusConf = POST_STATUS_CONFIG[post.status as PostStatus]
-    const appStatusConf = APPLICATION_STATUS_CONFIG[post.application_status as ApplicationStatus]
+    
+    // Explicitly calculate status since it's not a DB column anymore
+    const calculatedStatus = calculateApplicationStatus(post.application_start_date, post.application_end_date)
+    const appStatusConf = APPLICATION_STATUS_CONFIG[calculatedStatus as ApplicationStatus]
 
     // Build public URL for published posts
     const prefix = ROUTE_PREFIXES[post.type as PostTypeKey]
@@ -51,7 +56,7 @@ export default async function AdminPostDetailPage({
                                 {statusConf.label}
                             </span>
                         )}
-                        {appStatusConf && post.application_status !== 'na' && (
+                        {appStatusConf && calculatedStatus !== ApplicationStatus.NA && (
                             <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${appStatusConf.color} ${appStatusConf.textColor}`}>
                                 {appStatusConf.pulse && <span className={`inline-block size-1.5 rounded-full ${appStatusConf.dotColor} animate-pulse`} />}
                                 {appStatusConf.label}
@@ -134,7 +139,7 @@ export default async function AdminPostDetailPage({
                                 ) : post.type}
                             </InfoRow>
                             <InfoRow label="Application">
-                                {appStatusConf && post.application_status !== 'na'
+                                {appStatusConf && calculatedStatus !== ApplicationStatus.NA
                                     ? appStatusConf.label
                                     : '-'}
                             </InfoRow>

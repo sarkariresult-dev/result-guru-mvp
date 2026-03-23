@@ -1,4 +1,5 @@
-import type { PostCard, Post } from '@/types/post.types'
+import { calculateApplicationStatus } from '@/lib/utils'
+import type { PostCard, PublishedPost } from '@/types/post.types'
 import type { AdminPost } from '@/features/posts/queries'
 
 /**
@@ -10,7 +11,7 @@ export function toPostCardDTO(row: any): PostCard {
     return {
         id: row.id,
         type: row.type,
-        application_status: row.application_status,
+        application_status: (row as any).application_status ?? calculateApplicationStatus(row.application_start_date, row.application_end_date),
         title: row.title,
         slug: row.slug,
         excerpt: row.excerpt,
@@ -26,6 +27,8 @@ export function toPostCardDTO(row: any): PostCard {
         featured_image_alt: row.featured_image_alt,
         view_count: row.view_count,
         reading_time_min: row.reading_time_min,
+        application_start_date: row.application_start_date,
+        application_end_date: row.application_end_date,
         published_at: row.published_at,
         updated_at: row.updated_at,
     }
@@ -40,7 +43,7 @@ export function toAdminPostDTO(row: any): AdminPost {
         id: row.id,
         type: row.type,
         status: row.status,
-        application_status: row.application_status,
+        application_status: calculateApplicationStatus(row.application_start_date, row.application_end_date),
         title: row.title,
         slug: row.slug,
         state_slug: row.state_slug,
@@ -48,6 +51,8 @@ export function toAdminPostDTO(row: any): AdminPost {
         org_name: row.org_name,
         view_count: row.view_count,
         seo_score: row.seo_score,
+        application_start_date: row.application_start_date,
+        application_end_date: row.application_end_date,
         published_at: row.published_at,
         updated_at: row.updated_at,
         created_at: row.created_at,

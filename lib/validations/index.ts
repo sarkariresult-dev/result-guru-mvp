@@ -60,16 +60,17 @@ const POST_STATUSES = [
     'draft', 'review', 'scheduled', 'published', 'archived',
 ] as const
 
-/** All 6 application_status enum values from 002_enums.sql */
+/** All 7 application_status enum values from 017_views.sql / ApplicationStatus enum */
 const APPLICATION_STATUSES = [
-    'upcoming', 'open', 'closing_soon', 'closed', 'result_out', 'na',
+    'upcoming', 'open', 'closing_soon', 'closed', 'result_out', 'na', 'none',
 ] as const
 
 export const postSchema = z.object({
     // Identity
     type: z.enum(POST_TYPES),
     status: z.enum(POST_STATUSES).default('draft'),
-    application_status: z.enum(APPLICATION_STATUSES).default('na'),
+    application_start_date: z.string().datetime().nullable().optional(),
+    application_end_date: z.string().datetime().nullable().optional(),
 
     // Content
     title: z.string().min(10, 'Title must be at least 10 characters').max(255),

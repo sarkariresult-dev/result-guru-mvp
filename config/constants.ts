@@ -250,6 +250,13 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, StatusConfig> 
         dotColor: 'bg-gray-300',
         pulse: false,
     },
+    none: {
+        label: '-',
+        color: 'bg-gray-100',
+        textColor: 'text-gray-500',
+        dotColor: 'bg-gray-300',
+        pulse: false,
+    },
 }
 
 // ─── Post status config (CMS) ────────────────────────────────────────────────
@@ -261,10 +268,7 @@ export const POST_STATUS_CONFIG: Record<PostStatus, { label: string; color: stri
     archived: { label: 'Archived', color: 'bg-red-100', textColor: 'text-red-700' },
 }
 
-export const STORY_STATUS_CONFIG: Record<'draft' | 'published', { label: string; color: string; textColor: string }> = {
-    draft: { label: 'Draft', color: 'bg-gray-100', textColor: 'text-gray-600' },
-    published: { label: 'Published', color: 'bg-green-100', textColor: 'text-green-800' },
-}
+export const STORY_STATUS_CONFIG: Record<PostStatus, { label: string; color: string; textColor: string }> = POST_STATUS_CONFIG
 
 // ─── Date formats ────────────────────────────────────────────────────────────
 

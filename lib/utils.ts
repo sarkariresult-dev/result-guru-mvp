@@ -183,3 +183,36 @@ export function randomHex(length = 16): string {
         .map((b) => b.toString(16).padStart(2, '0'))
         .join('')
 }
+
+// ─── Post logic helpers ─────────────────────────────────────────────────────
+
+import { ApplicationStatus } from '@/types/enums'
+
+/**
+ * Calculate the application status based on start and end dates.
+ * Mirrors the logic in 017_views.sql.
+ */
+export function calculateApplicationStatus(
+    startDate: string | Date | null | undefined,
+    endDate: string | Date | null | undefined
+): ApplicationStatus {
+    if (!startDate && !endDate) return ApplicationStatus.None
+    // If no start date but there is an end date, we still treat it as 'na' or logic-less
+    if (!startDate) return ApplicationStatus.NA
+
+    const now = new Date()
+    const start = new Date(startDate)
+
+    if (now < start) return ApplicationStatus.Upcoming
+
+    if (endDate) {
+        const end = new Date(endDate)
+        if (now > end) return ApplicationStatus.Closed
+
+        // Closing soon if within 3 days of end date
+        const threeDaysBefore = new Date(end.getTime() - 3 * 24 * 60 * 60 * 1000)
+        if (now > threeDaysBefore) return ApplicationStatus.ClosingSoon
+    }
+
+    return ApplicationStatus.Open
+}

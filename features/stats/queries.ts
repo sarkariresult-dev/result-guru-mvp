@@ -43,9 +43,8 @@ export async function getPostCountsByType(): Promise<PostTypeCounts[]> {
     // FALLBACK: If the materialized view is empty or RPC fails, fetch raw counts
     // from the posts table. This ensures the homepage stats are ALWAYS functional.
     const { data: fallbackData, error: rawError } = await supabase
-        .from('posts')
+        .from('v_published_posts')
         .select('type, application_status, published_at')
-        .eq('status', 'published')
 
     if (rawError || !fallbackData) {
         return []

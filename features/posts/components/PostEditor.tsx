@@ -15,7 +15,8 @@ interface Props {
 
 export function PostEditor({ initialData, onSubmit, loading }: Props) {
     const [data, setData] = useState<Record<string, unknown>>(initialData ?? {
-        title: '', slug: '', type: 'job', status: 'draft', application_status: 'na',
+        title: '', slug: '', type: 'job', status: 'draft',
+        application_start_date: null, application_end_date: null,
         excerpt: '', content: '', state_slug: '', organization_id: '',
     })
 
@@ -71,10 +72,20 @@ export function PostEditor({ initialData, onSubmit, loading }: Props) {
                     </Select>
                 </div>
                 <div>
-                    <label className="mb-1 block text-sm font-medium">Application Status</label>
-                    <Select value={String(data['application_status'] ?? 'na')} onChange={(e) => update('application_status', e.target.value)}>
-                        {APPLICATION_STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
-                    </Select>
+                    <label className="mb-1 block text-sm font-medium">Apply Start</label>
+                    <Input 
+                        type="datetime-local" 
+                        value={data['application_start_date'] ? String(data['application_start_date']).slice(0, 16) : ''} 
+                        onChange={(e) => update('application_start_date', e.target.value || null)} 
+                    />
+                </div>
+                <div>
+                    <label className="mb-1 block text-sm font-medium">Apply End</label>
+                    <Input 
+                        type="datetime-local" 
+                        value={data['application_end_date'] ? String(data['application_end_date']).slice(0, 16) : ''} 
+                        onChange={(e) => update('application_end_date', e.target.value || null)} 
+                    />
                 </div>
             </div>
 

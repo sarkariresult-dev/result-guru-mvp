@@ -3,6 +3,7 @@
 import { useState, useTransition, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { WebStory, WebStorySlide } from '@/types/stories.types'
+import { PostStatus } from '@/types/enums'
 import { createWebStory, updateWebStory, saveStorySlides, publishStory } from '@/lib/actions/stories'
 import { FileUpload } from '@/features/dashboard/components/FileUpload'
 import { Button } from '@/components/ui/Button'
@@ -104,7 +105,7 @@ export function StoryForm({
     const [coverImage, setCoverImage] = useState(initialStory?.cover_image ?? '')
     const [metaTitle, setMetaTitle] = useState(initialStory?.meta_title ?? '')
     const [metaDesc, setMetaDesc] = useState(initialStory?.meta_desc ?? '')
-    const [status, setStatus] = useState<'draft' | 'published'>(initialStory?.status ?? 'draft')
+    const [status, setStatus] = useState<PostStatus>(initialStory?.status ?? PostStatus.Draft)
 
     // ── Slides State ──
     const [slides, setSlides] = useState<Partial<WebStorySlide>[]>(
@@ -188,7 +189,7 @@ export function StoryForm({
                     cover_image: coverImage,
                     meta_title: metaTitle || undefined,
                     meta_desc: metaDesc || undefined,
-                    status: publish ? 'published' : 'draft',
+                    status: publish ? PostStatus.Published : PostStatus.Draft,
                     published_at: publish ? new Date().toISOString() : (initialStory?.published_at || null)
                 }
 
@@ -246,8 +247,8 @@ export function StoryForm({
                         <Save className="size-4" /> {isPending ? 'Saving...' : 'Save Draft'}
                     </Button>
                     <Button onClick={() => handleSubmit(true)} disabled={isPending}>
-                        {status === 'published' ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                        {status === 'published' ? 'Update Live' : 'Publish'}
+                        {status === PostStatus.Published ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                        {status === PostStatus.Published ? 'Update Live' : 'Publish'}
                     </Button>
                 </div>
             </div>
@@ -477,8 +478,8 @@ export function StoryForm({
                 <div className="w-[400px] shrink-0 bg-background-subtle/30 overflow-y-auto custom-scrollbar flex flex-col items-center p-8">
                     <div className="flex items-center justify-between w-full mb-10">
                         <h3 className="text-xs font-black uppercase tracking-widest text-foreground-muted self-start">Live Preview</h3>
-                        <span className={`hidden sm:inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase border border-border mr-2 ${status === 'published' ? 'bg-green-100 text-green-700 dark:bg-green-900/30' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30'}`}>
-                            {status === 'published' ? 'Live' : 'Draft'}
+                        <span className={`hidden sm:inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase border border-border mr-2 ${status === PostStatus.Published ? 'bg-green-100 text-green-700 dark:bg-green-900/30' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30'}`}>
+                            {status === PostStatus.Published ? 'Live' : 'Draft'}
                         </span>
                     </div>
 

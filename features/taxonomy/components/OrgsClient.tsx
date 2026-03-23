@@ -105,7 +105,7 @@ export function OrgsClient({ organizations, stateOptions, count, children }: Org
                                                     Visit <ExternalLink className="size-3" />
                                                 </a>
                                             ) : (
-                                                <span className="text-xs text-foreground-subtle">—</span>
+                                                <span className="text-xs text-foreground-subtle">-</span>
                                             )}
                                         </td>
                                         <td className="px-4 py-3">

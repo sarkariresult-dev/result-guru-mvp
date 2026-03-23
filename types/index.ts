@@ -23,7 +23,6 @@ export * from './affiliate.types'
 export * from './seo.types'
 export * from './newsletter.types'
 export * from './analytics.types'
-export * from './automation.types'
 
 // ── API / response types ───────────────────────────────────
 export * from './api.types'

@@ -1,14 +1,15 @@
 import { Badge } from '@/components/ui/Badge'
 import { APPLICATION_STATUS_CONFIG } from '@/config/constants'
-import type { ApplicationStatus } from '@/types/enums'
+import { ApplicationStatus } from '@/types/enums'
 
 const colorMap: Record<ApplicationStatus, 'green' | 'blue' | 'orange' | 'red' | 'purple' | 'gray'> = {
-    upcoming: 'blue',
-    open: 'green',
-    closing_soon: 'orange',
-    closed: 'red',
-    result_out: 'purple',
-    na: 'gray',
+    [ApplicationStatus.Upcoming]: 'blue',
+    [ApplicationStatus.Open]: 'green',
+    [ApplicationStatus.ClosingSoon]: 'orange',
+    [ApplicationStatus.Closed]: 'red',
+    [ApplicationStatus.ResultOut]: 'purple',
+    [ApplicationStatus.NA]: 'gray',
+    [ApplicationStatus.None]: 'gray',
 }
 
 export function ApplicationStatusBadge({ status }: { status: string }) {

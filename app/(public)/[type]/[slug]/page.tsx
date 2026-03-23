@@ -23,7 +23,7 @@ import type { PublishedPost } from '@/types/post.types'
 import type { FaqItem } from '@/types/post-content.types'
 import { slugToKey, humanise, keyToSlug } from '@/lib/utils'
 import { ExternalLink, Download, Bell } from 'lucide-react'
-
+import { PageViewTracker } from '@/features/analytics/components/PageViewTracker'
 /* ── Types ───────────────────────────────────────────────────────── */
 
 interface Props {
@@ -171,6 +171,7 @@ export default async function PostDetailPage({ params }: Props) {
 
     return (
         <>
+            <PageViewTracker postId={publishedPost.id} />
             <JsonLd data={jsonLdEntries} />
 
             <div className="container mx-auto max-w-7xl px-4 py-8">

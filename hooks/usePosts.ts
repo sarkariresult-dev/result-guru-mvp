@@ -34,6 +34,7 @@ const POST_CARD_COLUMNS = [
     'qualification',
     'featured_image', 'featured_image_alt',
     'view_count', 'reading_time_min',
+    'application_start_date', 'application_end_date',
     'published_at', 'updated_at',
 ].join(', ')
 
@@ -134,15 +135,15 @@ export function usePost(slug: string) {
         queryFn: async () => {
             const supabase = createClient()
 
-            const { data: post, error } = await supabase
+            const { data: post, error: rawError } = await supabase
                 .from('v_published_posts')
                 .select('*')
                 .eq('slug', slug)
                 .single()
 
-            if (error) {
-                if (error.code === 'PGRST116') return null   // not found
-                throw error
+            if (rawError) {
+                if (rawError.code === 'PGRST116') return null   // not found
+                throw rawError
             }
 
             // Fetch related data in parallel

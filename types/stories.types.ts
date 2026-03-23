@@ -1,10 +1,12 @@
+import type { PostStatus } from './enums'
+
 export interface WebStory {
     id: string
     title: string
     slug: string
     cover_image: string
     publisher_logo: string | null
-    status: 'draft' | 'published'
+    status: PostStatus
     meta_title: string | null
     meta_desc: string | null
     author_id: string | null

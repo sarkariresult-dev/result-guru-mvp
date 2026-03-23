@@ -110,7 +110,7 @@ export async function getPublicStories(limit: number = 10, page: number = 1): Pr
     return { data: data as WebStory[], count: count || 0 }
 }
 
-/** Public story fetch by slug — uses static client (no cookies) for AMP route */
+/** Public story fetch by slug - uses static client (no cookies) for AMP route */
 export async function getPublicStoryBySlug(slug: string): Promise<WebStory | null> {
     const supabase = createStaticClient()
     const { data, error } = await supabase
@@ -129,7 +129,7 @@ export async function getPublicStoryBySlug(slug: string): Promise<WebStory | nul
     return data as WebStory
 }
 
-/** Public slides fetch — uses static client (no cookies) for AMP route */
+/** Public slides fetch - uses static client (no cookies) for AMP route */
 export async function getPublicStorySlides(storyId: string): Promise<WebStorySlide[]> {
     const supabase = createStaticClient()
     const { data, error } = await supabase

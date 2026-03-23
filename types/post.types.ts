@@ -22,7 +22,8 @@ export interface Post {
     id: string
     type: PostType
     status: PostStatus
-    application_status: ApplicationStatus
+    application_start_date: string | null
+    application_end_date: string | null
 
     // Content
     title: string
@@ -120,6 +121,9 @@ export interface PublishedPost extends Post {
     // From categories JOIN
     category_name: string | null
     category_slug: string | null
+    
+    // Computed from application_start_date and application_end_date in v_published_posts
+    application_status: ApplicationStatus
 }
 
 // ── Post card (lightweight - used in listing pages) ───────
@@ -143,6 +147,8 @@ export type PostCard = Pick<
     | 'featured_image_alt'
     | 'view_count'
     | 'reading_time_min'
+    | 'application_start_date'
+    | 'application_end_date'
     | 'published_at'
     | 'updated_at'
 >
@@ -250,6 +256,7 @@ export type CreatePostPayload = Omit<
     | 'org_short_name'   // auto-populated by trigger
 > & {
     tag_ids?: string[]
+    application_status?: ApplicationStatus   // Optional for client convenience, ignored by DB
 }
 
 export type UpdatePostPayload = Partial<CreatePostPayload>

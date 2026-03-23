@@ -19,7 +19,7 @@ interface StatesClientProps {
 }
 
 function StateActions({ state, onEdit }: { state: State; onEdit: () => void }) {
-// ... The StateActions component was here but I don't want to replace it. Let's fix the targeting.
+    // ... The StateActions component was here but I don't want to replace it. Let's fix the targeting.
     const [showMenu, setShowMenu] = useState(false)
     const [showDelete, setShowDelete] = useState(false)
     const [isPending, startTransition] = useTransition()
@@ -139,7 +139,7 @@ export function StatesClient({ states, count, children }: StatesClientProps) {
                                 {states.map((st) => (
                                     <tr key={st.slug} className="transition-colors hover:bg-background-subtle">
                                         <td className="px-4 py-3 font-medium">{st.name}</td>
-                                        <td className="px-4 py-3 text-foreground-muted">{st.abbr ?? '—'}</td>
+                                        <td className="px-4 py-3 text-foreground-muted">{st.abbr ?? '-'}</td>
                                         <td className="px-4 py-3 tabular-nums text-foreground-muted">{st.sort_order}</td>
                                         <td className="px-4 py-3">
                                             <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${st.is_active

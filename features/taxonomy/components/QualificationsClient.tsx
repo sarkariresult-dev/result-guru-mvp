@@ -68,7 +68,7 @@ export function QualificationsClient({ qualifications, count, children }: Qualif
                                 {qualifications.map((q) => (
                                     <tr key={q.slug} className="transition-colors hover:bg-background-subtle">
                                         <td className="px-4 py-3 font-medium">{q.name}</td>
-                                        <td className="px-4 py-3 text-foreground-muted">{q.short_name ?? '—'}</td>
+                                        <td className="px-4 py-3 text-foreground-muted">{q.short_name ?? '-'}</td>
                                         <td className="px-4 py-3 tabular-nums text-foreground-muted">{q.sort_order}</td>
                                         <td className="px-4 py-3">
                                             <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${q.is_active

@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════════════
--- 021_rpc_functions.sql - RPC helper functions
+-- 020_rpc_functions.sql - RPC helper functions
 -- ═══════════════════════════════════════════════════════════════════════════
 -- C4: fn_total_view_count / fn_author_view_count - SUM view_count in SQL
 -- C5: fn_posts_by_tag - joined query replacing unbounded IN clause
@@ -7,6 +7,7 @@
 
 -- ── C4: Total view count for all published posts ──────────────────────────
 
+-- ── 1. fn_total_view_count ──────────────────────────────────
 CREATE OR REPLACE FUNCTION fn_total_view_count()
 RETURNS BIGINT
 LANGUAGE sql STABLE
@@ -21,6 +22,7 @@ COMMENT ON FUNCTION fn_total_view_count() IS
 
 -- ── C4: Total view count for a specific author ────────────────────────────
 
+-- ── 2. fn_author_view_count ─────────────────────────────────
 CREATE OR REPLACE FUNCTION fn_author_view_count(p_author_id UUID)
 RETURNS BIGINT
 LANGUAGE sql STABLE
@@ -36,6 +38,7 @@ COMMENT ON FUNCTION fn_author_view_count(UUID) IS
 
 -- ── C5: Paginated posts by tag via JOIN (replaces unbounded IN) ───────────
 
+-- ── 3. fn_posts_by_tag ──────────────────────────────────────
 DROP FUNCTION IF EXISTS public.fn_posts_by_tag(uuid, integer, integer);
 CREATE OR REPLACE FUNCTION fn_posts_by_tag(
     p_tag_id  UUID,

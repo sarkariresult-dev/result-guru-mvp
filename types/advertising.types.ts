@@ -21,7 +21,6 @@ export interface AdZone {
     description: string | null
     width: number | null
     height: number | null
-    allowed_sizes: AdSize[]
     appears_on: string[]           // page contexts e.g. ['all'] or ['post_detail']
     appears_on_post_types: PostType[] | null
     is_mobile: boolean

@@ -166,7 +166,7 @@ const POST_TYPES = Object.entries(TYPE_CONFIG).map(([value, cfg]) => ({
 }))
 
 const APP_STATUSES: Option[] = [
-    { value: 'na', label: 'N/A' }, { value: 'upcoming', label: 'Upcoming' },
+    { value: 'na', label: 'N/A' }, { value: 'none', label: '-' }, { value: 'upcoming', label: 'Upcoming' },
     { value: 'open', label: 'Open' }, { value: 'closing_soon', label: 'Closing Soon' },
     { value: 'closed', label: 'Closed' }, { value: 'result_out', label: 'Result Out' },
 ]
@@ -454,7 +454,8 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
     const [pendingSaveAs, setPendingSaveAs] = useState<'draft' | 'published'>('draft')
     const [excerpt, setExcerpt] = useState(initialData?.excerpt ?? '')
     const [content, setContent] = useState(initialData?.content ?? '')
-    const [applicationStatus, setApplicationStatus] = useState(initialData?.application_status ?? 'na')
+    const [applicationStartDate, setApplicationStartDate] = useState(initialData?.application_start_date ?? '')
+    const [applicationEndDate, setApplicationEndDate] = useState(initialData?.application_end_date ?? '')
     const [draftLoaded, setDraftLoaded] = useState(false)
 
     // ── Taxonomy ──
@@ -647,7 +648,9 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
             // Map form state → DB column names (matches 007_posts.sql)
             const data = {
                 // Identity
-                type, status: pendingSaveAs as import('@/types/enums').PostStatus, application_status: applicationStatus,
+                type, status: pendingSaveAs as import('@/types/enums').PostStatus,
+                application_start_date: applicationStartDate || null,
+                application_end_date: applicationEndDate || null,
                 // Content
                 title, slug,
                 excerpt: excerpt || null, content: content || null,
@@ -853,11 +856,24 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                             </button>
                         )}
                         {cfg.showAppStatus && (
-                            <Field label="Application Status">
-                                <select value={applicationStatus} onChange={(e) => setApplicationStatus(e.target.value)} className={selectCls}>
-                                    {APP_STATUSES.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                </select>
-                            </Field>
+                            <div className="space-y-3">
+                                <Field label="Apply Start Date">
+                                    <input 
+                                        type="datetime-local" 
+                                        value={applicationStartDate ? applicationStartDate.slice(0, 16) : ''} 
+                                        onChange={(e) => setApplicationStartDate(e.target.value)} 
+                                        className={inputCls} 
+                                    />
+                                </Field>
+                                <Field label="Apply End Date">
+                                    <input 
+                                        type="datetime-local" 
+                                        value={applicationEndDate ? applicationEndDate.slice(0, 16) : ''} 
+                                        onChange={(e) => setApplicationEndDate(e.target.value)} 
+                                        className={inputCls} 
+                                    />
+                                </Field>
+                            </div>
                         )}
 
                     </Panel>

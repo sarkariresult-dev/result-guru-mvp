@@ -1,22 +1,17 @@
 -- ═══════════════════════════════════════════════════════════════
--- 013_seo.sql - Result Guru
+-- 012_seo.sql - Result Guru
 -- Global SEO config, URL redirects, internal search analytics,
 -- and sitemap configuration.
 -- ═══════════════════════════════════════════════════════════════
 
--- ── Global key-value SEO settings ────────────────────────────
+-- ── 1. Global SEO Settings ──────────────────────────────────
 CREATE TABLE IF NOT EXISTS seo_settings (
   key         TEXT        PRIMARY KEY,
   value       TEXT,
   description TEXT,
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-COMMENT ON TABLE seo_settings IS
-  'Site-wide SEO configuration. Read at build time or cached server-side.';
 
--- NOTE: Site identity, analytics IDs, and verification tokens are managed
--- exclusively via ENV vars (NEXT_PUBLIC_APP_NAME, _URL, _GA_ID, etc.).
--- Only DB-only settings that the admin UI can edit are seeded here.
 INSERT INTO seo_settings (key, value, description) VALUES
   ('default_og_image',        '/og-default.png',                             'Default OG image path (served from site root)'),
   ('default_og_image_width',  '1200',                                        'Default OG image width px'),
@@ -34,7 +29,7 @@ INSERT INTO seo_settings (key, value, description) VALUES
    'Global Organization JSON-LD')
 ON CONFLICT (key) DO NOTHING;
 
--- ── URL redirect rules ────────────────────────────────────────
+-- ── 2. Unified URL Redirects ────────────────────────────────
 CREATE TABLE IF NOT EXISTS redirects (
   id          UUID          PRIMARY KEY DEFAULT uuid_generate_v4(),
   from_path   TEXT          UNIQUE NOT NULL,
@@ -42,16 +37,12 @@ CREATE TABLE IF NOT EXISTS redirects (
   type        redirect_type NOT NULL DEFAULT '301',
   hits        INT           NOT NULL DEFAULT 0,
   is_active   BOOLEAN       NOT NULL DEFAULT TRUE,
-  -- Set by trigger when to_path itself has a redirect (chain detected)
   is_chained  BOOLEAN       NOT NULL DEFAULT FALSE,
   note        TEXT,
   created_at  TIMESTAMPTZ   NOT NULL DEFAULT NOW()
 );
-COMMENT ON TABLE redirects IS
-  'URL redirect rules. is_chained flag set by trigger - always fix chains.
-   410 (Gone) tells Googlebot to deindex the URL immediately.';
 
--- ── Internal site search analytics ───────────────────────────
+-- ── 3. Internal Search Analytics ────────────────────────────
 CREATE TABLE IF NOT EXISTS search_queries (
   id            BIGSERIAL   PRIMARY KEY,
   query         TEXT        NOT NULL,
@@ -60,25 +51,19 @@ CREATE TABLE IF NOT EXISTS search_queries (
   device        TEXT,
   searched_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-COMMENT ON TABLE search_queries IS
-  'Internal site search log. Drives autocomplete and "Popular searches".
-   idx_search_queries_trgm enables fuzzy "did you mean" suggestions.';
 
--- ── Sitemap priority / changefreq per URL pattern ─────────────
+-- ── 4. Search Console / Sitemap Configurations ──────────────
 CREATE TABLE IF NOT EXISTS sitemap_config (
   id          UUID          PRIMARY KEY DEFAULT uuid_generate_v4(),
   url_pattern TEXT          UNIQUE NOT NULL,
-  changefreq  TEXT          NOT NULL DEFAULT 'weekly'
-                CHECK (changefreq IN ('always','hourly','daily','weekly','monthly','yearly','never')),
+  changefreq  TEXT          NOT NULL DEFAULT 'weekly' CHECK (changefreq IN ('always','hourly','daily','weekly','monthly','yearly','never')),
   priority    NUMERIC(2,1)  NOT NULL DEFAULT 0.5 CHECK (priority BETWEEN 0.0 AND 1.0),
   include     BOOLEAN       NOT NULL DEFAULT TRUE,
   note        TEXT
 );
-COMMENT ON TABLE sitemap_config IS
-  'Per-pattern sitemap priority/changefreq rules. Used by sitemap.ts.';
 
 INSERT INTO sitemap_config (url_pattern, changefreq, priority, include, note) VALUES
-  -- Listing pages (match ROUTE_PREFIXES from config/site.ts)
+  -- Listing pages
   ('/',                  'daily',   1.0, TRUE,  'Homepage'),
   ('/job',               'daily',   0.9, TRUE,  'Job listing'),
   ('/result',            'daily',   0.9, TRUE,  'Result listing'),
@@ -93,7 +78,7 @@ INSERT INTO sitemap_config (url_pattern, changefreq, priority, include, note) VA
   ('/admission',         'weekly',  0.8, TRUE,  'Admission listing'),
   ('/notification',      'weekly',  0.6, TRUE,  'Notification listing'),
 
-  -- Individual post detail pages
+  -- Individual detail pages
   ('/job/%',             'weekly',  0.8, TRUE,  'Individual job posts'),
   ('/result/%',          'weekly',  0.8, TRUE,  'Individual result posts'),
   ('/admit-card/%',      'weekly',  0.8, TRUE,  'Individual admit card posts'),

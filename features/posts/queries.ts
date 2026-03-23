@@ -16,6 +16,7 @@ const POST_CARD_COLUMNS = `
   qualification,
   featured_image, featured_image_alt,
   view_count, reading_time_min,
+  application_start_date, application_end_date,
   published_at, updated_at
 `.trim()
 
@@ -204,13 +205,15 @@ export interface AdminPost {
     org_name: string | null
     view_count: number
     seo_score: number
+    application_start_date: string | null
+    application_end_date: string | null
     published_at: string | null
     updated_at: string
     created_at: string
 }
 
 const ADMIN_POST_COLUMNS =
-    'id, type, status, application_status, title, slug, state_slug, organization_id, org_name, view_count, seo_score, published_at, updated_at, created_at'
+    'id, type, status, title, slug, state_slug, organization_id, org_name, view_count, seo_score, application_start_date, application_end_date, published_at, updated_at, created_at'
 
 export async function getAdminPosts(opts: {
     page?: number

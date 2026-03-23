@@ -35,6 +35,7 @@ export enum ApplicationStatus {
     Open = 'open',
     ClosingSoon = 'closing_soon',
     Closed = 'closed',
+    None = 'none',
     ResultOut = 'result_out',
     NA = 'na',
 }
@@ -159,6 +160,7 @@ export enum InternalLinkType {
     Content = 'content',
     Related = 'related',
     Breadcrumb = 'breadcrumb',
+    Internal = 'internal',
 }
 
 // ── Affiliate rule sort ────────────────────────────────────

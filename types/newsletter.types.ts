@@ -33,6 +33,7 @@ export interface SubscriberPreferences {
     scheme?: boolean
     exam?: boolean
     admission?: boolean
+    scholarship?: boolean
     notification?: boolean
     /** State slugs the subscriber wants notifications for */
     states?: string[]
@@ -59,6 +60,7 @@ export interface Broadcast {
     created_by: string | null
     created_at: string
 }
+
 
 export interface BroadcastTargetFilter {
     status?: SubscriberStatus[]
