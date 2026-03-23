@@ -19,8 +19,8 @@ export function extractTocFromHtml(html: string): { tocItems: TocItem[]; process
     const tocItems: TocItem[] = []
     const usedIds = new Set<string>()
 
-    // Match h2, h3, h4 headings from the HTML content
-    const headingRegex = /<h([2-4])([^>]*)>(.*?)<\/h[2-4]>/gi
+    // Match h1, h2, h3, h4 headings from the HTML content
+    const headingRegex = /<h([1-4])([^>]*)>(.*?)<\/h[1-4]>/gi
 
     const processedHtml = html.replace(headingRegex, (match, level, attrs, content) => {
         // Strip HTML tags from heading text for TOC display

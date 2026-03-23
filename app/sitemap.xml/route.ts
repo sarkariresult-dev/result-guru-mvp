@@ -44,7 +44,6 @@ const STATIC_PAGES = [
     { path: '/admission', changeFrequency: 'weekly', priority: 0.7 },
     { path: '/scholarship', changeFrequency: 'weekly', priority: 0.7 },
     { path: '/notification', changeFrequency: 'daily', priority: 0.8 },
-    { path: '/search', changeFrequency: 'weekly', priority: 0.5 },
     { path: '/states', changeFrequency: 'monthly', priority: 0.5 },
     { path: '/organizations', changeFrequency: 'monthly', priority: 0.5 },
     { path: '/stories', changeFrequency: 'daily', priority: 0.6 },

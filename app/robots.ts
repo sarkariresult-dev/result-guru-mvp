@@ -20,12 +20,7 @@ const DISALLOWED_PATHS = [
     '/admin/',
     '/author/',
     '/user/',
-    '/login',
-    '/register',
     '/callback',
-    '/forgot-password',
-    '/reset-password',
-    '/search?',              // Prevent duplicate indexing of parameterised search URLs
     '/preview/',
     '/draft/',
 ] as const

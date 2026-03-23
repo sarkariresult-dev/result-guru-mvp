@@ -78,10 +78,10 @@ export default function AuthLayout({
                         <Logo height={36} forceDark />
                     </Link>
                     {/* Headline */}
-                    <h1 className="mb-2 font-display text-3xl font-bold leading-tight tracking-tight text-white xl:text-4xl">
+                    <div className="mb-2 font-display text-3xl font-bold leading-tight tracking-tight text-white xl:text-4xl">
                         Your gateway to<br />
                         <span className="text-accent-300">government careers</span>
-                    </h1>
+                    </div>
                     <p className="max-w-sm text-sm leading-relaxed text-white/70">
                         {SITE.tagline}. Join thousands of aspirants who trust us for accurate and timely updates.
                     </p>

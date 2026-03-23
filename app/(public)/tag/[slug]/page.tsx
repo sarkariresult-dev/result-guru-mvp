@@ -8,6 +8,7 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { SITE } from '@/config/site'
+import { formatTitle } from '@/lib/metadata'
 import { PAGINATION } from '@/config/constants'
 import { Tag, ChevronLeft, ChevronRight, ServerCrash, Hash } from 'lucide-react'
 import type { PostCard } from '@/types/post.types'
@@ -50,8 +51,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
 
     if (!tag) return {}
-
-    const title = tag.meta_title ?? `${tag.name} - Latest Government Jobs, Results & Updates 2026`
+  
+    const baseTitle = tag.meta_title ?? `${tag.name} | Latest Govt Jobs, Results & Updates 2026`
+    const title = formatTitle(baseTitle)
     const description = tag.meta_description ?? `Browse all posts tagged "${tag.name}". Find the latest Sarkari Jobs, exam results, admit cards, and notifications related to ${tag.name}.`
     const url = `${SITE.url}/tag/${slug}`
 

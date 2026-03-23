@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { SITE } from '@/config/site'
+import { formatTitle } from '@/lib/metadata'
 import { getPosts, getPostsCount } from '@/features/posts/queries'
 import { getCategories } from '@/lib/queries/taxonomy'
 import { PostGrid } from '@/features/posts/components/PostGrid'
@@ -28,7 +29,8 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     const totalCountRes = await getPostsCount({ category_slug: slug }).catch(() => 0)
     const totalPages = Math.ceil(totalCountRes / limit)
 
-    const title = page > 1 ? `${category.name} Updates - Page ${page}` : `${category.name} Updates Latest`
+    const baseTitle = page > 1 ? `${category.name} Updates - Page ${page}` : `${category.name} Latest Updates`
+    const title = formatTitle(baseTitle)
     const description = `Browse all the latest updates computationally tagged under the ${category.name} category. Find relevant notifications on ${SITE.name}.`
     const url = `${SITE.url}/category/${slug}`
     const canonical = page > 1 ? `${url}?page=${page}` : url

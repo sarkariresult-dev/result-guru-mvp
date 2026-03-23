@@ -9,6 +9,7 @@ import { AdZone } from '@/components/ads/AdZone'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
+import { formatTitle } from '@/lib/metadata'
 import { PAGINATION } from '@/config/constants'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
 import type { PostTypeKey } from '@/config/site'
@@ -37,8 +38,11 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     }
 
     if (!stateRecord) return {}
-
-    const title = page > 1 ? `${stateRecord.name} - Page ${page} - Sarkari Updates 2026` : (stateRecord.meta_title ?? `${stateRecord.name} - Latest Govt Jobs, Results & Updates 2026`)
+  
+    const baseTitle = page > 1 
+      ? `${stateRecord.name} - Page ${page} - Sarkari Updates 2026` 
+      : (stateRecord.meta_title ?? `${stateRecord.name} | Govt Jobs, Results & Admit Card 2026`)
+    const title = formatTitle(baseTitle)
     const description = stateRecord.meta_description ?? `Find all the latest government jobs, exam results, admit cards, and recruitment notifications in ${stateRecord.name}. Updated daily with official information.`
     const url = `${SITE.url}/states/${slug}`
     const canonical = page > 1 ? `${url}?page=${page}` : url

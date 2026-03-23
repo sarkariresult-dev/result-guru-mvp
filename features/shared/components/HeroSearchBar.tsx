@@ -1,8 +1,8 @@
 'use client'
 
 import { Search, MapPin, ChevronDown, X, Loader2 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useState, useRef, useEffect, useTransition } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import Form from 'next/form'
 
 interface StateOption {
     slug: string
@@ -18,10 +18,8 @@ export function HeroSearchBar({ states }: HeroSearchBarProps) {
     const [state, setState] = useState('')
     const [stateOpen, setStateOpen] = useState(false)
     const [activeIndex, setActiveIndex] = useState(-1)
-    const [isPending, startTransition] = useTransition()
     const dropdownRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
-    const router = useRouter()
 
     const selectedLabel = states.find((s) => s.slug === state)?.name ?? 'All States'
     const options = [{ slug: '', name: 'All States' }, ...states]
@@ -77,38 +75,16 @@ export function HeroSearchBar({ states }: HeroSearchBarProps) {
         }
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        const trimmedQuery = query.trim()
-        
-        // Validation: If both are empty, don't search or just go to search page
-        if (!trimmedQuery && !state) {
-            startTransition(() => {
-                router.push('/search')
-            })
-            return
-        }
-
-        const params = new URLSearchParams()
-        if (trimmedQuery) params.set('q', trimmedQuery)
-        if (state) params.set('state', state)
-        
-        const qs = params.toString()
-        startTransition(() => {
-            router.push(`/search${qs ? `?${qs}` : ''}`)
-        })
-    }
-
     const clearQuery = () => {
         setQuery('')
         inputRef.current?.focus()
     }
 
     return (
-        <form 
-            onSubmit={handleSubmit} 
-            className="w-full" 
-            role="search" 
+        <Form
+            action="/search"
+            className="w-full"
+            role="search"
             aria-label="Search jobs and government results"
         >
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-0 rounded-2xl bg-surface p-1.5 shadow-xl ring-1 ring-border sm:rounded-full transition-shadow focus-within:ring-brand-500/50 focus-within:shadow-brand-500/10">
@@ -119,6 +95,7 @@ export function HeroSearchBar({ states }: HeroSearchBarProps) {
                     <input
                         ref={inputRef}
                         id="hero-search"
+                        name="q"
                         type="search"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
@@ -157,6 +134,9 @@ export function HeroSearchBar({ states }: HeroSearchBarProps) {
                         <ChevronDown className={`size-3.5 text-foreground-subtle transition-transform shrink-0 ${stateOpen ? 'rotate-180' : ''}`} />
                     </button>
 
+                    {/* Hidden input for state selection which next/form uses for query strings */}
+                    <input type="hidden" name="state" value={state} />
+
                     {stateOpen && (
                         <div 
                             role="listbox" 
@@ -192,27 +172,13 @@ export function HeroSearchBar({ states }: HeroSearchBarProps) {
                 {/* Search button */}
                 <button
                     type="submit"
-                    disabled={isPending}
-                    className="relative flex h-12 items-center justify-center gap-2 rounded-xl bg-brand-600 px-6 text-sm font-bold text-white transition-all hover:bg-brand-700 hover:shadow-lg active:scale-[0.98] disabled:opacity-80 sm:rounded-full sm:px-8"
+                    className="relative flex h-12 items-center justify-center gap-2 rounded-xl bg-brand-600 px-6 text-sm font-bold text-white transition-all hover:bg-brand-700 hover:shadow-lg active:scale-[0.98] sm:rounded-full sm:px-8"
                 >
-                    {isPending ? (
-                        <>
-                            <Loader2 className="size-4 animate-spin" />
-                            <span className="hidden sm:inline">Searching...</span>
-                        </>
-                    ) : (
-                        <>
-                            <Search className="size-4" />
-                            <span>Search Jobs</span>
-                        </>
-                    )}
+                    <Search className="size-4" />
+                    <span>Search Jobs</span>
                 </button>
             </div>
             
-            {/* Visual hint for accessibility */}
-            <div className="sr-only" aria-live="polite">
-                {isPending ? 'Searching for results...' : ''}
-            </div>
-        </form>
+        </Form>
     )
 }

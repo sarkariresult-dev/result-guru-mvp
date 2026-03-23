@@ -38,7 +38,7 @@ export const metadata: Metadata = {
 
     title: {
         default: `${SITE.name} - Sarkari Result 2026 | Govt Jobs & Admit Cards`,
-        template: `%s | ${SITE.name} `,
+        template: '%s',
     },
     description: SITE.description,
 

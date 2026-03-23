@@ -16,7 +16,8 @@ import sanitizeHtmlLib from 'sanitize-html'
  */
 const ALLOWED_TAGS = [
     // Block elements
-    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    // Block elements
+    'h2', 'h3', 'h4', 'h5', 'h6',
     'p', 'br', 'hr', 'div', 'blockquote', 'pre', 'code',
     // Lists
     'ul', 'ol', 'li',
@@ -75,6 +76,10 @@ export function sanitizeHtml(html: string): string {
             allowedTags: ALLOWED_TAGS,
             allowedAttributes: {
                 '*': ALLOWED_ATTRS, // Allow these specific attributes on any allowed tag
+            },
+            transformTags: {
+                // Demote h1 to h2 to ensure only one h1 per page (the post title)
+                h1: 'h2',
             },
             allowedSchemes: ['http', 'https', 'ftp', 'mailto', 'tel', 'data'],
             allowProtocolRelative: true,

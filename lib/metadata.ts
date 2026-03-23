@@ -4,11 +4,41 @@ import type { HreflangEntry } from '@/types/post-content.types'
 import { SITE, postUrl, ogImageUrl } from '@/config/site'
 
 /**
+ * Centralized title formatter for SEO.
+ * Appends brand suffix " | Result Guru" only if total length <= 70.
+ * If over 70, it truncates the title so the branded result is exactly 70.
+ */
+export function formatTitle(title: string): string {
+    const brandName = SITE.name
+    const brandSuffix = ` | ${brandName}`
+    const limit = 70
+
+    // If title already contains brand name, don't append it again
+    if (title.includes(brandName)) {
+        return title.length > limit ? `${title.slice(0, limit - 3)}...` : title
+    }
+
+    if (title.length + brandSuffix.length <= limit) {
+        return `${title}${brandSuffix}`
+    }
+
+    // If already too long, truncate title to fit brand
+    const ellipsis = '...'
+    const available = limit - brandSuffix.length - ellipsis.length
+    if (available > 10) {
+        return `${title.slice(0, available)}${ellipsis}${brandSuffix}`
+    }
+
+    // Fallback: just truncate the title if it's very long
+    return title.length > limit ? `${title.slice(0, limit - 3)}...` : title
+}
+
+/**
  * Build a complete Next.js Metadata object from a PostDetail.
  * Used by dynamic [type]/[slug] pages.
  */
 export function buildMetadata(post: PostDetail): Metadata {
-    const title = post.meta_title || post.title
+    const title = formatTitle(post.meta_title || post.title)
     const description =
         post.meta_description || post.excerpt || `${post.title} - ${SITE.name}`
     const url = `${SITE.url}${postUrl(post.type as any, post.slug)}`
@@ -107,9 +137,10 @@ export function buildPageMetadata(opts: {
     noindex?: boolean
 }): Metadata {
     const url = `${SITE.url}${opts.path.startsWith('/') ? opts.path : `/${opts.path}`}`
+    const title = formatTitle(opts.title)
 
     return {
-        title: opts.title,
+        title,
         description: opts.description,
         alternates: { canonical: url },
         robots: opts.noindex
