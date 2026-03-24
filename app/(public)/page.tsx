@@ -64,7 +64,7 @@ export default async function HomePage() {
         getStates(),
         getPopularOrganizations(30),
         getPostCountsByType(),
-        getHomepageSections(6),
+        getHomepageSections(8),
     ])
 
     const states = statesResult.status === 'fulfilled' ? statesResult.value.map((s) => ({ slug: s.slug, name: s.name, abbr: s.abbr })) : []
@@ -209,11 +209,11 @@ export default async function HomePage() {
                     {/* LEFT COLUMN: 10 Post Types (2x5 Grid using the List layout) */}
                     <div className="lg:col-span-2 space-y-8">
                         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                            <Suspense fallback={<HomeSectionSkeleton count={6} />}>
-                                <HomeSection typeKey="job" heading="Latest Sarkari Job" route={ROUTE_PREFIXES.job} cta="View All" limit={6} layout="list" themeColorClass="bg-amber-500" posts={sections.job} />
+                            <Suspense fallback={<HomeSectionSkeleton count={8} />}>
+                                <HomeSection typeKey="job" heading="Latest Sarkari Job" route={ROUTE_PREFIXES.job} cta="View All" limit={8} layout="list" themeColorClass="bg-amber-500" posts={sections.job} />
                             </Suspense>
-                            <Suspense fallback={<HomeSectionSkeleton count={6} />}>
-                                <HomeSection typeKey="result" heading="Latest Result" route={ROUTE_PREFIXES.result} cta="View All" limit={6} layout="list" themeColorClass="bg-orange-500" posts={sections.result} />
+                            <Suspense fallback={<HomeSectionSkeleton count={8} />}>
+                                <HomeSection typeKey="result" heading="Latest Result" route={ROUTE_PREFIXES.result} cta="View All" limit={8} layout="list" themeColorClass="bg-orange-500" posts={sections.result} />
                             </Suspense>
 
                             <Suspense fallback={<HomeSectionSkeleton count={5} />}>
@@ -251,7 +251,7 @@ export default async function HomePage() {
                     <div className="lg:col-span-1">
                         <aside className="sticky top-24 flex flex-col gap-8">
                             {/* Notifications List (formerly Trending Now) */}
-                            <Suspense fallback={<HomeSectionSkeleton count={5} />}>
+                            <Suspense fallback={<HomeSectionSkeleton count={8} />}>
                                 <HomeSection
                                     typeKey="notification"
                                     heading="Notification"
@@ -309,7 +309,7 @@ export default async function HomePage() {
                                 </div>
                             </div>
                             {/* Govt Schemes List */}
-                            <Suspense fallback={<HomeSectionSkeleton count={4} />}>
+                            <Suspense fallback={<HomeSectionSkeleton count={8} />}>
                                 <HomeSection
                                     typeKey="scheme"
                                     heading="Govt Scheme"
@@ -368,7 +368,7 @@ export default async function HomePage() {
                             </div>
 
                             {/* Scholarship List */}
-                            <Suspense fallback={<HomeSectionSkeleton count={5} />}>
+                            <Suspense fallback={<HomeSectionSkeleton count={8} />}>
                                 <HomeSection
                                     typeKey="scholarship"
                                     heading="Scholarship"

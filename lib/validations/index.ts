@@ -69,8 +69,8 @@ export const postSchema = z.object({
     // Identity
     type: z.enum(POST_TYPES),
     status: z.enum(POST_STATUSES).default('draft'),
-    application_start_date: z.string().datetime().nullable().optional(),
-    application_end_date: z.string().datetime().nullable().optional(),
+    application_start_date: z.string().datetime({ offset: true }).nullable().optional(),
+    application_end_date: z.string().datetime({ offset: true }).nullable().optional(),
 
     // Content
     title: z.string().min(10, 'Title must be at least 10 characters').max(255),

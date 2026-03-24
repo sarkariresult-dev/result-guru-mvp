@@ -55,6 +55,18 @@ function slugify(text: string) {
     return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
 }
 
+/** Format date string/Date to YYYY-MM-DD in IST */
+function toISODate(val: unknown) {
+    if (!val) return ''
+    try {
+        const d = new Date(String(val))
+        if (isNaN(d.getTime())) return ''
+        return d.toLocaleDateString('sv-SE', { timeZone: 'Asia/Kolkata' })
+    } catch {
+        return ''
+    }
+}
+
 // Defines which structured data sections are visible for each post type
 const TYPE_CONFIG: Record<string, {
     label: string
@@ -859,16 +871,16 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
                             <div className="space-y-3">
                                 <Field label="Apply Start Date">
                                     <input 
-                                        type="datetime-local" 
-                                        value={applicationStartDate ? applicationStartDate.slice(0, 16) : ''} 
+                                        type="date" 
+                                        value={toISODate(applicationStartDate)} 
                                         onChange={(e) => setApplicationStartDate(e.target.value)} 
                                         className={inputCls} 
                                     />
                                 </Field>
                                 <Field label="Apply End Date">
                                     <input 
-                                        type="datetime-local" 
-                                        value={applicationEndDate ? applicationEndDate.slice(0, 16) : ''} 
+                                        type="date" 
+                                        value={toISODate(applicationEndDate)} 
                                         onChange={(e) => setApplicationEndDate(e.target.value)} 
                                         className={inputCls} 
                                     />

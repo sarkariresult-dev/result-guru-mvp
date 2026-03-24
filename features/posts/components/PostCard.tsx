@@ -40,6 +40,18 @@ export function PostCard({ post, priority = false }: Props) {
                 <h2 className="line-clamp-2 text-base font-semibold leading-snug text-foreground group-hover:text-brand-600 dark:group-hover:text-brand-400">
                     <Link href={href} className="after:absolute after:inset-0">{post.title}</Link>
                 </h2>
+                {(post.application_start_date || post.application_end_date) && (
+                    <div className="flex items-center gap-1 text-[11px] font-medium transition-colors">
+                        {post.application_status === 'upcoming' && post.application_start_date ? (
+                            <span className="text-blue-600 dark:text-blue-400">Starts {formatDate(post.application_start_date)}</span>
+                        ) : post.application_end_date ? (
+                            <span className={post.application_status === 'closing_soon' ? 'text-orange-600 dark:text-orange-400 animate-pulse-subtle' : 'text-foreground-subtle'}>
+                                {post.application_status === 'closed' ? 'Closed on ' : 'Apply by '}
+                                {formatDate(post.application_end_date)}
+                            </span>
+                        ) : null}
+                    </div>
+                )}
                 {post.excerpt && (
                     <p className="line-clamp-2 text-sm text-foreground-muted">{post.excerpt}</p>
                 )}

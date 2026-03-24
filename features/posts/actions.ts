@@ -109,9 +109,19 @@ const updatePostSchema = postSchema.partial().extend({
     tag_ids: z.array(z.string().uuid()).optional(),
 })
 
+/** Helper to format YYYY-MM-DD to IST ISO string */
+function toIST(dateStr: string | null | undefined, isEnd = false) {
+    if (!dateStr || dateStr.includes('T')) return dateStr ?? null
+    return `${dateStr}T${isEnd ? '23:59:59' : '00:00:00'}+05:30`
+}
+
 // ── Create Post ────────────────────────────────────────────
 export async function createPost(data: PostPayload) {
-    // Validate input with Zod before touching the DB
+    // 1. Transform dates to IST before validation so Zod doesn't complain about pure YYYY-MM-DD
+    if (data.application_start_date) data.application_start_date = toIST(data.application_start_date)
+    if (data.application_end_date) data.application_end_date = toIST(data.application_end_date, true)
+
+    // 2. Validate input with Zod
     const parsed = createPostSchema.safeParse(data)
     if (!parsed.success) {
         return { error: parsed.error.issues.map(i => i.message).join(', ') }
@@ -120,10 +130,7 @@ export async function createPost(data: PostPayload) {
     const supabase = await createServerClient()
 
     // Build row with only valid DB columns (triggers handle org_name, seo_score, etc.)
-    // CRITICAL: For NOT NULL columns, use the DB default instead of null.
-    // Sending explicit null to a NOT NULL column causes a constraint violation.
     const row: Record<string, unknown> = {
-        // Identity
         type: data.type,
         status: data.status,
         application_start_date: data.application_start_date ?? null,
@@ -221,7 +228,11 @@ export async function updatePost(id: string, data: Partial<PostPayload>) {
         return { error: 'Invalid post ID' }
     }
 
-    // Validate input with Zod before touching the DB
+    // 1. Transform dates to IST before validation
+    if (data.application_start_date) data.application_start_date = toIST(data.application_start_date)
+    if (data.application_end_date) data.application_end_date = toIST(data.application_end_date, true)
+
+    // 2. Validate input with Zod before touching the DB
     const parsed = updatePostSchema.safeParse(data)
     if (!parsed.success) {
         return { error: parsed.error.issues.map(i => i.message).join(', ') }
@@ -236,7 +247,9 @@ export async function updatePost(id: string, data: Partial<PostPayload>) {
     // Only include fields that were actually provided.
     // CRITICAL: For NOT NULL columns, use the DB default instead of null.
     for (const [key, value] of Object.entries(dbFields)) {
-        if (value === null || value === undefined) {
+        let finalValue = value
+
+        if (finalValue === null || finalValue === undefined) {
             // If this column is NOT NULL in the DB, use its default instead of null
             if (key in NOT_NULL_DEFAULTS) {
                 updateRow[key] = NOT_NULL_DEFAULTS[key]
@@ -244,7 +257,7 @@ export async function updatePost(id: string, data: Partial<PostPayload>) {
                 updateRow[key] = null
             }
         } else {
-            updateRow[key] = value
+            updateRow[key] = finalValue
         }
     }
 

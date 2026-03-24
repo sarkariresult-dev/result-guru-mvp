@@ -13,12 +13,14 @@ import { POST_TYPE_CONFIG } from '@/config/constants'
 import type { PostTypeKey } from '@/config/site'
 import type { PublishedPost, PostAffiliateProductEntry } from '@/types/post.types'
 import type { FaqItem } from '@/types/post-content.types'
-import { Award, Calendar, Eye, FileText, Tag } from 'lucide-react'
+import { Award, Calendar, Clock, Eye, FileText, Tag } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 /* ── Section IDs ─────────────────────────────────────────────── */
 
 type SectionId =
     | 'summary'
+    | 'dates'
     | 'content'
     | 'affiliates'
     | 'faq'
@@ -28,9 +30,9 @@ type SectionId =
 /* Org info, TOC, quick links, newsletter are now in the sidebar (page.tsx) */
 
 const SECTION_ORDER: Record<string, SectionId[]> = {
-    job: ['summary', 'content', 'affiliates', 'faq', 'tags'],
-    notification: ['content', 'affiliates', 'faq', 'tags'],
-    exam: ['content', 'affiliates', 'faq', 'tags'],
+    job: ['summary', 'dates', 'content', 'affiliates', 'faq', 'tags'],
+    notification: ['dates', 'content', 'affiliates', 'faq', 'tags'],
+    exam: ['dates', 'content', 'affiliates', 'faq', 'tags'],
     result: ['content', 'affiliates', 'faq', 'tags'],
     admit: ['content', 'affiliates', 'faq', 'tags'],
     'answer-key': ['content', 'affiliates', 'faq', 'tags'],
@@ -43,8 +45,8 @@ const SECTION_ORDER: Record<string, SectionId[]> = {
     'previous-paper': ['content', 'affiliates', 'faq', 'tags'],
     previous_paper: ['content', 'affiliates', 'faq', 'tags'],
     scheme: ['content', 'affiliates', 'faq', 'tags'],
-    admission: ['content', 'affiliates', 'faq', 'tags'],
-    scholarship: ['content', 'affiliates', 'faq', 'tags'],
+    admission: ['dates', 'content', 'affiliates', 'faq', 'tags'],
+    scholarship: ['dates', 'content', 'affiliates', 'faq', 'tags'],
 }
 
 const DEFAULT_ORDER: SectionId[] = ['content', 'affiliates', 'faq', 'tags']
@@ -87,6 +89,46 @@ export function PostDetail({ post, slug, url }: Props) {
     const renderSection = (section: SectionId): React.ReactNode => {
         switch (section) {
 
+
+            case 'dates':
+                if (!post.application_start_date && !post.application_end_date) return null
+                return (
+                    <div key="dates" className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div className="flex items-center gap-4 rounded-xl border border-border bg-surface p-4 shadow-xs transition-colors hover:border-brand-200 dark:hover:border-brand-800">
+                            <div className="flex size-10 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400">
+                                <Calendar className="size-5" />
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-bold uppercase tracking-wider text-foreground-subtle">Registration Start</p>
+                                <p className="text-sm font-semibold text-foreground">{formatDate(post.application_start_date)}</p>
+                            </div>
+                        </div>
+                        <div className={cn(
+                            "flex items-center gap-4 rounded-xl border p-4 shadow-xs transition-colors",
+                            post.application_status === 'closing_soon' 
+                                ? "border-orange-200 bg-orange-50/50 dark:border-orange-900/30 dark:bg-orange-900/10" 
+                                : "border-border bg-surface hover:border-brand-200 dark:hover:border-brand-800"
+                        )}>
+                            <div className={cn(
+                                "flex size-10 items-center justify-center rounded-lg",
+                                post.application_status === 'closing_soon'
+                                    ? "bg-orange-100 text-orange-600 dark:bg-orange-900/40 dark:text-orange-400 animate-pulse-subtle"
+                                    : "bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400"
+                            )}>
+                                <Clock className="size-5" />
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-bold uppercase tracking-wider text-foreground-subtle">Registration End</p>
+                                <p className={cn(
+                                    "text-sm font-semibold",
+                                    post.application_status === 'closing_soon' ? "text-orange-700 dark:text-orange-400" : "text-foreground"
+                                )}>
+                                    {formatDate(post.application_end_date)}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )
 
             case 'content':
                 if (!processedHtml) return null

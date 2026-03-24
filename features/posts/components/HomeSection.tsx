@@ -5,6 +5,7 @@ import { PostList } from '@/features/posts/components/PostList'
 import { NumberedList } from '@/features/posts/components/NumberedList'
 import { ArrowRight, ServerCrash, Inbox } from 'lucide-react'
 import { AdZone } from '@/components/ads/AdZone'
+import { headers } from 'next/headers'
 import type { PostCard } from '@/types/post.types'
 
 interface HomeSectionProps {
@@ -45,7 +46,10 @@ export async function HomeSection({
     typeKey, heading, route, cta, limit, priority, posts: prefetched,
     layout = 'grid', themeColorClass = 'bg-brand-500', adSlot
 }: HomeSectionProps) {
-    let posts: PostCard[] = prefetched ?? []
+    // Explicitly opt-in to dynamic rendering to avoid Date.now() prerender errors
+    await headers()
+
+    let posts: PostCard[] = prefetched ? prefetched.slice(0, limit) : []
     let hasError = false
 
     // Only fetch if no pre-fetched data was provided
@@ -120,8 +124,8 @@ export async function HomeSection({
             </div>
 
             <div className="flex-1">
-                {layout === 'list' && <PostList posts={posts} themeColorClass={themeColorClass} />}
-                {layout === 'numbered' && <NumberedList posts={posts} />}
+                {layout === 'list' && <PostList posts={posts} themeColorClass={themeColorClass} now={Date.now()} />}
+                {layout === 'numbered' && <NumberedList posts={posts} now={Date.now()} />}
                 {layout === 'grid' && <PostGrid posts={posts} priority={priority} />}
             </div>
 

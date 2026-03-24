@@ -36,6 +36,18 @@ export function PostEditor({ initialData, onSubmit, loading }: Props) {
         })
     }
 
+    /** Format date string/Date to YYYY-MM-DD in IST */
+    const toISODate = (val: unknown) => {
+        if (!val) return ''
+        try {
+            const d = new Date(String(val))
+            if (isNaN(d.getTime())) return ''
+            return d.toLocaleDateString('sv-SE', { timeZone: 'Asia/Kolkata' })
+        } catch {
+            return ''
+        }
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         await onSubmit(data)
@@ -74,16 +86,16 @@ export function PostEditor({ initialData, onSubmit, loading }: Props) {
                 <div>
                     <label className="mb-1 block text-sm font-medium">Apply Start</label>
                     <Input 
-                        type="datetime-local" 
-                        value={data['application_start_date'] ? String(data['application_start_date']).slice(0, 16) : ''} 
+                        type="date" 
+                        value={toISODate(data['application_start_date'])} 
                         onChange={(e) => update('application_start_date', e.target.value || null)} 
                     />
                 </div>
                 <div>
                     <label className="mb-1 block text-sm font-medium">Apply End</label>
                     <Input 
-                        type="datetime-local" 
-                        value={data['application_end_date'] ? String(data['application_end_date']).slice(0, 16) : ''} 
+                        type="date" 
+                        value={toISODate(data['application_end_date'])} 
                         onChange={(e) => update('application_end_date', e.target.value || null)} 
                     />
                 </div>
