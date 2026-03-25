@@ -11,7 +11,7 @@ type JsonLdObject = Record<string, unknown>
  */
 export function buildJobPostingSchema(post: PostDetail): JsonLdObject {
     try {
-        const url = `${SITE.url}${postUrl(post.type as any, post.slug)}`
+        const url = postUrl(post.type as any, post.slug)
 
         // Calculate expiry date (validThrough)
         // Preference: post.expires_at -> 30 days after today if not set
@@ -193,7 +193,7 @@ export function buildFAQPageSchema(
  */
 export function buildGovernmentServiceSchema(post: PostDetail): JsonLdObject {
     try {
-        const url = `${SITE.url}${postUrl(post.type as any, post.slug)}`
+        const url = postUrl(post.type as any, post.slug)
         return {
             '@context': 'https://schema.org',
             '@type': 'GovernmentService',
@@ -252,7 +252,7 @@ export function buildHowToSchema(
  */
 export function buildNewsArticleSchema(post: PostDetail): JsonLdObject {
     try {
-        const url = `${SITE.url}${postUrl(post.type as any, post.slug)}`
+        const url = postUrl(post.type as any, post.slug)
         const schema: JsonLdObject = {
             '@context': 'https://schema.org',
             '@type': 'NewsArticle',
