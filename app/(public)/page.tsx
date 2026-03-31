@@ -23,7 +23,7 @@ import type { LucideIcon } from 'lucide-react'
 /* SEO Metadata */
 
 export const metadata = buildPageMetadata({
-    title: 'Result Guru \u2014 Sarkari Result 2026 | Govt Jobs, Admit Card & Answer Key',
+    title: 'Result Guru - Sarkari Result 2026 | Govt Jobs, Admit Card & Answer Key',
     description: 'India\'s #1 Sarkari Result portal. Get real-time alerts for SSC, UPSC, Railway & Govt Jobs 2026. Access 100% verified exams, results, and scholarship updates daily.',
     path: '/',
 })
