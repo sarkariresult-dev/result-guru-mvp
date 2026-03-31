@@ -8,21 +8,18 @@ export default async function PublicLayout({ children }: { children: React.React
     // Fetch user server-side so the header renders instantly (no loading flash).
     // Non-blocking - if no session or fetch fails, serverUser stays null.
     let serverUser: PublicUser | null = null
-    try {
-        const supabase = await createServerClient()
-        const { data: { user: authUser } } = await supabase.auth.getUser()
-        if (authUser) {
-            const { data } = await supabase
-                .from('users')
-                .select('id, name, avatar_url, role')
-                .eq('auth_user_id', authUser.id)
-                .single()
-            if (data) {
-                serverUser = data as PublicUser
-            }
-        }
-    } catch {
-        // Silently ignore - header will fall back to useAuth() client-side
+    const supabase = await createServerClient()
+    const { data: { user: authUser } } = await supabase.auth.getUser()
+    
+    if (authUser) {
+        // Fetch profile - this will be fast since proxy.ts pre-refreshed the session
+        const { data } = await supabase
+            .from('users')
+            .select('id, name, avatar_url, role')
+            .eq('auth_user_id', authUser.id)
+            .single()
+        
+        if (data) serverUser = data as PublicUser
     }
 
     return (

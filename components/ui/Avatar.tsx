@@ -1,15 +1,15 @@
 import { cn } from '@/lib/utils'
-
+import Image from 'next/image'
 interface AvatarProps {
     src?: string | null
     alt?: string
     fallback?: string
-    size?: 'sm' | 'md' | 'lg'
+    size?: 'xs' | 'sm' | 'md' | 'lg'
     className?: string
 }
 
-const sizeMap = { sm: 'size-8', md: 'size-10', lg: 'size-14' }
-const pxMap = { sm: 32, md: 40, lg: 56 }
+const sizeMap = { xs: 'size-7', sm: 'size-8', md: 'size-10', lg: 'size-14' }
+const pxMap = { xs: 28, sm: 32, md: 40, lg: 56 }
 
 export function Avatar({ src, alt = 'Avatar', fallback, size = 'md', className }: AvatarProps) {
     const initials = fallback?.slice(0, 2).toUpperCase() ?? '?'
@@ -30,13 +30,13 @@ export function Avatar({ src, alt = 'Avatar', fallback, size = 'md', className }
     }
 
     return (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+        <Image
             src={src}
             alt={alt}
             width={pxMap[size]}
             height={pxMap[size]}
             className={cn('rounded-full object-cover', sizeMap[size], className)}
+            unoptimized
         />
     )
 }

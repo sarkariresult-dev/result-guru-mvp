@@ -1,8 +1,9 @@
 import 'server-only'
 import { unstable_cache } from 'next/cache'
+import { cache } from 'react'
 import { createStaticClient } from '@/lib/supabase/static'
 import { createServerClient } from '@/lib/supabase/server'
-import type { PostCard, Post, PostFilters } from '@/types/post.types'
+import type { PostCard, Post, PostFilters, PostDetail } from '@/types/post.types'
 import { toPostCardDTO, toAdminPostDTO } from '@/lib/dal/mappers'
 import { PAGINATION } from '@/config/constants'
 
@@ -54,7 +55,7 @@ function applyFilters(query: any, filters: PostFilters): any {
 // ── Public queries ─────────────────────────────────────────────────────────
 
 /** Paginated post listing from v_published_posts */
-export const getPosts = unstable_cache(
+export const getPosts = cache(unstable_cache(
     async (
         filters: PostFilters = {},
         page: number = 1,
@@ -76,30 +77,46 @@ export const getPosts = unstable_cache(
         revalidate: 600, // 10 minutes default
         tags: ['posts'],
     }
-)
+))
 
 /** Single post by slug (full row from v_published_posts) */
-export const getPostBySlug = unstable_cache(
+export const getPostBySlug = cache(unstable_cache(
     async (
         slug: string,
         type?: string,
     ): Promise<Post | null> => {
         const supabase = createStaticClient()
-        let query = supabase.from('v_published_posts').select('*').eq('slug', slug)
+        let query = supabase
+            .from('v_published_posts')
+            .select('*')
+            .eq('slug', slug)
         if (type) query = query.eq('type', type)
 
-        const { data } = await query.returns<Post[]>().single()
-        return data ?? null
+        const { data, error } = await query.returns<PostDetail[]>().single()
+        if (error || !data) return null
+
+        // Map flattened author fields back to the nested object structure expected by components
+        const post = data as any
+        if (post.author_id) {
+            post.author = {
+                id: post.author_id,
+                name: post.author_name,
+                avatar_url: post.author_avatar_url,
+                bio: post.author_bio
+            }
+        }
+
+        return post as Post
     },
     ['post-by-slug'],
     {
         revalidate: 3600, // 1 hour
         tags: ['posts'],
     }
-)
+))
 
 /** Recent posts by type (for homepage sections, footer, etc.) */
-export const getRecentPosts = unstable_cache(
+export const getRecentPosts = cache(unstable_cache(
     async (
         type: string,
         limit = 5,
@@ -119,10 +136,10 @@ export const getRecentPosts = unstable_cache(
         revalidate: 600,
         tags: ['posts'],
     }
-)
+))
 
 /** Full-text search using search_vector on posts, hydrated from v_published_posts */
-export const searchPosts = unstable_cache(
+export const searchPosts = cache(unstable_cache(
     async (
         q: string,
         limit = 20,
@@ -130,7 +147,7 @@ export const searchPosts = unstable_cache(
         const supabase = createStaticClient()
 
         // 1. Find matching IDs from the base 'posts' table which holds the search_vector
-        const { data: matches, error: searchError } = await (supabase as any)
+        const { data: matches, error: searchError } = await supabase
             .from('posts')
             .select('id')
             .eq('status', 'published')
@@ -144,7 +161,7 @@ export const searchPosts = unstable_cache(
         }
 
         if (!matches || matches.length === 0) return []
-        const ids = matches.map((m: any) => m.id)
+        const ids = matches.map((m: { id: string }) => m.id)
 
         // 2. Fetch full flattened card data using the view
         const { data, error } = await supabase
@@ -158,20 +175,20 @@ export const searchPosts = unstable_cache(
         }
 
         // 3. Keep original sort order
-        const idMap = new Map((data ?? []).map(p => [(p as any).id, p]))
-        const sorted = ids.map((id: string) => idMap.get(id)).filter(Boolean)
-
-        return sorted.map(toPostCardDTO)
+        const idMap = new Map((data as any[] ?? []).map(p => [p.id, p]))
+        const sorted = ids.map((id: string) => idMap.get(id)).filter(Boolean) as any[]
+        
+        return sorted.map(p => toPostCardDTO(p))
     },
     ['search-posts'],
     {
         revalidate: 60, // 1 minute caching for search
         tags: ['search'],
     }
-)
+))
 
 /** Count matching posts (for pagination metadata) */
-export const getPostsCount = unstable_cache(
+export const getPostsCount = cache(unstable_cache(
     async (
         filters: PostFilters = {},
     ): Promise<number> => {
@@ -189,7 +206,7 @@ export const getPostsCount = unstable_cache(
         revalidate: 600,
         tags: ['posts', 'posts-count'],
     }
-)
+))
 
 // ── Admin / Author queries (reads from `posts` table, all statuses) ────────
 

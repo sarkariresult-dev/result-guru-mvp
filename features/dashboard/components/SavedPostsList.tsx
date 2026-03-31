@@ -21,6 +21,7 @@ export function SavedPostsList() {
     useEffect(() => {
         const saved = localStorage.getItem('rg_saved_posts')
         if (saved) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage sync
             try { setPosts(JSON.parse(saved)) } catch { /* ignore */ }
         }
     }, [])

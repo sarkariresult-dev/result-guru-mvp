@@ -108,6 +108,7 @@ export function FileUpload({
                 <div className="relative group">
                     {preview === 'image' ? (
                         <div className="relative overflow-hidden rounded-lg border border-border">
+                            {/* eslint-disable-next-line @next/next/no-img-element -- dynamic upload preview */}
                             <img src={value} alt="Uploaded" className="h-40 w-full object-cover" />
                             <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button type="button" onClick={handleRemove} className="rounded-full bg-red-500 p-2 text-white hover:bg-red-600 transition-colors">

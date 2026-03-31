@@ -193,6 +193,7 @@ export default async function OrganizationProfilePage({ params, searchParams }: 
                     <div className="bg-brand-50 dark:bg-brand-950/20 px-6 py-8 sm:px-10 sm:py-10">
                         <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
                             {org.logo_url ? (
+                                // eslint-disable-next-line @next/next/no-img-element -- dynamic org logos from Supabase
                                 <img
                                     src={org.logo_url}
                                     alt={`${org.name} logo`}

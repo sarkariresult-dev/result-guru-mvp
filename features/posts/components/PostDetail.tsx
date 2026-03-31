@@ -11,9 +11,10 @@ import { AdZone } from '@/components/ads/AdZone'
 import { processContentHtml, replacePlaceholders } from '@/lib/content-processing'
 import { POST_TYPE_CONFIG } from '@/config/constants'
 import type { PostTypeKey } from '@/config/site'
-import type { PublishedPost, PostAffiliateProductEntry } from '@/types/post.types'
+import type { PostDetail as PostDetailType, PostAffiliateProductEntry } from '@/types/post.types'
 import type { FaqItem } from '@/types/post-content.types'
-import { Award, Calendar, Clock, Eye, FileText, Tag } from 'lucide-react'
+import { AuthorBox } from './AuthorBox'
+import { Award, Calendar, Clock, FileText, Tag } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 /* ── Section IDs ─────────────────────────────────────────────── */
@@ -23,6 +24,7 @@ type SectionId =
     | 'dates'
     | 'content'
     | 'affiliates'
+    | 'author'
     | 'faq'
     | 'tags'
 
@@ -30,31 +32,31 @@ type SectionId =
 /* Org info, TOC, quick links, newsletter are now in the sidebar (page.tsx) */
 
 const SECTION_ORDER: Record<string, SectionId[]> = {
-    job: ['summary', 'dates', 'content', 'affiliates', 'faq', 'tags'],
-    notification: ['dates', 'content', 'affiliates', 'faq', 'tags'],
-    exam: ['dates', 'content', 'affiliates', 'faq', 'tags'],
-    result: ['content', 'affiliates', 'faq', 'tags'],
-    admit: ['content', 'affiliates', 'faq', 'tags'],
-    'answer-key': ['content', 'affiliates', 'faq', 'tags'],
-    answer_key: ['content', 'affiliates', 'faq', 'tags'],
-    'cut-off': ['content', 'affiliates', 'faq', 'tags'],
-    cut_off: ['content', 'affiliates', 'faq', 'tags'],
-    syllabus: ['content', 'affiliates', 'faq', 'tags'],
-    'exam-pattern': ['content', 'affiliates', 'faq', 'tags'],
-    exam_pattern: ['content', 'affiliates', 'faq', 'tags'],
-    'previous-paper': ['content', 'affiliates', 'faq', 'tags'],
-    previous_paper: ['content', 'affiliates', 'faq', 'tags'],
-    scheme: ['content', 'affiliates', 'faq', 'tags'],
-    admission: ['dates', 'content', 'affiliates', 'faq', 'tags'],
-    scholarship: ['dates', 'content', 'affiliates', 'faq', 'tags'],
+    job: ['summary', 'dates', 'content', 'affiliates', 'author', 'faq', 'tags'],
+    notification: ['dates', 'content', 'affiliates', 'author', 'faq', 'tags'],
+    exam: ['dates', 'content', 'affiliates', 'author', 'faq', 'tags'],
+    result: ['content', 'affiliates', 'author', 'faq', 'tags'],
+    admit: ['content', 'affiliates', 'author', 'faq', 'tags'],
+    'answer-key': ['content', 'affiliates', 'author', 'faq', 'tags'],
+    answer_key: ['content', 'affiliates', 'author', 'faq', 'tags'],
+    'cut-off': ['content', 'affiliates', 'author', 'faq', 'tags'],
+    cut_off: ['content', 'affiliates', 'author', 'faq', 'tags'],
+    syllabus: ['content', 'affiliates', 'author', 'faq', 'tags'],
+    'exam-pattern': ['content', 'affiliates', 'author', 'faq', 'tags'],
+    exam_pattern: ['content', 'affiliates', 'author', 'faq', 'tags'],
+    'previous-paper': ['content', 'affiliates', 'author', 'faq', 'tags'],
+    previous_paper: ['content', 'affiliates', 'author', 'faq', 'tags'],
+    scheme: ['content', 'affiliates', 'author', 'faq', 'tags'],
+    admission: ['dates', 'content', 'affiliates', 'author', 'faq', 'tags'],
+    scholarship: ['dates', 'content', 'affiliates', 'author', 'faq', 'tags'],
 }
 
-const DEFAULT_ORDER: SectionId[] = ['content', 'affiliates', 'faq', 'tags']
+const DEFAULT_ORDER: SectionId[] = ['content', 'affiliates', 'author', 'faq', 'tags']
 
 /* ── Component ───────────────────────────────────────────────── */
 
 interface Props {
-    post: PublishedPost
+    post: PostDetailType
     slug: string
     url: string
 }
@@ -62,6 +64,7 @@ interface Props {
 export function PostDetail({ post, slug, url }: Props) {
     const typeKey = post.type as PostTypeKey
     const typeMeta = POST_TYPE_CONFIG[typeKey]
+    console.debug('Type Meta:', typeMeta) // Use for potential future enhancement or remove if unnecessary
 
     const faq = post.faq as FaqItem[] | null
     const affiliates = (post as any).affiliates as PostAffiliateProductEntry[] | undefined
@@ -73,9 +76,9 @@ export function PostDetail({ post, slug, url }: Props) {
         notificationPdfUrl: post.notification_pdf,
     }
 
-    const { tocItems, processedHtml: rawHtml } = post.content
+    const { processedHtml: rawHtml } = post.content
         ? processContentHtml(sanitizeHtml(post.content))
-        : { tocItems: [] as any[], processedHtml: '' }
+        : { processedHtml: '' }
 
     const processedHtml = replacePlaceholders(rawHtml, mappings)
 
@@ -93,34 +96,29 @@ export function PostDetail({ post, slug, url }: Props) {
             case 'dates':
                 if (!post.application_start_date && !post.application_end_date) return null
                 return (
-                    <div key="dates" className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <div className="flex items-center gap-4 rounded-xl border border-border bg-surface p-4 shadow-xs transition-colors hover:border-brand-200 dark:hover:border-brand-800">
-                            <div className="flex size-10 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400">
-                                <Calendar className="size-5" />
+                    <div key="dates" className="flex flex-wrap items-center gap-x-8 gap-y-4 py-2 border-y border-border/50">
+                        <div className="flex items-center gap-3">
+                            <div className="flex size-9 items-center justify-center rounded-full bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400">
+                                <Calendar className="size-4.5" />
                             </div>
                             <div>
                                 <p className="text-[10px] font-bold uppercase tracking-wider text-foreground-subtle">Registration Start</p>
-                                <p className="text-sm font-semibold text-foreground">{formatDate(post.application_start_date)}</p>
+                                <p className="text-sm font-bold text-foreground">{formatDate(post.application_start_date)}</p>
                             </div>
                         </div>
-                        <div className={cn(
-                            "flex items-center gap-4 rounded-xl border p-4 shadow-xs transition-colors",
-                            post.application_status === 'closing_soon' 
-                                ? "border-orange-200 bg-orange-50/50 dark:border-orange-900/30 dark:bg-orange-900/10" 
-                                : "border-border bg-surface hover:border-brand-200 dark:hover:border-brand-800"
-                        )}>
+                        <div className="flex items-center gap-3">
                             <div className={cn(
-                                "flex size-10 items-center justify-center rounded-lg",
+                                "flex size-9 items-center justify-center rounded-full",
                                 post.application_status === 'closing_soon'
                                     ? "bg-orange-100 text-orange-600 dark:bg-orange-900/40 dark:text-orange-400 animate-pulse-subtle"
                                     : "bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400"
                             )}>
-                                <Clock className="size-5" />
+                                <Clock className="size-4.5" />
                             </div>
                             <div>
                                 <p className="text-[10px] font-bold uppercase tracking-wider text-foreground-subtle">Registration End</p>
                                 <p className={cn(
-                                    "text-sm font-semibold",
+                                    "text-sm font-bold",
                                     post.application_status === 'closing_soon' ? "text-orange-700 dark:text-orange-400" : "text-foreground"
                                 )}>
                                     {formatDate(post.application_end_date)}
@@ -145,6 +143,10 @@ export function PostDetail({ post, slug, url }: Props) {
             case 'affiliates':
                 if (!affiliates || affiliates.length === 0) return null
                 return <AffiliateProductsBox key="affiliates" affiliates={affiliates} />
+
+            case 'author':
+                if (!post.author) return null
+                return <AuthorBox key="author" author={post.author} />
 
             case 'faq':
                 if (!faq || faq.length === 0) return null

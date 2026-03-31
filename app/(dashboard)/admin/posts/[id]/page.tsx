@@ -256,8 +256,8 @@ function SeoScoreBar({ score }: { score: number }) {
         score >= 80 ? 'text-green-700' : score >= 50 ? 'text-yellow-700' : 'text-red-700'
     return (
         <div className="flex items-center gap-2">
-            <div className="h-1.5 w-16 rounded-full bg-background-subtle">
-                <div className={`h-full rounded-full transition-all ${color}`} style={{ width: `${Math.min(score, 100)}%` }} />
+            <div className="h-1.5 w-16 overflow-hidden rounded-full bg-background-subtle">
+                <div className={`h-full origin-left transition-transform ${color}`} style={{ transform: `scaleX(${Math.min(score, 100) / 100})` }} />
             </div>
             <span className={`text-xs font-medium ${textColor}`}>{score}/100</span>
         </div>

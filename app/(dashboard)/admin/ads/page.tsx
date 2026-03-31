@@ -3,7 +3,6 @@ import Link from 'next/link'
 import {
     Megaphone,
     Eye,
-    MousePointerClick,
     IndianRupee,
     Search,
     TrendingUp,
@@ -95,7 +94,6 @@ export default async function AdminAdsPage({ searchParams }: PageProps) {
     // Aggregate stats
     const totalSpend = campaigns.reduce((sum, c) => sum + (c.total_spend ?? 0), 0)
     const totalImpressions = campaigns.reduce((sum, c) => sum + (c.total_impressions ?? 0), 0)
-    const totalClicks = campaigns.reduce((sum, c) => sum + (c.total_clicks ?? 0), 0)
 
     function buildUrl(key: string, value: string): string {
         const p = new URLSearchParams()

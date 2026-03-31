@@ -2,7 +2,7 @@
 
 import { Extension } from '@tiptap/react'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
-import { Decoration, DecorationSet } from '@tiptap/pm/view'
+import { DecorationSet } from '@tiptap/pm/view'
 
 /**
  * Slash command extension for TipTap.
@@ -47,6 +47,7 @@ export const SlashCommandExtension = Extension.create<
     },
 
     addProseMirrorPlugins() {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const extension = this
 
         return [
@@ -66,8 +67,6 @@ export const SlashCommandExtension = Extension.create<
                     handleKeyDown(view, event) {
                         const { state } = view
                         const { selection } = state
-                        const { $from } = selection
-
                         // If slash menu is active
                         if (extension.storage.active) {
                             // Close on Escape

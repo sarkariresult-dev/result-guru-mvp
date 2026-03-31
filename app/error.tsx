@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState, useCallback } from 'react'
-import { AlertTriangle, RotateCcw, Home, WifiOff, ServerCrash } from 'lucide-react'
+import { RotateCcw, Home, WifiOff, ServerCrash } from 'lucide-react'
 
 /* ── Auto-retry countdown (seconds) ── */
 const AUTO_RETRY_SECONDS = 15

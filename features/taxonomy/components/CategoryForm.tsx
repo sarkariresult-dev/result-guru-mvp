@@ -51,6 +51,7 @@ export function CategoryForm({ open, onClose, category, parentOptions }: Categor
     useEffect(() => {
         if (open) {
             if (category) {
+                // eslint-disable-next-line react-hooks/set-state-in-effect -- form initialization
                 setForm({
                     name: category.name,
                     slug: category.slug,

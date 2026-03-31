@@ -12,12 +12,13 @@
  * Also exports `useThrottledCallback` for throttling a function.
  */
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react'
 
 // ─── Value throttle ─────────────────────────────────────────────────────────
 
 export function useThrottle<T>(value: T, limit = 100): T {
     const [throttled, setThrottled] = useState<T>(value)
+    // eslint-disable-next-line react-hooks/purity -- safe initialization
     const lastRan = useRef<number>(Date.now())
 
     useEffect(() => {
@@ -52,7 +53,9 @@ export function useThrottledCallback<T extends (...args: any[]) => any>(
     const lastRan = useRef<number>(0)
     const trailingTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
     const fnRef = useRef(fn)
-    fnRef.current = fn   // keep up to date without re-memoising
+    useLayoutEffect(() => {
+        fnRef.current = fn
+    }, [fn])
 
     return useCallback(
         (...args: Parameters<T>) => {

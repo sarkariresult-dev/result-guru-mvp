@@ -4,12 +4,11 @@ import Link from 'next/link'
 import { X, ChevronRight, LayoutDashboard, User as UserIcon, Settings, LogOut, Loader2 } from 'lucide-react'
 import { useEffect, useTransition, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { TOP_NAV_LINKS, MAIN_NAV, ROUTE_PREFIXES } from '@/config/site'
-import { POST_TYPE_CONFIG } from '@/config/constants'
+import { TOP_NAV_LINKS, MAIN_NAV } from '@/config/site'
 import { Logo } from '@/features/shared/components/Logo'
 import { useAuth } from '@/hooks/useAuth'
+import { Avatar } from '@/components/ui/Avatar'
 import { signOut } from '@/features/auth/actions'
-import type { PostTypeKey } from '@/config/site'
 import type { PublicUser } from '@/types/user.types'
 
 interface MobileNavProps {
@@ -29,6 +28,7 @@ export function MobileNav({ open, onClose, initialUser }: MobileNavProps) {
     const effectiveIsAuthor = loading ? (initialUser?.role === 'author' || initialUser?.role === 'admin') : isAuthor
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration setup
         setMounted(true)
     }, [])
 
@@ -49,7 +49,6 @@ export function MobileNav({ open, onClose, initialUser }: MobileNavProps) {
     const displayName = loading
         ? (initialUser?.name || 'User')
         : (user?.displayName || user?.email?.split('@')[0] || 'User')
-    const initials = displayName.substring(0, 2).toUpperCase()
 
     function handleSignOut() {
         startTransition(async () => {
@@ -125,13 +124,13 @@ export function MobileNav({ open, onClose, initialUser }: MobileNavProps) {
                         <div className="space-y-1">
                             {/* User info */}
                             <div className="flex items-center gap-3 px-1 pb-2">
-                                {(loading ? initialUser?.avatar_url : user?.avatarUrl) ? (
-                                    <img src={(loading ? initialUser?.avatar_url : user?.avatarUrl)!} alt={displayName} className="size-8 rounded-full object-cover ring-1 ring-border" />
-                                ) : (
-                                    <span className="flex size-8 items-center justify-center rounded-full bg-brand-600 text-xs font-bold text-white">
-                                        {initials}
-                                    </span>
-                                )}
+                                <Avatar 
+                                    src={(loading ? initialUser?.avatar_url : user?.avatarUrl)} 
+                                    alt={displayName} 
+                                    fallback={displayName} 
+                                    size="sm" 
+                                    className="ring-1 ring-border" 
+                                />
                                 <div className="min-w-0">
                                     <p className="truncate text-sm font-medium text-foreground">{displayName}</p>
                                     <p className="truncate text-xs text-foreground-subtle">{loading ? '' : user?.email}</p>

@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
   name          TEXT        NOT NULL,
   avatar_url    TEXT,
   role          user_role   NOT NULL DEFAULT 'user',
+  bio           TEXT,
   is_active     BOOLEAN     NOT NULL DEFAULT TRUE,
   last_login_at TIMESTAMPTZ,
   permissions   JSONB       NOT NULL DEFAULT '{}',

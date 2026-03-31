@@ -16,7 +16,7 @@ import { getPopularOrganizations } from '@/lib/queries/organizations'
 import { getPostCountsByType } from '@/features/stats/queries'
 import { getHomepageSections } from '@/features/stats/queries'
 import type { PostTypeCounts } from '@/features/stats/queries'
-import { Briefcase, CreditCard, ArrowRight, Trophy, Users, Building2, MapPin, BookOpen, Bell, GraduationCap, Key, ClipboardList, FileText, Star, ShieldCheck, Clock, Sparkles, Send, MessageCircle } from 'lucide-react'
+import { Briefcase, CreditCard, ArrowRight, Trophy, Users, MapPin, BookOpen, Bell, GraduationCap, Star, ShieldCheck, Clock, Send, MessageCircle } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 
@@ -84,7 +84,7 @@ export default async function HomePage() {
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(255,255,255,0.12),transparent)] pointer-events-none" />
 
                 <div className="container relative mx-auto max-w-7xl px-4 pt-16 pb-12 text-center lg:pt-20 lg:pb-16">
-                    <h1 className="text-fluid-3xl sm:text-fluid-4xl lg:text-fluid-5xl font-extrabold tracking-tight text-white animate-fade-up">
+                    <h1 className="text-fluid-3xl sm:text-fluid-4xl lg:text-fluid-5xl font-extrabold tracking-tight text-white">
                         Find Your Dream{' '}
                         <span className="text-amber-400">
                             Sarkari Job
@@ -132,7 +132,7 @@ export default async function HomePage() {
                                 className="group flex flex-col rounded-2xl border border-border bg-surface p-4 shadow-lg sm:p-5 transition-all hover:border-brand-300 hover:shadow-xl hover:-translate-y-1 active:scale-[0.98]"
                             >
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[10px] font-semibold uppercase tracking-widest text-foreground-muted sm:text-xs">
+                                    <span className="text-xs font-semibold uppercase tracking-widest text-foreground-muted">
                                         {card.label}
                                     </span>
                                     <div className={`flex size-8 items-center justify-center rounded-lg ${card.bg} sm:size-9 transition-colors group-hover:bg-brand-500 group-hover:text-white`}>
@@ -172,6 +172,7 @@ export default async function HomePage() {
                                                 alt={org.name}
                                                 width={64}
                                                 height={64}
+                                                sizes="64px"
                                                 className="size-full object-contain"
                                             />
                                         </div>
@@ -185,7 +186,7 @@ export default async function HomePage() {
                                             {org.short_name || org.name}
                                         </h3>
                                         {org.short_name && (
-                                            <p className="text-[10px] text-foreground-muted line-clamp-1 leading-tight font-medium opacity-80 group-hover:opacity-100 transition-opacity">
+                                            <p className="text-xs text-foreground-muted line-clamp-1 leading-tight font-medium opacity-80 group-hover:opacity-100 transition-opacity">
                                                 {org.name}
                                             </p>
                                         )}
@@ -279,7 +280,7 @@ export default async function HomePage() {
                                         <div>
                                             <div className="flex items-center gap-2">
                                                 <span className="flex size-2 rounded-full bg-emerald-400 animate-pulse" />
-                                                <span className="text-[10px] font-bold text-emerald-100 uppercase tracking-widest">Live Updates</span>
+                                                <span className="text-[11px] font-bold text-emerald-100 uppercase tracking-widest">Live Updates</span>
                                             </div>
                                             <h3 className="text-lg font-black text-white leading-tight">Join Community</h3>
                                         </div>
@@ -298,7 +299,7 @@ export default async function HomePage() {
                                         <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
                                     </Link>
 
-                                    <div className="mt-4 flex items-center justify-center gap-4 text-[10px] font-bold text-white/60">
+                                    <div className="mt-4 flex items-center justify-center gap-4 text-xs font-bold text-white/80">
                                         <div className="flex items-center gap-1.5">
                                             <Users className="size-3" />
                                             50K+ Joined
@@ -337,7 +338,7 @@ export default async function HomePage() {
                                         <div>
                                             <div className="flex items-center gap-2">
                                                 <span className="flex size-2 rounded-full bg-white animate-pulse" />
-                                                <span className="text-[10px] font-bold text-white/90 uppercase tracking-widest">Official Channel</span>
+                                                <span className="text-[11px] font-bold text-white/90 uppercase tracking-widest">Official Channel</span>
                                             </div>
                                             <h3 className="text-lg font-black text-white leading-tight">Follow Channel</h3>
                                         </div>
@@ -356,7 +357,7 @@ export default async function HomePage() {
                                         <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
                                     </Link>
 
-                                    <div className="mt-4 flex items-center justify-center gap-4 text-[10px] font-bold text-white/60">
+                                    <div className="mt-4 flex items-center justify-center gap-4 text-xs font-bold text-white/80">
                                         <div className="flex items-center gap-1.5">
                                             <Star className="size-3" />
                                             Fastest Alerts
@@ -509,7 +510,7 @@ export default async function HomePage() {
                                         <meta itemProp="position" content={String(idx + 1)} />
                                         <meta itemProp="url" content={`/states/${state.slug}`} />
                                         <span
-                                            className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-brand-600 text-[10px] font-bold leading-none text-white shadow-sm"
+                                            className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-brand-600 text-[11px] font-bold leading-none text-white shadow-sm"
                                             aria-hidden="true"
                                         >
                                             {state.abbr || state.name.substring(0, 2).toUpperCase()}
@@ -546,8 +547,8 @@ export default async function HomePage() {
                             alt="Map of India highlighting states with government job opportunities"
                             width={480}
                             height={560}
+                            sizes="(max-width: 768px) 100vw, 480px"
                             className="relative z-10 h-auto w-full max-w-md drop-shadow-lg dark:opacity-90 dark:brightness-90 dark:invert"
-                            priority
                             aria-hidden="true"
                         />
 
@@ -600,7 +601,7 @@ export default async function HomePage() {
                         </div>
                         <div className="p-6 md:p-8">
                             <NewsletterForm />
-                            <p className="text-[10px] text-white/40 mt-4 text-center font-bold uppercase tracking-tighter">
+                            <p className="text-xs text-white/60 mt-4 text-center font-bold uppercase tracking-wide">
                                 No Spam. Only Verified Official Notifications.
                             </p>
                         </div>

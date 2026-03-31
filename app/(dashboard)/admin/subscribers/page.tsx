@@ -6,7 +6,6 @@ import {
     Phone,
     Users,
     CheckCircle2,
-    XCircle,
     AlertTriangle,
     ChevronLeft,
     ChevronRight,

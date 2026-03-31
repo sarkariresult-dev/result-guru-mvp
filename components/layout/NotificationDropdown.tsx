@@ -41,7 +41,7 @@ export function NotificationDropdown() {
                                 <Bell className="size-6 text-foreground-muted" strokeWidth={1.5} />
                             </div>
                             <p className="text-sm font-medium text-foreground">No new notifications</p>
-                            <p className="mt-1 text-xs">We'll notify you when there's an update on exams you follow.</p>
+                            <p className="mt-1 text-xs">We&apos;ll notify you when there&apos;s an update on exams you follow.</p>
                         </div>
                     </div>
                 </div>

@@ -247,7 +247,7 @@ export async function updatePost(id: string, data: Partial<PostPayload>) {
     // Only include fields that were actually provided.
     // CRITICAL: For NOT NULL columns, use the DB default instead of null.
     for (const [key, value] of Object.entries(dbFields)) {
-        let finalValue = value
+        const finalValue = value
 
         if (finalValue === null || finalValue === undefined) {
             // If this column is NOT NULL in the DB, use its default instead of null

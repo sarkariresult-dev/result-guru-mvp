@@ -20,16 +20,16 @@ export function TableOfContents({ items }: TableOfContentsProps) {
     return (
         <nav
             aria-label="Table of Contents"
-            className="rounded-xl border border-border bg-surface-raised p-5 animate-fade-up"
+            className="py-2 animate-fade-up"
         >
             <button
                 type="button"
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="flex w-full items-center justify-between text-left"
+                className="flex w-full items-center justify-between text-left group"
             >
-                <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-foreground">
+                <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.05em] text-foreground-muted group-hover:text-foreground transition-colors">
                     <ListTree className="size-4 text-brand-500" />
-                    Table of Contents
+                    On This Page
                 </h2>
                 {isExpanded ? (
                     <ChevronDown className="size-4 text-foreground-muted" />

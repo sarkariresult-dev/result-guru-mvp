@@ -11,6 +11,7 @@ interface Props {
     now?: number
 }
 
+// eslint-disable-next-line react-hooks/purity -- Date.now() is safe for display labels
 export function PostList({ posts, themeColorClass = 'bg-brand-500', now = Date.now() }: Props) {
     if (posts.length === 0) {
         return (

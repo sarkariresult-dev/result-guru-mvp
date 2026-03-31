@@ -23,7 +23,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
     const { data, error } = await supabase
         .from('users')
-        .select('id, name, avatar_url, role')
+        .select('id, name, avatar_url, role, bio')
         .eq('auth_user_id', authUser.id)
         .single()
 
@@ -31,13 +31,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
         console.error('[DashboardLayout] Failed to fetch user profile:', error.message)
     }
 
-    const dbUser = data as { id: string; name: string; avatar_url: string | null; role: string } | null
+    const dbUser = data as { id: string; name: string; avatar_url: string | null; role: string; bio: string | null } | null
 
     const profile: PublicUser = {
         id: dbUser?.id ?? authUser.id,
         name: dbUser?.name ?? authUser.email ?? 'User',
         avatar_url: dbUser?.avatar_url ?? null,
         role: (dbUser?.role as PublicUser['role']) ?? 'user',
+        bio: dbUser?.bio ?? null,
     }
 
     const navGroups =

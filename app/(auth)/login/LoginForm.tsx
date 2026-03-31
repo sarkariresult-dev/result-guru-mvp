@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { useState, useTransition, useEffect } from 'react'
+import { useState, useTransition } from 'react'
 import { Eye, EyeOff, Mail, Lock, Loader2 } from 'lucide-react'
 import { signIn, signInWithGoogle } from '@/features/auth/actions'
 import { loginSchema } from '@/lib/validations'
@@ -26,17 +26,11 @@ import { SITE } from '@/config/site'
  */
 export default function LoginForm() {
     const searchParams = useSearchParams()
-    const [error, setError] = useState('')
+    const [error, setError] = useState(searchParams.get('error') || '')
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
     const [showPassword, setShowPassword] = useState(false)
     const [isPending, startTransition] = useTransition()
     const [isGooglePending, setIsGooglePending] = useState(false)
-
-    /* Pick up error from callback redirect (?error=...) */
-    useEffect(() => {
-        const urlError = searchParams.get('error')
-        if (urlError) setError(urlError)
-    }, [searchParams])
 
     /* ── Email/password form handler ── */
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {

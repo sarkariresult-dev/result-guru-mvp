@@ -81,6 +81,7 @@ export default async function OrganizationsDirectoryPage() {
                                 className="group flex items-center gap-4 rounded-xl border border-border bg-surface p-5 transition-all hover:border-brand-300 hover:shadow-md dark:hover:border-brand-700 hover:-translate-y-0.5"
                             >
                                 {org.logo_url ? (
+                                    // eslint-disable-next-line @next/next/no-img-element -- dynamic org logos from Supabase
                                     <img
                                         src={org.logo_url}
                                         alt={`${org.name} logo`}

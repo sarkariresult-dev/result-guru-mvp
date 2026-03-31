@@ -2,9 +2,10 @@
 
 import { useState, useRef, useEffect, useTransition } from 'react'
 import Link from 'next/link'
-import { ChevronDown, LogOut, LayoutDashboard, User as UserIcon, Loader2, Briefcase, Trophy, CreditCard, Key, BarChart2, BookOpen, ClipboardList, FileText, Star, CalendarCheck, GraduationCap, Bell, type LucideIcon, } from 'lucide-react'
+import { ChevronDown, LogOut, LayoutDashboard, User as UserIcon, Loader2, type LucideIcon, FileText, Briefcase, Trophy, CreditCard, Key, BarChart2, BookOpen, ClipboardList, Star, CalendarCheck, GraduationCap, Bell } from 'lucide-react'
 import { ThemeToggle } from './ThemeToggle'
 import { MobileNavClient } from './MobileNavClient'
+import { Avatar } from '@/components/ui/Avatar'
 import { Logo } from '@/features/shared/components/Logo'
 import { ROUTE_PREFIXES, TOP_NAV_LINKS } from '@/config/site'
 import { POST_TYPE_CONFIG } from '@/config/constants'
@@ -85,7 +86,6 @@ export function Header({ initialUser }: HeaderProps) {
     const dashboardHref = effectiveIsAdmin ? '/admin' : effectiveIsAuthor ? '/author' : '/user'
 
     const displayName = loading ? (initialUser?.name || 'User') : (user?.displayName || user?.email?.split('@')[0] || 'User')
-    const initials = displayName.substring(0, 2).toUpperCase()
     const avatarUrl = loading ? initialUser?.avatar_url : user?.avatarUrl
 
     return (
@@ -177,13 +177,7 @@ export function Header({ initialUser }: HeaderProps) {
                                 className="flex size-9 items-center justify-center rounded-full border border-border bg-surface shadow-sm transition-colors hover:bg-background-subtle"
                                 aria-label="Profile menu"
                             >
-                                {avatarUrl ? (
-                                    <img src={avatarUrl} alt={displayName} className="size-7 rounded-full object-cover ring-1 ring-border" />
-                                ) : (
-                                    <span className="flex size-7 items-center justify-center rounded-full bg-brand-600 text-xs font-bold text-white">
-                                        {initials}
-                                    </span>
-                                )}
+                                <Avatar src={avatarUrl} alt={displayName} fallback={displayName} size="xs" className="ring-1 ring-border" />
                             </button>
 
                             {profileOpen && (

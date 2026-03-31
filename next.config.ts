@@ -1,4 +1,9 @@
+import bundleAnalyzer from '@next/bundle-analyzer'
 import type { NextConfig } from 'next'
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})
 
 const nextConfig: NextConfig = {
   /* ── Turbopack (stable - default bundler in Next 16) ────── */
@@ -12,6 +17,14 @@ const nextConfig: NextConfig = {
   compress: true,
   reactStrictMode: true,
 
+  /* ── Compiler ───────────────────────────────────────────── */
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error'] } : false,
+  },
+
+  /* ── React 19 Compiler (Stable in Next.js 15+) ──────────── */
+  reactCompiler: true,
+
   /* ── Server Dependencies ────────────────────────────────── */
   serverExternalPackages: [],
 
@@ -22,6 +35,7 @@ const nextConfig: NextConfig = {
     /* Server actions with larger body for post forms */
     serverActions: {
       bodySizeLimit: '2mb',
+      allowedOrigins: ['resultguru.co.in', 'www.resultguru.co.in', 'localhost:3000'],
     },
     /* Optimize package imports - tree-shake heavy packages */
     optimizePackageImports: [
@@ -52,7 +66,9 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: '**.supabase.in' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
     ],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    qualities: [50, 60, 75, 80, 90],
+    dangerouslyAllowSVG: true,
+    deviceSizes: [390, 412, 640, 750, 828, 1080, 1200, 1920],
     /* Next 16 removed 16 from default imageSizes */
     imageSizes: [32, 48, 64, 96, 128, 256, 384],
     /* Next 16 default is 14400 (4h); we keep 30 days for our static images */
@@ -74,7 +90,7 @@ const nextConfig: NextConfig = {
       {
         source: '/(.*)',
         headers: [
-          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           {
             key: 'Referrer-Policy',
@@ -95,7 +111,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Cross-Origin-Resource-Policy',
-            value: 'same-origin',
+            value: 'cross-origin',
           },
           {
             key: 'Content-Security-Policy',
@@ -103,7 +119,7 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://va.vercel-scripts.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "img-src 'self' data: blob: https: http:",
+              "img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in https://images.unsplash.com https://www.google-analytics.com https://stats.g.doubleclick.net https://www.googletagmanager.com",
               "font-src 'self' https://fonts.gstatic.com",
               "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://vitals.vercel-insights.com https://va.vercel-scripts.com",
               "frame-src 'self' https://www.googletagmanager.com",
@@ -191,6 +207,7 @@ const nextConfig: NextConfig = {
       },
     ]
   },
+  trailingSlash: false,
 }
 
-export default nextConfig
+export default withBundleAnalyzer(nextConfig)

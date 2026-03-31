@@ -77,6 +77,7 @@ export function OrgsClient({ organizations, stateOptions, count, children }: Org
                                         <td className="px-4 py-3">
                                             <div className="flex items-center gap-2">
                                                 {org.logo_url && (
+                                                    // eslint-disable-next-line @next/next/no-img-element -- dynamic org logo from admin
                                                     <img
                                                         src={org.logo_url}
                                                         alt=""
@@ -142,6 +143,7 @@ export function OrgsClient({ organizations, stateOptions, count, children }: Org
                                 <div className="flex items-start justify-between">
                                     <div className="flex items-center gap-2">
                                         {org.logo_url && (
+                                            // eslint-disable-next-line @next/next/no-img-element -- dynamic org logo from admin
                                             <img src={org.logo_url} alt="" className="size-8 rounded object-contain" />
                                         )}
                                         <div>

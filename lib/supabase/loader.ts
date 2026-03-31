@@ -16,9 +16,11 @@ export default function supabaseLoader({
 }) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 
-    // 1. Local images (starts with /) - return as is
+    // 1. Local images (starts with /) - return as is, but with width for Next.js validation
     if (src.startsWith('/')) {
-        return src
+        // SVG assets should be served original; for other images, we append a dummy param to satisfy Next.js
+        if (src.endsWith('.svg')) return src
+        return `${src}?w=${width}`
     }
 
     // 2. Supabase Storage images - apply transformation if it's a storage URL

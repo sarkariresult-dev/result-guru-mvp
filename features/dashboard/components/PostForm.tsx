@@ -6,9 +6,9 @@ import dynamic from 'next/dynamic'
 import { Button } from '@/components/ui/Button'
 import { createPost, updatePost } from '@/features/posts/actions'
 import { FileUpload } from '@/features/dashboard/components/FileUpload'
-import { Save, Eye, Plus, Trash2, ChevronDown, ChevronUp, X, AlertTriangle, CheckCircle2, Link as LinkIcon, Info, Wand2, Sparkles, Loader2 } from 'lucide-react'
+import { Save, Eye, Plus, Trash2, ChevronDown, ChevronUp, X, AlertTriangle, CheckCircle2, Info, Sparkles, Loader2 } from 'lucide-react'
 import { generateContentWithGemini } from '@/lib/actions/ai'
-import { processContentHtml, extractHowToSteps, replacePlaceholders } from '@/lib/content-processing'
+import { replacePlaceholders } from '@/lib/content-processing'
 
 /* Heavy editor - 13 tiptap packages + 25 lucide icons → lazy-load, no SSR */
 const TiptapEditor = dynamic(
@@ -177,11 +177,7 @@ const POST_TYPES = Object.entries(TYPE_CONFIG).map(([value, cfg]) => ({
     value, label: `${cfg.emoji} ${cfg.label}`,
 }))
 
-const APP_STATUSES: Option[] = [
-    { value: 'na', label: 'N/A' }, { value: 'none', label: '-' }, { value: 'upcoming', label: 'Upcoming' },
-    { value: 'open', label: 'Open' }, { value: 'closing_soon', label: 'Closing Soon' },
-    { value: 'closed', label: 'Closed' }, { value: 'result_out', label: 'Result Out' },
-]
+
 
 // ── Sidebar Panel ──────────────────────────────────────────────
 function Panel({ title, defaultOpen, children }: {
@@ -219,48 +215,9 @@ const inputCls = "w-full rounded-lg border border-border bg-background px-3 py-2
 const selectCls = inputCls
 
 // ── Key-Value Editor ───────────────────────────────────────────
-function KVEditor({ label, value, onChange, keyPlaceholder = 'Key', valuePlaceholder = 'Value' }: {
-    label: string; value: Record<string, string>; onChange: (v: Record<string, string>) => void;
-    keyPlaceholder?: string; valuePlaceholder?: string
-}) {
-    const entries = Object.entries(value)
-    return (
-        <div>
-            <div className="mb-1.5 flex items-center justify-between">
-                <label className="block text-xs font-medium uppercase tracking-wider text-foreground-muted">{label}</label>
-                <button type="button" onClick={() => onChange({ ...value, '': '' })} className="flex items-center gap-1 text-xs text-brand-600 hover:underline font-medium"><Plus className="size-3" /> Add</button>
-            </div>
-            <div className="space-y-2">
-                {entries.map(([k, v], i) => (
-                    <div key={i} className="flex gap-2">
-                        <input aria-label={`${label} Key`} placeholder={keyPlaceholder} value={k} onChange={(e) => { const n = [...entries]; n[i] = [e.target.value, v]; onChange(Object.fromEntries(n)) }} className={`flex-1 ${inputCls}`} />
-                        <input aria-label={`${label} Value`} placeholder={valuePlaceholder} value={v} onChange={(e) => { const n = [...entries]; n[i] = [k, e.target.value]; onChange(Object.fromEntries(n)) }} className={`flex-1 ${inputCls}`} />
-                        <button type="button" aria-label={`Remove ${label} item`} onClick={() => { const o = { ...value }; delete o[k]; onChange(o) }} className="size-9 flex items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"><Trash2 className="size-3.5" /></button>
-                    </div>
-                ))}
-            </div>
-        </div>
-    )
-}
 
-function ListEditor({ label, value, onChange, placeholder = 'Enter item...' }: { label: string; value: string[]; onChange: (v: string[]) => void; placeholder?: string }) {
-    return (
-        <div>
-            <div className="mb-1.5 flex items-center justify-between">
-                <label className="block text-xs font-medium uppercase tracking-wider text-foreground-muted">{label}</label>
-                <button type="button" onClick={() => onChange([...value, ''])} className="flex items-center gap-1 text-xs text-brand-600 hover:underline font-medium"><Plus className="size-3" /> Add</button>
-            </div>
-            <div className="space-y-2">
-                {value.map((item, i) => (
-                    <div key={i} className="flex gap-2">
-                        <input aria-label={`${label} Item ${i + 1}`} value={item} placeholder={placeholder} onChange={(e) => { const c = [...value]; c[i] = e.target.value; onChange(c) }} className={`flex-1 ${inputCls}`} />
-                        <button type="button" aria-label={`Remove ${label} item`} onClick={() => onChange(value.filter((_, j) => j !== i))} className="size-9 flex items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"><Trash2 className="size-3.5" /></button>
-                    </div>
-                ))}
-            </div>
-        </div>
-    )
-}
+
+
 
 function FaqEditor({ value, onChange }: { value: { question: string; answer: string }[]; onChange: (v: { question: string; answer: string }[]) => void }) {
     return (
@@ -399,7 +356,6 @@ function SeoModal({ checks, score, onClose, onProceed, saveLabel }: {
     checks: ReturnType<typeof runSeoAnalysis>; score: number; onClose: () => void; onProceed: () => void; saveLabel: string
 }) {
     const color = score >= 80 ? 'text-green-500' : score >= 50 ? 'text-yellow-500' : 'text-red-500'
-    const bgColor = score >= 80 ? 'bg-green-500' : score >= 50 ? 'bg-yellow-500' : 'bg-red-500'
     const highFails = checks.filter(c => !c.ok && c.priority === 'high')
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
@@ -481,7 +437,7 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
     // ── Files ──
     const [notificationPdf, setNotificationPdf] = useState(initialData?.notification_pdf ?? '')
     const [featuredImage, setFeaturedImage] = useState(initialData?.featured_image ?? '')
-    const [featuredImageAlt, setFeaturedImageAlt] = useState(initialData?.featured_image_alt ?? '')
+    const [featuredImageAlt] = useState(initialData?.featured_image_alt ?? '')
 
     // ── Structured Data ──
     // DB stores FAQ as {q, a} - convert to {question, answer} for the form
@@ -735,8 +691,7 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
         })
     }
 
-    // Count active structured data sections for the current type
-    const activeSectionCount = Object.values(s).filter(Boolean).length
+
 
     return (
         <div className="min-h-screen -mx-6">
@@ -995,12 +950,4 @@ export function PostForm({ authorId, authUserId, states, organizations, categori
     )
 }
 
-function sanitizeKV(obj: Record<string, string>): Record<string, string> {
-    const out: Record<string, string> = {}
-    Object.entries(obj).forEach(([k, v]) => {
-        if (typeof k === 'string' && k.trim() && typeof v === 'string') {
-            out[k.trim()] = v.trim()
-        }
-    })
-    return out
-}
+

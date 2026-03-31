@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { WebStory, WebStorySlide } from '@/types/stories.types'
 import { saveStorySlides, publishStory, updateWebStory } from '@/lib/actions/stories'
 import { Plus, Trash2, ArrowLeft, Save, Eye, EyeOff } from 'lucide-react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 export function StoryBuilder({
@@ -102,8 +101,8 @@ export function StoryBuilder({
 
             setMessage({ type: 'success', text: 'Story saved successfully' })
             setTimeout(() => setMessage(null), 3000)
-        } catch (error: any) {
-            setMessage({ type: 'error', text: error.message || 'Failed to save' })
+        } catch (error) {
+            setMessage({ type: 'error', text: (error as Error).message || 'Failed to save' })
         } finally {
             setIsSaving(false)
         }
@@ -123,8 +122,8 @@ export function StoryBuilder({
             if (res.error) throw new Error(res.error)
 
             setMessage({ type: 'success', text: newStatus ? 'Story published!' : 'Reverted to draft.' })
-        } catch (error: any) {
-            setMessage({ type: 'error', text: error.message || 'Failed to change status' })
+        } catch (error) {
+            setMessage({ type: 'error', text: (error as Error).message || 'Failed to change status' })
         } finally {
             setIsPublishing(false)
         }

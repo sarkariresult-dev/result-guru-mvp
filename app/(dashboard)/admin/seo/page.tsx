@@ -124,7 +124,7 @@ export default async function AdminSeoPage() {
                         </div>
                     ) : (
                         <div className="divide-y divide-border max-h-[500px] overflow-y-auto">
-                            {auditPosts.map((post: any) => {
+                            {auditPosts.map((post) => {
                                 const issues: string[] = []
                                 if (post.missing_meta_title) issues.push('No meta title')
                                 if (post.missing_meta_description) issues.push('No meta desc')
@@ -182,7 +182,7 @@ export default async function AdminSeoPage() {
                         </div>
                     ) : (
                         <div className="divide-y divide-border max-h-[500px] overflow-y-auto">
-                            {attentionPosts.map((post: any) => {
+                            {attentionPosts.map((post) => {
                                 const reasons: string[] = []
                                 if (post.is_expired) reasons.push('Expired')
                                 if (post.is_stale) reasons.push('Stale')

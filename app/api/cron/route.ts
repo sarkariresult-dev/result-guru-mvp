@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
 import { revalidateTag } from 'next/cache'
 import { pushToGoogleIndexingApi } from '@/lib/seo/indexing'
@@ -95,7 +94,7 @@ export const GET = withErrorHandling(async (request: Request) => {
 
         if (!staleError) {
             staleFlaggedCount = staleIds.length
-            console.log(`Cron: flagged ${staleFlaggedCount} stale posts as noindex`)
+            console.info(`Cron: flagged ${staleFlaggedCount} stale posts as noindex`)
         }
     }
 

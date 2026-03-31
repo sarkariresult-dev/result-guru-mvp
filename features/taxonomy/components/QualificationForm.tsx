@@ -45,6 +45,7 @@ export function QualificationForm({ open, onClose, qualification }: Qualificatio
     useEffect(() => {
         if (open) {
             if (qualification) {
+                // eslint-disable-next-line react-hooks/set-state-in-effect -- form initialization
                 setForm({
                     slug: qualification.slug,
                     name: qualification.name,

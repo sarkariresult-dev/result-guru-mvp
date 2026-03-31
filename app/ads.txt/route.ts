@@ -1,5 +1,3 @@
-import { SITE } from '@/config/site'
-
 /**
  * GET /ads.txt
  *
@@ -11,6 +9,7 @@ import { SITE } from '@/config/site'
  *
  * @see https://developers.google.com/authorized-sellers/ads-txt
  * @see https://iabtechlab.com/ads-txt/
+ * @see https://iabtechlab.com/ads-txt-v1-1/
  */
 export async function GET() {
     const lines: string[] = []

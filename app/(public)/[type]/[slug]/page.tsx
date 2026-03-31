@@ -2,7 +2,6 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
-import Image from 'next/image'
 import { getPostBySlug } from '@/features/posts/queries'
 import { buildMetadata } from '@/lib/metadata'
 import { buildJobPostingSchema, buildBreadcrumbSchema, buildFAQPageSchema, buildGovernmentServiceSchema, buildNewsArticleSchema, buildHowToSchema } from '@/lib/jsonld'
@@ -22,8 +21,11 @@ import type { PostTypeKey } from '@/config/site'
 import type { PublishedPost } from '@/types/post.types'
 import type { FaqItem } from '@/types/post-content.types'
 import { slugToKey, humanise, keyToSlug } from '@/lib/utils'
-import { ExternalLink, Download, Bell } from 'lucide-react'
+import { ExternalLink, Download, Bell, ListTree } from 'lucide-react'
 import { PageViewTracker } from '@/features/analytics/components/PageViewTracker'
+
+
+
 /* ── Types ───────────────────────────────────────────────────────── */
 
 interface Props {
@@ -38,6 +40,10 @@ interface Props {
  * Falls back to empty array if DB query fails (all pages on-demand).
  */
 export async function generateStaticParams() {
+    // In development mode, fetch a minimal set of paths to satisfy Next.js requirements
+    // while keeping database overhead low.
+    const limit = process.env.NODE_ENV === 'development' ? 1 : 100
+
     try {
         const { createClient } = await import('@supabase/supabase-js')
         const supabase = createClient(
@@ -48,8 +54,7 @@ export async function generateStaticParams() {
             .from('v_published_posts')
             .select('slug, type')
             .order('published_at', { ascending: false })
-            // Limit to 100 to prevent OOM errors during build. Next.js ISR will generate the rest on-demand.
-            .limit(100)
+            .limit(limit)
 
         if (!data) return []
 
@@ -218,41 +223,53 @@ export default async function PostDetailPage({ params }: Props) {
 
                         {/* ── Quick Action Links ───────────────── */}
                         {quickLinks.length > 0 && (
-                            <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm space-y-2.5">
-                                <h3 className="text-sm font-bold uppercase tracking-wider text-foreground-muted mb-3">Quick Links</h3>
-                                {quickLinks.map((link: { href: string; label: string; icon: 'external' | 'download'; primary?: boolean }, i: number) => (
-                                    <a
-                                        key={i}
-                                        href={link.href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={`flex items-center gap-2.5 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${link.primary
-                                            ? 'bg-brand-600 text-white hover:bg-brand-700 shadow-brand'
-                                            : 'border border-border text-foreground hover:bg-background-subtle'
-                                            }`}
-                                    >
-                                        {link.icon === 'download' ? (
-                                            <Download className="size-4 shrink-0" />
-                                        ) : (
-                                            <ExternalLink className="size-4 shrink-0" />
-                                        )}
-                                        <span className="truncate">{link.label}</span>
-                                    </a>
-                                ))}
+                            <div className="py-2 space-y-4">
+                                <h3 className="text-sm font-bold uppercase tracking-[0.05em] text-foreground-muted flex items-center gap-2">
+                                    <ExternalLink className="size-4 text-brand-500" /> Key Resources
+                                </h3>
+                                <div className="flex flex-col gap-2.5">
+                                    {quickLinks.map((link: { href: string; label: string; icon: 'external' | 'download'; primary?: boolean }, i: number) => (
+                                        <a
+                                            key={i}
+                                            href={link.href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`flex items-center gap-2.5 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${link.primary
+                                                ? 'bg-brand-600 text-white hover:bg-brand-700 shadow-sm hover:shadow-md'
+                                                : 'border border-border text-foreground hover:bg-background-subtle'
+                                                }`}
+                                        >
+                                            {link.icon === 'download' ? (
+                                                <Download className="size-4 shrink-0" />
+                                            ) : (
+                                                <ExternalLink className="size-4 shrink-0" />
+                                            )}
+                                            <span className="truncate">{link.label}</span>
+                                        </a>
+                                    ))}
+                                </div>
                             </div>
                         )}
 
                         {/* ── SEO Silo Links (Content Strategy) ── */}
-                        {/* Dynamic Related Posts mapped for topical schema silos */}
                         {siloPosts.length > 0 && (
-                            <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm space-y-3">
-                                <h3 className="text-sm font-bold uppercase tracking-wider text-foreground-muted">
-                                    More from {publishedPost.org_short_name || publishedPost.state_name || 'Category'}
+                            <div className="py-2 space-y-4">
+                                <h3 className="text-sm font-bold uppercase tracking-[0.05em] text-foreground-muted flex items-center gap-2">
+                                    <ListTree className="size-4 text-brand-500" /> More Related
                                 </h3>
-                                <div className="flex flex-col gap-2">
+                                <div className="flex flex-col gap-3">
                                     {siloPosts.map((p) => (
-                                        <Link key={p.id} href={`${ROUTE_PREFIXES[p.type as PostTypeKey]}/${p.slug}`} className="text-brand-600 hover:underline text-sm font-medium line-clamp-2" title={p.title}>
-                                            {p.title}
+                                        <Link 
+                                            key={p.id} 
+                                            href={`${ROUTE_PREFIXES[p.type as PostTypeKey]}/${p.slug}`} 
+                                            className="group flex flex-col gap-0.5"
+                                        >
+                                            <span className="text-sm font-bold text-foreground group-hover:text-brand-600 transition-colors line-clamp-2">
+                                                {p.title}
+                                            </span>
+                                            <span className="text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
+                                                {humanise(p.type)}
+                                            </span>
                                         </Link>
                                     ))}
                                 </div>
@@ -272,17 +289,16 @@ export default async function PostDetailPage({ params }: Props) {
                         </Suspense>
 
                         {/* ── Newsletter CTA ───────────────────── */}
-                        <div className="rounded-2xl border border-brand-200 dark:border-brand-800 bg-linear-to-br from-brand-50 to-brand-100/50 dark:from-brand-950/30 dark:to-brand-900/20 p-5 shadow-sm">
-                            <div className="flex items-center gap-2 mb-2">
-                                <div className="flex size-8 items-center justify-center rounded-lg bg-brand-600 text-white">
-                                    <Bell className="size-4" />
-                                </div>
-                                <h3 className="text-sm font-bold text-foreground">Get Notified</h3>
+                        <div className="py-2 space-y-4">
+                            <h3 className="text-sm font-bold uppercase tracking-[0.05em] text-foreground-muted flex items-center gap-2">
+                                <Bell className="size-4 text-brand-500" /> Staying Updated
+                            </h3>
+                            <div className="rounded-2xl bg-linear-to-br from-background-muted to-background p-5 border border-border/50">
+                                <p className="text-xs text-foreground-muted leading-relaxed mb-4">
+                                    Get instant alerts for new {config.heading.toLowerCase()} posts.
+                                </p>
+                                <NewsletterForm />
                             </div>
-                            <p className="text-xs text-foreground-muted leading-relaxed mb-3">
-                                Subscribe for instant alerts when new {config.heading.toLowerCase()} posts are published.
-                            </p>
-                            <NewsletterForm />
                         </div>
 
                         {/* ── Sticky Ad ─────────────────────────── */}

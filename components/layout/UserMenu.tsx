@@ -5,6 +5,7 @@ import { useTransition } from 'react'
 import { LogOut, User as UserIcon, LayoutDashboard, Loader2 } from 'lucide-react'
 import { signOut } from '@/features/auth/actions'
 import { Dropdown } from '@/components/ui/Dropdown'
+import { Avatar } from '@/components/ui/Avatar'
 
 interface UserMenuProps {
     user: {
@@ -27,7 +28,6 @@ export function UserMenu({ user }: UserMenuProps) {
     }
 
     const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
-    const initials = name.substring(0, 2).toUpperCase()
     const avatarUrl = user.user_metadata?.avatar_url
 
     const trigger = (
@@ -35,13 +35,7 @@ export function UserMenu({ user }: UserMenuProps) {
             <span className="max-w-25 truncate text-sm font-medium text-foreground hidden sm:block">
                 {name}
             </span>
-            {avatarUrl ? (
-                <img src={avatarUrl} alt={name} className="size-7 rounded-full object-cover ring-1 ring-border" />
-            ) : (
-                <div className="flex size-7 items-center justify-center rounded-full bg-brand-600 font-bold text-white text-xs">
-                    {initials}
-                </div>
-            )}
+            <Avatar src={avatarUrl} alt={name} fallback={name} size="xs" className="ring-1 ring-border" />
         </button>
     )
 

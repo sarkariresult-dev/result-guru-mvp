@@ -110,16 +110,7 @@ export function TiptapEditor({
             // Clean up pasted content - strip Word/Google Docs junk
             handlePaste(view, event) {
                 const html = event.clipboardData?.getData('text/html')
-                if (html) {
-                    // Strip MS Word / Google Docs class/style attributes
-                    const cleaned = html
-                        .replace(/class="[^"]*"/g, '')
-                        .replace(/style="[^"]*"/g, '')
-                        .replace(/<!--[\s\S]*?-->/g, '')
-                        .replace(/<o:p>[\s\S]*?<\/o:p>/g, '')
-                        .replace(/<\/?span[^>]*>/g, '')
-                }
-                return false // Let TipTap handle the cleaned paste
+                return false // Let TipTap handle the paste (TipTap has its own cleanup)
             },
         },
     })
@@ -278,7 +269,6 @@ export function TiptapEditor({
                         onLinkClick={openLinkModal}
                         onImageClick={() => setShowImageModal(true)}
                         onTableClick={() => setShowTablePicker(!showTablePicker)}
-                        showTablePicker={showTablePicker}
                         onRemoveLink={removeLink}
                     />
 

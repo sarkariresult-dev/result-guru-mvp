@@ -7,7 +7,7 @@ import {
     Heading1, Heading2, Heading3, Heading4,
     List, ListOrdered, Quote, Minus, Code2,
     ImageIcon, Table as TableIcon,
-    FileCode, Highlighter, Type,
+    Highlighter, Type,
 } from 'lucide-react'
 
 // ─── Build slash command items ──────────────────────────────

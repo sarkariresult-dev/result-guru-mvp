@@ -1,5 +1,4 @@
-import Link from 'next/link'
-import { ArrowRight, AlertTriangle, Link2, Trash2, ExternalLink } from 'lucide-react'
+import { AlertTriangle, Link2, Trash2 } from 'lucide-react'
 import { getRedirects } from '@/lib/queries/seo'
 import { deleteRedirect, toggleRedirect } from '@/lib/actions/redirects'
 import { RedirectAddForm } from './RedirectAddForm'

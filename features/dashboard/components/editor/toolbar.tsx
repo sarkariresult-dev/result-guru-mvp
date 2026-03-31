@@ -55,7 +55,6 @@ interface ToolbarProps {
     onLinkClick: () => void
     onImageClick: () => void
     onTableClick: () => void
-    showTablePicker: boolean
     onRemoveLink: () => void
 }
 
@@ -64,7 +63,6 @@ export function EditorToolbar({
     onLinkClick,
     onImageClick,
     onTableClick,
-    showTablePicker,
     onRemoveLink,
 }: ToolbarProps) {
     return (

@@ -38,11 +38,16 @@ SELECT
   p.twitter_title, p.twitter_description, p.twitter_card_type,
   
   p.seo_score, p.word_count, p.reading_time_min, p.view_count, p.share_count,
-  p.author_id, p.published_at, p.updated_at, p.content_updated_at, p.last_reviewed_at, p.expires_at
+  p.author_id,
+  u.name AS author_name,
+  u.avatar_url AS author_avatar_url,
+  u.bio AS author_bio,
+  p.published_at, p.updated_at, p.content_updated_at, p.last_reviewed_at, p.expires_at
 FROM      posts         p
 LEFT JOIN states        s ON s.slug = p.state_slug
 LEFT JOIN organizations o ON o.id   = p.organization_id
 LEFT JOIN categories    c ON c.id   = p.category_id
+LEFT JOIN users         u ON u.id   = p.author_id
 WHERE p.status = 'published';
 
 -- ── 2. v_active_ads ─────────────────────────────────────────

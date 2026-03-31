@@ -36,6 +36,7 @@ export function HeroSearchBar({ states }: HeroSearchBarProps) {
 
     // Reset active index when dropdown closes
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- dropdown state sync
         if (!stateOpen) setActiveIndex(-1)
     }, [stateOpen])
 

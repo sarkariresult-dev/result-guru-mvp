@@ -13,7 +13,6 @@ interface Props {
 export function PostCard({ post, priority = false }: Props) {
     const prefix = ROUTE_PREFIXES[post.type as keyof typeof ROUTE_PREFIXES] ?? `/${post.type}`
     const href = `${prefix}/${post.slug}`
-
     const imageSrc = post.featured_image || '/images/placeholder-post.png'
 
     return (
@@ -37,9 +36,9 @@ export function PostCard({ post, priority = false }: Props) {
                         <span className="text-xs text-foreground-subtle">{post.state_name}</span>
                     )}
                 </div>
-                <h2 className="line-clamp-2 text-base font-semibold leading-snug text-foreground group-hover:text-brand-600 dark:group-hover:text-brand-400">
+                <h3 className="line-clamp-2 text-base font-semibold leading-snug text-foreground group-hover:text-brand-600 dark:group-hover:text-brand-400">
                     <Link href={href} className="after:absolute after:inset-0">{post.title}</Link>
-                </h2>
+                </h3>
                 {(post.application_start_date || post.application_end_date) && (
                     <div className="flex items-center gap-1 text-[11px] font-medium transition-colors">
                         {post.application_status === 'upcoming' && post.application_start_date ? (

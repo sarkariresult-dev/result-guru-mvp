@@ -136,7 +136,7 @@ export default async function CategoryArchivePage({ params, searchParams }: Prop
             <main className="container mx-auto flex-1 max-w-5xl px-4 py-8" id="main-content">
                 {fetchError ? (
                     <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-6 text-center text-destructive">
-                        <p>We're having trouble loading posts right now. Please try again later.</p>
+                        <p>We&apos;re having trouble loading posts right now. Please try again later.</p>
                     </div>
                 ) : posts.length === 0 ? (
                     <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-24 text-center">
@@ -145,7 +145,7 @@ export default async function CategoryArchivePage({ params, searchParams }: Prop
                         </div>
                         <h2 className="mt-4 text-lg font-semibold text-foreground">No posts found</h2>
                         <p className="mt-2 max-w-sm text-sm text-foreground-muted">
-                            We haven't published any {category.name} updates yet. Check back soon!
+                            We haven&apos;t published any {category.name} updates yet. Check back soon!
                         </p>
                         <Link
                             href="/"

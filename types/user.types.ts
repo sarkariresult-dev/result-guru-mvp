@@ -14,6 +14,7 @@ export interface User {
     name: string
     avatar_url: string | null
     role: UserRole
+    bio: string | null
     is_active: boolean
     last_login_at: string | null
     /** Granular permission overrides (future use) */
@@ -33,10 +34,10 @@ export interface UserPermissions {
 }
 
 // ── Public profile (safe to expose via API) ────────────────
-export type PublicUser = Pick<User, 'id' | 'name' | 'avatar_url' | 'role'>
+export type PublicUser = Pick<User, 'id' | 'name' | 'avatar_url' | 'role' | 'bio'>
 
 // ── CMS author info (joined onto posts) ───────────────────
-export type AuthorInfo = Pick<User, 'id' | 'name' | 'avatar_url'>
+export type AuthorInfo = Pick<User, 'id' | 'name' | 'avatar_url' | 'bio'>
 
 // ── Create / update payloads ───────────────────────────────
 export interface CreateUserPayload {
@@ -49,6 +50,7 @@ export interface CreateUserPayload {
 export interface UpdateUserPayload {
     name?: string
     avatar_url?: string | null
+    bio?: string | null
     role?: UserRole
     is_active?: boolean
     permissions?: Partial<UserPermissions>

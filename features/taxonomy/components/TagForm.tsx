@@ -49,6 +49,7 @@ export function TagForm({ open, onClose, tag }: TagFormProps) {
     useEffect(() => {
         if (open) {
             if (tag) {
+                // eslint-disable-next-line react-hooks/set-state-in-effect -- form initialization
                 setForm({
                     name: tag.name,
                     slug: tag.slug,

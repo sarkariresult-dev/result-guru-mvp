@@ -15,6 +15,7 @@ import type {
     BreadcrumbOverride,
 } from './post-content.types'
 import type { InternalLinkType } from './enums'
+import type { AuthorInfo } from './user.types'
 
 // ── Base post (mirrors DB columns) ────────────────────────
 export interface Post {
@@ -159,7 +160,7 @@ export type PostSummary = PostCard
 // ── Post detail (full data - used on detail pages) ────────
 export type PostDetail = PublishedPost & {
     tags?: PostTagEntry[]
-    author?: { id: string; name: string; avatar_url: string | null } | null
+    author?: AuthorInfo | null
     affiliates?: PostAffiliateProductEntry[]
 }
 

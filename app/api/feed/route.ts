@@ -16,7 +16,7 @@ export async function GET() {
             .order('published_at', { ascending: false })
             .limit(100)
 
-        const posts = (data ?? []).map((p: any) => ({
+        const posts = (data ?? []).map((p: { slug: string; type: string; title: string; excerpt: string | null; published_at: string; updated_at: string | null }) => ({
             slug: p.slug,
             type: p.type,
             title: p.title,

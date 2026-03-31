@@ -24,10 +24,10 @@ import { SITE } from '@/config/site'
  */
 
 /* ── Password strength helper ─────────────────────────────── */
-type Strength = { level: 0 | 1 | 2 | 3; label: string; color: string; width: string }
+type Strength = { level: 0 | 1 | 2 | 3; label: string; color: string; scale: number }
 
 function getPasswordStrength(password: string): Strength {
-    if (!password) return { level: 0, label: '', color: '', width: 'w-0' }
+    if (!password) return { level: 0, label: '', color: '', scale: 0 }
 
     let score = 0
     if (password.length >= 6) score++
@@ -36,9 +36,9 @@ function getPasswordStrength(password: string): Strength {
     if (/\d/.test(password)) score++
     if (/[^A-Za-z0-9]/.test(password)) score++
 
-    if (score <= 1) return { level: 1, label: 'Weak', color: 'bg-red-500', width: 'w-1/3' }
-    if (score <= 3) return { level: 2, label: 'Fair', color: 'bg-amber-500', width: 'w-2/3' }
-    return { level: 3, label: 'Strong', color: 'bg-green-500', width: 'w-full' }
+    if (score <= 1) return { level: 1, label: 'Weak', color: 'bg-red-500', scale: 0.33 }
+    if (score <= 3) return { level: 2, label: 'Fair', color: 'bg-amber-500', scale: 0.66 }
+    return { level: 3, label: 'Strong', color: 'bg-green-500', scale: 1 }
 }
 
 export default function RegisterForm() {
@@ -315,7 +315,8 @@ export default function RegisterForm() {
                         <div className="mt-2 space-y-1">
                             <div className="h-1 w-full overflow-hidden rounded-full bg-background-muted">
                                 <div
-                                    className={`h-full rounded-full transition-all duration-300 ${strength.color} ${strength.width}`}
+                                    className={`h-full origin-left rounded-full transition-transform duration-300 ${strength.color}`}
+                                    style={{ transform: `scaleX(${strength.scale})` }}
                                 />
                             </div>
                             <p className={`text-xs ${strength.level <= 1 ? 'text-red-600 dark:text-red-400' : strength.level === 2 ? 'text-amber-600 dark:text-amber-400' : 'text-green-600 dark:text-green-400'}`}>

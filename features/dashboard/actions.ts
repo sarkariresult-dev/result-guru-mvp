@@ -20,6 +20,7 @@ export async function updateProfile(
     
     const name = formData.get('name')?.toString()
     const avatar_url = formData.get('avatar_url')?.toString() || null
+    const bio = formData.get('bio')?.toString() || null
 
     if (!name) {
         return { success: false, error: 'Name is required' }
@@ -27,7 +28,7 @@ export async function updateProfile(
 
     const { error } = await supabase
         .from('users')
-        .update({ name, avatar_url })
+        .update({ name, avatar_url, bio })
         .eq('id', userId)
 
     if (error) {

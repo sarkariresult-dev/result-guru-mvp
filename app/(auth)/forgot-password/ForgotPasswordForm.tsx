@@ -7,7 +7,6 @@ import { forgotPassword } from '@/features/auth/actions'
 import { forgotPasswordSchema } from '@/lib/validations'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { SITE } from '@/config/site'
 
 /**
  * Forgot password form - sends a password reset link to the user's email.

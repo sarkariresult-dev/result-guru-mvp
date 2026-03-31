@@ -20,7 +20,7 @@
  *   <div ref={ref} />   ← place at end of list
  */
 
-import { useRef, useState, useEffect, useCallback } from 'react'
+import { useRef, useState, useEffect, useCallback, useLayoutEffect } from 'react'
 
 interface Options extends IntersectionObserverInit {
     /** Called once when element enters viewport (if `once` is true) or on every entry */
@@ -43,7 +43,9 @@ export function useIntersectionObserver<T extends Element = Element>({
     const [isIntersecting, setIsIntersecting] = useState(false)
     const observerRef = useRef<IntersectionObserver | null>(null)
     const onIntersectRef = useRef(onIntersect)
-    onIntersectRef.current = onIntersect
+    useLayoutEffect(() => {
+        onIntersectRef.current = onIntersect
+    }, [onIntersect])
 
     const observe = useCallback(() => {
         if (!ref.current || !enabled) return

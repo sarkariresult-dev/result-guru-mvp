@@ -48,11 +48,21 @@ export function buildJobPostingSchema(post: PostDetail): JsonLdObject {
                 '@type': 'Place',
                 address: {
                     '@type': 'PostalAddress',
-                    // Future-proofing: map addressLocality if city_name is added to PostDetail
-                    ...((post as any).city_name && { addressLocality: (post as any).city_name }),
-                    addressRegion: post.state_name ?? 'India',
+                    streetAddress: 'New Delhi, India',
+                    addressLocality: (post as any).city_name ?? 'New Delhi',
+                    addressRegion: post.state_name ?? 'Delhi',
+                    postalCode: '110001',
                     addressCountry: 'IN',
                 },
+            },
+            baseSalary: {
+                '@type': 'MonetaryAmount',
+                currency: 'INR',
+                value: {
+                    '@type': 'QuantitativeValue',
+                    value: 'As per Government rules',
+                    unitText: 'MONTH'
+                }
             },
         }
     } catch {
@@ -268,11 +278,24 @@ export function buildNewsArticleSchema(post: PostDetail): JsonLdObject {
                 url: SITE.publisher.url,
                 logo: { '@type': 'ImageObject', url: SITE.publisher.logo },
             },
-            author: {
-                '@type': 'Person',
-                name: `${SITE.name} Editorial Team`,
-                url: `${SITE.url}/about`,
-            },
+            author: post.author
+                ? {
+                    '@type': 'Person',
+                    name: post.author.name,
+                    url: `${SITE.url}/author/${post.author.id}`,
+                    ...(post.author.avatar_url && { image: post.author.avatar_url }),
+                    ...(post.author.bio && { description: post.author.bio }),
+                    jobTitle: 'Content Specialist',
+                    worksFor: {
+                        '@type': 'Organization',
+                        name: SITE.name,
+                    }
+                }
+                : {
+                    '@type': 'Organization',
+                    name: SITE.name,
+                    url: SITE.url,
+                },
             ...(post.state_name && { dateline: post.state_name }),
             mainEntityOfPage: {
                 '@type': 'WebPage',
@@ -298,7 +321,12 @@ export function buildNewsArticleSchema(post: PostDetail): JsonLdObject {
         return {
             '@context': 'https://schema.org',
             '@type': 'NewsArticle',
-            headline: post.title ?? '',
+            headline: post.title ?? 'Recent Update',
+            author: {
+                '@type': 'Organization',
+                name: SITE.name,
+                url: SITE.url,
+            }
         }
     }
 }

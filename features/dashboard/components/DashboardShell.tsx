@@ -23,6 +23,7 @@ export function DashboardShell({ user, navItems, navGroups, children }: Props) {
 
     /* Close mobile sidebar on route change */
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- navigation state sync
         setSidebarOpen(false)
     }, [pathname])
 

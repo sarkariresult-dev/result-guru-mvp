@@ -30,7 +30,7 @@ import {
     Layers,
     type LucideIcon,
 } from 'lucide-react'
-import { useState, useCallback, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 /* ── Icon name → component map ──────────────────────────────── */
 
@@ -285,6 +285,7 @@ function CollapsibleGroup({
     /* Auto-expand only when a child becomes active (navigation) */
     useEffect(() => {
         if (hasActiveChild) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect -- expanding sidebar if active child
             setIsOpen(true)
         }
     }, [hasActiveChild])

@@ -24,6 +24,7 @@ export function CookieConsent() {
         try {
             const stored = localStorage.getItem(STORAGE_KEYS.COOKIE_CONSENT)
             if (stored === 'accepted' || stored === 'rejected') {
+                // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage sync
                 setConsent(stored)
                 // Push consent state to GTM dataLayer
                 if (typeof window !== 'undefined' && stored === 'accepted') {

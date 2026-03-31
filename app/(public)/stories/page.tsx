@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Sparkles, Play, Search, ArrowRight } from 'lucide-react'
+import { Sparkles, Play, Search } from 'lucide-react'
 import { getPublicStories } from '@/lib/queries/stories'
 import { buildPageMetadata } from '@/lib/metadata'
 import { AdZone } from '@/components/ads/AdZone'

@@ -104,10 +104,10 @@ export default function AuthLayout({
 
                 {/* Bottom bar */}
                 <div className="flex items-center justify-between bg-white/5 px-10 py-4 text-sm">
-                    <p className="text-white/40">
+                    <p className="text-white/60">
                         &copy; {SITE.name}. All rights reserved.
                     </p>
-                    <div className="space-x-4 text-white/60">
+                    <div className="space-x-4 text-white/80">
                         <Link
                             href="/privacy-policy"
                             className="hover:text-white transition-colors"

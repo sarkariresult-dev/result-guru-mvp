@@ -179,7 +179,7 @@ export async function GET(
             </script>
         </amp-analytics>
 
-        ${slides.map((slide: any, i: number) => {
+        ${slides.map((slide, i: number) => {
             // Apply different animations to keep it dynamic
             const bgAnims = ['zoom-in', 'pan-left', 'pan-right', 'zoom-out'];
             const anim = bgAnims[i % bgAnims.length];

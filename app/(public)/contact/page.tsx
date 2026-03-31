@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { buildPageMetadata } from '@/lib/metadata'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
@@ -208,7 +209,7 @@ export default function ContactPage() {
                             </button>
                             <p className="text-xs text-center text-foreground-muted">
                                 We typically reply within 24-48 hours. By submitting this form, you agree to our{' '}
-                                <a href="/privacy-policy" className="text-brand-600 hover:underline">privacy policy</a>.
+                                <Link href="/privacy-policy" className="text-brand-600 hover:underline">privacy policy</Link>.
                             </p>
                         </form>
                     </div>

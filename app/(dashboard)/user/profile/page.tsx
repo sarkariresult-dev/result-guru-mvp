@@ -26,6 +26,7 @@ interface ProfileData {
     email: string
     avatarUrl: string | null
     role: string
+    bio: string | null
     memberSince: string
 }
 
@@ -41,6 +42,7 @@ export default function UserProfilePage() {
     const [errorMsg, setErrorMsg] = useState<string | null>(null)
     const [profile, setProfile] = useState<ProfileData | null>(null)
     const [name, setName] = useState('')
+    const [bio, setBio] = useState<string | null>(null)
     const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
     const [uploading, setUploading] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
@@ -56,7 +58,7 @@ export default function UserProfilePage() {
 
             const { data: dbUser } = await supabase
                 .from('users')
-                .select('id, name, avatar_url, role, created_at')
+                .select('id, name, avatar_url, role, bio, created_at')
                 .eq('auth_user_id', authUser.id)
                 .single()
 
@@ -67,12 +69,14 @@ export default function UserProfilePage() {
                 email: authUser.email ?? '',
                 avatarUrl: (dbUser?.avatar_url as string | null) ?? null,
                 role: (dbUser?.role as string) ?? 'user',
+                bio: (dbUser?.bio as string | null) ?? null,
                 memberSince:
                     (dbUser?.created_at as string) ?? authUser.created_at ?? '',
             }
 
             setProfile(p)
             setName(p.name)
+            setBio(p.bio)
             setAvatarUrl(p.avatarUrl)
             setLoading(false)
         }
@@ -133,6 +137,7 @@ export default function UserProfilePage() {
         /* Persist to DB immediately */
         const fbFormData = new FormData()
         fbFormData.append('name', name)
+        if (bio) fbFormData.append('bio', bio)
         if (publicUrl) fbFormData.append('avatar_url', publicUrl)
         
         const result = await updateProfile(profile.id, null, fbFormData)
@@ -165,6 +170,7 @@ export default function UserProfilePage() {
 
         const saveFormData = new FormData()
         saveFormData.append('name', name.trim())
+        if (bio) saveFormData.append('bio', bio.trim())
         if (avatarUrl) saveFormData.append('avatar_url', avatarUrl)
 
         const result = await updateProfile(profile.id, null, saveFormData)
@@ -274,6 +280,39 @@ export default function UserProfilePage() {
                                     </span>
                                 )}
                             </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* ── Biography section ──────────────────────── */}
+                <section className="rounded-xl border border-border bg-surface p-5 sm:p-6">
+                    <h2 className="mb-5 text-xs font-semibold uppercase tracking-wider text-foreground-subtle">
+                        Public Biography
+                    </h2>
+                    <div className="space-y-4">
+                        <div className="space-y-1.5">
+                            <label
+                                htmlFor="profile-bio"
+                                className="text-sm font-medium text-foreground"
+                            >
+                                Short Bio
+                            </label>
+                            <textarea
+                                id="profile-bio"
+                                value={bio ?? ''}
+                                onChange={(e) => {
+                                    setBio(e.target.value)
+                                    setSaveStatus('idle')
+                                    setErrorMsg(null)
+                                }}
+                                rows={3}
+                                maxLength={300}
+                                placeholder="Expert in notification alerts and job schemes..."
+                                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+                            />
+                            <p className="text-xs text-foreground-subtle">
+                                This will appear at the bottom of your posts for better E-E-A-T. Max 300 characters.
+                            </p>
                         </div>
                     </div>
                 </section>

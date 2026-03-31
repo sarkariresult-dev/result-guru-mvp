@@ -16,6 +16,9 @@ import { ChevronLeft, ChevronRight, FileX2, ServerCrash } from 'lucide-react'
 /** All valid URL slugs for generateStaticParams */
 const ALL_SLUGS = Object.keys(POST_TYPE_CONFIG).map(keyToSlug)
 
+
+
+
 /* ── Types ───────────────────────────────────────────────────────── */
 
 interface Props {
@@ -45,8 +48,11 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     const totalCountRes = await getPostsCount({ type: typeKey as unknown as import('@/types/enums').PostType }).catch(() => 0)
     const totalPages = Math.ceil(totalCountRes / limit)
 
-    const title = page > 1 ? `${config.heading} - Page ${page}` : config.heading
-    const description = config.description
+    const year = new Date().getFullYear()
+    const title = page > 1 
+        ? `${config.heading} ${year} - Page ${page} | Latest Updates | ${SITE.name}` 
+        : `Latest ${config.heading} ${year} - Check Notification & Apply Online | ${SITE.name}`
+    const description = `Get the latest ${config.heading.toLowerCase()} for ${year}. Check official notifications, eligibility, and direct links to apply. ${config.description} across India.`
     const url = `${SITE.url}/${type}`
     const canonical = page > 1 ? `${url}?page=${page}` : url
 
@@ -104,6 +110,31 @@ function getPageNumbers(current: number, total: number): (number | '...')[] {
     return pages
 }
 
+function getSEOIntro(typeKey: string, heading: string): string {
+    const year = new Date().getFullYear()
+    switch (typeKey) {
+        case 'job':
+            return `Looking for the latest ${heading} in ${year}? Result Guru brings you comprehensive updates on government vacancies, including eligibility criteria, age limits, and direct application links. Stay ahead with our daily updated job notifications from various sectors including Railway, Banking, SSC, and defense.`
+        case 'result':
+            return `Check your ${heading} for current and previous examinations. We provide direct links to official results, merit lists, and cut-off marks as soon as they are declared by the respective boards. Never miss an update on your hard-earned results.`
+        case 'admit':
+            return `Download your ${heading} easily. Find direct links to download hall tickets for SSC, UPSC, Banking, and state-level exams. We ensure you have the right information to access your exam center on time.`
+        case 'answer-key':
+        case 'answer_key':
+            return `Verify your performance with the official ${heading}. Access direct links to preliminary and final answer keys for major examinations to estimate your score before the final results.`
+        case 'syllabus':
+            return `Prepare effectively with the latest ${heading}. Download updated exam patterns and detailed subject-wise syllabus in PDF format for all major competitive exams in India.`
+        case 'admission':
+            return `Find the best educational opportunities with our ${heading} updates. Get information on entrance exams, counseling dates, and application procedures for top universities and colleges.`
+        case 'scholarship':
+            return `Unlock financial aid for your studies. Explore the latest ${heading} programs offered by central and state governments, as well as private organizations, with clear eligibility and application steps.`
+        case 'scheme':
+            return `Empower yourself with information on ${heading}s. Learn about government initiatives for farmers, students, women, and various sectors, including how to apply and check status.`
+        default:
+            return `Stay updated with the latest ${heading} ${year}. We provide accurate information and direct links to official notifications to help you stay informed.`
+    }
+}
+
 /* ── Page ─────────────────────────────────────────────────────────── */
 
 export default async function PostListingPage({ params, searchParams }: Props) {
@@ -121,11 +152,17 @@ export default async function PostListingPage({ params, searchParams }: Props) {
     let fetchError = false
 
     try {
-        ;[posts, totalCount] = await Promise.all([
-            getPosts({ type: typeKey as unknown as import('@/types/enums').PostType }, page, limit),
-            getPostsCount({ type: typeKey as unknown as import('@/types/enums').PostType }),
+        // Parallelize fetching for faster page load
+        const [[p, c]] = await Promise.all([
+            Promise.all([
+                getPosts({ type: typeKey as unknown as import('@/types/enums').PostType }, page, limit),
+                getPostsCount({ type: typeKey as unknown as import('@/types/enums').PostType }),
+            ])
         ])
-    } catch {
+        posts = p
+        totalCount = c
+    } catch (error) {
+        console.error('Fetch Error:', error)
         fetchError = true
     }
 
@@ -180,12 +217,17 @@ export default async function PostListingPage({ params, searchParams }: Props) {
                     <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                         {config.heading}
                     </h1>
-                    <p className="mt-2 max-w-2xl text-foreground-muted">
-                        {config.description}. Updated daily across India.
-                    </p>
+                    <div className="mt-4 flex flex-col gap-3">
+                        <p className="max-w-3xl text-lg font-medium text-foreground-muted leading-relaxed">
+                            {getSEOIntro(typeKey, config.heading)}
+                        </p>
+                        <p className="max-w-2xl text-base text-foreground-subtle">
+                            {config.description}. Updated daily across India.
+                        </p>
+                    </div>
                     {totalCount > 0 && (
-                        <p className="mt-3 text-sm text-foreground-subtle">
-                            Showing page {page} of {totalPages} &middot; {totalCount.toLocaleString('en-IN')} total posts
+                        <p className="mt-4 text-sm font-semibold text-brand-600 dark:text-brand-400">
+                            Showing page {page} of {totalPages} &middot; {totalCount.toLocaleString('en-IN')} latest updates
                         </p>
                     )}
                 </div>

@@ -52,6 +52,7 @@ export function OrgForm({ open, onClose, organization, stateOptions }: OrgFormPr
     useEffect(() => {
         if (open) {
             if (organization) {
+                // eslint-disable-next-line react-hooks/set-state-in-effect -- form initialization
                 setForm({
                     name: organization.name,
                     slug: organization.slug,

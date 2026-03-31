@@ -36,14 +36,6 @@ function getMimeIcon(mime: string) {
     return FileText
 }
 
-function formatDate(iso: string): string {
-    return new Date(iso).toLocaleDateString('en-IN', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-    })
-}
-
 // ── Page ───────────────────────────────────────────────────
 type PageProps = {
     searchParams: Promise<{ page?: string; bucket?: string; q?: string }>
@@ -175,7 +167,8 @@ export default async function AdminMediaPage({ searchParams }: PageProps) {
                                 {/* Preview */}
                                 {item.mime_type.startsWith('image/') ? (
                                     <div className="relative">
-                                        <img
+                                    {/* eslint-disable-next-line @next/next/no-img-element -- admin preview of dynamic Supabase storage assets */}
+                                    <img
                                             src={item.webp_url ?? item.public_url}
                                             alt={item.alt_text ?? item.file_name}
                                             className="aspect-square w-full object-cover"

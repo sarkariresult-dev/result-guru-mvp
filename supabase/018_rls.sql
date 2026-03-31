@@ -158,6 +158,8 @@ CREATE POLICY "int_links_service"        ON post_internal_links  FOR ALL    USIN
 -- ── 6. Users & Auth ─────────────────────────────────────────
 DROP POLICY IF EXISTS "users_read_own" ON users;
 CREATE POLICY "users_read_own"      ON users FOR SELECT USING (auth.uid() = auth_user_id);
+DROP POLICY IF EXISTS "users_public_read_authors" ON users;
+CREATE POLICY "users_public_read_authors" ON users FOR SELECT USING (role IN ('admin', 'author'));
 DROP POLICY IF EXISTS "users_admin_read" ON users;
 CREATE POLICY "users_admin_read"    ON users FOR SELECT USING (fn_is_admin());
 DROP POLICY IF EXISTS "users_update_own" ON users;

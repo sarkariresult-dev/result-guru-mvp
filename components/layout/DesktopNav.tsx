@@ -2,22 +2,21 @@
 
 import Link from 'next/link'
 import { useState, useRef, useEffect } from 'react'
-import { ChevronDown, MapPin, Building2, FileText } from 'lucide-react'
+import { ChevronDown, MapPin, FileText } from 'lucide-react'
 import { MAIN_NAV, ROUTE_PREFIXES } from '@/config/site'
 import type { PostCard as PostCardType } from '@/types/post.types'
-import type { Organization } from '@/types/taxonomy.types'
-import type { State } from '@/types/taxonomy.types'
+import type { Organization, State } from '@/types/taxonomy.types'
 
 /** Nav items that have mega-menu dropdowns */
 const MEGA_MENU_LABELS = ['Job', 'Result', 'Admit Card']
 
 interface DesktopNavProps {
     recentPosts: PostCardType[]
-    organizations: Organization[]
+    organizations?: Organization[]
     states: State[]
 }
 
-export function DesktopNav({ recentPosts, organizations, states }: DesktopNavProps) {
+export function DesktopNav({ recentPosts, states }: DesktopNavProps) {
     const [activeMenu, setActiveMenu] = useState<string | null>(null)
     const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 

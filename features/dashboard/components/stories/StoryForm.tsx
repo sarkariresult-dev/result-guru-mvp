@@ -11,8 +11,7 @@ import {
     Save, Eye, EyeOff, Plus, Trash2, ArrowLeft,
     ChevronLeft, ChevronRight, Layout, Settings,
     Type, Link as LinkIcon, Image as ImageIcon,
-    Sparkles, Info, AlertTriangle, CheckCircle2,
-    Monitor, Tablet, Smartphone, MoveVertical
+    Sparkles, Monitor
 } from 'lucide-react'
 import { slugify } from '@/lib/utils'
 
@@ -33,25 +32,6 @@ const MAX_SLIDE_HEADLINE = 80
 const MAX_SLIDE_DESC = 200
 
 // ── Shared UI Components ────────────────────────────────────────
-
-function Panel({ title, icon: Icon, defaultOpen = true, children }: {
-    title: string; icon: any; defaultOpen?: boolean; children: React.ReactNode
-}) {
-    const [isOpen, setIsOpen] = useState(defaultOpen)
-    return (
-        <div className="rounded-xl border border-border bg-surface overflow-hidden shadow-sm">
-            <button
-                type="button" onClick={() => setIsOpen(!isOpen)}
-                className="flex w-full items-center gap-2.5 px-4 py-3 text-left text-sm font-semibold text-foreground hover:bg-background-subtle/50 transition-colors"
-            >
-                <Icon className="size-4 text-brand-600" />
-                <span className="flex-1">{title}</span>
-                {isOpen ? <ChevronRight className="size-3.5 rotate-90 text-foreground-subtle" /> : <ChevronRight className="size-3.5 text-foreground-subtle" />}
-            </button>
-            {isOpen && <div className="border-t border-border px-4 py-4 space-y-4">{children}</div>}
-        </div>
-    )
-}
 
 function Field({ label, children, required, hint, current, max }: { 
     label: string; 
@@ -349,6 +329,7 @@ export function StoryForm({
                                                 }`}
                                         >
                                             {s.bg_image ? (
+                                                // eslint-disable-next-line @next/next/no-img-element -- dynamic slide preview
                                                 <img src={s.bg_image} className="size-full object-cover" />
                                             ) : (
                                                 <div className="size-full flex items-center justify-center opacity-10"><ImageIcon className="size-6" /></div>
@@ -496,6 +477,7 @@ export function StoryForm({
 
                         {/* Background */}
                         {activeSlide.bg_image ? (
+                            // eslint-disable-next-line @next/next/no-img-element -- dynamic slide background preview
                             <img src={activeSlide.bg_image} alt="Slide Preview" className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105" />
                         ) : (
                             <div className="absolute inset-0 bg-linear-to-br from-slate-900 to-slate-950 flex flex-col items-center justify-center p-8 text-center text-slate-700">

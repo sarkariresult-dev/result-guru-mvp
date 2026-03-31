@@ -2,7 +2,7 @@
 
 import { WebStory } from '@/types/stories.types'
 import { STORY_STATUS_CONFIG } from '@/config/constants'
-import { FileText, Map, Layers, Eye, Edit3, Trash2 } from 'lucide-react'
+import { FileText, Map, Eye, Edit3, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { format } from 'date-fns'
 import { deleteWebStory } from '@/lib/actions/stories'
@@ -72,6 +72,7 @@ export function WebStoryList({ stories, baseUrl, isAdmin = false, onDelete }: Pr
                                         <div className="flex items-center gap-3">
                                             <div className="size-10 shrink-0 overflow-hidden rounded bg-slate-100">
                                                 {story.cover_image ? (
+                                                    // eslint-disable-next-line @next/next/no-img-element -- dynamic story cover preview
                                                     <img src={story.cover_image} alt="" className="h-full w-full object-cover" />
                                                 ) : (
                                                     <div className="flex h-full w-full items-center justify-center text-slate-400">
@@ -144,6 +145,7 @@ export function WebStoryList({ stories, baseUrl, isAdmin = false, onDelete }: Pr
                             <div className="flex gap-4">
                                 <div className="size-16 shrink-0 overflow-hidden rounded-lg bg-slate-100">
                                     {story.cover_image ? (
+                                        // eslint-disable-next-line @next/next/no-img-element -- dynamic story cover preview
                                         <img src={story.cover_image} alt="" className="h-full w-full object-cover" />
                                     ) : (
                                         <div className="flex h-full w-full items-center justify-center text-slate-400">
