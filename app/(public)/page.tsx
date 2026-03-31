@@ -90,17 +90,17 @@ export default async function HomePage() {
                             Sarkari Job
                         </span>
                     </h1>
-                    <p className="mx-auto mt-5 max-w-2xl text-base text-blue-100/90 sm:text-lg animate-fade-up delay-75">
+                    <p className="mx-auto mt-5 max-w-2xl text-base text-blue-100/90 sm:text-lg">
                         Direct access to latest government notifications, results, and welfare schemes across India.
                     </p>
 
                     {/* Search Bar */}
-                    <div className="relative z-20 mx-auto mt-8 max-w-3xl animate-fade-up delay-150">
+                    <div className="relative z-20 mx-auto mt-8 max-w-3xl">
                         <HeroSearchBar states={states} />
                     </div>
 
                     {/* Trending Topics */}
-                    <div className="mx-auto mt-5 flex max-w-xl flex-wrap items-center justify-center gap-3 text-sm animate-fade-up delay-225">
+                    <div className="mx-auto mt-5 flex max-w-xl flex-wrap items-center justify-center gap-3 text-sm">
                         <span className="text-blue-200/80 font-medium">Trending:</span>
                         {['SSC CGL 2026', 'UPSC CSE Prelims', 'Railway NTPC'].map((topic) => (
                             <Link
@@ -117,7 +117,7 @@ export default async function HomePage() {
 
             {/* Stats Cards */}
             <section className="container mx-auto max-w-6xl px-4 -mt-10 relative z-10 mb-8">
-                <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 animate-scale-in delay-300">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
                     {STAT_CARDS.map((card) => {
                         const counts = countsMap.get(card.type)
                         const href = ROUTE_PREFIXES[card.type as keyof typeof ROUTE_PREFIXES] || '#'
@@ -282,7 +282,7 @@ export default async function HomePage() {
                                                 <span className="flex size-2 rounded-full bg-emerald-400 animate-pulse" />
                                                 <span className="text-[11px] font-bold text-emerald-100 uppercase tracking-widest">Live Updates</span>
                                             </div>
-                                            <h3 className="text-lg font-black text-white leading-tight">Join Community</h3>
+                                            <h2 className="text-lg font-black text-white leading-tight">Join Community</h2>
                                         </div>
                                     </div>
 
@@ -340,7 +340,7 @@ export default async function HomePage() {
                                                 <span className="flex size-2 rounded-full bg-white animate-pulse" />
                                                 <span className="text-[11px] font-bold text-white/90 uppercase tracking-widest">Official Channel</span>
                                             </div>
-                                            <h3 className="text-lg font-black text-white leading-tight">Follow Channel</h3>
+                                            <h2 className="text-lg font-black text-white leading-tight">Follow Channel</h2>
                                         </div>
                                     </div>
 

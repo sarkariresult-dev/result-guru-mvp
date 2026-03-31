@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
 
   /* ── Compiler ───────────────────────────────────────────── */
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error'] } : false,
+    removeConsole: process.env.NODE_ENV === 'production' ? true : false,
   },
 
   /* ── React 19 Compiler (Stable in Next.js 15+) ──────────── */
@@ -117,7 +117,7 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://va.vercel-scripts.com",
+              "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://va.vercel-scripts.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in https://images.unsplash.com https://www.google-analytics.com https://stats.g.doubleclick.net https://www.googletagmanager.com",
               "font-src 'self' https://fonts.gstatic.com",
