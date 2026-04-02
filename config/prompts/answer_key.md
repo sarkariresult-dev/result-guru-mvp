@@ -1,36 +1,48 @@
-You are writing a Government Exam Official/Provisional Answer Key post. Use a helpful "Hinglish" tone (English + Hindi) to help students calculate their marks. Aim for 1200+ words by providing detailed objection steps and marking scheme analysis.
+You are writing a **Government Exam Answer Key** post. Analytical Hinglish tone. Target: **1200+ words**.
 
-Structure the `content` field exactly as follows using raw HTML tags:
+## Content Structure (use raw HTML)
 
-<h2>[Board Name] [Exam Name] Answer Key [Year] Released</h2>
-Provide a 40-50 word featured snippet detailing when the answer key was released, the exam dates covered, and the objection window.
+<h2>[Board Name] [Exam Name] Answer Key [Year]: Download & Raise Objections</h2>
+50-word snippet: answer key type (official/provisional), download availability, objection window dates.
 
-<h2>Answer Key kab aayegi? (Detailed Insights)</h2>
-Write 2 paragraphs in Hinglish. "Doston, agar aapne [Exam Name] diya hai, toh answer key ka wait ab khatam hua. Official portal par link active ho gaya hai."
+<h2>Answer Key Kaise Download Karein?</h2>
+<h3>Quick Steps</h3> 10+ steps with <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Download Link</a> and <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Official Website</a>
+<h3>Server Issues? Ye Try Karo</h3> Troubleshooting tips
 
-<h2>Key Highlights</h2>
-<li><strong>Exam Conducting Authority:</strong> [Board Name]</li>
-<li><strong>Exam Name:</strong> [Exam Name]</li>
-<li><strong>Exam Date:</strong> [Date]</li>
-<li><strong>Answer Key Status:</strong> Provisional / Final</li>
+<h2>Key Highlights</h2> HTML `<table>` with `<thead>`: Body, Exam Name, Answer Key Type, Objection Window, Fee per Question
 
-<h2>Important Dates</h2>
-Create an HTML <table> with Exam Date, Answer Key Release Date, and Objection Window (Start & End Date).
+<h2>Important Dates</h2> HTML `<table>`: Exam Date, Provisional Key, Objection Start/End, Final Key Expected, Result Expected
 
-<!-- AdSense Placeholder -->
+<h2>Objection Kaise Raise Karein?</h2>
+<h3>Step by Step Process</h3> Detailed objection filing guide
+<h3>Objection Fee & Refund Policy</h3> Per question fee, successful objection refund rules
+<h3>Kab File Karna Worth Hai?</h3> Expert advice on when objections are worth filing
 
-<h2>Steps to Raise Objections (Objection Kaise Karein?)</h2>
-Provide a highly detailed step-by-step guide (10+ steps) explaining the challenge process. Include the required fee per question information clearly. Use placeholders: <a href="[applyOnlineUrl]">Raise Objection Link</a> and <a href="[notificationPdfUrl]">Download Notice PDF</a>.
+<h2>Expected Cut-Off Analysis</h2>
+<h3>Preliminary Estimate</h3> Based on answer key, estimate qualifying score
+<h3>Category-Wise Expected Cut-Off</h3> HTML table with Gen/OBC/SC/ST estimates
+<h3>Previous Year Comparison</h3> Link to <a target="_blank" rel="noopener noreferrer" href="/cut-off">Cut Off Details</a>
 
-<h2>How to Calculate Estimated Score</h2>
-Explain the marking scheme in detail (e.g., +1 for correct, -0.25 for negative marking). Create a small calculation example for clarity.
+<h2>Marks Calculation Guide</h2>
+<h3>Marking Scheme</h3> +marks/-marks/unanswered
+<h3>Self-Score Calculator Method</h3> Step-by-step how to calculate your score
 
-<h2>Direct Link to Download Answer Key</h2>
-Create an HTML table with key links: Download Answer Key PDF, Official Website, and Objection Portal.
+<h2>Aage Kya Hoga?</h2>
+<h3>Final Answer Key Ke Baad</h3> Timeline for <a target="_blank" rel="noopener noreferrer" href="/result">Result</a>
+<h3>Preparation Tips for Next Stage</h3> Link to <a target="_blank" rel="noopener noreferrer" href="/syllabus">Syllabus</a> and <a target="_blank" rel="noopener noreferrer" href="/previous-paper">Previous Papers</a>
 
-Ensure the JSON output strictly matches the required schema structure. Include 2026 for freshness.
+<h2>Direct Important Links for [Exam Name] [Year]</h2>
+HTML `<table>` with `<thead>`:
+- Row 1: **Download Official Answer Key** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Click Here to Download</a>
+- Row 2: **Submit Objection / Challenge Link** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Link Activated</a>
+- Row 3: **Official Notification PDF** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download PDF</a>
+- Row 4: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Portal</a>
+- Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
+- Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
 
-
-**CRITICAL SEO RULES (Must Follow):**
-1. **Headings:** You MUST use HTML `<h3>` and `<h4>` tags within the `<h2>` sections to organize the detailed points. Do not just use `<h2>` and `<li>`.
-2. **Contextual Links:** Naturally inject 2-3 HTML links (`<a href="/...">`) to related topics (e.g. /syllabus, /admit-card, /previous-paper) within your body paragraphs. Do not only put them in the final table.
+**CRITICAL SEO RULES:**
+1. H3 within every H2. Objection section needs 3 H3s minimum
+2. Internal links: `/cut-off`, `/result`, `/syllabus`, `/previous-paper`, `/admit-card`
+3. Tables with `<thead>`, `<th scope="col">`
+4. Expected cut-off analysis is the KEY differentiator - make it detailed
+5. Marks calculation guide has very high search intent

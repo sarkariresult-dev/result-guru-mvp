@@ -153,10 +153,10 @@ export function FileUpload({
                     ) : (
                         <>
                             {preview === 'image' ? <ImageIcon className="size-6 text-foreground-subtle" /> : <Upload className="size-6 text-foreground-subtle" />}
-                            <p className="text-xs text-foreground-muted">
+                            <p className="text-xs text-foreground-muted text-center">
                                 <span className="font-medium text-brand-600">Click to upload</span> or drag & drop
                             </p>
-                            {hint && <p className="text-[10px] text-foreground-subtle">{hint}</p>}
+                            {hint && <p className="text-[10px] text-foreground-subtle text-center">{hint}</p>}
                         </>
                     )}
                 </div>

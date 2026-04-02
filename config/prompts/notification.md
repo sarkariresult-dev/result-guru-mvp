@@ -1,35 +1,33 @@
-You are writing a Government Notice/Circular Notification post. Use an informative and authoritative "Hinglish" (English + Hindi) tone. Target 1200+ words by detailing the implications of the notice and providing background context.
+You are writing a **Government Notification / Official Circular** post. Same structure as job post but focused on the official notification release. Use Hinglish tone. Target: **1500+ words**.
 
-Structure the `content` field exactly as follows using raw HTML tags:
+Follow the same structure as the `job.md` prompt - this post type is functionally identical to job but emphasizes the notification/circular aspect. Include:
 
-<h2>[Department/Ministry Name] Official Notice: [Subject] [Year]</h2>
-Provide a 40-50 word featured snippet detailing the core issue addressed by the notice, who it affects, and the release date.
+<h2>[Organization] [Notification Name] [Year]: [X] Posts - Apply Online</h2>
+<h2>Notification Overview - Kya Hai Is Bharti Mein?</h2> with H3 sub-sections
+<h2>Key Highlights</h2> as HTML `<table>`
+<h2>Important Dates</h2> as HTML `<table>`
+<h2>Application Fee Details</h2> with H3 for category-wise
+<h2>Eligibility Criteria</h2> with H3 for education, age, nationality
+<h2>Vacancy Details</h2> with H3 for category/state distribution
+<h2>Pay Scale & Benefits</h2>
+<h2>Selection Process</h2>
+<h2>How to Apply Online</h2> 10+ steps with placeholder links
+<h2>Notification PDF Analysis</h2> - UNIQUE to this type: analyze key points from the PDF
+<h2>Expert Opinion & Career Advice</h2>
+<h2>Direct Important Links for [Organization] [Year]</h2>
+Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
+- Row 1: **Download Official Notification PDF** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download</a>
+- Row 2: **Apply Online Now** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Visit Official Portal</a>
+- Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Site</a>
+- Row 4: **Latest Admit Card** | <a target="_blank" rel="noopener noreferrer" href="/admit-card">Check Here</a>
+- Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
+- Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
 
-<h2>Notice Summary (Hinglish Overview)</h2>
-Write 2 paragraphs in Hinglish. "Doston, [Department Name] ne ek naya circular jari kiya hai. Yeh notice un sabhi logo ke liye important hai jo [Subject] se jude hain."
-
-<h2>Key Highlights</h2>
-<li><strong>Issuing Authority:</strong> [Department/Ministry Name]</li>
-<li><strong>Notice Subject:</strong> [Subject of the Circular]</li>
-<li><strong>Date of Issue:</strong> [Date]</li>
-
-<h2>Background & Purpose of the Notice</h2>
-Write a 300-word section in Hinglish explaining why this notice was issued and what historical context it carries.
-
-<!-- AdSense Placeholder -->
-
-<h2>Detailed Instructions & Announcements</h2>
-Explain the primary instructions or changes outlined in the circular using an Easy-to-Read, Bullet-Point format. Expand on each point with 2-3 sentences of context.
-
-<h2>Impact Analysis (Kiska Kya Hoga?)</h2>
-Write 200 words in Hinglish about how this change will affect candidates or employees. Use clear, simple language.
-
-<h2>Download Official Circular PDF</h2>
-Provide a direct link and a brief guide on how to verify it. Include placeholders: <a href="[notificationPdfUrl]">Download Official Notice PDF</a> and <a href="[officialWebsiteUrl]">Official Website</a>.
-
-Ensure the JSON output strictly matches the required schema structure. Include 2026 for freshness.
-
-
-**CRITICAL SEO RULES (Must Follow):**
-1. **Headings:** You MUST use HTML `<h3>` and `<h4>` tags within the `<h2>` sections to organize the detailed points. Do not just use `<h2>` and `<li>`.
-2. **Contextual Links:** Naturally inject 2-3 HTML links (`<a href="/...">`) to related topics (e.g. /syllabus, /admit-card, /previous-paper) within your body paragraphs. Do not only put them in the final table.
+**CRITICAL SEO RULES:**
+1. H3/H4 within every H2 section
+2. 3-5 internal links: `/syllabus`, `/admit-card`, `/previous-paper`, `/result`, `/exam-pattern`
+3. Tables MUST use `<thead>`, `<th scope="col">`
+4. Include "Notification PDF Analysis" section - unique differentiator
+5. Career advice section adds EEAT depth
+6. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
+7. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.

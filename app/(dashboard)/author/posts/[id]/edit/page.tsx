@@ -48,7 +48,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
             authUserId={user.id}
             authorId={authorId}
             mode="edit"
-            initialData={post}
+            initialData={post as unknown as Record<string, unknown>}
             states={states.map((s: { slug: string; name: string }) => ({ value: s.slug, label: s.name }))}
             organizations={organizations.map((o: { id: string; name: string; short_name?: string | null }) => ({
                 value: o.id,

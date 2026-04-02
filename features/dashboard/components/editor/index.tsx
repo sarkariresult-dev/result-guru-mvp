@@ -8,8 +8,7 @@ import { SlashCommandExtension } from './slash-command'
 import { LinkModal, ImageModal, TableSizePicker } from './modals'
 import { EditorToolbar, TableControls, BubbleToolbar } from './toolbar'
 import { SlashMenu } from './SlashMenu'
-import { Eye, Edit3, Save } from 'lucide-react'
-import { sanitizeHtml } from '@/lib/sanitize'
+import { Save } from 'lucide-react'
 
 // ─── Types ──────────────────────────────────────────────────
 
@@ -39,7 +38,6 @@ export function TiptapEditor({
     const [showImageModal, setShowImageModal] = useState(false)
     const [showTablePicker, setShowTablePicker] = useState(false)
     const [linkData, setLinkData] = useState<{ url: string; title: string } | undefined>()
-    const [previewMode, setPreviewMode] = useState(false)
 
     // Slash command state
     const [slashMenuActive, setSlashMenuActive] = useState(false)
@@ -200,141 +198,70 @@ export function TiptapEditor({
 
     return (
         <div className="overflow-hidden rounded-xl border border-border bg-surface">
-            {/* ── Mode Toggle Bar ── */}
-            <div className="flex items-center justify-between border-b border-border bg-background-subtle px-3 py-1.5">
-                <div className="flex items-center gap-1">
-                    <button
-                        type="button"
-                        onClick={() => setPreviewMode(false)}
-                        className={`flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition-colors ${!previewMode
-                            ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300'
-                            : 'text-foreground-muted hover:text-foreground'
-                            }`}
-                    >
-                        <Edit3 className="size-3.5" /> Edit
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setPreviewMode(true)}
-                        className={`flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition-colors ${previewMode
-                            ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300'
-                            : 'text-foreground-muted hover:text-foreground'
-                            }`}
-                    >
-                        <Eye className="size-3.5" /> Preview
-                    </button>
-                </div>
+            <>
+                {/* Toolbar */}
+                <EditorToolbar
+                    editor={editor}
+                    onLinkClick={openLinkModal}
+                    onImageClick={() => setShowImageModal(true)}
+                    onTableClick={() => setShowTablePicker(!showTablePicker)}
+                    onRemoveLink={removeLink}
+                />
 
-                <div className="flex items-center gap-3">
-                    {/* Auto-save indicator */}
-                    {onAutoSave && (
-                        <div className="flex items-center gap-1.5 text-xs text-foreground-subtle">
-                            {isDirty ? (
-                                <span className="flex items-center gap-1 text-amber-500">
-                                    <span className="size-1.5 rounded-full bg-amber-500 animate-pulse" />
-                                    Unsaved changes
-                                </span>
-                            ) : lastSavedAt ? (
-                                <span className="flex items-center gap-1 text-green-600 dark:text-green-400">
-                                    <span className="size-1.5 rounded-full bg-green-500" />
-                                    Saved {lastSavedAt.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
-                                </span>
-                            ) : null}
+                {/* Table size picker (absolute positioned) */}
+                {showTablePicker && (
+                    <div className="relative">
+                        <div className="absolute right-2 top-0 z-30">
+                            <TableSizePicker
+                                onSelect={handleTableInsert}
+                                onClose={() => setShowTablePicker(false)}
+                            />
                         </div>
-                    )}
+                    </div>
+                )}
 
-                    {onAutoSave && (
-                        <button
-                            type="button"
-                            onClick={handleManualSave}
-                            title="Save now (Ctrl+S)"
-                            className="flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-foreground-muted hover:bg-background-subtle hover:text-foreground transition-colors"
-                        >
-                            <Save className="size-3.5" /> Save
-                        </button>
-                    )}
+                {/* Table Controls */}
+                <TableControls editor={editor} />
 
-                    <span className="text-[10px] text-foreground-subtle">
-                        Type <kbd className="rounded border border-border bg-surface px-1 py-0.5 font-mono text-[10px]">/</kbd> for commands
-                    </span>
-                </div>
-            </div>
+                {/* Bubble menu for text selection */}
+                <BubbleMenu
+                    editor={editor}
+                    options={{ placement: 'top' }}
+                    shouldShow={({ editor: e, from, to }) => {
+                        // Only show when there's a text selection (not for nodes like images)
+                        if (from === to) return false
+                        if (e.isActive('image')) return false
+                        if (e.isActive('codeBlock')) return false
+                        return true
+                    }}
+                >
+                    <BubbleToolbar editor={editor} onLinkClick={openLinkModal} />
+                </BubbleMenu>
 
-            {/* ── Editor Mode ── */}
-            {!previewMode ? (
-                <>
-                    {/* Toolbar */}
-                    <EditorToolbar
+                {/* Editor Content */}
+                <EditorContent editor={editor} />
+
+                {/* Slash Command Menu */}
+                {slashMenuActive && (
+                    <SlashMenu
                         editor={editor}
-                        onLinkClick={openLinkModal}
-                        onImageClick={() => setShowImageModal(true)}
-                        onTableClick={() => setShowTablePicker(!showTablePicker)}
-                        onRemoveLink={removeLink}
-                    />
-
-                    {/* Table size picker (absolute positioned) */}
-                    {showTablePicker && (
-                        <div className="relative">
-                            <div className="absolute right-2 top-0 z-30">
-                                <TableSizePicker
-                                    onSelect={handleTableInsert}
-                                    onClose={() => setShowTablePicker(false)}
-                                />
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Table Controls */}
-                    <TableControls editor={editor} />
-
-                    {/* Bubble menu for text selection */}
-                    <BubbleMenu
-                        editor={editor}
-                        options={{ placement: 'top' }}
-                        shouldShow={({ editor: e, from, to }) => {
-                            // Only show when there's a text selection (not for nodes like images)
-                            if (from === to) return false
-                            if (e.isActive('image')) return false
-                            if (e.isActive('codeBlock')) return false
-                            return true
+                        query={slashQuery}
+                        coords={slashCoords}
+                        onClose={() => {
+                            setSlashMenuActive(false)
+                            setSlashQuery('')
                         }}
-                    >
-                        <BubbleToolbar editor={editor} onLinkClick={openLinkModal} />
-                    </BubbleMenu>
-
-                    {/* Editor Content */}
-                    <EditorContent editor={editor} />
-
-                    {/* Slash Command Menu */}
-                    {slashMenuActive && (
-                        <SlashMenu
-                            editor={editor}
-                            query={slashQuery}
-                            coords={slashCoords}
-                            onClose={() => {
-                                setSlashMenuActive(false)
-                                setSlashQuery('')
-                            }}
-                            onImageClick={() => {
-                                setSlashMenuActive(false)
-                                setShowImageModal(true)
-                            }}
-                            onTableClick={() => {
-                                setSlashMenuActive(false)
-                                setShowTablePicker(true)
-                            }}
-                        />
-                    )}
-                </>
-            ) : (
-                /* ── Preview Mode ── */
-                <div className="px-5 py-4 min-h-100">
-                    <div
-                        className="prose prose-lg max-w-none dark:prose-invert prose-headings:tracking-tight prose-a:text-brand-600 prose-img:rounded-lg"
-                        dangerouslySetInnerHTML={{ __html: sanitizeHtml(editor.getHTML()) }}
+                        onImageClick={() => {
+                            setSlashMenuActive(false)
+                            setShowImageModal(true)
+                        }}
+                        onTableClick={() => {
+                            setSlashMenuActive(false)
+                            setShowTablePicker(true)
+                        }}
                     />
-                </div>
-            )}
+                )}
+            </>
 
             {/* ── Status bar ── */}
             <div className="flex items-center justify-between border-t border-border bg-background-subtle px-4 py-1.5 text-xs text-foreground-subtle">

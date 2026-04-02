@@ -1,44 +1,56 @@
-You are writing a detailed Government Exam Syllabus post. Use a comprehensive "Hinglish" tone to guide aspirants through every topic. Target 1200+ words by providing exhaustive topic lists and preparation strategies.
+You are writing a **Syllabus** guide for a government exam. Study-helper Hinglish tone. Target: **1500+ words** with subject-wise breakdown and preparation strategy.
 
-Structure the `content` field exactly as follows using raw HTML tags:
+## Content Structure (use raw HTML)
 
-<h2>[Board Name] [Exam Name] Syllabus & Topics [Year]</h2>
-Provide a 40-50 word featured snippet summarizing the selection process tiers and total subjects covered.
+<h2>[Exam Name] Syllabus [Year]: Subject-Wise Complete Guide</h2>
+50-word snippet: exam body, subjects covered, paper pattern summary, and "topic-wise PDF download" CTA.
 
-<h2>Syllabus Analysis (Hinglish Guide)</h2>
-Write 2 paragraphs in Hinglish. "Tailoring your preparation according to the new syllabus is very important. Is baar patterns mein kuch badlav dekhe gaye hain..."
+<h2>Syllabus Overview - Kya Padhna Hai?</h2>
+<h3>Paper Structure at a Glance</h3> Quick summary: number of papers, total marks, duration
+<h3>Is Saal Mein Changes</h3> Any syllabus updates vs previous year. "Pichle saal se [X] topic add/remove hua hai."
 
-<h2>Selection Process Overview</h2>
-<li><strong>Stage 1:</strong> [Written / CBT / Prelims]</li>
-<li><strong>Stage 2:</strong> [Mains / Physical / Skill Test]</li>
-<li><strong>Stage 3:</strong> [Document Verification]</li>
+<h2>Key Highlights</h2> HTML `<table>`: Exam Name, Conducting Body, Stages, Total Marks, Duration, Negative Marking, Medium
 
-<h2>Exam Pattern Table</h2>
-Create an HTML <table> showing Subject, Number of Questions, Marks, and Duration.
+<h2>Subject-Wise Detailed Syllabus</h2>
+For EACH major subject:
+<h3>[Subject Name] - Topics & Weightage</h3>
+Create HTML `<table>`: Topic | Sub-Topics | Expected Questions | Weightage %
+Then write 2-3 lines: "Is section se [X] questions aate hain. Priority topics hain: [list]."
+
+Repeat H3 for ALL subjects (General Studies, Quantitative, Reasoning, English, Technical if applicable).
+
+<h2>Exam Pattern & Marking Scheme</h2>
+<h3>Paper-Wise Breakdown</h3> HTML `<table>`: Paper | Subjects | Questions | Marks | Duration | Negative Marking
+<h3>Sectional Time Strategy</h3> Suggested time per section. Link to <a target="_blank" rel="noopener noreferrer" href="/exam-pattern">Full Exam Pattern</a>
 
 <!-- AdSense Placeholder -->
 
-<h2>Subject-wise Detailed Syllabus</h2>
-Break down the syllabus for each subject using Bullet Points. Provide a 50-word overview for each subject before the list.
+<h2>Expert Preparation Strategy</h2>
+<h3>Phase 1: Foundation (Month 1-2)</h3> What to cover first, NCERT base
+<h3>Phase 2: Practice (Month 3-4)</h3> Mock tests, topic-wise revision. Link to <a target="_blank" rel="noopener noreferrer" href="/previous-paper">Previous Papers</a>
+<h3>Phase 3: Revision (Final Month)</h3> Quick revision, formula sheets, current affairs
+<h3>Subject Priority Matrix</h3> HTML `<table>`: Subject | Difficulty | Weightage | Preparation Priority (High/Medium/Low)
 
-<h3>General Intelligence & Reasoning</h3>
-* Topic 1, Topic 2, Topic 3 (List 15+ topics)
+<h2>Best Books & Study Material</h2>
+<h3>Subject-Wise Recommended Books</h3> HTML `<table>`: Subject | Book Name | Author | Best For (Beginner/Advanced)
+<h3>Free Online Resources</h3> YouTube channels, government sites, free PDFs
 
-<h3>General Awareness / GK</h3>
-* History, Polity, Geography, Current Affairs (List 15+ topics)
+<h2>Important Topics - Must Prepare</h2>
+<h3>High-Weightage Topics</h3> Bullet list of absolute-must topics per subject
+<h3>New/Trending Topics [Year]</h3> Current affairs topics likely to appear
 
-<h3>Quantitative Aptitude</h3>
-* Number System, Profit Loss, Geometry (List 15+ topics)
+<h2>Direct Important Links for [Exam Name] [Year]</h2>
+Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
+- Row 1: **Download Official Syllabus PDF** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download</a>
+- Row 2: **Apply Online Now** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Visit Portal</a>
+- Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Site</a>
+- Row 4: **Previous Year Papers** | <a target="_blank" rel="noopener noreferrer" href="/previous-paper">Download Here</a>
+- Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
+- Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
 
-<h3>English Language</h3>
-* Grammar, Vocabulary, Comprehension (List 15+ topics)
-
-<h2>Preparation Strategy & Best Books</h2>
-Write a 300-word section in Hinglish about how to score high marks and which books to refer. Include placeholders: <a href="[notificationPdfUrl]">Download Full Syllabus PDF</a> and <a href="[officialWebsiteUrl]">Official Portal</a>.
-
-Ensure the JSON output strictly matches the required schema structure. Include 2026 for freshness.
-
-
-**CRITICAL SEO RULES (Must Follow):**
-1. **Headings:** You MUST use HTML `<h3>` and `<h4>` tags within the `<h2>` sections to organize the detailed points. Do not just use `<h2>` and `<li>`.
-2. **Contextual Links:** Naturally inject 2-3 HTML links (`<a href="/...">`) to related topics (e.g. /syllabus, /admit-card, /previous-paper) within your body paragraphs. Do not only put them in the final table.
+**CRITICAL SEO RULES:**
+1. EVERY subject must have its own H3 with topic table
+2. Internal links: `/exam-pattern`, `/previous-paper`, `/admit-card`, `/job`, `/result`
+3. Tables with `<thead>`, `<th scope="col">`
+4. Subject Priority Matrix is the unique value-add
+5. Preparation strategy phased approach shows expertise (EEAT)

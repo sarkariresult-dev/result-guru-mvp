@@ -33,10 +33,10 @@ const MAX_SLIDE_DESC = 200
 
 // ── Shared UI Components ────────────────────────────────────────
 
-function Field({ label, children, required, hint, current, max }: { 
-    label: string; 
-    children: React.ReactNode; 
-    required?: boolean; 
+function Field({ label, children, required, hint, current, max }: {
+    label: string;
+    children: React.ReactNode;
+    required?: boolean;
     hint?: string;
     current?: number;
     max?: number
@@ -224,7 +224,7 @@ export function StoryForm({
                         <ArrowLeft className="size-5" /> Back
                     </button>
                     <Button variant="secondary" onClick={() => handleSubmit(false)} disabled={isPending}>
-                        <Save className="size-4" /> {isPending ? 'Saving...' : 'Save Draft'}
+                        <Save className="size-4" /> {isPending ? 'Saving...' : 'Save'}
                     </Button>
                     <Button onClick={() => handleSubmit(true)} disabled={isPending}>
                         {status === PostStatus.Published ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -473,7 +473,7 @@ export function StoryForm({
                                 <Monitor className="size-3" />
                                 <div className="size-2 rounded-full bg-white/40" />
                             </div>
-                    </div>
+                        </div>
 
                         {/* Background */}
                         {activeSlide.bg_image ? (

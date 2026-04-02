@@ -99,8 +99,7 @@ export default async function HomePage() {
                         <HeroSearchBar states={states} />
                     </div>
 
-                    {/* Trending Topics */}
-                    <div className="mx-auto mt-5 flex max-w-xl flex-wrap items-center justify-center gap-3 text-sm">
+                    <div className="mx-auto mt-6 flex max-w-xl flex-wrap items-center justify-center gap-4 text-sm">
                         <span className="text-blue-200/80 font-medium">Trending:</span>
                         {['SSC CGL 2026', 'UPSC CSE Prelims', 'Railway NTPC'].map((topic) => (
                             <Link
@@ -575,34 +574,52 @@ export default async function HomePage() {
                 </div>
             </section>
 
-            {/* Newsletter CTA Section */}
+            {/* Registration CTA Section - Replacing Newsletter */}
             <section className="container mx-auto max-w-7xl px-4 py-8 mb-12">
-                <div className="relative overflow-hidden rounded-[2.5rem] bg-linear-to-br from-[#1e3a8a] to-[#1e40af] p-8 md:p-12 shadow-2xl border border-white/10">
-                    {/* Abstract Decor */}
-                    <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 blur-3xl opacity-20 pointer-events-none">
-                        <div className="w-96 h-96 bg-brand-400 rounded-full"></div>
-                    </div>
-                    <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/4 blur-3xl opacity-10 pointer-events-none">
-                        <div className="w-64 h-64 bg-white rounded-full"></div>
-                    </div>
-
+                <div className="relative overflow-hidden rounded-[2.5rem] bg-indigo-900 p-8 md:p-12 shadow-2xl border border-white/10">
                     <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                        <div className="space-y-6">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[11px] font-bold text-white uppercase tracking-widest">
-                                <Bell className="size-3" />
-                                Instant Job Alerts
+                        <div className="space-y-8">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[11px] font-bold text-white uppercase tracking-widest">
+                                <ShieldCheck className="size-3" />
+                                Secure & Verified
                             </div>
                             <h2 className="text-3xl md:text-5xl font-black text-white leading-[1.1]">
-                                Never Miss a <span className="text-brand-300">Govt Job</span> Update Again.
+                                Your Personal <span className="text-brand-300">Exam Assistant</span> starts here.
                             </h2>
                             <p className="text-lg text-blue-100/90 leading-relaxed font-medium">
-                                Join 2M+ aspirants getting instant alerts for Latest Results, Admit Cards, and Jobs directly in their inbox.
+                                Create a free account to unlock your personalized dashboard, track saved jobs, and get instant verified notifications directly on your profile.
                             </p>
+                            
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="flex items-center gap-3 text-white/90">
+                                    <div className="flex size-8 items-center justify-center rounded-lg bg-white/10">
+                                        <Bell className="size-4 text-brand-300" />
+                                    </div>
+                                    <span className="text-sm font-semibold">Priority Notifications</span>
+                                </div>
+                                <div className="flex items-center gap-3 text-white/90">
+                                    <div className="flex size-8 items-center justify-center rounded-lg bg-white/10">
+                                        <Star className="size-4 text-brand-300" />
+                                    </div>
+                                    <span className="text-sm font-semibold">Save for Later</span>
+                                </div>
+                            </div>
                         </div>
-                        <div className="p-6 md:p-8">
-                            <NewsletterForm />
-                            <p className="text-xs text-white/60 mt-4 text-center font-bold uppercase tracking-wide">
-                                No Spam. Only Verified Official Notifications.
+
+                        <div className="flex flex-col items-center justify-center space-y-6 lg:border-l lg:border-white/10 lg:pl-12">
+                            <Link
+                                href="/register"
+                                className="group flex items-center justify-center gap-3 w-full max-w-sm bg-white text-indigo-900 hover:bg-slate-100 py-4 px-8 rounded-2xl text-lg font-bold transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-black/20"
+                            >
+                                Create Free Account
+                                <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
+                            </Link>
+                            <p className="text-sm text-blue-100/60 font-medium">
+                                Already have an account? <Link href="/login" className="text-white hover:underline decoration-white/30 transition-all font-bold">Sign In</Link>
+                            </p>
+                            <div className="h-px w-full max-w-[200px] bg-white/10" />
+                            <p className="text-xs text-white/40 text-center font-bold uppercase tracking-wider">
+                                Trusted by 2M+ Aspirants Across India
                             </p>
                         </div>
                     </div>

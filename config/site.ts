@@ -198,3 +198,36 @@ export const BREADCRUMB_HOME = { label: 'Home', href: '/' }
 // ─── Alias for components that import siteConfig ────────────────────────────
 
 export const siteConfig = SITE
+
+export const SOCIAL_MEDIA_LINKS = [
+    {
+        name: 'Facebook',
+        href: 'https://www.facebook.com/resultguru247',
+        icon: 'Facebook',
+    },
+    {
+        name: 'Twitter',
+        href: 'https://x.com/resultguru247',
+        icon: 'Twitter',
+    },
+    {
+        name: 'Instagram',
+        href: 'https://www.instagram.com/resultguru247',
+        icon: 'Instagram',
+    },
+    {
+        name: 'Threads',
+        href: 'https://www.threads.net/@resultguru247',
+        icon: 'Threads',
+    },
+    {
+        name: 'LinkedIn',
+        href: 'https://www.linkedin.com/company/resultguru247',
+        icon: 'LinkedIn',
+    },
+    {
+        name: 'YouTube',
+        href: 'https://www.youtube.com/@resultguru247',
+        icon: 'Youtube',
+    },
+]

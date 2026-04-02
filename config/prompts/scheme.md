@@ -1,36 +1,49 @@
-You are writing a Government Scheme (Yojana) explanatory post. Use a clear, encouraging "Hinglish" (English + Hindi) tone to help citizens understand the benefits. Target 1200+ words by detailing eligibility, document requirements, and step-by-step registration.
+You are writing a **Government Scheme** (Sarkari Yojana) post. Informative, helpful Hinglish tone. Target: **1200+ words**.
 
-Structure the `content` field exactly as follows using raw HTML tags:
+## Content Structure (use raw HTML)
 
-<h2>[State/Central] [Scheme Name] [Year]: Online Registration</h2>
-Provide a 40-50 word featured snippet detailing the core objective of the scheme (e.g., financial assistance), the beneficiaries, and launch date.
+<h2>[Scheme Name] [Year]: Eligibility, Benefits & How to Apply</h2>
+50-word snippet: scheme provider, beneficiaries, key benefit, and application portal.
 
-<h2>Yojana Details (Hinglish Overview)</h2>
-Write 2 paragraphs in Hinglish. "Doston, [State/Govt] ne ek bahut hi badiya scheme launch ki hai un logo ke liye jo [Beneficiary Type] hain. Iska labh uthana na bhulein."
+<h2>[Scheme Name] Kya Hai?</h2>
+<h3>Scheme Ka Uddeshya</h3> Government objective, target population, launch year
+<h3>Kisko Milega Fayda?</h3> Quick overview of who benefits: farmers/women/SC-ST/youth/senior citizens
 
-<h2>Key Highlights</h2>
-<li><strong>Scheme Name:</strong> [Yojana Name]</li>
-<li><strong>Launched By:</strong> [Ministry / State Govt]</li>
-<li><strong>Beneficiaries:</strong> [e.g., Farmers, Students, Women]</li>
-<li><strong>Benefits:</strong> [e.g., Rs. 6000/year]</li>
+<h2>Key Highlights</h2> HTML `<table>`: Scheme Name, Ministry/Dept, Target Beneficiaries, Key Benefit, Application Mode, Status
 
-<h2>Eligibility Criteria (Kaun Apply Kar Sakta Hai?)</h2>
-Detail exactly who is eligible using a mix of bullet points and descriptive text. Aim for 200 words in this section.
+<h2>Eligibility Criteria</h2>
+<h3>Mandatory Requirements</h3> Income, age, domicile, category
+<h3>Document Requirements</h3> Numbered list with preparation tips
+<h3>Who Cannot Apply?</h3> Quick exclusion criteria
 
-<!-- AdSense Placeholder -->
+<h2>Benefits & Financial Assistance</h2>
+<h3>Direct Benefits</h3> Financial amount, frequency (one-time/monthly/yearly)
+<h3>Additional Benefits</h3> Insurance, training, tools, subsidies
+<h3>Benefit Comparison</h3> HTML `<table>` comparing with similar schemes
 
-<h2>Required Documents (Jaruri Kagaz)</h2>
-Provide a numbered list of documents needed to apply. Add tips on how to prepare these documents if they are missing.
+<h2>How to Apply - Step by Step</h2>
+<h3>Online Application</h3> 10+ steps with <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Apply Now</a> and <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Official Website</a>
+<h3>Offline Application</h3> If applicable, CSC/Gram Panchayat process
+<h3>Application Status Check</h3> How to track after applying
 
-<h2>Step-by-Step Guide: How to Apply Online</h2>
-Provide a highly detailed 10+ step guide explaining the registration on the official portal. Include placeholders: <a href="[applyOnlineUrl]">Apply Online Now</a>, <a href="[officialWebsiteUrl]">Official Website</a>, and <a href="[notificationPdfUrl]">Download Scheme PDF</a>.
+<h2>Important Dates</h2> HTML `<table>`: Registration Start, Last Date, Verification, Benefit Disbursement
 
-<h2>Frequently Asked Questions (Yojana FAQ)</h2>
-List 5 common questions and answers about the scheme in Hinglish.
+<h2>Similar Government Schemes</h2>
+<h3>Central Schemes</h3> Related schemes with brief description
+<h3>State-Specific</h3> State alternatives. Link to <a target="_blank" rel="noopener noreferrer" href="/scheme">All Schemes</a> and <a target="_blank" rel="noopener noreferrer" href="/scholarship">Scholarships</a>
 
-Ensure the JSON output strictly matches the required schema structure. Include 2026 for freshness.
+<h2>Direct Important Links for [Scheme Name] [Year]</h2>
+Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
+- Row 1: **Apply Online for Scheme** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Link Activated</a>
+- Row 2: **Download Official Guidelines / PDF** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download</a>
+- Row 3: **Official Government Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Site</a>
+- Row 4: **Check Beneficiary List** | <a target="_blank" rel="noopener noreferrer" href="/result">Check Now</a>
+- Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
+- Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
 
-
-**CRITICAL SEO RULES (Must Follow):**
-1. **Headings:** You MUST use HTML `<h3>` and `<h4>` tags within the `<h2>` sections to organize the detailed points. Do not just use `<h2>` and `<li>`.
-2. **Contextual Links:** Naturally inject 2-3 HTML links (`<a href="/...">`) to related topics (e.g. /syllabus, /admit-card, /previous-paper) within your body paragraphs. Do not only put them in the final table.
+**CRITICAL SEO RULES:**
+1. H3 within every H2
+2. Internal links: <a target="_blank" rel="noopener noreferrer" href="/scheme">/scheme</a>, <a target="_blank" rel="noopener noreferrer" href="/scholarship">/scholarship</a>, <a target="_blank" rel="noopener noreferrer" href="/admission">/admission</a>, <a target="_blank" rel="noopener noreferrer" href="/job">/job</a>
+3. Tables with `<thead>`, `<th scope="col">`
+4. Benefit comparison table with similar schemes is the differentiator
+5. Both online AND offline application methods show thoroughness

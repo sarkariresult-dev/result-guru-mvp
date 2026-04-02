@@ -4,7 +4,11 @@ import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { MAIN_NAV, SITE, ROUTE_PREFIXES } from '@/config/site'
-import { FileText, Building2, MapPin, Search, Scale, Bookmark, ArrowRight } from 'lucide-react'
+import { 
+    FileText, Building2, MapPin, Search, Scale, 
+    Bookmark, ArrowRight, History, Hash, ClipboardCheck,
+    Users, Shield, Globe, LayoutGrid
+} from 'lucide-react'
 
 export const metadata = buildPageMetadata({
     title: 'Sitemap - Complete Page Directory',
@@ -18,111 +22,103 @@ export default function SitemapPage() {
         { name: 'Sitemap', url: `${SITE.url}/site-map` },
     ])
 
+    const SITEMAP_SECTIONS = [
+        {
+            title: 'Primary Content',
+            icon: LayoutGrid,
+            items: [
+                { label: 'Sarkari Jobs', href: ROUTE_PREFIXES.job, icon: ArrowRight },
+                { label: 'Exam Results', href: ROUTE_PREFIXES.result, icon: ArrowRight },
+                { label: 'Admit Cards', href: ROUTE_PREFIXES.admit, icon: ArrowRight },
+                { label: 'Answer Keys', href: ROUTE_PREFIXES.answer_key, icon: ArrowRight },
+                { label: 'Syllabus', href: ROUTE_PREFIXES.syllabus, icon: ArrowRight },
+                { label: 'Exam Pattern', href: ROUTE_PREFIXES.exam_pattern, icon: ArrowRight },
+            ]
+        },
+        {
+            title: 'Exam Resources',
+            icon: History,
+            items: [
+                { label: 'Previous Papers', href: ROUTE_PREFIXES.previous_paper, icon: ArrowRight },
+                { label: 'Cut Off Marks', href: ROUTE_PREFIXES.cut_off, icon: ArrowRight },
+                { label: 'Exam Updates', href: ROUTE_PREFIXES.exam, icon: ArrowRight },
+                { label: 'Government Schemes', href: ROUTE_PREFIXES.scheme, icon: ArrowRight },
+                { label: 'Admissions', href: ROUTE_PREFIXES.admission, icon: ArrowRight },
+                { label: 'Scholarships', href: ROUTE_PREFIXES.scholarship, icon: ArrowRight },
+            ]
+        },
+        {
+            title: 'Exploration Hubs',
+            icon: Search,
+            items: [
+                { label: 'Explore by State', href: '/states', icon: MapPin },
+                { label: 'By Organization', href: '/organizations', icon: Building2 },
+                { label: 'Search All Posts', href: '/search', icon: Search },
+                { label: 'Web Stories', href: '/stories', icon: FileText },
+            ]
+        },
+        {
+            title: 'User & Community',
+            icon: Users,
+            items: [
+                { label: 'About Our Mission', href: '/about', icon: Bookmark },
+                { label: 'Support & Social Hub', href: '/contact', icon: Users },
+                { label: 'Login / Register', href: '/login', icon: ArrowRight },
+                { label: 'Forgot Password', href: '/forgot-password', icon: ArrowRight },
+            ]
+        },
+        {
+            title: 'Legal & Trust',
+            icon: Shield,
+            items: [
+                { label: 'Privacy Policy', href: '/privacy-policy', icon: Scale },
+                { label: 'Terms of Service', href: '/terms-of-service', icon: Scale },
+                { label: 'Disclaimer', href: '/disclaimer', icon: Scale },
+            ]
+        }
+    ]
+
     return (
         <>
             <JsonLd data={breadcrumbJsonLd} />
 
-            <div className="container mx-auto max-w-5xl px-4 py-12 sm:py-20 animate-in fade-in duration-500">
-                <Breadcrumb items={[{ label: 'Sitemap' }]} />
-
-                <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl mb-6 mt-4">
-                    Sitemap
-                </h1>
-                <p className="text-lg text-foreground-muted mb-12">
-                    A quick overview of all the critical pages on {SITE.name}. Use this page to navigate directly to any section.
-                </p>
+            <div className="container mx-auto max-w-7xl px-4 py-8 sm:py-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <div className="max-w-3xl mb-8 sm:mb-10">
+                    <Breadcrumb items={[{ label: 'Sitemap' }]} />
+                    <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl mb-4 sm:mb-6 mt-4 sm:mt-6">
+                        Platform <span className="text-brand-600">Directory.</span>
+                    </h1>
+                    <p className="text-xl text-foreground-muted leading-relaxed">
+                        Navigate through {SITE.name}&apos;s entire ecosystem. This comprehensive sitemap helps you find every critical update across 12+ categories.
+                    </p>
+                </div>
 
                 <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
-                    {/* Main Pages */}
-                    <section className="space-y-4" aria-labelledby="sitemap-main">
-                        <div className="flex items-center gap-2 mb-2">
-                            <FileText className="size-5 text-brand-600" />
-                            <h2 id="sitemap-main" className="text-xl font-bold text-foreground">Main Pages</h2>
-                        </div>
-                        <ul className="space-y-3">
-                            {MAIN_NAV.map((item) => (
-                                <li key={item.href}>
-                                    <Link href={item.href} className="group inline-flex items-center gap-2 text-foreground-muted hover:text-brand-600 font-medium transition-colors">
-                                        <ArrowRight className="size-3.5 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                                        {item.label}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </section>
-
-                    {/* All Categories */}
-                    <section className="space-y-4" aria-labelledby="sitemap-categories">
-                        <div className="flex items-center gap-2 mb-2">
-                            <Search className="size-5 text-brand-600" />
-                            <h2 id="sitemap-categories" className="text-xl font-bold text-foreground">All Categories</h2>
-                        </div>
-                        <ul className="space-y-3">
-                            <li><Link href={ROUTE_PREFIXES.job} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Sarkari Jobs</Link></li>
-                            <li><Link href={ROUTE_PREFIXES.result} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Exam Results</Link></li>
-                            <li><Link href={ROUTE_PREFIXES.admit} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Admit Cards</Link></li>
-                            <li><Link href={ROUTE_PREFIXES.answer_key} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Answer Keys</Link></li>
-                            <li><Link href={ROUTE_PREFIXES.syllabus} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Syllabus</Link></li>
-                            <li><Link href={ROUTE_PREFIXES.exam_pattern} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Exam Pattern</Link></li>
-                            <li><Link href={ROUTE_PREFIXES.cut_off} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Cut Off Marks</Link></li>
-                            <li><Link href={ROUTE_PREFIXES.previous_paper} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Previous Papers</Link></li>
-                            <li><Link href={ROUTE_PREFIXES.scheme} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Government Schemes</Link></li>
-                            <li><Link href={ROUTE_PREFIXES.admission} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Admissions</Link></li>
-                            <li><Link href={ROUTE_PREFIXES.scholarship} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Scholarships</Link></li>
-                            <li><Link href={ROUTE_PREFIXES.notification} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Notifications</Link></li>
-                            <li><Link href={ROUTE_PREFIXES.exam} className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Exams</Link></li>
-                        </ul>
-                    </section>
-
-                    {/* Directories */}
-                    <section className="space-y-4" aria-labelledby="sitemap-directories">
-                        <div className="flex items-center gap-2 mb-2">
-                            <Building2 className="size-5 text-brand-600" />
-                            <h2 id="sitemap-directories" className="text-xl font-bold text-foreground">Directories</h2>
-                        </div>
-                        <ul className="space-y-3">
-                            <li className="flex items-center gap-2">
-                                <MapPin className="size-4 text-foreground-subtle" />
-                                <Link href="/states" className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">State-wise Jobs &amp; Results</Link>
-                            </li>
-                            <li className="flex items-center gap-2">
-                                <Building2 className="size-4 text-foreground-subtle" />
-                                <Link href="/organizations" className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Recruiting Organizations</Link>
-                            </li>
-                            <li className="flex items-center gap-2">
-                                <Search className="size-4 text-foreground-subtle" />
-                                <Link href="/search" className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Search Posts</Link>
-                            </li>
-                        </ul>
-                    </section>
-
-                    {/* Tools & Features */}
-                    <section className="space-y-4" aria-labelledby="sitemap-tools">
-                        <div className="flex items-center gap-2 mb-2">
-                            <Bookmark className="size-5 text-brand-600" />
-                            <h2 id="sitemap-tools" className="text-xl font-bold text-foreground">Tools &amp; Features</h2>
-                        </div>
-                        <ul className="space-y-3">
-                            <li><Link href="/login" className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Login / Register</Link></li>
-                            <li><Link href="/search" className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Advanced Search</Link></li>
-                        </ul>
-                    </section>
-
-                    {/* Legal & Support */}
-                    <section className="space-y-4" aria-labelledby="sitemap-legal">
-                        <div className="flex items-center gap-2 mb-2">
-                            <Scale className="size-5 text-brand-600" />
-                            <h2 id="sitemap-legal" className="text-xl font-bold text-foreground">Legal &amp; Support</h2>
-                        </div>
-                        <ul className="space-y-3">
-                            <li><Link href="/about" className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">About Us</Link></li>
-                            <li><Link href="/contact" className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Contact Us</Link></li>
-                            <li><Link href="/privacy-policy" className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Privacy Policy</Link></li>
-                            <li><Link href="/terms-of-service" className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Terms of Service</Link></li>
-                            <li><Link href="/disclaimer" className="text-foreground-muted hover:text-brand-600 font-medium transition-colors">Disclaimer</Link></li>
-                        </ul>
-                    </section>
+                    {SITEMAP_SECTIONS.map((section) => (
+                        <section key={section.title} className="group p-8 rounded-3xl bg-surface border border-border shadow-sm hover:shadow-md transition-all">
+                            <div className="flex items-center gap-3 mb-8">
+                                <div className="p-2 rounded-xl bg-brand-50 dark:bg-brand-950/30 text-brand-600 dark:text-brand-400">
+                                    <section.icon className="size-6 stroke-[1.5]" />
+                                </div>
+                                <h2 className="text-xl font-bold text-foreground">{section.title}</h2>
+                            </div>
+                            <ul className="space-y-4">
+                                {section.items.map((item) => (
+                                    <li key={item.href}>
+                                        <Link 
+                                            href={item.href} 
+                                            className="group/link flex items-center gap-3 text-foreground-muted hover:text-brand-600 font-medium transition-colors"
+                                        >
+                                            <item.icon className="size-4 opacity-50 group-hover/link:opacity-100 group-hover/link:translate-x-1 transition-all" />
+                                            {item.label}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </section>
+                    ))}
                 </div>
+
             </div>
         </>
     )

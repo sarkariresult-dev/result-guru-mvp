@@ -1,45 +1,91 @@
-You are writing a Government Job Recruitment Notification post. Ensure the tone is professionally helpful and slightly informal in a "Hinglish" style (mixing English and Hindi where natural) to engage Indian candidates. Target a word count of 1200+ words by providing deep details on every aspect.
+You are writing a **Government Job Recruitment** post for a sarkari vacancy. The post must feel like it was written by an HR expert who genuinely cares about candidates' success. Target: **1500+ words**.
 
-Structure the `content` field exactly as follows using raw HTML tags:
+---
 
-<h2>[Recruitment Board Name] [Post Name] Recruitment [Year]</h2>
-Provide a 40-50 word featured snippet answering the exact query (eligibility, dates, total posts).
+## Content Structure (use raw HTML)
 
-<h2>About [Organization Name]</h2>
-Write a 100-word introduction about the recruitment board, its history, and its role in government hiring.
+<h2>[Organization Short Name] [Post Name] Recruitment [Year]: [Total Posts] Vacancies</h2>
+Write a 50-word featured snippet. State the organization, total vacancies, last date, and who can apply. Use a direct, urgent tone. Include focus keyword.
+
+<h2>[Organization Name] Bharti [Year] - Puri Jaankari</h2>
+Write 2-3 paragraphs in Hinglish explaining WHY this job matters for students. "Doston, [Org] ne ek bahut badi recruitment nikali hai jisme total [X] pads ke liye apply kar sakte ho. Ye opportunity un logo ke liye hai jo..." Include a comparison: "Pichle saal [X] posts the, is baar [Y] posts hain - matlab [increase/decrease]%."
+
+<h3>Kya Ye Job Aapke Liye Sahi Hai?</h3>
+Provide a quick 3-4 bullet point assessment: who should apply, who might want to wait for other exams. Show career counselor expertise.
 
 <h2>Key Highlights</h2>
-<li><strong>Organization:</strong> [Org Name]</li>
-<li><strong>Post Name:</strong> [Post Name]</li>
-<li><strong>Vacancies:</strong> [Number] Posts</li>
-<li><strong>Job Location:</strong> [State/India]</li>
-
-<h2>Sarkari Result Guru Analysis (Hinglish Point of View)</h2>
-Write 2 paragraph analysis in Hinglish about whether this job is a good opportunity, the competition level, and preparation tips. Use phrases like "Doston, yeh ek sunahra mauka hai..." or "Agar aap mehnat karenge toh selection pakka hai."
+Create an HTML `<table>` with `<thead>` and `<th scope="col">`:
+- Organization Name, Post Name, Total Vacancies, Qualification, Age Limit, Last Date, Apply Mode
 
 <h2>Important Dates</h2>
-Create an HTML <table> with Application Start Date, Last Date, Fee Payment Last Date, and Exam Date.
+Create an HTML `<table>`:
+- Online Application Start, Online Application Last Date, Fee Payment Last Date, Exam Date (if announced)
 
-<h2>Application Fee</h2>
-Create an HTML <table> outlining fees by category (Gen/OBC, SC/ST/PH, Female) and payment modes.
+Provide a Hinglish tip: "Important: Last date ke din server bahut slow hota hai. 2-3 din pehle apply karna best hai."
 
 <!-- AdSense Placeholder -->
 
-<h2>Age Limit as on [Cut-off Date]</h2>
-List minimum and maximum age, along with age relaxation rules. Write a few sentences explaining the relaxation for reserved categories clearly.
+<h2>Application Fee Details</h2>
+<h3>Category-Wise Fee Structure</h3>
+Create an HTML `<table>` with categories (Gen/OBC, SC/ST, Female/PH, Payment Mode).
+<h3>Fee Payment Tips</h3>
+1-2 tips about payment (UPI vs card, refund policy).
 
-<h2>Vacancy Details & Eligibility</h2>
-Create an HTML <table> showing Post Name, Total Posts, and Eligibility Criteria (Education/Experience). Expand on the education requirements with additional context.
+<h2>Eligibility Criteria - Kaun Apply Kar Sakta Hai?</h2>
+<h3>Educational Qualification</h3>
+Detail the required degrees/diplomas. Use `<strong>` for minimum marks.
+<h3>Age Limit (as of [cutoff date])</h3>
+Create a table with category-wise age limits including relaxation rules.
+<h3>Nationality & Other Requirements</h3>
+Brief bullet list.
 
-<h2>Step-by-Step Guide: How to Apply Online</h2>
-Provide a detailed bulleted guide (10+ steps) for candidates. Add tips for photo resizing and document scanning. Include placeholders: <a href="[applyOnlineUrl]">Apply Online Now</a> and <a href="[notificationPdfUrl]">Download Notification</a>.
+<h2>Vacancy Details - Post-Wise Breakdown</h2>
+<h3>Category-Wise Vacancy Distribution</h3>
+Create a detailed table: Post Name | UR | OBC | SC | ST | EWS | Total.
+<h3>State-Wise/Zone-Wise Distribution</h3>
+If applicable, add state/zone breakdown.
 
-<h2>Important Links for Quick Access</h2>
-Create an HTML table with key links: Apply Online, Official Notification, Official Website, and Sarkari Result Guru Home.
+<h2>Pay Scale & Salary Structure</h2>
+<h3>Official Pay Band</h3>
+Mention pay level, grade pay, and 7th CPC matrix.
+<h3>In-Hand Salary Estimate</h3>
+"Roughly, aapki in-hand salary hogi around ₹[amount] to ₹[amount] per month, depending on posting location." Include allowances.
 
-Ensure the JSON output strictly matches the required schema structure. Include the current year (2026) in the content.
+<h2>Selection Process - Step by Step</h2>
+Use a numbered `<ol>` with details for each stage. Add expected timeline.
 
+<h2>How to Apply Online - Step-by-Step Guide</h2>
+Provide a 10+ step numbered guide with:
+- Follow the official process carefully.
+- <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Official Website Home Page</a>
+- <a target="_blank" rel="noopener noreferrer" href="/admit-card">Latest Admit Card</a>
+- <a target="_blank" rel="noopener noreferrer" href="/result">Exam Result</a>
 
-**CRITICAL SEO RULES (Must Follow):**
-1. **Headings:** You MUST use HTML `<h3>` and `<h4>` tags within the `<h2>` sections to organize the detailed points. Do not just use `<h2>` and `<li>`.
-2. **Contextual Links:** Naturally inject 2-3 HTML links (`<a href="/...">`) to related topics (e.g. /syllabus, /admit-card, /previous-paper) within your body paragraphs. Do not only put them in the final table.
+<h3>Common Application Mistakes to Avoid</h3>
+List 3-4 mistakes candidates commonly make (wrong photo size, email typos, etc.).
+
+<h2>Expert Preparation Tips</h2>
+<h3>Syllabus Priority Areas</h3>
+Brief advice on what to study first. Link to <a target="_blank" rel="noopener noreferrer" href="/syllabus">Exam Syllabus</a> and <a target="_blank" rel="noopener noreferrer" href="/previous-paper">Previous Papers</a>.
+<h3>Recommended Books & Resources</h3>
+2-3 book suggestions relevant to the exam.
+
+<h2>Direct Important Links for [Organization Name] [Year]</h2>
+Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
+- Row 1: **Apply Online Link** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Click Here to Apply</a>
+- Row 2: **Download Official Notification** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download PDF</a>
+- Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Portal</a>
+- Row 4: **Syllabus & Exam Pattern** | <a target="_blank" rel="noopener noreferrer" href="/syllabus">Download Syllabus</a>
+- Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
+- Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
+
+---
+
+**CRITICAL SEO RULES:**
+1. Use H3/H4 within every H2 section - flat H2-only structure is NOT acceptable
+2. Insert 3-5 internal links: `/syllabus`, `/admit-card`, `/previous-paper`, `/result`, `/exam-pattern`
+3. Include comparison with previous year recruitment (numbers, dates, difficulty)
+4. All tables MUST use `<thead>`, `<th scope="col">`, `<tbody>`
+5. Use `<strong>` for salary figures, dates, and organization names
+6. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
+7. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.

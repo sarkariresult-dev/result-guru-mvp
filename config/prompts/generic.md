@@ -1,32 +1,55 @@
-You are writing a Government Jobs & Education post. Use a helpful and engaging "Hinglish" (English + Hindi) tone. Target 1200+ words by providing deep analysis and comprehensive information.
+You are writing a **generic government/education** post that doesn't fit a specific category. Use informative Hinglish tone. Target: **1200+ words**.
 
-Structure the `content` field exactly as follows using raw HTML tags:
+## Content Structure (use raw HTML)
 
-<h2>[Catchy SEO Title based on Topic]</h2>
-Provide a 40-50 word featured snippet detailing the most important information regarding the topic immediately in paragraph form.
+<h2>[Topic Title] [Year]: Complete Guide in Hindi</h2>
+50-word featured snippet summarizing the topic, who it benefits, and what readers will learn.
 
-<h2>Topic Overview (Hinglish Guide)</h2>
-Write 2 paragraphs in Hinglish. "Doston, aaj hum baat karenge [Topic] ke bare mein. Yeh topic un sabhi ke liye important hai jo government jobs ki taiyari kar rahe hain."
+<h2>Ye Topic Kya Hai? - Puri Jaankari</h2>
+<h3>Overview</h3> 2-3 paragraphs explaining the topic in simple Hinglish
+<h3>Kyun Important Hai?</h3> Why students/job seekers should care
 
 <h2>Key Highlights</h2>
-<li><strong>Name of Entity:</strong> [Authority/Board]</li>
-<li><strong>Topic Category:</strong> [Job/Result/Admit Card/Etc]</li>
-<li><strong>Current Status:</strong> [Active/Upcoming/Released]</li>
+HTML `<table>` with `<thead>`, `<th scope="col">` - use columns relevant to the topic.
 
-<h2>Detailed Analysis & Information</h2>
-Explain the topic in depth (500+ words in this section). Use H3 (<h3>) subheadings, bullet points, and HTML tables where applicable to make data easily scannable. Include preparation tips or career advice organically.
+<h2>Important Details</h2>
+Use H3 sub-sections to break down the main aspects of the topic. Create at least 3 H3s.
+Include HTML tables where data comparison is useful.
 
 <!-- AdSense Placeholder -->
 
-<h2>Important Dates & Instructions</h2>
-Provide any timelines or eligibility rules related to the topic. Include necessary link placeholders: <a href="[applyOnlineUrl]">Official Link</a>, <a href="[notificationPdfUrl]">Download PDF</a>, and <a href="[officialWebsiteUrl]">Official Website</a>.
+<h2>Step-by-Step Guide</h2>
+If applicable, provide a numbered process guide.
+Include placeholder links:
+- <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Apply Online / Take Action</a>
+- <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Official Website</a>
+- <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download Notification</a>
 
-<h2>Market/Trend Analysis (Hinglish Point of View)</h2>
-Write 200 words in Hinglish about the latest trends or news related to this topic.
+<h2>Expert Tips & Analysis</h2>
+<h3>What Most People Miss</h3> Unique insight or common mistakes
+<h3>Our Recommendation</h3> Career counselor-style advice
 
-Ensure the JSON output strictly matches the required schema structure. Include 2026 for freshness.
+<h2>Related Resources</h2>
+Link to 3-4 related content types:
+- <a target="_blank" rel="noopener noreferrer" href="/job">Latest Government Jobs</a>
+- <a target="_blank" rel="noopener noreferrer" href="/result">Recent Results</a>
+- <a target="_blank" rel="noopener noreferrer" href="/scheme">Government Schemes</a>
+- <a target="_blank" rel="noopener noreferrer" href="/scholarship">Scholarships</a>
 
+<h2>Direct Important Links for [Topic Name] [Year]</h2>
+Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
+- Row 1: **Main Application Link** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Link Activated</a>
+- Row 2: **Download Official PDF / Notification** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download</a>
+- Row 3: **Official Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Site</a>
+- Row 4: **Latest Update Link** | <a target="_blank" rel="noopener noreferrer" href="/job">Check Here</a>
+- Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
+- Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
 
-**CRITICAL SEO RULES (Must Follow):**
-1. **Headings:** You MUST use HTML `<h3>` and `<h4>` tags within the `<h2>` sections to organize the detailed points. Do not just use `<h2>` and `<li>`.
-2. **Contextual Links:** Naturally inject 2-3 HTML links (`<a href="/...">`) to related topics (e.g. /syllabus, /admit-card, /previous-paper) within your body paragraphs. Do not only put them in the final table.
+---
+
+**CRITICAL SEO RULES:**
+1. H3/H4 within every H2 - no flat structure
+2. 3-5 internal links to related sections
+3. All tables with `<thead>`, `<th scope="col">`
+4. Include expert analysis section for EEAT depth
+5. Year (2026) must appear in title and content at least once

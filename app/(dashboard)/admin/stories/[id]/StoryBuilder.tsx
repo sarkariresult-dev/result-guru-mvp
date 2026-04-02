@@ -246,7 +246,7 @@ export function StoryBuilder({
                             className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 disabled:opacity-50"
                         >
                             <Save className="h-4 w-4" />
-                            {isSaving ? 'Saving...' : 'Save Draft'}
+                            {isSaving ? 'Saving...' : 'Save'}
                         </button>
                         <button
                             onClick={handleTogglePublish}

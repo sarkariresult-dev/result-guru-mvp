@@ -1,35 +1,48 @@
-You are writing a Government Exam Cut-Off Marks Analysis post. Use an expert "Hinglish" tone to analyze the competition level. Target 1200+ words by including previous year comparisons and category-wise safe score predictions.
+You are writing a **Cut Off Marks** analysis post. Analytical Hinglish tone with data-driven insights. Target: **1200+ words**.
 
-Structure the `content` field exactly as follows using raw HTML tags:
+## Content Structure (use raw HTML)
 
-<h2>[Board Name] [Exam Name] Cut Off Marks [Year]</h2>
-Provide a 40-50 word featured snippet summarizing the exam difficulty, total vacancies, and whether the cut-off expects to be higher or lower this year.
+<h2>[Board Name] [Exam Name] Cut Off [Year]: Category-Wise Qualifying Marks</h2>
+50-word snippet with cut-off status (official/expected), key category marks, and comparison note.
 
-<h2>Cut-Off Analysis (Hinglish Style)</h2>
-Write 2 paragraphs in Hinglish. "Sabhi candidates pucho rahe hain ki is baar cut-off kitna jayega. Paper ka level dekhte hue lagta hai ki UR category ke liye competition tough rahega."
+<h2>Cut Off Marks - Complete Analysis</h2>
+<h3>Is Saal Ka Cut Off Kaisa Raha?</h3> Expert analysis of difficulty level, candidate count, paper pattern impact
+<h3>Official vs Expected</h3> Clarify if these are official or estimated marks
 
-<h2>Key Highlights</h2>
-<li><strong>Board:</strong> [Board Name]</li>
-<li><strong>Exam:</strong> [Exam Name]</li>
-<li><strong>Expected/Official:</strong> [Status]</li>
+<h2>Category-Wise Cut Off [Year]</h2>
+<h3>Stage 1 / Written Exam</h3> HTML `<table>`: Category | Marks | Previous Year | Change
+<h3>Stage 2 / Mains</h3> If applicable, separate table
+<h3>Final Cut Off (Combined)</h3> If applicable, combined merit table
 
-<h2>Previous Year Final Cut Off Analysis</h2>
-Create an HTML <table> comparing last year's cut-off scores across different categories (UR, OBC, EWS, SC, ST). Expand on why the scores were at that level.
+<h2>Year-Wise Cut Off Comparison</h2>
+HTML `<table>`: Year | Gen | OBC | SC | ST | EWS - for last 3-5 years
+<h3>Trend Analysis</h3> "Pichle 3 saalon mein Gen category ka cut off consistently [badh/kam] raha hai. Iska matlab hai ki…"
 
-<!-- AdSense Placeholder -->
+<h2>Key Highlights</h2> HTML `<table>`: Exam Body, Exam Name, Total Candidates, Total Posts, Exam Date, Cut Off Status
 
-<h2>Factors Affecting the Cut-Off Marks</h2>
-Provide a detailed 300-word analysis (using bullet points and text) on why the cut-off might change (Applicants count, Vacancy ratio, Difficulty variation).
+<h2>Cut Off Kaise Calculate Hota Hai?</h2>
+<h3>Factors That Affect Cut Off</h3> Vacancies, candidates, difficulty, normalization
+<h3>Normalization Process</h3> If applicable, explain multi-shift normalization
 
-<h2>[Year] Expected Cut-Off Marks & Safe Score</h2>
-Provide a highly detailed table projecting the safe score category-wise. Add a section in Hinglish: "Safe Score Kya Hai?". Include placeholder: <a href="[applyOnlineUrl]">Check Official Cut-off & Result</a>.
+<h2>Agar Cut Off Se Kam Marks Aaye Toh?</h2>
+<h3>Re-exam / Next Attempt</h3> Tips and timeline
+<h3>Alternative Opportunities</h3> Similar exams to prepare for. Link to <a target="_blank" rel="noopener noreferrer" href="/job">Jobs</a>
 
-<h2>How to Check Official Cut-off Online</h2>
-Provide step-by-step instructions (5+ steps) to download the cut-off PDF from the official portal.
+<h2>Agar Qualify Kiya Toh Aage Kya?</h2>
+Next stages, link to <a target="_blank" rel="noopener noreferrer" href="/admit-card">Admit Card</a>, <a target="_blank" rel="noopener noreferrer" href="/result">Result</a>
 
-Ensure the JSON output strictly matches the required schema structure. Include 2026 for freshness.
+<h2>Direct Important Links for [Exam Name] [Year]</h2>
+HTML `<table>` with `<thead>` and `<tbody>`:
+- Row 1: **Download Official Cut Off Marks** | <a target="_blank" rel="noopener noreferrer" href="/result">Click Here to Download</a>
+- Row 2: **Check Final Result Score** | <a target="_blank" rel="noopener noreferrer" href="/result">Link Activated</a>
+- Row 3: **Official Notification PDF** | <a target="_blank" rel="noopener noreferrer" href="/syllabus">Download PDF</a>
+- Row 4: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="/answer-key">Visit Official Portal</a>
+- Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
+- Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
 
-
-**CRITICAL SEO RULES (Must Follow):**
-1. **Headings:** You MUST use HTML `<h3>` and `<h4>` tags within the `<h2>` sections to organize the detailed points. Do not just use `<h2>` and `<li>`.
-2. **Contextual Links:** Naturally inject 2-3 HTML links (`<a href="/...">`) to related topics (e.g. /syllabus, /admit-card, /previous-paper) within your body paragraphs. Do not only put them in the final table.
+**CRITICAL SEO RULES:**
+1. H3 within every H2 - comparison sections need detailed H3s
+2. Internal links: `/result`, `/answer-key`, `/job`, `/admit-card`, `/syllabus`
+3. Tables with `<thead>`, `<th scope="col">`
+4. Year-wise comparison table is ESSENTIAL for ranking
+5. Trend analysis paragraph adds original insight (EEAT)
