@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { searchPosts } from '@/features/posts/queries'
 import { PostGrid } from '@/features/posts/components/PostGrid'
@@ -8,12 +9,18 @@ import { buildPageMetadata } from '@/lib/metadata'
 import { ROUTE_PREFIXES } from '@/config/site'
 import { Search, ServerCrash, Briefcase, FileText, CreditCard, Key } from 'lucide-react'
 
-export const metadata = buildPageMetadata({
-    title: 'Search',
-    description: 'Search government jobs, results, admit cards, answer keys, syllabus, and exam updates across India.',
-    path: '/search',
-    noindex: true,
-})
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+    const { q } = await searchParams
+    const hasQuery = !!q?.trim()
+
+    return buildPageMetadata({
+        title: hasQuery ? `Search: ${q}` : 'Search',
+        description: 'Search government jobs, results, admit cards, answer keys, syllabus, and exam updates across India.',
+        path: '/search',
+        noindex: hasQuery,
+    })
+}
+
 
 /* ── Popular search suggestions ──────────────────────────────────── */
 
