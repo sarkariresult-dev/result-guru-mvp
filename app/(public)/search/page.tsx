@@ -12,12 +12,6 @@ import { Search, ServerCrash, Briefcase, FileText, CreditCard, Key } from 'lucid
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
     const { q } = await searchParams
     const query = q?.trim() || ""
-
-    /**
-     * Google's "Sitelinks Searchbox" feature uses the literal string '{search_term_string}'
-     * to verify the search endpoint. We MUST allow indexing for this placeholder 
-     * to pass Search Console verification.
-     */
     const isSearchActionTest = query === '{search_term_string}'
     const shouldIndex = !query || isSearchActionTest
 
@@ -55,13 +49,19 @@ interface Props {
 export default async function SearchPage({ searchParams }: Props) {
     const { q } = await searchParams
     const trimmedQuery = q?.trim() ?? ''
+    
+    // Detect if this is the literal placeholder from Google GSC
+    const isSearchActionTest = trimmedQuery === '{search_term_string}'
+    
+    // Treat the placeholder as empty for rendering purposes to avoid "No results" Soft 404
+    const effectiveQuery = isSearchActionTest ? '' : trimmedQuery
 
     let posts: Awaited<ReturnType<typeof searchPosts>> = []
     let fetchError = false
 
-    if (trimmedQuery) {
+    if (effectiveQuery) {
         try {
-            posts = await searchPosts(trimmedQuery)
+            posts = await searchPosts(effectiveQuery)
         } catch {
             fetchError = true
         }
@@ -73,18 +73,18 @@ export default async function SearchPage({ searchParams }: Props) {
 
             <div className="mt-4 mb-8">
                 <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                    {trimmedQuery ? `Search Results` : 'Search'}
+                    {effectiveQuery ? `Search Results` : 'Search'}
                 </h1>
-                {trimmedQuery && (
+                {effectiveQuery && (
                     <p className="mt-2 text-foreground-muted">
-                        Showing results for &ldquo;<span className="font-medium text-foreground">{trimmedQuery}</span>&rdquo;
+                        Showing results for &ldquo;<span className="font-medium text-foreground">{effectiveQuery}</span>&rdquo;
                     </p>
                 )}
             </div>
 
-            <SearchBar className="mb-8 max-w-xl" initialValue={trimmedQuery} />
+            <SearchBar className="mb-8 max-w-xl" initialValue={effectiveQuery} />
 
-            {trimmedQuery ? (
+            {effectiveQuery ? (
                 fetchError ? (
                     <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-dashed border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20 p-8 text-center">
                         <div className="mb-4 rounded-full bg-red-100 dark:bg-red-900/30 p-4">
