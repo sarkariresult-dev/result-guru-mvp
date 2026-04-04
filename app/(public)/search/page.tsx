@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { searchPosts } from '@/features/posts/queries'
+import { searchPosts, getPosts } from '@/features/posts/queries'
+import { PostCard } from '@/types/post.types'
 import { PostGrid } from '@/features/posts/components/PostGrid'
 import { SearchBar } from '@/features/shared/components/SearchBar'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
@@ -56,15 +57,20 @@ export default async function SearchPage({ searchParams }: Props) {
     // Treat the placeholder as empty for rendering purposes to avoid "No results" Soft 404
     const effectiveQuery = isSearchActionTest ? '' : trimmedQuery
 
-    let posts: Awaited<ReturnType<typeof searchPosts>> = []
+    let posts: PostCard[] = []
     let fetchError = false
 
-    if (effectiveQuery) {
-        try {
+    try {
+        if (effectiveQuery) {
             posts = await searchPosts(effectiveQuery)
-        } catch {
-            fetchError = true
+        } else {
+            // If it's a blank search or Google's test URL, 
+            // fetch the 12 latest posts so the page is full of useful content.
+            posts = await getPosts({}, 1, 12)
         }
+    } catch (err) {
+        console.error('[SearchPage] Fetch error:', err)
+        fetchError = true
     }
 
     return (
@@ -73,7 +79,7 @@ export default async function SearchPage({ searchParams }: Props) {
 
             <div className="mt-4 mb-8">
                 <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                    {effectiveQuery ? `Search Results` : 'Search'}
+                    {effectiveQuery ? `Search Results` : 'Explore Latest Updates'}
                 </h1>
                 {effectiveQuery && (
                     <p className="mt-2 text-foreground-muted">
@@ -84,84 +90,44 @@ export default async function SearchPage({ searchParams }: Props) {
 
             <SearchBar className="mb-8 max-w-xl" initialValue={effectiveQuery} />
 
-            {effectiveQuery ? (
-                fetchError ? (
-                    <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-dashed border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20 p-8 text-center">
-                        <div className="mb-4 rounded-full bg-red-100 dark:bg-red-900/30 p-4">
-                            <ServerCrash className="size-8 text-red-600" />
-                        </div>
-                        <h3 className="mb-2 text-lg font-semibold text-foreground">Search Error</h3>
-                        <p className="text-foreground-muted max-w-md">
-                            Could not process your search right now. Please try again in a moment.
-                        </p>
+            {fetchError ? (
+                <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-dashed border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20 p-8 text-center">
+                    <div className="mb-4 rounded-full bg-red-100 dark:bg-red-900/30 p-4">
+                        <ServerCrash className="size-8 text-red-600" />
                     </div>
-                ) : (
-                    <>
-                        <p className="mb-6 text-sm text-foreground-muted">
-                            {posts.length} result{posts.length !== 1 ? 's' : ''} found
-                        </p>
+                    <h3 className="mb-2 text-lg font-semibold text-foreground">Search Error</h3>
+                    <p className="text-foreground-muted max-w-md">
+                        Could not process your search right now. Please try again in a moment.
+                    </p>
+                </div>
+            ) : posts.length > 0 ? (
+                <>
+                    <p className="mb-6 text-sm text-foreground-muted">
+                        {effectiveQuery 
+                            ? `${posts.length} result${posts.length !== 1 ? 's' : ''} found`
+                            : 'Showing latest government job updates'
+                        }
+                    </p>
 
-                        {posts.length > 0 ? (
-                            <>
-                                <PostGrid posts={posts} />
-                                <AdZone zoneSlug="below_content" className="mt-8" />
-                            </>
-                        ) : (
-                            <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface p-8 text-center">
-                                <div className="mb-4 rounded-full bg-background-subtle p-4">
-                                    <Search className="size-8 text-foreground-muted" />
-                                </div>
-                                <h3 className="mb-2 text-lg font-semibold text-foreground">No results found</h3>
-                                <p className="text-foreground-muted max-w-md mb-6">
-                                    We couldn&apos;t find anything matching &ldquo;{trimmedQuery}&rdquo;. Try different keywords or check your spelling.
-                                </p>
-
-                                {/* Suggestions */}
-                                <div className="text-sm text-foreground-muted">
-                                    <p className="font-medium text-foreground mb-3">Try searching for:</p>
-                                    <div className="flex flex-wrap justify-center gap-2">
-                                        {POPULAR_SEARCHES.map((s) => (
-                                            <Link
-                                                key={s.query}
-                                                href={`/search?q=${encodeURIComponent(s.query)}`}
-                                                className="rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground-muted hover:bg-background-subtle hover:text-foreground transition-colors"
-                                            >
-                                                {s.label}
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </>
-                )
+                    <PostGrid posts={posts} />
+                    <AdZone zoneSlug="below_content" className="mt-8" />
+                </>
             ) : (
                 <div className="space-y-10">
-                    {/* Initial search state */}
-                    <div className="flex min-h-62.5 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface p-8 text-center">
-                        <div className="mb-4 rounded-full bg-background-subtle p-4">
-                            <Search className="size-8 text-foreground-muted" />
+                    {/* No results fallback */}
+                    {effectiveQuery ? (
+                        <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface p-8 text-center">
+                            <div className="mb-4 rounded-full bg-background-subtle p-4">
+                                <Search className="size-8 text-foreground-muted" />
+                            </div>
+                            <h3 className="mb-2 text-lg font-semibold text-foreground">No results found</h3>
+                            <p className="text-foreground-muted max-w-md mb-6">
+                                We couldn&apos;t find anything matching &ldquo;{effectiveQuery}&rdquo;. Try different keywords or check your spelling.
+                            </p>
                         </div>
-                        <h3 className="mb-2 text-lg font-semibold text-foreground">Search for anything</h3>
-                        <p className="text-foreground-muted max-w-md mb-6">
-                            Find government jobs, results, admit cards, and more using the search bar above.
-                        </p>
-
-                        {/* Popular searches */}
-                        <div className="flex flex-wrap justify-center gap-2">
-                            {POPULAR_SEARCHES.map((s) => (
-                                <Link
-                                    key={s.query}
-                                    href={`/search?q=${encodeURIComponent(s.query)}`}
-                                    className="rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground-muted hover:bg-brand-50 hover:text-brand-600 hover:border-brand-200 dark:hover:bg-brand-950/30 dark:hover:text-brand-400 dark:hover:border-brand-800 transition-colors"
-                                >
-                                    {s.label}
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Quick category links */}
+                    ) : null}
+                    
+                    {/* Quick navigation and popular links */}
                     <div>
                         <h2 className="mb-4 text-lg font-bold text-foreground">Browse by Category</h2>
                         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
