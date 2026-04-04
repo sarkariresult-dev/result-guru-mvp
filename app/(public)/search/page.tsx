@@ -11,13 +11,21 @@ import { Search, ServerCrash, Briefcase, FileText, CreditCard, Key } from 'lucid
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
     const { q } = await searchParams
-    const hasQuery = !!q?.trim()
+    const query = q?.trim() || ""
+
+    /**
+     * Google's "Sitelinks Searchbox" feature uses the literal string '{search_term_string}'
+     * to verify the search endpoint. We MUST allow indexing for this placeholder 
+     * to pass Search Console verification.
+     */
+    const isSearchActionTest = query === '{search_term_string}'
+    const shouldIndex = !query || isSearchActionTest
 
     return buildPageMetadata({
-        title: hasQuery ? `Search: ${q}` : 'Search',
+        title: !shouldIndex ? `Search: ${query}` : 'Search',
         description: 'Search government jobs, results, admit cards, answer keys, syllabus, and exam updates across India.',
         path: '/search',
-        noindex: hasQuery,
+        noindex: !shouldIndex,
     })
 }
 
