@@ -43,14 +43,14 @@ export default function robots(): MetadataRoute.Robots {
                     'YandexBot',
                     'Applebot',          // Apple / Siri
                 ],
-                allow: '/',
+                allow: ['/', '/_next/static/'],
                 disallow: [...DISALLOWED_PATHS],
             },
 
             /* ── Catch-all for other legitimate crawlers ── */
             {
                 userAgent: '*',
-                allow: '/',
+                allow: ['/', '/_next/static/'],
                 disallow: [...DISALLOWED_PATHS],
             },
 

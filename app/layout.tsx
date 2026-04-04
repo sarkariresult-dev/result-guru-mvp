@@ -114,16 +114,6 @@ export const metadata: Metadata = {
         },
     },
 
-    /* Canonical - root points to base */
-    alternates: {
-        canonical: '/',
-        types: {
-            'application/rss+xml': [
-                { url: '/feed.xml', title: `${SITE.name} RSS Feed` },
-            ],
-        },
-    },
-
     /* PWA manifest - served by app/manifest.ts */
     manifest: '/manifest.webmanifest',
 
