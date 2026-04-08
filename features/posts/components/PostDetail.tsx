@@ -14,7 +14,8 @@ import type { PostTypeKey } from '@/config/site'
 import type { PostDetail as PostDetailType, PostAffiliateProductEntry } from '@/types/post.types'
 import type { FaqItem } from '@/types/post-content.types'
 import { AuthorBox } from './AuthorBox'
-import { Award, Calendar, Clock, FileText, Tag } from 'lucide-react'
+import { ShareBar } from './ShareBar'
+import { Award, Calendar, Clock, FileText, Tag, ShieldCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 /* ── Section IDs ─────────────────────────────────────────────── */
@@ -217,18 +218,21 @@ export function PostDetail({ post, slug, url }: Props) {
                         </span>
                     )}
                     {post.published_at && (
-                        <time dateTime={new Date(post.published_at).toISOString()} className="flex items-center gap-1.5">
-                            <Calendar className="size-4 text-foreground-subtle" />
-                            Published {formatDate(post.published_at)}
+                        <time dateTime={new Date(post.published_at).toISOString()} className="flex items-center gap-1.5 border-r border-border pr-4">
+                            <Calendar className="size-4 text-brand-500" />
+                            <span className="hidden sm:inline">Published </span>{formatDate(post.published_at)}
                         </time>
                     )}
-                    {/* COUNCIL P2 (Area 5): Show content_updated_at (meaningful edits) not updated_at (any DB write) */}
-                    {/* MARCUS: Google penalizes cosmetic-only date bumps - only show real content changes */}
                     {post.content_updated_at && post.content_updated_at !== post.published_at && (
-                        <time dateTime={new Date(post.content_updated_at).toISOString()} className="flex items-center gap-1.5 text-foreground-subtle">
-                            Updated {formatDate(post.content_updated_at)}
+                        <time dateTime={new Date(post.content_updated_at).toISOString()} className="flex items-center gap-1.5 border-r border-border pr-4 text-emerald-600 dark:text-emerald-400">
+                             <Clock className="size-4" />
+                            <span className="hidden sm:inline">Updated </span>{formatDate(post.content_updated_at)}
                         </time>
                     )}
+                    <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full border border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/30">
+                        <ShieldCheck className="size-3.5" />
+                        <span className="text-[10px] font-bold uppercase tracking-wider">Sarkari Verified</span>
+                    </div>
                 </div>
             </header>
 
@@ -278,9 +282,12 @@ export function PostDetail({ post, slug, url }: Props) {
 
             {/* Excerpt */}
             {post.excerpt && (
-                <p className="border-l-4 border-brand-500 pl-4 py-1 text-lg italic font-medium text-foreground-muted bg-linear-to-r from-brand-50/50 to-transparent dark:from-brand-900/10 rounded-r-lg leading-relaxed">
-                    {post.excerpt}
-                </p>
+                <div className="space-y-6">
+                    <p className="border-l-4 border-brand-500 pl-4 py-1 text-lg italic font-medium text-foreground-muted bg-linear-to-r from-brand-50/50 to-transparent dark:from-brand-900/10 rounded-r-lg leading-relaxed">
+                        {post.excerpt}
+                    </p>
+                    <ShareBar title={post.title} url={url} />
+                </div>
             )}
 
             {/* ── Above Content Ad ─────────────────────────────── */}

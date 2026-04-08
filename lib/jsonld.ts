@@ -32,6 +32,7 @@ export function buildJobPostingSchema(post: PostDetail): JsonLdObject {
             description: post.excerpt || post.meta_description || post.title,
             url,
             datePosted: post.published_at ?? post.created_at,
+            dateModified: post.content_updated_at ?? post.updated_at,
             validThrough: expiryDate,
             employmentType: post.title.match(/part\s?-?time/i)
                 ? 'PART_TIME'
@@ -210,6 +211,8 @@ export function buildGovernmentServiceSchema(post: PostDetail): JsonLdObject {
             name: post.title,
             description: post.excerpt || post.meta_description || post.title,
             url,
+            datePublished: post.published_at ?? post.created_at,
+            dateModified: post.content_updated_at ?? post.updated_at,
             serviceType: 'Government Scheme',
             provider: {
                 '@type': 'GovernmentOrganization',
@@ -285,7 +288,10 @@ export function buildNewsArticleSchema(post: PostDetail): JsonLdObject {
                     url: `${SITE.url}/author/${post.author.id}`,
                     ...(post.author.avatar_url && { image: post.author.avatar_url }),
                     ...(post.author.bio && { description: post.author.bio }),
-                    jobTitle: 'Content Specialist',
+                    jobTitle: post.author.credentials || 'Senior Content Strategist',
+                    ...(post.author.years_of_experience && { 
+                        description: `${post.author.bio || ''} (${post.author.years_of_experience}+ years of experience in government notification verification).` 
+                    }),
                     worksFor: {
                         '@type': 'Organization',
                         name: SITE.name,
@@ -328,5 +334,28 @@ export function buildNewsArticleSchema(post: PostDetail): JsonLdObject {
                 url: SITE.url,
             }
         }
+    }
+}
+
+// ── ItemList Schema ───────────────────────────────────────
+/**
+ * Build schema.org/ItemList for directory-style lists (States, Orgs, etc.).
+ * Replaces body-nested Microdata meta tags.
+ */
+export function buildItemListSchema(
+    name: string,
+    items: Array<{ name: string; url: string }>
+): JsonLdObject {
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name,
+        numberOfItems: items.length,
+        itemListElement: items.map((item, index) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            name: item.name,
+            url: item.url.startsWith('http') ? item.url : `${SITE.url}${item.url.startsWith('/') ? '' : '/'}${item.url}`,
+        })),
     }
 }

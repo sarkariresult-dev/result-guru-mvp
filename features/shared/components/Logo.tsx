@@ -8,6 +8,8 @@ interface LogoProps {
     className?: string
     /** Force a specific theme - skips the automatic dark: swap */
     forceDark?: boolean
+    /** Whether the image should be prioritized (disables lazy loading) - false by default */
+    priority?: boolean
 }
 
 /**
@@ -22,7 +24,7 @@ interface LogoProps {
  *  - /logo/logo-light-small.svg → light mode icon
  *  - /logo/logo-dark-small.svg  → dark mode icon
  */
-export function Logo({ variant = 'full', height = 40, className = '', forceDark }: LogoProps) {
+export function Logo({ variant = 'full', height = 40, className = '', forceDark, priority = false }: LogoProps) {
     const suffix = variant === 'icon' ? '-small' : ''
     const lightSrc = `/logo/logo-light${suffix}.svg`
     const darkSrc = `/logo/logo-dark${suffix}.svg`
@@ -40,7 +42,7 @@ export function Logo({ variant = 'full', height = 40, className = '', forceDark 
                 width={width}
                 height={height}
                 className={className}
-                priority
+                priority={priority}
                 unoptimized
             />
         )
@@ -55,7 +57,7 @@ export function Logo({ variant = 'full', height = 40, className = '', forceDark 
                 width={width}
                 height={height}
                 className={`dark:hidden -my-12 ${className}`}
-                priority
+                priority={priority}
                 unoptimized
             />
             {/* Dark mode */}
@@ -65,7 +67,7 @@ export function Logo({ variant = 'full', height = 40, className = '', forceDark 
                 width={width}
                 height={height}
                 className={`hidden dark:block -my-12 ${className}`}
-                priority
+                priority={priority}
                 unoptimized
             />
         </>

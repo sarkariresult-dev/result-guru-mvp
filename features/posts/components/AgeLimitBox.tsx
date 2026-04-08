@@ -15,7 +15,7 @@ export function AgeLimitBox({ ageLimit }: Props) {
                 <div className="icon-badge bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
                     <Clock className="size-4.5" />
                 </div>
-                <h3 className="font-display text-lg font-bold text-foreground">Age Limit</h3>
+                <h2 className="font-display text-lg font-bold text-foreground">Age Limit</h2>
             </div>
             <div className="divide-y divide-border/60">
                 {entries.map(([key, value], index) => (

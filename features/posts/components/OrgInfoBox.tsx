@@ -16,9 +16,9 @@ export function OrgInfoBox({ name, shortName, logoUrl, officialUrl, description,
 
     return (
         <div className="py-2 space-y-4">
-            <h3 className="text-sm font-bold uppercase tracking-[0.05em] text-foreground-muted flex items-center gap-2">
+            <h2 className="text-sm font-bold uppercase tracking-[0.05em] text-foreground-muted flex items-center gap-2">
                 <Building2 className="size-4 text-brand-500" /> Organization Info
-            </h3>
+            </h2>
             <div className="flex items-center gap-4">
                 {logoUrl && (
                     <div className="shrink-0 size-14 rounded-xl border border-border/40 bg-background flex items-center justify-center overflow-hidden p-1.5 shadow-sm">
@@ -32,7 +32,7 @@ export function OrgInfoBox({ name, shortName, logoUrl, officialUrl, description,
                     </div>
                 )}
                 <div className="flex-1 min-w-0">
-                    <h4 className="font-bold text-foreground text-sm leading-tight">{name}</h4>
+                    <h3 className="font-bold text-foreground text-sm leading-tight">{name}</h3>
                     {shortName && shortName !== name && (
                         <p className="mt-1 text-[10px] font-bold text-foreground-subtle tracking-wider uppercase">{shortName}</p>
                     )}

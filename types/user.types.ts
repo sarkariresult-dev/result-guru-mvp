@@ -15,6 +15,16 @@ export interface User {
     avatar_url: string | null
     role: UserRole
     bio: string | null
+    /** E-E-A-T: Academic/Professional credentials (e.g., "M.Ed, Governance Analyst") */
+    credentials?: string | null
+    /** E-E-A-T: Industry seniority */
+    years_of_experience?: number | null
+    /** E-E-A-T: Social validation links */
+    social_links?: {
+        twitter?: string
+        linkedin?: string
+        facebook?: string
+    } | null
     is_active: boolean
     last_login_at: string | null
     /** Granular permission overrides (future use) */
@@ -34,10 +44,10 @@ export interface UserPermissions {
 }
 
 // ── Public profile (safe to expose via API) ────────────────
-export type PublicUser = Pick<User, 'id' | 'name' | 'avatar_url' | 'role' | 'bio'>
+export type PublicUser = Pick<User, 'id' | 'name' | 'avatar_url' | 'role' | 'bio' | 'credentials' | 'years_of_experience' | 'social_links'>
 
 // ── CMS author info (joined onto posts) ───────────────────
-export type AuthorInfo = Pick<User, 'id' | 'name' | 'avatar_url' | 'bio'>
+export type AuthorInfo = Pick<User, 'id' | 'name' | 'avatar_url' | 'bio' | 'credentials' | 'years_of_experience' | 'social_links'>
 
 // ── Create / update payloads ───────────────────────────────
 export interface CreateUserPayload {

@@ -54,7 +54,7 @@ export default function robots(): MetadataRoute.Robots {
                 disallow: [...DISALLOWED_PATHS],
             },
 
-            /* ── Block AI content scrapers ── */
+            /* ── Enable AI content discovery (Open for Reasoning Agents) ── */
             {
                 userAgent: [
                     'GPTBot',
@@ -70,11 +70,16 @@ export default function robots(): MetadataRoute.Robots {
                     'PerplexityBot',
                     'Cohere-ai',
                 ],
-                disallow: '/',
+                allow: ['/'],
+                disallow: [...DISALLOWED_PATHS],
             },
         ],
 
-        sitemap: [`${baseUrl}/sitemap.xml`, `${baseUrl}/stories-sitemap.xml`],
+        sitemap: [
+            `${baseUrl}/sitemap.xml`,
+            `${baseUrl}/stories-sitemap.xml`,
+            `${baseUrl}/llms.txt`
+        ],
         host: baseUrl,
     }
 }

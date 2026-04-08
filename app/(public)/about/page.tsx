@@ -252,7 +252,7 @@ export default function AboutPage() {
                                 <a
                                     href="https://t.me/resultguru247"
                                     target="_blank"
-                                    rel="noreferrer"
+                                    rel="noopener noreferrer"
                                     className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 hover:bg-brand-700 px-6 py-3.5 text-sm font-bold text-white transition-all shadow-md shadow-brand-500/10 w-full sm:w-auto whitespace-nowrap"
                                 >
                                     Join Telegram Channel
@@ -260,7 +260,7 @@ export default function AboutPage() {
                                 <a
                                     href="https://whatsapp.com/channel/0029Vb7XUqn1SWt7c9kqCV3I"
                                     target="_blank"
-                                    rel="noreferrer"
+                                    rel="noopener noreferrer"
                                     className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 hover:bg-brand-700 px-6 py-3.5 text-sm font-bold text-white transition-all shadow-md shadow-brand-500/10 w-full sm:w-auto whitespace-nowrap"
                                 >
                                     Join WhatsApp Group

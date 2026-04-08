@@ -205,9 +205,6 @@ export default async function TypeForQualificationPage({ params, searchParams }:
 
     return (
         <>
-            {prevUrl && <link rel="prev" href={`${SITE.url}${prevUrl}`} />}
-            {nextUrl && <link rel="next" href={`${SITE.url}${nextUrl}`} />}
-
             <JsonLd data={[breadcrumbJsonLd, collectionJsonLd]} />
 
             <div className="container mx-auto max-w-7xl px-4 py-8">
@@ -268,19 +265,24 @@ export default async function TypeForQualificationPage({ params, searchParams }:
                                 <div className="mb-4 rounded-full bg-red-100 dark:bg-red-900/30 p-4">
                                     <Icons.AlertCircle className="size-8 text-red-600" />
                                 </div>
-                                <h3 className="mb-2 text-lg font-semibold text-foreground">Connection Error</h3>
+                                <h2 className="mb-2 text-lg font-semibold text-foreground">Connection Error</h2>
                                 <p className="max-w-md text-foreground-muted">
                                     Could not load the latest updates.
                                 </p>
                             </div>
                         ) : posts.length > 0 ? (
-                            <PostGrid posts={posts} priority={2} />
+                            <div className="space-y-6">
+                                <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                                    Current {qualName} {config.heading}
+                                </h2>
+                                <PostGrid posts={posts} priority={2} />
+                            </div>
                         ) : (
                             <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface p-8 text-center">
                                 <div className="mb-4 rounded-full bg-background-subtle p-4">
                                     <Icons.Info className="size-8 text-foreground-muted" />
                                 </div>
-                                <h3 className="mb-2 text-lg font-semibold text-foreground">No updates yet</h3>
+                                <h2 className="mb-2 text-lg font-semibold text-foreground">No updates yet</h2>
                                 <p className="max-w-md text-foreground-muted">
                                     There are no {config.heading.toLowerCase()} available for {qualName} right now.
                                 </p>
@@ -343,6 +345,27 @@ export default async function TypeForQualificationPage({ params, searchParams }:
                             </nav>
                         )}
                     </div>
+                </div>
+
+                {/* Guide Section */}
+                <div className="mt-16 border-t border-border pt-12">
+                    <section className="prose prose-slate dark:prose-invert max-w-none">
+                        <h2 className="text-2xl font-bold text-foreground">Career Guide for {qualName} Candidates</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                            <div>
+                                <h3 className="text-lg font-bold text-foreground">{qualName} Qualification Benefits</h3>
+                                <p className="text-foreground-muted">
+                                    Holding a {qualRecord.name} qualification opens doors to various government sectors including Railway, SSC, and State-level clerical posts. We provide targeted {config.heading.toLowerCase()} notifications that specifically match your educational background, saving you time in your job search.
+                                </p>
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-foreground">Preparation Strategies</h3>
+                                <p className="text-foreground-muted">
+                                    Staying updated with the latest {config.heading.toLowerCase()} is the first step toward success. Beyond just tracking results and admit cards, candidates should regularly review the latest syllabus and exam patterns provided on Result Guru to align their preparation with current standards.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
                 </div>
 
                 <AdZone zoneSlug="below_content" postType={typeKey} className="mt-8" />

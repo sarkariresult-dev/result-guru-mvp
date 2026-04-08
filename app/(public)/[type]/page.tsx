@@ -103,24 +103,24 @@ function getSEOIntro(typeKey: string, heading: string): string {
     const year = 2026
     switch (typeKey) {
         case 'job':
-            return `Looking for the latest ${heading} in ${year}? Result Guru brings you comprehensive updates on government vacancies, including eligibility criteria, age limits, and direct application links. Stay ahead with our daily updated job notifications from various sectors including Railway, Banking, SSC, and defense.`
+            return `Find the best ${heading} for ${year}. We list active vacancies with clear details on age, qualifications, and how to apply. Browse daily updates from SSC, UPSC, Banking, and more.`
         case 'result':
-            return `Check your ${heading} for current and previous examinations. We provide direct links to official results, merit lists, and cut-off marks as soon as they are declared by the respective boards. Never miss an update on your hard-earned results.`
+            return `Check your ${heading} here. We provide direct links to merit lists and cut-off marks for major exams. Stay informed as soon as results are declared.`
         case 'admit':
-            return `Download your ${heading} easily. Find direct links to download hall tickets for SSC, UPSC, Banking, and state-level exams. We ensure you have the right information to access your exam center on time.`
+            return `Download your ${heading} quickly. Follow our links to get hall tickets for government exams. We provide all the info you need for your exam day.`
         case 'answer-key':
         case 'answer_key':
-            return `Verify your performance with the official ${heading}. Access direct links to preliminary and final answer keys for major examinations to estimate your score before the final results.`
+            return `View the official ${heading} for your exams. Compare your answers and estimate your score before the final results are out.`
         case 'syllabus':
-            return `Prepare effectively with the latest ${heading}. Download updated exam patterns and detailed subject-wise syllabus in PDF format for all major competitive exams in India.`
+            return `Get the latest ${heading} and exam patterns. Download PDF guides for all major competitive exams to help your preparation.`
         case 'admission':
-            return `Find the best educational opportunities with our ${heading} updates. Get information on entrance exams, counseling dates, and application procedures for top universities and colleges.`
+            return `Learn about ${heading} dates and procedures. We track entrance exams and counseling for top colleges across India.`
         case 'scholarship':
-            return `Unlock financial aid for your studies. Explore the latest ${heading} programs offered by central and state governments, as well as private organizations, with clear eligibility and application steps.`
+            return `Find ${heading} opportunities. Check eligibility and apply for government aids to support your education.`
         case 'scheme':
-            return `Empower yourself with information on ${heading}s. Learn about government initiatives for farmers, students, women, and various sectors, including how to apply and check status.`
+            return `Explore ${heading} initiatives. Learn how students and farmers can benefit from these government programs.`
         default:
-            return `Stay updated with the latest ${heading} ${year}. We provide accurate information and direct links to official notifications to help you stay informed.`
+            return `Latest ${heading} updates for ${year}. Find verified notifications and official links to stay on track with your goals.`
     }
 }
 
@@ -186,9 +186,6 @@ export default async function PostListingPage({ params, searchParams }: Props) {
 
     return (
         <>
-            {prevUrl && <link rel="prev" href={`${SITE.url}${prevUrl}`} />}
-            {nextUrl && <link rel="next" href={`${SITE.url}${nextUrl}`} />}
-
             <JsonLd data={[breadcrumbJsonLd, collectionJsonLd]} />
 
             <div className="container mx-auto max-w-7xl px-4 py-8">
@@ -239,10 +236,15 @@ export default async function PostListingPage({ params, searchParams }: Props) {
                                 <div className="mb-4 rounded-full bg-red-100 dark:bg-red-900/30 p-4">
                                     <Icons.AlertCircle className="size-8 text-red-600" />
                                 </div>
-                                <h3 className="mb-2 text-lg font-semibold text-foreground">Connection Error</h3>
+                                <h2 className="mb-2 text-lg font-semibold text-foreground">Connection Error</h2>
                             </div>
                         ) : posts.length > 0 ? (
-                            <PostGrid posts={posts} priority={2} />
+                            <div className="space-y-6">
+                                <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                                    Current {config.heading} Updates
+                                </h2>
+                                <PostGrid posts={posts} priority={2} />
+                            </div>
                         ) : (
                             <div className="flex min-h-[400px] flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface p-8 text-center">
                                 <div className="mb-4 rounded-full bg-background-subtle p-4">
@@ -288,6 +290,26 @@ export default async function PostListingPage({ params, searchParams }: Props) {
                             </nav>
                         )}
                     </div>
+                </div>
+
+                <div className="mt-16 border-t border-border pt-12">
+                    <section className="prose prose-slate dark:prose-invert max-w-none">
+                        <h2 className="text-2xl font-bold text-foreground">Aspirant Guide for {config.heading}</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                            <div>
+                                <h3 className="text-lg font-bold text-foreground">How to stay updated?</h3>
+                                <p className="text-foreground-muted">
+                                    We track official portals like SSC, UPSC, and State Boards daily. Bookmark this page to get the fastest updates on {config.heading.toLowerCase()} notifications. Every link we provide is cross-verified for accuracy.
+                                </p>
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-foreground">Why choose Result Guru?</h3>
+                                <p className="text-foreground-muted">
+                                    Our platform simplifies complex government notifications. We provide direct apply links, simplified eligibility summaries, and important dates in a clean dashboard format, helping you focus on your exam preparation.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
                 </div>
 
                 <AdZone zoneSlug="below_content" postType={typeKey} className="mt-8" />

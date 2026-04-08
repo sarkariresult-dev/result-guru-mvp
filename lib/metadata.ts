@@ -15,7 +15,7 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 export function formatTitle(title: string): string {
     const brandName = SITE.name
     const brandSuffix = ` | ${brandName}`
-    const limit = 70
+    const limit = 60
 
     // If title already contains brand name, don't append it again
     if (title.includes(brandName)) {
@@ -191,24 +191,25 @@ export function buildListingTitle(
     let base = ''
 
     if (opts?.stateName) {
-        // Long-tail: [State] Govt [Type] 2026
-        base = `${opts.stateName} Latest Govt ${typeLabel} ${year}`
+        // [State] Govt [Type] Updates 2026
+        base = `${opts.stateName} Govt ${typeLabel} Updates ${year}`
     } else if (opts?.qualificationName) {
-        // Long-tail: [Qualification] Pass Govt [Type] 2026
+        // [Qualification] Pass Govt [Type] 2026
         const qual = opts.qualificationName.includes('Pass')
             ? opts.qualificationName
             : `${opts.qualificationName} Pass`
         base = `${qual} Govt ${typeLabel} ${year}`
     } else if (opts?.orgName || opts?.orgShortName) {
-        // Long-tail: [Org] Recruitment [Type] 2026
+        // [Org] Recruitment [Type] 2026
         const org = opts.orgShortName || opts.orgName
-        base = `${org} ${typeLabel} Notification ${year}`
+        base = `${org} ${typeLabel} Notifications ${year}`
     } else {
-        // Standard: Latest [Type] 2026
-        base = `Latest ${typeLabel} ${year}`
+        // Latest [Type] Notifications 2026
+        base = `Latest ${typeLabel} Notifications ${year}`
     }
 
-    const action = config?.urgencyWords[0] || ''
+    const action = config?.urgencyWords[0] || 'Check Now'
+    // For listings, we'll favor simpler "Check Now" or "Apply" to reduce length
     const full = page > 1
         ? `${base} - Page ${page}`
         : `${base} - ${action}`
@@ -234,13 +235,13 @@ export function buildListingMeta(
     const page = opts?.page || 1
 
     let contextChunk = ''
-    if (opts?.stateName) contextChunk = ` specifically for ${opts.stateName}`
-    else if (opts?.qualificationName) contextChunk = ` for ${opts.qualificationName} candidates`
-    else if (opts?.orgName) contextChunk = ` from ${opts.orgName}`
+    if (opts?.stateName) contextChunk = ` in ${opts.stateName}`
+    else if (opts?.qualificationName) contextChunk = ` for ${opts.qualificationName}`
+    else if (opts?.orgName) contextChunk = ` with ${opts.orgName}`
 
     const base = page > 1
-        ? `Page ${page} of ${label}${contextChunk} for ${year}. Browse all verified updates, official notifications & direct apply links.`
-        : `Get the latest ${label}${contextChunk} for ${year}. Verified official notifications, eligibility details & direct links. Updated daily.`
+        ? `Browse page ${page} of ${label}${contextChunk} (${year}). Verified exams and notifications.`
+        : `Get latest ${label}${contextChunk} for ${year}. Official notifications and direct links updated daily.`
 
     return buildClickableMeta(base, type)
 }

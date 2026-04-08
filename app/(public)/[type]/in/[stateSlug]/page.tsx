@@ -204,9 +204,6 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
 
     return (
         <>
-            {prevUrl && <link rel="prev" href={`${SITE.url}${prevUrl}`} />}
-            {nextUrl && <link rel="next" href={`${SITE.url}${nextUrl}`} />}
-
             <JsonLd data={[breadcrumbJsonLd, collectionJsonLd]} />
 
             <div className="container mx-auto max-w-7xl px-4 py-8">
@@ -267,19 +264,24 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
                                 <div className="mb-4 rounded-full bg-red-100 dark:bg-red-900/30 p-4">
                                     <Icons.AlertCircle className="size-8 text-red-600" />
                                 </div>
-                                <h3 className="mb-2 text-lg font-semibold text-foreground">Connection Error</h3>
+                                <h2 className="mb-2 text-lg font-semibold text-foreground">Connection Error</h2>
                                 <p className="max-w-md text-foreground-muted">
                                     Could not load the latest updates.
                                 </p>
                             </div>
                         ) : posts.length > 0 ? (
-                            <PostGrid posts={posts} priority={2} />
+                            <div className="space-y-6">
+                                <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                                    {stateRecord.name} {config.heading} List
+                                </h2>
+                                <PostGrid posts={posts} priority={2} />
+                            </div>
                         ) : (
                             <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface p-8 text-center">
                                 <div className="mb-4 rounded-full bg-background-subtle p-4">
                                     <Icons.Info className="size-8 text-foreground-muted" />
                                 </div>
-                                <h3 className="mb-2 text-lg font-semibold text-foreground">No updates yet</h3>
+                                <h2 className="mb-2 text-lg font-semibold text-foreground">No updates yet</h2>
                                 <p className="max-w-md text-foreground-muted">
                                     There are no {config.heading.toLowerCase()} available for {stateRecord.name} right now.
                                 </p>
@@ -342,6 +344,27 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
                             </nav>
                         )}
                     </div>
+                </div>
+
+                {/* Guide Section */}
+                <div className="mt-16 border-t border-border pt-12">
+                    <section className="prose prose-slate dark:prose-invert max-w-none">
+                        <h2 className="text-2xl font-bold text-foreground">Guide to {stateRecord.name} {config.heading}</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                            <div>
+                                <h3 className="text-lg font-bold text-foreground">How to apply in {stateRecord.name}?</h3>
+                                <p className="text-foreground-muted">
+                                    Candidates looking for {config.heading.toLowerCase()} in {stateRecord.name} should verify their residency and qualification requirements. Most state-level notifications require a valid domicile of {stateRecord.name}. We provide direct links to official state portals for easy application.
+                                </p>
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-foreground">Reliable Updates</h3>
+                                <p className="text-foreground-muted">
+                                    Result Guru tracks all major departments within {stateRecord.name} to bring you real-time alerts. From {config.heading.toLowerCase()} results to new vacancies, we ensure every piece of information is sourced directly from verified government channels.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
                 </div>
 
                 <AdZone zoneSlug="below_content" postType={typeKey} className="mt-8" />

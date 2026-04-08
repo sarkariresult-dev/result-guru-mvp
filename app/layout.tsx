@@ -1,8 +1,12 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, Outfit, JetBrains_Mono } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import Script from 'next/script'
+import dynamic from 'next/dynamic'
 import { Providers } from '@/components/providers'
-import { CookieConsent } from '@/features/shared/components/CookieConsent'
+// import { CookieConsent } from '@/features/shared/components/CookieConsent'
+const CookieConsent = dynamic(() => import('@/features/shared/components/CookieConsent').then(mod => mod.CookieConsent), {
+    ssr: false,
+})
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { SITE } from '@/config/site'
@@ -11,7 +15,7 @@ import './globals.css'
 /* ── Fonts - next/font self-hosts for zero layout shift ────── */
 // Consolidating to Inter only to reduce initial request count (22 -> <15 goal)
 const fontSans = Inter({
-    subsets: ['latin'],
+    subsets: ['latin', 'latin-ext'],
     display: 'swap',
     variable: '--font-sans-next',
     preload: true,
@@ -177,11 +181,12 @@ export default function RootLayout({
                 {supabaseUrl && (
                     <link rel="preconnect" href={supabaseUrl} crossOrigin="anonymous" />
                 )}
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-                <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+                {/* Only preconnect to what we actually use above-the-fold */}
+                <link rel="preconnect" href="https://va.vercel-scripts.com" crossOrigin="anonymous" />
                 <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
                 <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-                <link rel="dns-prefetch" href="https://va.vercel-scripts.com" />
+                {/* AI discoverability link */}
+                <link rel="alternate" type="text/plain" title="LLM Context" href="/llms.txt" />
             </head>
             <body className="min-h-screen font-sans antialiased" suppressHydrationWarning>
                 {/* Skip-to-content link is in each route group layout (public/dashboard)

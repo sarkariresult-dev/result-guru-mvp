@@ -1,15 +1,17 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Suspense } from 'react'
+import dynamic from 'next/dynamic'
 import { HomeSection } from '@/features/posts/components/HomeSection'
 import { HomeSectionSkeleton } from '@/features/posts/components/HomeSectionSkeleton'
 import { HeroSearchBar } from '@/features/shared/components/HeroSearchBar'
-import { NewsletterForm } from '@/features/shared/components/NewsletterForm'
 import { AdZone } from '@/components/ads/AdZone'
-import { StoriesSection } from '@/components/stories/StoriesSection'
+const StoriesSection = dynamic(() => import('@/components/stories/StoriesSection').then(mod => mod.StoriesSection), {
+    ssr: true,
+})
 import { ROUTE_PREFIXES } from '@/config/site'
 import { buildPageMetadata } from '@/lib/metadata'
-import { buildWebSiteSchema, buildOrganizationSchema, buildSiteNavigationSchema } from '@/lib/jsonld'
+import { buildWebSiteSchema, buildOrganizationSchema, buildSiteNavigationSchema, buildItemListSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { getStates } from '@/lib/queries/states'
 import { getPopularOrganizations } from '@/lib/queries/organizations'
@@ -23,8 +25,8 @@ import type { LucideIcon } from 'lucide-react'
 /* SEO Metadata */
 
 export const metadata = buildPageMetadata({
-    title: 'Result Guru - Sarkari Result 2026 | Govt Jobs, Admit Card & Answer Key',
-    description: 'India\'s #1 Sarkari Result portal. Get real-time alerts for SSC, UPSC, Railway & Govt Jobs 2026. Access 100% verified exams, results, and scholarship updates daily.',
+    title: 'Result Guru - Sarkari Result 2026 | Jobs & Notifications',
+    description: 'India\'s leading Sarkari Result portal. Official notifications for Jobs, Admit Cards & Results in 2026. Verified daily updates.',
     path: '/',
 })
 
@@ -62,7 +64,7 @@ export default async function HomePage() {
     /* Fetch all homepage data in parallel for fastest TTFB */
     const [statesResult, orgsResult, countsResult, sectionsResult] = await Promise.allSettled([
         getStates(),
-        getPopularOrganizations(30),
+        getPopularOrganizations(18),
         getPostCountsByType(),
         getHomepageSections(8),
     ])
@@ -74,9 +76,12 @@ export default async function HomePage() {
 
     /* Pre-fetched homepage sections from fn_homepage_sections() - 1 DB call for all 6 sections */
     const sections = sectionsResult.status === 'fulfilled' ? sectionsResult.value : {}
+    const statesItemList = buildItemListSchema('Indian States Government Directory', states.map(s => ({ name: s.name, url: `/states/${s.slug}` })))
+    const orgsItemList = buildItemListSchema('Government Organizations', organizations.map(o => ({ name: o.short_name || o.name, url: `/organizations/${o.slug}` })))
+
     return (
         <>
-            <JsonLd data={[websiteJsonLd, organizationJsonLd, navigationJsonLd]} />
+            <JsonLd data={[websiteJsonLd, organizationJsonLd, navigationJsonLd, statesItemList, orgsItemList]} />
 
             {/*  Hero */}
             <section className="relative bg-hero">
@@ -155,7 +160,8 @@ export default async function HomePage() {
 
             {/* Popular Organizations */}
             {organizations.length > 0 && (
-                <section className="container mx-auto max-w-7xl px-4 py-10" aria-label="Browse by organization">
+                <section className="container mx-auto max-w-7xl px-4 py-10">
+                    <h2 className="sr-only">Browse by Organization</h2>
                     <div className="relative group/scroll">
                         <div className="flex overflow-x-auto flex-nowrap gap-3 pb-6 pt-2 scrollbar-hide snap-x snap-proximity scroll-smooth px-1">
                             {organizations.map((org) => (
@@ -210,10 +216,10 @@ export default async function HomePage() {
                     <div className="lg:col-span-2 space-y-8">
                         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                             <Suspense fallback={<HomeSectionSkeleton count={8} />}>
-                                <HomeSection typeKey="job" heading="Latest Sarkari Job" route={ROUTE_PREFIXES.job} cta="View All" limit={8} layout="list" themeColorClass="bg-amber-500" posts={sections.job} />
+                                <HomeSection typeKey="job" heading="Latest Sarkari Job" route={ROUTE_PREFIXES.job} cta="View All" limit={8} layout="list" themeColorClass="bg-amber-500" posts={sections.job} priority={2} />
                             </Suspense>
                             <Suspense fallback={<HomeSectionSkeleton count={8} />}>
-                                <HomeSection typeKey="result" heading="Latest Result" route={ROUTE_PREFIXES.result} cta="View All" limit={8} layout="list" themeColorClass="bg-orange-500" posts={sections.result} />
+                                <HomeSection typeKey="result" heading="Latest Result" route={ROUTE_PREFIXES.result} cta="View All" limit={8} layout="list" themeColorClass="bg-orange-500" posts={sections.result} priority={2} />
                             </Suspense>
 
                             <Suspense fallback={<HomeSectionSkeleton count={5} />}>
@@ -292,6 +298,7 @@ export default async function HomePage() {
                                     <Link
                                         href="https://t.me/resultguru247"
                                         target="_blank"
+                                        rel="noopener noreferrer"
                                         className="group flex items-center justify-center gap-2.5 w-full bg-white text-[#0088CC] hover:bg-blue-50 py-3.5 rounded-2xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-black/10"
                                     >
                                         Join Telegram
@@ -350,6 +357,7 @@ export default async function HomePage() {
                                     <Link
                                         href="https://whatsapp.com/channel/0029Vb7XUqn1SWt7c9kqCV3I"
                                         target="_blank"
+                                        rel="noopener noreferrer"
                                         className="group flex items-center justify-center gap-2.5 w-full bg-white text-[#128C7E] hover:bg-emerald-50 py-3.5 rounded-2xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-black/10"
                                     >
                                         Follow on WhatsApp
@@ -398,10 +406,10 @@ export default async function HomePage() {
                                 India&apos;s Trusted Resource
                             </div>
                             <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-foreground leading-[1.1]">
-                                Empowering Aspirants with <span className="text-brand-600 dark:text-brand-400">Verified Updates.</span>
+                                Empowering Candidates with <span className="text-brand-600 dark:text-brand-400">Verified Jobs.</span>
                             </h2>
                             <p className="text-base text-foreground-muted leading-relaxed">
-                                Result Guru is a dedicated platform designed to simplify the complex journey of government exam preparation. We consolidate hundreds of notifications into a single, intuitive dashboard for millions of students across India.
+                                Result Guru simplifies your search for government exams. We gather notifications from official portals into one easy dashboard. Join millions of candidates across India today.
                             </p>
                             <div className="flex items-center gap-4 pt-4">
                                 <Link href="/about" className="inline-flex items-center gap-2 text-sm font-bold text-foreground hover:text-brand-600 transition-colors">
@@ -473,11 +481,7 @@ export default async function HomePage() {
             <section
                 className="container mx-auto max-w-7xl px-4 py-10 lg:py-14"
                 aria-label="Browse government by Indian state"
-                itemScope
-                itemType="https://schema.org/ItemList"
             >
-                <meta itemProp="name" content="Indian States Government Directory" />
-                <meta itemProp="numberOfItems" content={String(states.length)} />
 
                 <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
                     {/* Left - Text + State pills */}
@@ -497,17 +501,12 @@ export default async function HomePage() {
                                 aria-label="States directory"
                             >
                                 {states.slice(0, 12).map((state, idx) => (
-                                    <Link
-                                        key={state.slug}
-                                        href={`/states/${state.slug}`}
-                                        className="group inline-flex items-center gap-2.5 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-medium text-foreground shadow-sm transition-all hover:border-brand-300 hover:shadow-md hover:-translate-y-0.5 dark:hover:border-brand-700"
-                                        title={`Government jobs & results in ${state.name}`}
-                                        itemProp="itemListElement"
-                                        itemScope
-                                        itemType="https://schema.org/ListItem"
-                                    >
-                                        <meta itemProp="position" content={String(idx + 1)} />
-                                        <meta itemProp="url" content={`/states/${state.slug}`} />
+                                        <Link
+                                            key={state.slug}
+                                            href={`/states/${state.slug}`}
+                                            className="group inline-flex items-center gap-2.5 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-medium text-foreground shadow-sm transition-all hover:border-brand-300 hover:shadow-md hover:-translate-y-0.5 dark:hover:border-brand-700"
+                                            title={`Government jobs & results in ${state.name}`}
+                                        >
                                         <span
                                             className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-brand-600 text-[11px] font-bold leading-none text-white shadow-sm"
                                             aria-hidden="true"
@@ -516,7 +515,6 @@ export default async function HomePage() {
                                         </span>
                                         <span
                                             className="transition-colors group-hover:text-brand-700 dark:group-hover:text-brand-300"
-                                            itemProp="name"
                                         >
                                             {state.name}
                                         </span>
@@ -549,6 +547,7 @@ export default async function HomePage() {
                             sizes="(max-width: 768px) 100vw, 480px"
                             className="relative z-10 h-auto w-full max-w-md drop-shadow-lg dark:opacity-90 dark:brightness-90 dark:invert"
                             aria-hidden="true"
+                            priority
                         />
 
                         {/* Floating stat card */}
@@ -568,6 +567,7 @@ export default async function HomePage() {
                                 aria-label="View all states"
                             >
                                 <ArrowRight className="size-4" />
+                                <span className="sr-only">View all states</span>
                             </Link>
                         </div>
                     </div>

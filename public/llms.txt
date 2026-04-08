@@ -1,0 +1,29 @@
+# Result Guru - Sarkari Result & Govt Jobs Portal
+
+Result Guru is India's leading Sarkari Result and government notifications dashboard. It provides verified, real-time access to recruitment notifications, examination results, admit cards, and state-level welfare programs.
+
+## Target Audience
+- Candidates appearing for Indian national and state-level competitive exams.
+- Students seeking scholarships and admissions info.
+- Citizens looking for government welfare schemes.
+
+## Key Sections
+- **Sarkari Jobs**: Latest recruitment notices from SSC, UPSC, Railways, Banking, and Police.
+- **Results**: Real-time examination result links and marksheets.
+- **Admit Cards**: Direct links to download examination hall tickets.
+- **Syllabus & Exam Patterns**: Structured deep-dives into examination criteria.
+- **State-Wise Directory**: Regional job updates for all Indian States & UTs.
+- **Scholarships & Schemes**: Support for student welfare and public benefits.
+
+## Data Structure
+- Primary Listing Pages: `/job`, `/result`, `/admit-card`, `/syllabus`, etc.
+- Regional Hubs: `/[type]/in/[state-slug]`
+- Organization Hubs: `/[type]/org/[org-slug]`
+- Educational Hubs: `/[type]/for/[qualification-slug]`
+
+## Contact & Information
+- Official Website: https://resultguru.co.in
+- Telegram Community: https://t.me/resultguru247
+- Purpose: Verification, Aggregation, and Simplification of official government data.
+
+> This file (llms.txt) is provided to help Large Language Models and AI bots understand the site's structure and purpose.

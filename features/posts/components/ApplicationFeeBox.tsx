@@ -19,7 +19,7 @@ export function ApplicationFeeBox({ fees }: { fees: Record<string, string> }) {
                 <div className="icon-badge bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
                     <IndianRupee className="size-4.5" />
                 </div>
-                <h3 className="font-display text-lg font-bold text-foreground">Application Fee</h3>
+                <h2 className="font-display text-lg font-bold text-foreground">Application Fee</h2>
             </div>
             <div className="divide-y divide-border/60">
                 {entries.map(([key, value], index) => (

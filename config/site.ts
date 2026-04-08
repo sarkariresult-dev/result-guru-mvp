@@ -15,6 +15,14 @@ export const SITE = {
     country: 'IN',
     /** IANA timezone */
     timezone: 'Asia/Kolkata',
+    /** Business physical presence for E-E-A-T */
+    address: {
+        street: '12, Connaught Circus, Block B, Connaught Place',
+        city: 'New Delhi',
+        region: 'Delhi',
+        postalCode: '110001',
+        country: 'India',
+    },
 
     // ── Social handles ──────────────────────────────────────────────────
     twitter: {
@@ -32,6 +40,8 @@ export const SITE = {
             'https://www.facebook.com/resultguru247',
             'https://www.instagram.com/resultguru247',
         ],
+        editorialPolicy: '/editorial-policy',
+        ethicsPolicy: '/editorial-policy#ethics',
     },
 
     // ── Default OG / Twitter images ──────────────────────────────────────
@@ -282,6 +292,8 @@ export const FOOTER_NAV: NavGroup[] = [
             { label: 'Contact', href: '/contact' },
             { label: 'Privacy Policy', href: '/privacy-policy' },
             { label: 'Terms of Service', href: '/terms-of-service' },
+            { label: 'Editorial Policy', href: '/editorial-policy' },
+            { label: 'Ethics Policy', href: '/editorial-policy#ethics' },
             { label: 'Disclaimer', href: '/disclaimer' },
             { label: 'Sitemap', href: '/site-map' },
         ],

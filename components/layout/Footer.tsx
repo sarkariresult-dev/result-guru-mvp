@@ -7,6 +7,8 @@ import {
     Instagram,
     Linkedin,
     Youtube,
+    MapPin,
+    ShieldCheck,
 } from 'lucide-react'
 
 // ── Custom SVG Icons ────────────────────────────────────────────────────────
@@ -56,6 +58,7 @@ export function Footer() {
                     <div className="lg:col-span-2">
                         <Link href="/" className="inline-block -my-16" aria-label="Result Guru home">
                             <Logo height={36} forceDark={true} />
+                            <span className="sr-only">Home</span>
                         </Link>
                         <p className="mt-6 text-sm leading-relaxed text-slate-500 max-w-sm">
                             {SITE.description}
@@ -70,6 +73,18 @@ export function Footer() {
                             <p className="text-xs font-medium text-slate-400">
                                 100k+ students getting instant Sarkari updates.
                             </p>
+                        </div>
+
+                        {/* Physical Address (E-E-A-T Signal) */}
+                        <div className="mt-8 space-y-3">
+                            <h4 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-200">
+                                <MapPin className="size-3.5 text-brand-500" /> Office Address
+                            </h4>
+                            <address className="not-italic text-sm text-slate-500 leading-relaxed">
+                                {SITE.address.street}<br />
+                                {SITE.address.city}, {SITE.address.region} {SITE.address.postalCode}<br />
+                                {SITE.address.country}
+                            </address>
                         </div>
                     </div>
 
@@ -121,9 +136,18 @@ export function Footer() {
                                     rel="noopener noreferrer"
                                 >
                                     <Icon className="size-5" />
+                                    <span className="sr-only">{link.name}</span>
                                 </Link>
                             )
                         })}
+                    </div>
+
+                    {/* Trust Signals / Certification */}
+                    <div className="hidden md:flex items-center gap-4 border-l border-white/10 pl-6">
+                         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+                            <ShieldCheck className="size-4 text-emerald-500" />
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-300">Verified & Accurate</span>
+                         </div>
                     </div>
                 </div>
             </div>
