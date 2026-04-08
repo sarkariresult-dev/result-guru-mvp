@@ -38,19 +38,6 @@ export async function RelatedPosts({ post, limit = 4 }: Props) {
                     </div>
                 </section>
             )}
-
-            {filteredRecent.length > 0 && (
-                <section>
-                    <h2 className="mb-6 text-xl font-bold tracking-tight text-foreground">
-                        Similar Updates
-                    </h2>
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {filteredRecent.map((p) => (
-                            <PostCard key={p.id} post={p} />
-                        ))}
-                    </div>
-                </section>
-            )}
         </div>
     )
 }

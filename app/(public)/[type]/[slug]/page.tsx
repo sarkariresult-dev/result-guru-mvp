@@ -10,6 +10,7 @@ import { PostDetail } from '@/features/posts/components/PostDetail'
 import { processContentHtml, extractHowToSteps } from '@/lib/content-processing'
 import { sanitizeHtml } from '@/lib/sanitize'
 import { RelatedPosts } from '@/features/posts/components/RelatedPosts'
+import { SmartRelatedPosts } from '@/features/posts/components/SmartRelatedPosts'
 import { PostDetailSkeleton } from '@/features/posts/components/PostCardSkeleton'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { TableOfContents } from '@/features/posts/components/TableOfContents'
@@ -211,11 +212,10 @@ export default async function PostDetailPage({ params }: Props) {
                             <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} className="mt-8" />
                         </Suspense>
 
-                        {/* Related posts */}
+                        {/* Smart Related posts via API logic */}
                         <Suspense fallback={<PostDetailSkeleton />}>
-                            <RelatedPosts
-                                post={publishedPost}
-                            />
+                             <SmartRelatedPosts postId={publishedPost.id} />
+                             <RelatedPosts post={publishedPost} />
                         </Suspense>
                     </article>
 
@@ -287,24 +287,21 @@ export default async function PostDetailPage({ params }: Props) {
                             </div>
                         )}
 
-                        {/* ── Table of Contents ────────────────── */}
-                        {tocItems.length >= 2 && (
-                            <div className="sticky top-24">
-                                <TableOfContents items={tocItems} />
-                            </div>
-                        )}
-
                         {/* ── Sidebar Ad ────────────────────────── */}
                         <Suspense fallback={null}>
                             <AdZone zoneSlug="sidebar_top" postType={typeKey} postId={publishedPost.id} />
                         </Suspense>
 
-                        {/* ── Sticky Ad ─────────────────────────── */}
-                        <Suspense fallback={null}>
-                            <div className="sticky top-24">
+                        {/* ── Sticky Group (TOC & Sticky Ad) ────────────────── */}
+                        <div className="sticky top-24 space-y-6">
+                            {tocItems.length >= 2 && (
+                                <TableOfContents items={tocItems} />
+                            )}
+                            
+                            <Suspense fallback={null}>
                                 <AdZone zoneSlug="sidebar_sticky" postType={typeKey} postId={publishedPost.id} sticky />
-                            </div>
-                        </Suspense>
+                            </Suspense>
+                        </div>
                     </aside>
                 </div>
             </div>

@@ -13,7 +13,7 @@ Write 2-3 paragraphs in Hinglish explaining WHY this job matters for students. "
 <h3>Kya Ye Job Aapke Liye Sahi Hai?</h3>
 Provide a quick 3-4 bullet point assessment: who should apply, who might want to wait for other exams. Show career counselor expertise.
 
-<div class="rg-tip"><strong>💡 Expert Tip:</strong> [Insert a unique expert insight about this recruitment — timing strategy, competition level, or a hidden advantage most candidates miss]</div>
+<div class="rg-tip"><strong>💡 Expert Tip:</strong> [Insert a unique expert insight about this recruitment - timing strategy, competition level, or a hidden advantage most candidates miss]</div>
 
 <h2>Key Highlights</h2>
 Create an HTML `<table>` with `<thead>` and `<th scope="col">`:
@@ -47,7 +47,7 @@ Create a detailed table: Post Name | UR | OBC | SC | ST | EWS | Total.
 <h3>State-Wise/Zone-Wise Distribution</h3>
 If applicable, add state/zone breakdown.
 <h3>Pichle Saal Se Comparison</h3>
-HTML table: Year | Total Vacancies | Qualification | Salary — show at least 2 previous years vs current.
+HTML table: Year | Total Vacancies | Qualification | Salary - show at least 2 previous years vs current.
 
 <h2>Pay Scale & Salary Structure</h2>
 <h3>Official Pay Band</h3>
@@ -57,7 +57,7 @@ Mention pay level, grade pay, and 7th CPC matrix.
 <h3>Career Growth & Promotion Path</h3>
 Expected promotions over 5, 10, 15 years with salary trajectory. "10 saal mein roughly ₹[amount] tak pahunch sakte ho."
 
-<div class="rg-tip"><strong>💡 Expert Tip:</strong> [Insert salary-related insider tip — like which posting locations give highest HRA, or how deputation increases earning]</div>
+<div class="rg-tip"><strong>💡 Expert Tip:</strong> [Insert salary-related insider tip - like which posting locations give highest HRA, or how deputation increases earning]</div>
 
 <h2>Selection Process - Step by Step</h2>
 Use a numbered `<ol>` with details for each stage. Add expected timeline.
@@ -98,6 +98,6 @@ Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
 4. All tables MUST use `<thead>`, `<th scope="col">`, `<tbody>`
 5. Use `<strong>` for salary figures, dates, and organization names
 6. Include at least 2 `<div class="rg-tip">` expert callout boxes
-7. Career growth / promotion path section is a KEY differentiator — make it detailed with real figures
+7. Career growth / promotion path section is a KEY differentiator - make it detailed with real figures
 8. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
 9. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.

@@ -6,6 +6,7 @@ import fs from 'fs'
 import path from 'path'
 import { env } from '@/config/env'
 import { generatePostSchema, type GeneratePostInput } from '@/lib/validations/post'
+import { createServerClient } from '@/lib/supabase/server'
 
 /* ── Gemini Client ────────────────────────────────────────────────── */
 
@@ -15,13 +16,13 @@ const ai = new GoogleGenAI({ apiKey: env.GOOGLE_GENAI_API_KEY })
 
 /**
  * Generates a contextual keyword seed string to enrich the Gemini prompt.
- * Provides domain-specific long-tail patterns based on post type and topic.
+ * Enhanced with competitor-gap patterns, voice search, and People Also Ask triggers.
  */
 function buildKeywordSeed(topic: string, postType: string, primaryKeywords: string): string {
     const year = new Date().getFullYear()
     const topicLower = topic.toLowerCase()
 
-    // Common long-tail patterns per post type
+    // Common long-tail patterns per post type - enhanced with Hindi transliterations
     const patterns: Record<string, string[]> = {
         job: [
             `${topicLower} vacancy ${year}`,
@@ -30,6 +31,10 @@ function buildKeywordSeed(topic: string, postType: string, primaryKeywords: stri
             `${topicLower} salary pay scale 7th pay commission`,
             `${topicLower} apply online direct link`,
             `${topicLower} selection process exam pattern`,
+            `${topicLower} bharti ${year} apply online`,
+            `${topicLower} sarkari naukri ${year}`,
+            `${topicLower} vacancy kitni hai`,
+            `${topicLower} last date kab hai`,
         ],
         result: [
             `${topicLower} result ${year} check online`,
@@ -38,30 +43,38 @@ function buildKeywordSeed(topic: string, postType: string, primaryKeywords: stri
             `${topicLower} merit list pdf download`,
             `${topicLower} result date kab aayega`,
             `${topicLower} marks normalization formula`,
+            `${topicLower} result kaise check kare`,
+            `${topicLower} result link direct`,
+            `${topicLower} topper marks ${year}`,
         ],
         admit: [
             `${topicLower} admit card ${year} download`,
             `${topicLower} hall ticket direct link`,
             `${topicLower} exam center city slip`,
             `${topicLower} exam day guidelines instructions`,
+            `${topicLower} admit card kaise download kare`,
+            `${topicLower} photo signature size for admit card`,
         ],
         answer_key: [
             `${topicLower} answer key ${year} pdf`,
             `${topicLower} objection link last date`,
             `${topicLower} expected cut off after answer key`,
             `${topicLower} marks calculation method`,
+            `${topicLower} answer key set wise pdf download`,
         ],
         cut_off: [
             `${topicLower} cut off ${year} category wise`,
             `${topicLower} qualifying marks general obc sc st`,
             `${topicLower} previous year cut off comparison`,
             `${topicLower} safe score to qualify`,
+            `${topicLower} cut off kitna jayega ${year}`,
         ],
         syllabus: [
             `${topicLower} syllabus ${year} subject wise`,
             `${topicLower} exam pattern marking scheme`,
             `${topicLower} best books preparation strategy`,
             `${topicLower} topic wise weightage analysis`,
+            `${topicLower} syllabus pdf download hindi english`,
         ],
         exam_pattern: [
             `${topicLower} paper pattern ${year}`,
@@ -78,11 +91,13 @@ function buildKeywordSeed(topic: string, postType: string, primaryKeywords: stri
             `${topicLower} yojana ${year} apply online`,
             `${topicLower} eligibility documents required`,
             `${topicLower} benefit amount status check`,
+            `${topicLower} scheme ka labh kaise le`,
         ],
         scholarship: [
             `${topicLower} scholarship ${year} last date`,
             `${topicLower} eligibility income criteria`,
             `${topicLower} apply online renewal process`,
+            `${topicLower} scholarship kitna milega`,
         ],
         admission: [
             `${topicLower} admission ${year} application form`,
@@ -109,6 +124,12 @@ function buildKeywordSeed(topic: string, postType: string, primaryKeywords: stri
         ...seeds,
         ...(pkw ? [`Primary keyword context: ${pkw}`] : []),
         `Current year: ${year}`,
+        '',
+        'IMPORTANT SEO CONTEXT:',
+        '- Target "People Also Ask" questions in Google India.',
+        '- Include Hinglish keyword variations (e.g., "kab aayega", "kaise kare").',
+        '- Focus on voice search patterns (conversational queries).',
+        '- Always include the organization full name AND abbreviation in content.',
     ].join('\n')
 }
 
@@ -124,6 +145,10 @@ const aiResponseSchema = {
         ctrTitle: {
             type: Type.STRING,
             description: 'High-CTR alternative title with urgency triggers (≤65 chars). Can include 1 emoji (✅, 🔥).',
+        },
+        seoTitle: {
+            type: Type.STRING,
+            description: 'SERP-optimized title, different from display title. Includes the most searched variation of the keyword. MAX 60 chars.',
         },
         metaTitle: {
             type: Type.STRING,
@@ -172,7 +197,7 @@ const aiResponseSchema = {
         },
         content: {
             type: Type.STRING,
-            description: 'Full HTML content (1200+ words). Uses [officialWebsiteUrl], [applyOnlineUrl], [notificationPdfUrl] placeholders.',
+            description: 'Full HTML content (1200+ words). Uses [officialWebsiteUrl], [applyOnlineUrl], [notificationPdfUrl] placeholders. MUST start with a Quick Summary Box.',
         },
         officialWebsiteUrl: {
             type: Type.STRING,
@@ -188,7 +213,7 @@ const aiResponseSchema = {
         },
         faq: {
             type: Type.ARRAY,
-            description: '5-8 frequently asked questions with concise answers.',
+            description: '5-8 frequently asked questions with concise answers. Target PAA questions.',
             items: {
                 type: Type.OBJECT,
                 properties: {
@@ -208,7 +233,7 @@ const aiResponseSchema = {
         },
     },
     required: [
-        'title', 'ctrTitle', 'metaTitle', 'metaDescription', 'slug',
+        'title', 'ctrTitle', 'seoTitle', 'metaTitle', 'metaDescription', 'slug',
         'focusKeyword', 'secondaryKeywords', 'longTailKeywords', 'semanticKeywords',
         'suggestedTags', 'suggestedQualifications',
         'excerpt', 'content',
@@ -232,6 +257,55 @@ function readPromptFile(filename: string): string {
         return content
     } catch {
         return ''
+    }
+}
+
+/* ── Auto-assign Content Cluster ──────────────────────────────────── */
+
+/**
+ * Find the matching content_cluster for a post based on organization.
+ * Returns the cluster ID if found.
+ */
+async function findContentCluster(organizationId: string | null | undefined): Promise<string | null> {
+    if (!organizationId) return null
+    try {
+        const supabase = await createServerClient()
+        // Find the org slug first
+        const { data: org } = await supabase
+            .from('organizations')
+            .select('slug')
+            .eq('id', organizationId)
+            .single()
+        if (!org) return null
+
+        // Find matching cluster
+        const { data: cluster } = await supabase
+            .from('content_clusters')
+            .select('id')
+            .eq('slug', org.slug)
+            .eq('cluster_type', 'org')
+            .single()
+
+        return cluster?.id ?? null
+    } catch {
+        return null
+    }
+}
+
+/* ── Auto-compute Related Posts ───────────────────────────────────── */
+
+/**
+ * Uses the database function to compute related posts after creation.
+ */
+async function computeRelatedPosts(postId: string): Promise<string[]> {
+    try {
+        const supabase = await createServerClient()
+        const { data } = await supabase.rpc('fn_compute_related_posts', {
+            target_post_id: postId,
+        })
+        return (data as string[]) ?? []
+    } catch {
+        return []
     }
 }
 
@@ -291,5 +365,74 @@ export async function generateContentWithGemini(data: GeneratePostInput) {
     } catch (e: any) {
         console.error('AI generation error:', e)
         return { error: e.message || 'An unexpected error occurred during AI generation' }
+    }
+}
+
+/* ── Post-Creation SEO Enhancement ────────────────────────────────── */
+
+/**
+ * Call this AFTER creating a post to enhance it with SEO intelligence.
+ * Stores long-tail keywords, computes related posts, and assigns content clusters.
+ */
+export async function enhancePostSEO(postId: string, aiData: Record<string, unknown>, organizationId?: string | null) {
+    try {
+        const supabase = await createServerClient()
+
+        const updates: Record<string, unknown> = {}
+
+        // 1. Store long-tail and semantic keywords
+        if (aiData.longTailKeywords && Array.isArray(aiData.longTailKeywords)) {
+            updates.long_tail_keywords = aiData.longTailKeywords
+        }
+        if (aiData.semanticKeywords && Array.isArray(aiData.semanticKeywords)) {
+            updates.semantic_keywords = aiData.semanticKeywords
+        }
+
+        // 2. Store SEO title
+        if (aiData.seoTitle && typeof aiData.seoTitle === 'string') {
+            updates.seo_title = aiData.seoTitle
+        }
+
+        // 3. Auto-assign content cluster
+        const clusterId = await findContentCluster(organizationId)
+        if (clusterId) {
+            updates.content_cluster_id = clusterId
+        }
+
+        // 4. Compute and store related posts
+        const relatedIds = await computeRelatedPosts(postId)
+        if (relatedIds.length > 0) {
+            updates.related_post_ids = relatedIds
+        }
+
+        // 5. Apply updates
+        if (Object.keys(updates).length > 0) {
+            await supabase.from('posts').update(updates).eq('id', postId)
+        }
+
+        // 6. Update cluster post count (non-critical)
+        if (clusterId) {
+            try {
+                const { count: clusterPostCount } = await supabase
+                    .from('posts')
+                    .select('id', { count: 'exact', head: true })
+                    .eq('content_cluster_id', clusterId)
+                    .eq('status', 'published')
+
+                if (clusterPostCount !== null) {
+                    await supabase
+                        .from('content_clusters')
+                        .update({ post_count: clusterPostCount })
+                        .eq('id', clusterId)
+                }
+            } catch {
+                // Non-critical - cluster count will eventually correct itself
+            }
+        }
+
+        return { success: true }
+    } catch (e: any) {
+        console.error('SEO enhancement error:', e)
+        return { error: e.message }
     }
 }

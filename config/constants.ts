@@ -22,7 +22,7 @@ export const PAGINATION = {
 
 export const CACHE_TTL = {
     /** Home page - refresh often for latest posts */
-    HOME: 180,        // 3 min — faster homepage freshness
+    HOME: 180,        // 3 min - faster homepage freshness
     /** Listing pages */
     LISTING: 300,        // 5 min (was 10 min)
     /** Individual post pages */

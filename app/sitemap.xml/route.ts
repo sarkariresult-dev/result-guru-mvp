@@ -118,6 +118,11 @@ export async function GET() {
             for (const org of orgsResult.value.data as any[]) {
                 const mod = new Date(org.created_at ?? now).toISOString()
                 entries.push(urlEntry(`${baseUrl}/organizations/${org.slug}`, mod, 'monthly', 0.5))
+
+                // Phase 3 Programmatic SEO combinations: /[type]/org/[orgSlug]
+                Object.values(TYPE_SEGMENT).forEach((typeSegment) => {
+                    entries.push(urlEntry(`${baseUrl}/${typeSegment}/org/${org.slug}`, mod, 'weekly', 0.8))
+                })
             }
         }
 
@@ -143,6 +148,16 @@ export async function GET() {
                 })
             }
         }
+
+        // Phase 3 Programmatic SEO combinations: /[type]/archive/[year]
+        const currentYear = new Date().getFullYear();
+        const pastYears = [currentYear, currentYear - 1];
+        pastYears.forEach(year => {
+             Object.values(TYPE_SEGMENT).forEach((typeSegment) => {
+                 entries.push(urlEntry(`${baseUrl}/${typeSegment}/archive/${year}`, now, year === currentYear ? 'daily' : 'monthly', year === currentYear ? 0.9 : 0.6))
+             })
+        });
+
     } catch (err) {
         console.error('[sitemap] Failed to fetch taxonomy data:', err)
     }

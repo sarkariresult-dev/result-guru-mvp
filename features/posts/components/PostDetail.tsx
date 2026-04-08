@@ -283,6 +283,9 @@ export function PostDetail({ post, slug, url }: Props) {
                 </p>
             )}
 
+            {/* ── Above Content Ad ─────────────────────────────── */}
+            <AdZone zoneSlug="above_content" postType={typeKey} postId={post.id} className="my-6" />
+
             {/* ── Type-aware content sections ────────────────────── */}
             {renderedSections}
 

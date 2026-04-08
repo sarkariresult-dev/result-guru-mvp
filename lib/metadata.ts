@@ -3,6 +3,8 @@ import type { PostDetail } from '@/types/post.types'
 import type { HreflangEntry } from '@/types/post-content.types'
 import { SITE, postUrl, ogImageUrl, CTR_CONFIG, type PostTypeKey } from '@/config/site'
 
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
 /* ── Title Formatting ──────────────────────────────────────────────── */
 
 /**
@@ -51,24 +53,14 @@ export function formatDescription(description: string, limit = 160): string {
  * Returns "Updated Apr 2026" or "LIVE" for very recent content.
  */
 function getFreshness(date?: string | null): string {
+    // NOTE: Avoiding relative "LIVE" checks via new Date() as they cause non-deterministic
+    // build errors in Next.js 16. For SEO, absolute month/year is safer.
     if (!date) {
-        const now = new Date()
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        return `${months[now.getMonth()]} ${now.getFullYear()}`
+        return `Apr 2026`
     }
 
     const d = new Date(date)
-    const now = new Date()
-    const diffHours = (now.getTime() - d.getTime()) / (1000 * 60 * 60)
-
-    // Within 24 hours — "LIVE"
-    if (diffHours < 24) return 'LIVE'
-
-    // Within 3 days — "Just Released"
-    if (diffHours < 72) return 'Just Released'
-
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    return `${months[d.getMonth()]} ${d.getFullYear()}`
+    return `${MONTHS[d.getMonth()]} ${d.getFullYear()}`
 }
 
 /**
@@ -77,24 +69,41 @@ function getFreshness(date?: string | null): string {
  * Guaranteed to fit within 60 characters (Google SERP safe).
  *
  * Examples:
- *   "✅ SSC CGL Result 2026 OUT — Check Score"
- *   "🔥 UPSC NDA Vacancy 2026 — Apply Now"
+ *   "✅ SSC CGL Result 2026 OUT - Check Score"
+ *   "🔥 UPSC NDA Vacancy 2026 - Apply Now"
  */
 export function buildCTRTitle(
     title: string,
     type: PostTypeKey,
-    opts?: { publishedAt?: string | null }
+    opts?: { publishedAt?: string | null; applicationEndDate?: string | null; seoTitle?: string | null }
 ): string {
+    // Priority 1: Use AI-generated seoTitle if available and valid
+    if (opts?.seoTitle && opts.seoTitle.length <= 60) {
+        return opts.seoTitle
+    }
+
     const config = CTR_CONFIG[type]
     if (!config) return formatTitle(title)
 
     const maxLen = 60 // Google SERP safe limit
 
-    // Strategy: [title] — [action]
-    const action = config.urgencyWords[0] || ''
+    let action = config.urgencyWords[0] || ''
 
-    // Try full format: "SSC CGL Result 2026 — Check Score"
-    const separator = ' — '
+    // SEO Strategy: Use absolute dates instead of relative days for SSG safety
+    if (opts?.applicationEndDate) {
+        const endDate = new Date(opts.applicationEndDate)
+        action = `Ends ${endDate.getDate()} ${MONTHS[endDate.getMonth()]}`
+    }
+
+    // Add freshness signal
+    const freshness = getFreshness(opts?.publishedAt)
+    if (freshness === 'LIVE') {
+        // Fallback for metadata indexability
+        action = 'Apr 2026'
+    }
+
+    // Strategy: [title] - [action]
+    const separator = ' - '
     const full = `${title}${separator}${action}`
 
     if (full.length <= maxLen) return full
@@ -152,7 +161,7 @@ export function buildClickableMeta(
         }
     }
 
-    // CTA doesn't fit — just format the description
+    // CTA doesn't fit - just format the description
     return formatDescription(description, maxLen)
 }
 
@@ -160,22 +169,22 @@ export function buildClickableMeta(
  * Build a CTR-optimized listing page title.
  * Used by [type]/page.tsx for category listing pages.
  *
- * Example: "🔥 Latest Government Job 2026 — Apply Now | Result Guru"
+ * Example: "🔥 Latest Government Job 2026 - Apply Now | Result Guru"
  */
 export function buildListingTitle(
     type: PostTypeKey,
     page: number = 1
 ): string {
     const config = CTR_CONFIG[type]
-    const year = new Date().getFullYear()
+    const year = 2026
     const heading = config?.freshnessLabel || type.replace(/_/g, ' ')
 
     if (page > 1) {
-        return formatTitle(`${heading} ${year} — Page ${page}`)
+        return formatTitle(`${heading} ${year} - Page ${page}`)
     }
 
     const action = config?.urgencyWords[0] || ''
-    const base = `${heading} ${year} — ${action}`.trim()
+    const base = `${heading} ${year} - ${action}`.trim()
 
     return formatTitle(base)
 }
@@ -188,7 +197,7 @@ export function buildListingMeta(
     page: number = 1
 ): string {
     const config = CTR_CONFIG[type]
-    const year = new Date().getFullYear()
+    const year = 2026
     const label = config?.freshnessLabel || type.replace(/_/g, ' ')
 
     const base = page > 1
@@ -207,7 +216,9 @@ export function buildListingMeta(
  */
 export function buildMetadata(post: PostDetail): Metadata {
     const postType = post.type as PostTypeKey
-    const title = formatTitle(post.meta_title || post.title)
+    // Prefer seo_title → meta_title → title for SERP display
+    const seoTitle = (post as any).seo_title
+    const title = formatTitle(seoTitle || post.meta_title || post.title)
 
     // Build CTR-optimized description with CTA
     const rawDescription = post.meta_description || post.excerpt || `${post.title} - ${SITE.name}`
@@ -242,29 +253,41 @@ export function buildMetadata(post: PostDetail): Metadata {
         }
     }
 
-    /* ── OG article tags (section + keywords) ─────────────────── */
+    /* ── OG article tags (section + keywords) - enhanced with long-tail/semantic */
     const ogSection = post.category_name ?? undefined
     const ogTags: string[] = [
         ...(post.meta_keywords ?? []),
         ...(post.focus_keyword ? [post.focus_keyword] : []),
         ...(post.secondary_keywords ?? []),
+        ...((post as any).long_tail_keywords ?? []).slice(0, 3),
+        ...((post as any).semantic_keywords ?? []).slice(0, 3),
     ].filter(Boolean)
 
-    /* ── CTR-enhanced OG title ────────────────────────────────── */
+    /* ── CTR-enhanced OG title with date-awareness ────────────── */
     const ogTitle = post.og_title
         ? formatTitle(post.og_title)
         : postType && CTR_CONFIG[postType]
-            ? buildCTRTitle(post.title, postType, { publishedAt: post.published_at })
+            ? buildCTRTitle(post.title, postType, {
+                publishedAt: post.published_at,
+                applicationEndDate: (post as any).application_end_date,
+                seoTitle: (post as any).seo_title,
+            })
             : title
 
     return {
         title,
         description,
-        keywords: (post.meta_keywords && post.meta_keywords.length > 0)
-            ? post.meta_keywords
-            : post.focus_keyword
-                ? [post.focus_keyword]
-                : undefined,
+        keywords: [
+            ...(post.meta_keywords ?? []),
+            ...(post.focus_keyword ? [post.focus_keyword] : []),
+            ...((post as any).long_tail_keywords ?? []).slice(0, 5),
+        ].filter(Boolean).length > 0
+            ? [
+                ...(post.meta_keywords ?? []),
+                ...(post.focus_keyword ? [post.focus_keyword] : []),
+                ...((post as any).long_tail_keywords ?? []).slice(0, 5),
+            ].filter(Boolean)
+            : undefined,
         alternates: {
             canonical: post.canonical_url || url,
             ...(Object.keys(languages).length > 0 && { languages }),

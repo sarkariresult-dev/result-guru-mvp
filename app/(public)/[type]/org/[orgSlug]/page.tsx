@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { getStateBySlug, getStates } from '@/lib/queries/states'
+import { getOrganizationBySlug, getOrganizations } from '@/lib/queries/organizations'
 import { getPosts, getPostsCount } from '@/features/posts/queries'
 import { PostGrid } from '@/features/posts/components/PostGrid'
 import { AdZone } from '@/components/ads/AdZone'
@@ -12,7 +12,7 @@ import { PAGINATION } from '@/config/constants'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
 import { POST_TYPE_CONFIG } from '@/config/constants'
 import type { PostTypeKey } from '@/config/site'
-import { MapPin, FileText, ChevronLeft, ChevronRight, ServerCrash, FileX2 } from 'lucide-react'
+import { Building2, ChevronLeft, ChevronRight, ServerCrash, FileX2, ExternalLink } from 'lucide-react'
 import { slugToKey, humanise } from '@/lib/utils'
 import type { PostCard } from '@/types/post.types'
 import { TaxonomyRibbon } from '@/features/taxonomy/components/TaxonomyRibbon'
@@ -21,45 +21,43 @@ import { Suspense } from 'react'
 // ── Types ─────────────────────────────────────────────────────────
 
 interface Props {
-    params: Promise<{ type: string; stateSlug: string }>
+    params: Promise<{ type: string; orgSlug: string }>
     searchParams: Promise<{ page?: string }>
 }
 
 // ── Static Params ─────────────────────────────────────────────────
 
 export async function generateStaticParams() {
-    // Generate top combinations at build time
     try {
-        const states = await getStates().catch(() => [])
+        const orgs = await getOrganizations().catch(() => [])
         const topTypes = ['job', 'result', 'admit-card', 'syllabus', 'answer-key']
 
-        // Return a subset during development to avoid huge build times
         if (process.env.NODE_ENV === 'development') {
-            return topTypes.map(type => ({ type, stateSlug: 'uttar-pradesh' }))
+            return [{ type: 'job', orgSlug: 'ssc' }]
         }
 
-        const params: { type: string; stateSlug: string }[] = []
-        states.forEach(state => {
+        // Only generate params for orgs that are likely to have posts
+        const params: { type: string; orgSlug: string }[] = []
+        orgs.slice(0, 30).forEach(org => {
             topTypes.forEach(type => {
-                params.push({ type, stateSlug: state.slug })
+                params.push({ type, orgSlug: org.slug })
             })
         })
 
-        // Ensure at least one result for build-time validation in Next.js 16
         if (params.length === 0) {
-            return [{ type: 'job', stateSlug: 'uttar-pradesh' }]
+            return [{ type: 'job', orgSlug: 'ssc' }]
         }
 
         return params
     } catch {
-        return [{ type: 'job', stateSlug: 'uttar-pradesh' }]
+        return [{ type: 'job', orgSlug: 'ssc' }]
     }
 }
 
 // ── Metadata ──────────────────────────────────────────────────────
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
-    const { type, stateSlug } = await params
+    const { type, orgSlug } = await params
     const typeKey = slugToKey(type)
     if (!typeKey || !POST_TYPE_CONFIG[typeKey]) return {}
 
@@ -67,39 +65,46 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     const page = Math.max(1, Number(pageParam ?? '1'))
     const year = 2026
 
-    let stateRecord: Awaited<ReturnType<typeof getStateBySlug>> = null
+    let orgRecord: Awaited<ReturnType<typeof getOrganizationBySlug>> = null
     try {
-        stateRecord = await getStateBySlug(stateSlug)
+        orgRecord = await getOrganizationBySlug(orgSlug)
     } catch {
         return {}
     }
 
-    if (!stateRecord) return {}
+    if (!orgRecord) return {}
 
-    const typeName = POST_TYPE_CONFIG[typeKey].heading // e.g., "Government Jobs", "Sarkari Result"
+    const typeName = POST_TYPE_CONFIG[typeKey].heading
+    const orgDisplay = orgRecord.short_name || orgRecord.name
 
-    // CTR Optimized Title: UP Govt Jobs 2026: Latest Uttar Pradesh Vacancies
-    let baseTitle = `${stateRecord.name} ${typeName} ${year} - Latest Updates`
-    let description = `Find the latest ${typeName.toLowerCase()} in ${stateRecord.name} for ${year}. Get verified notifications, direct links, and eligibility details.`
+    // CTR Optimized Titles per type
+    let baseTitle = `${orgDisplay} ${typeName} ${year} — Latest Updates`
+    let description = `Find the latest ${typeName.toLowerCase()} from ${orgRecord.name} (${orgDisplay}) for ${year}. Verified notifications, eligibility details & direct links.`
 
-    // Add CTR urgency and emoji
     if (typeKey === 'job') {
-        baseTitle = `${stateRecord.abbr || stateRecord.name} Govt Jobs ${year}: Latest ${stateRecord.name} Vacancies`
-        description = `Looking for ${stateRecord.name} Govt Jobs in ${year}? Get the latest recruitment notifications, eligibility criteria, and direct application links for all UPPSC, SSC, and Railway jobs in ${stateRecord.name}.`
+        baseTitle = `${orgDisplay} Recruitment ${year}: Latest ${orgRecord.name} Vacancies`
+        description = `${orgRecord.name} (${orgDisplay}) recruitment ${year}. Check all vacancies, eligibility, application form & exam dates. Apply before the last date →`
     } else if (typeKey === 'result') {
-        baseTitle = `${stateRecord.name} Sarkari Result ${year} [LIVE]: Check Cut Off & Merit List`
-        description = `Check your ${stateRecord.name} exam results ${year}. Get direct links for UP board, state commissions, and university results as soon as they are declared.`
+        baseTitle = `${orgDisplay} Result ${year} — Check Score, Cut Off & Merit List`
+        description = `${orgDisplay} exam results ${year}. Check scorecard, cut off marks, merit list & download marksheet. All results updated in real-time.`
     } else if (typeKey === 'admit') {
-        baseTitle = `${stateRecord.name} Admit Card ${year}: Download Hall Tickets`
+        baseTitle = `${orgDisplay} Admit Card ${year} — Download Hall Ticket`
+        description = `Download ${orgDisplay} admit card ${year}. Direct link to hall ticket, exam center details & important instructions. Download now →`
+    } else if (typeKey === 'syllabus') {
+        baseTitle = `${orgDisplay} Syllabus ${year}: Complete Subject-Wise Guide`
+        description = `${orgDisplay} syllabus ${year} with paper pattern, marking scheme & topic-wise weightage. Free PDF download & preparation tips.`
+    } else if (typeKey === 'answer_key') {
+        baseTitle = `${orgDisplay} Answer Key ${year}: Check Answers & Raise Objection`
+        description = `${orgDisplay} answer key ${year}. Download set-wise PDF, check your answers & raise objections before the last date →`
     }
 
     baseTitle = page > 1 ? `${baseTitle} (Page ${page})` : baseTitle
-    const url = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/in/${stateSlug}`
+    const url = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/org/${orgSlug}`
     const canonical = page > 1 ? `${url}?page=${page}` : url
 
     const totalCount = await getPostsCount({
         type: typeKey as unknown as import('@/types/enums').PostType,
-        state_slug: stateSlug
+        organization_id: orgRecord.id
     }).catch(() => 0)
     const totalPages = Math.ceil(totalCount / PAGINATION.DEFAULT_LIMIT)
 
@@ -108,6 +113,13 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
         description,
         alternates: {
             canonical,
+        },
+        openGraph: {
+            title: baseTitle,
+            description,
+            url: canonical,
+            siteName: SITE.name,
+            type: 'website',
         },
     }
 
@@ -138,19 +150,19 @@ function getPageNumbers(current: number, total: number): (number | '...')[] {
 
 // ── Page ───────────────────────────────────────────────────────────
 
-export default async function TypeInStatePage({ params, searchParams }: Props) {
-    const { type, stateSlug } = await params
+export default async function TypeByOrgPage({ params, searchParams }: Props) {
+    const { type, orgSlug } = await params
     const typeKey = slugToKey(type)
     if (!typeKey || !POST_TYPE_CONFIG[typeKey]) notFound()
 
-    let stateRecord: Awaited<ReturnType<typeof getStateBySlug>> = null
+    let orgRecord: Awaited<ReturnType<typeof getOrganizationBySlug>> = null
     try {
-        stateRecord = await getStateBySlug(stateSlug)
+        orgRecord = await getOrganizationBySlug(orgSlug)
     } catch {
         notFound()
     }
 
-    if (!stateRecord || !stateRecord.is_active) notFound()
+    if (!orgRecord || !orgRecord.is_active) notFound()
 
     const { page: pageParam } = await searchParams
     const page = Math.max(1, Number(pageParam ?? '1'))
@@ -164,8 +176,8 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
     try {
         const [[p, c]] = await Promise.all([
             Promise.all([
-                getPosts({ type: typeKey as unknown as import('@/types/enums').PostType, state_slug: stateSlug }, page, limit),
-                getPostsCount({ type: typeKey as unknown as import('@/types/enums').PostType, state_slug: stateSlug }),
+                getPosts({ type: typeKey as unknown as import('@/types/enums').PostType, organization_id: orgRecord.id }, page, limit),
+                getPostsCount({ type: typeKey as unknown as import('@/types/enums').PostType, organization_id: orgRecord.id }),
             ])
         ])
         posts = p
@@ -175,14 +187,15 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
     }
 
     const totalPages = Math.ceil(totalCount / limit)
-    const basePath = `${ROUTE_PREFIXES[typeKey]}/in/${stateSlug}`
+    const basePath = `${ROUTE_PREFIXES[typeKey]}/org/${orgSlug}`
     const config = POST_TYPE_CONFIG[typeKey]
+    const orgDisplay = orgRecord.short_name || orgRecord.name
 
     /* Breadcrumb JSON-LD */
     const breadcrumbJsonLd = buildBreadcrumbSchema([
         { name: 'Home', url: SITE.url },
-        { name: 'States', url: `${SITE.url}/states` },
-        { name: stateRecord.name, url: `${SITE.url}/states/${stateSlug}` },
+        { name: 'Organizations', url: `${SITE.url}/organizations` },
+        { name: orgRecord.name, url: `${SITE.url}/organizations/${orgSlug}` },
         { name: config.heading, url: `${SITE.url}${basePath}` },
     ])
 
@@ -190,10 +203,15 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
     const collectionJsonLd = {
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
-        name: `${stateRecord.name} ${config.heading} ${year}`,
-        description: `Latest ${config.heading.toLowerCase()} for the state of ${stateRecord.name}.`,
+        name: `${orgDisplay} ${config.heading} ${year}`,
+        description: `Latest ${config.heading.toLowerCase()} from ${orgRecord.name} (${orgDisplay}).`,
         url: `${SITE.url}${basePath}`,
         isPartOf: { '@type': 'WebSite', name: SITE.name, url: SITE.url },
+        about: {
+            '@type': 'Organization',
+            name: orgRecord.name,
+            ...(orgRecord.official_url && { url: orgRecord.official_url }),
+        },
         ...(totalCount > 0 && {
             mainEntity: {
                 '@type': 'ItemList',
@@ -208,6 +226,11 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
         }),
     }
 
+    /* Cross-type navigation — show other types for this org */
+    const otherTypes = (Object.keys(POST_TYPE_CONFIG) as PostTypeKey[])
+        .filter(k => k !== typeKey)
+        .slice(0, 6)
+
     const prevUrl = page > 1 ? (page === 2 ? basePath : `${basePath}?page=${page - 1}`) : null
     const nextUrl = page < totalPages ? `${basePath}?page=${page + 1}` : null
 
@@ -221,22 +244,33 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
             <div className="container mx-auto max-w-7xl px-4 py-8">
                 <Breadcrumb
                     items={[
-                        { label: 'States', href: '/states' },
-                        { label: stateRecord.name, href: `/states/${stateSlug}` },
+                        { label: 'Organizations', href: '/organizations' },
+                        { label: orgRecord.name, href: `/organizations/${orgSlug}` },
                         { label: humanise(type) },
                     ]}
                 />
 
                 <div className="mb-8 mt-4">
                     <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl flex items-center gap-3">
-                        <MapPin className="size-8 text-brand-600" />
-                        {stateRecord.name} {config.heading}
+                        <Building2 className="size-8 text-brand-600" />
+                        {orgDisplay} {config.heading} {year}
                     </h1>
                     <div className="mt-4 flex flex-col gap-3">
                         <p className="max-w-3xl text-lg font-medium text-foreground-muted leading-relaxed">
-                            Looking for the latest {config.heading.toLowerCase()} in {stateRecord.name}?
-                            We bring you verified updates, eligibility criteria, and direct links for all {year} opportunities.
+                            Find the latest {config.heading.toLowerCase()} from {orgRecord.name} ({orgDisplay}).
+                            All updates verified with official notifications and direct links.
                         </p>
+                        {orgRecord.official_url && (
+                            <a
+                                href={orgRecord.official_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 hover:text-brand-700 transition-colors"
+                            >
+                                <ExternalLink className="size-3.5" />
+                                Official Website: {orgRecord.official_url.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+                            </a>
+                        )}
                     </div>
                     {totalCount > 0 && (
                         <p className="mt-4 text-sm font-semibold text-brand-600 dark:text-brand-400">
@@ -251,6 +285,24 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
                     {/* ── Left Sidebar (Filter Discovery) ── */}
                     <aside className="hidden lg:block">
                         <div className="sticky top-24 space-y-8">
+                            {/* Cross-type navigation (Org Specific) */}
+                            <section>
+                                <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-foreground-subtle">
+                                    More {orgDisplay} Updates
+                                </h3>
+                                <div className="flex flex-col gap-1.5">
+                                    {otherTypes.map(t => (
+                                        <Link
+                                            key={t}
+                                            href={`${ROUTE_PREFIXES[t]}/org/${orgSlug}`}
+                                            className="rounded-lg px-3 py-2 text-sm font-medium text-foreground-muted transition-all hover:bg-brand-50 hover:text-brand-700 dark:hover:bg-brand-900/20"
+                                        >
+                                            {POST_TYPE_CONFIG[t].label}
+                                        </Link>
+                                    ))}
+                                </div>
+                            </section>
+
                             <Suspense fallback={<div className="h-96 w-full animate-pulse rounded-2xl bg-background-muted" />}>
                                 <TaxonomyRibbon typeSlug={type} layout="sidebar" />
                             </Suspense>
@@ -261,8 +313,19 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
 
                     {/* ── Main Column ── */}
                     <div className="space-y-8">
-                        {/* Mobile-only Ribbon (Hidden on Desktop) */}
-                        <div className="lg:hidden">
+                        {/* Mobile-only Ribbons */}
+                        <div className="space-y-4 lg:hidden">
+                            <div className="flex flex-wrap gap-2">
+                                {otherTypes.map(t => (
+                                    <Link
+                                        key={t}
+                                        href={`${ROUTE_PREFIXES[t]}/org/${orgSlug}`}
+                                        className="whitespace-nowrap rounded-lg border border-border bg-background-subtle px-3 py-1.5 text-xs font-semibold text-foreground transition-all hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700 active:scale-95"
+                                    >
+                                        {POST_TYPE_CONFIG[t].label}
+                                    </Link>
+                                ))}
+                            </div>
                             <Suspense fallback={null}>
                                 <TaxonomyRibbon typeSlug={type} layout="ribbon" />
                             </Suspense>
@@ -290,13 +353,13 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
                                 </div>
                                 <h3 className="mb-2 text-lg font-semibold text-foreground">No updates yet</h3>
                                 <p className="max-w-md text-foreground-muted">
-                                    There are no {config.heading.toLowerCase()} available for {stateRecord.name} right now.
+                                    There are no {config.heading.toLowerCase()} from {orgDisplay} right now.
                                 </p>
                                 <Link
-                                    href={`/states/${stateSlug}`}
+                                    href={`/organizations/${orgSlug}`}
                                     className="mt-5 inline-flex items-center gap-2 rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700"
                                 >
-                                    View All {stateRecord.name} Updates
+                                    View All {orgDisplay} Updates
                                 </Link>
                             </div>
                         )}

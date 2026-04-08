@@ -74,7 +74,7 @@ export const getPosts = cache(unstable_cache(
     },
     ['posts-list'], // Cache key segment
     {
-        revalidate: 300, // 5 min — faster freshness for listing pages
+        revalidate: 300, // 5 min - faster freshness for listing pages
         tags: ['posts'],
     }
 ))
@@ -110,7 +110,7 @@ export const getPostBySlug = cache(unstable_cache(
     },
     ['post-by-slug'],
     {
-        revalidate: 1800, // 30 min — tighter for faster content updates
+        revalidate: 1800, // 30 min - tighter for faster content updates
         tags: ['posts'],
     }
 ))
@@ -133,7 +133,7 @@ export const getRecentPosts = cache(unstable_cache(
     },
     ['recent-posts'],
     {
-        revalidate: 300, // 5 min — homepage sections need fast updates
+        revalidate: 300, // 5 min - homepage sections need fast updates
         tags: ['posts', 'homepage'],
     }
 ))
@@ -177,7 +177,7 @@ export const searchPosts = cache(unstable_cache(
         // 3. Keep original sort order
         const idMap = new Map((data as any[] ?? []).map(p => [p.id, p]))
         const sorted = ids.map((id: string) => idMap.get(id)).filter(Boolean) as any[]
-        
+
         return sorted.map(p => toPostCardDTO(p))
     },
     ['search-posts'],
@@ -203,7 +203,7 @@ export const getPostsCount = cache(unstable_cache(
     },
     ['posts-count'],
     {
-        revalidate: 300, // 5 min — keep pagination metadata fresh
+        revalidate: 300, // 5 min - keep pagination metadata fresh
         tags: ['posts', 'posts-count'],
     }
 ))
@@ -299,3 +299,50 @@ export async function getPostById(id: string): Promise<(Post & { post_tags?: { p
         .single()
     return data ?? null
 }
+
+/** Fetch Smart Related Jobs dynamically avoiding client fetch loops for SEO */
+export const getSmartRelatedPosts = cache(unstable_cache(
+    async (postId: string): Promise<PostCard[]> => {
+        const supabase = createStaticClient()
+        const { data: sourcePost, error: sourceError } = await supabase
+            .from('posts')
+            .select('related_post_ids, content_cluster_id, type')
+            .eq('id', postId)
+            .single()
+
+        if (sourceError || !sourcePost) return []
+
+        const postRecord = sourcePost as any
+        const relatedIds = postRecord.related_post_ids || []
+        let posts: PostCard[] = []
+
+        if (relatedIds.length > 0) {
+            const { data } = await supabase
+                .from('v_published_posts')
+                .select(POST_CARD_COLUMNS)
+                .in('id', relatedIds)
+                .limit(4)
+            if (data) posts = data.map(toPostCardDTO)
+        }
+
+        if (posts.length < 4 && postRecord.content_cluster_id) {
+            const { data } = await supabase
+                .from('v_published_posts')
+                .select(POST_CARD_COLUMNS)
+                .eq('type', postRecord.type)
+                .neq('id', postId)
+                .limit(4 - posts.length)
+
+            if (data) {
+                const fallback = data.map(toPostCardDTO)
+                const existingIds = new Set(posts.map(p => p.id))
+                fallback.forEach(fp => {
+                    if (!existingIds.has(fp.id)) posts.push(fp)
+                })
+            }
+        }
+        return posts
+    },
+    ['smart-related-posts'],
+    { revalidate: 3600, tags: ['posts'] }
+))

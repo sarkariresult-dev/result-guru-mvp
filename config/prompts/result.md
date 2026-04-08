@@ -11,9 +11,9 @@ You are writing a **Government Exam Result** post. Use an urgent, celebratory Hi
 <h3>Official Announcement</h3>
 "Breaking: [Board] ne officially [Exam] ka result declare kar diya hai [Date] ko. Candidates apna score aur rank ab check kar sakte hain." OR if pending: "Abhi tak result declared nahi hua hai. Expected date hai [Date]."
 <h3>Is Baar Result Mein Kya Naya Hai?</h3>
-Any changes — new scoring system, normalization update, result format changes vs last year.
+Any changes - new scoring system, normalization update, result format changes vs last year.
 
-<div class="rg-tip"><strong>💡 Expert Tip:</strong> [Insert helpful insight — like "Result aate hi cut-off check karo, kyunki mains ke liye time bahut kam milta hai"]</div>
+<div class="rg-tip"><strong>💡 Expert Tip:</strong> [Insert helpful insight - like "Result aate hi cut-off check karo, kyunki mains ke liye time bahut kam milta hai"]</div>
 
 <h2>Key Highlights</h2>
 HTML `<table>` with `<thead>`, `<th scope="col">`:
@@ -46,7 +46,7 @@ HTML `<table>`: Category | Cut Off Marks | Previous Year | Change (↑/↓)
 <h3>Why Cut Off Changed</h3>
 Analysis: candidate count, paper difficulty, vacancy changes. Link to <a href="/cut-off">Detailed Cut Off Analysis</a>.
 
-<div class="rg-tip"><strong>💡 Expert Tip:</strong> [Insert cut-off related insight — like "General category ke liye safe score 200+ hai based on 3-year trend analysis"]</div>
+<div class="rg-tip"><strong>💡 Expert Tip:</strong> [Insert cut-off related insight - like "General category ke liye safe score 200+ hai based on 3-year trend analysis"]</div>
 
 <h2>Toppers & Statistics</h2>
 <h3>Top Performers</h3>
@@ -85,6 +85,6 @@ Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
 3. Tables with `<thead>`, `<th scope="col">`
 4. Year-over-year comparison table with pass % and cut-off trends is ESSENTIAL
 5. Include at least 2 `<div class="rg-tip">` expert callout boxes
-6. "Qualify Nahi Hua" section shows empathy and keeps bounce rate low — make it genuinely helpful
+6. "Qualify Nahi Hua" section shows empathy and keeps bounce rate low - make it genuinely helpful
 7. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
 8. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.

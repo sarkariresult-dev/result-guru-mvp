@@ -15,6 +15,8 @@ import type { PostTypeKey } from '@/config/site'
 import { GraduationCap, FileText, ChevronLeft, ChevronRight, ServerCrash, FileX2 } from 'lucide-react'
 import { slugToKey, humanise } from '@/lib/utils'
 import type { PostCard } from '@/types/post.types'
+import { TaxonomyRibbon } from '@/features/taxonomy/components/TaxonomyRibbon'
+import { Suspense } from 'react'
 
 // ── Types ─────────────────────────────────────────────────────────
 
@@ -62,7 +64,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
     const { page: pageParam } = await searchParams
     const page = Math.max(1, Number(pageParam ?? '1'))
-    const year = new Date().getFullYear()
+    const year = 2026
 
     let qualRecord = null
     try {
@@ -156,7 +158,7 @@ export default async function TypeForQualificationPage({ params, searchParams }:
     const { page: pageParam } = await searchParams
     const page = Math.max(1, Number(pageParam ?? '1'))
     const limit = PAGINATION.DEFAULT_LIMIT
-    const year = new Date().getFullYear()
+    const year = 2026
 
     let posts: PostCard[] = []
     let totalCount = 0
@@ -247,87 +249,113 @@ export default async function TypeForQualificationPage({ params, searchParams }:
                     )}
                 </div>
 
-                <AdZone zoneSlug="below_header" postType={typeKey} className="mb-8" />
-
-                {fetchError ? (
-                    <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-dashed border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20 p-8 text-center">
-                        <div className="mb-4 rounded-full bg-red-100 dark:bg-red-900/30 p-4">
-                            <ServerCrash className="size-8 text-red-600" />
+                {/* ── Main content grid ── */}
+                <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr]">
+                    
+                    {/* ── Left Sidebar (Filter Discovery) ── */}
+                    <aside className="hidden lg:block">
+                        <div className="sticky top-24 space-y-8">
+                            <Suspense fallback={<div className="h-96 w-full animate-pulse rounded-2xl bg-background-muted" />}>
+                                <TaxonomyRibbon typeSlug={type} layout="sidebar" />
+                            </Suspense>
+                            
+                            <AdZone zoneSlug="sidebar_top" postType={typeKey} />
                         </div>
-                        <h3 className="mb-2 text-lg font-semibold text-foreground">Connection Error</h3>
-                        <p className="text-foreground-muted max-w-md">
-                            Could not load the latest updates.
-                        </p>
-                    </div>
-                ) : posts.length > 0 ? (
-                    <PostGrid posts={posts} priority={3} />
-                ) : (
-                    <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface p-8 text-center">
-                        <div className="mb-4 rounded-full bg-background-subtle p-4">
-                            <FileX2 className="size-8 text-foreground-muted" />
-                        </div>
-                        <h3 className="mb-2 text-lg font-semibold text-foreground">No updates yet</h3>
-                        <p className="mt-2 text-sm text-foreground-muted max-w-md">
-                            There are no {config.heading.toLowerCase()} available for {qualName} right now.
-                        </p>
-                        <Link
-                            href="/"
-                            className="mt-5 inline-flex items-center gap-2 rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700"
-                        >
-                            View All Updates
-                        </Link>
-                    </div>
-                )}
+                    </aside>
 
-                {/* Pagination */}
-                {totalPages > 1 && !fetchError && (
-                    <nav className="mt-12 flex flex-wrap items-center justify-center gap-1.5" aria-label="Pagination">
-                        {page > 1 ? (
-                            <Link
-                                href={`${basePath}?page=${page - 1}`}
-                                className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background-subtle"
-                            >
-                                <ChevronLeft className="size-4" />
-                                <span className="hidden sm:inline">Previous</span>
-                            </Link>
+                    {/* ── Main Column ── */}
+                    <div className="space-y-8">
+                        {/* Mobile-only Ribbon (Hidden on Desktop) */}
+                        <div className="lg:hidden">
+                            <Suspense fallback={null}>
+                                <TaxonomyRibbon typeSlug={type} layout="ribbon" />
+                            </Suspense>
+                        </div>
+
+                        <AdZone zoneSlug="below_header" postType={typeKey} className="mb-4" />
+
+                        {/* Posts grid */}
+                        {fetchError ? (
+                            <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-dashed border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20 p-8 text-center">
+                                <div className="mb-4 rounded-full bg-red-100 dark:bg-red-900/30 p-4">
+                                    <ServerCrash className="size-8 text-red-600" />
+                                </div>
+                                <h3 className="mb-2 text-lg font-semibold text-foreground">Connection Error</h3>
+                                <p className="max-w-md text-foreground-muted">
+                                    Could not load the latest updates.
+                                </p>
+                            </div>
+                        ) : posts.length > 0 ? (
+                            <PostGrid posts={posts} priority={2} />
                         ) : (
-                            <span className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground-subtle opacity-50 cursor-not-allowed">
-                                <ChevronLeft className="size-4" />
-                                <span className="hidden sm:inline">Previous</span>
-                            </span>
-                        )}
-
-                        {getPageNumbers(page, totalPages).map((p, i) =>
-                            p === '...' ? (
-                                <span key={`ellipsis-${i}`} className="px-2 py-2 text-sm text-foreground-subtle">&hellip;</span>
-                            ) : (
+                            <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface p-8 text-center">
+                                <div className="mb-4 rounded-full bg-background-subtle p-4">
+                                    <FileX2 className="size-8 text-foreground-muted" />
+                                </div>
+                                <h3 className="mb-2 text-lg font-semibold text-foreground">No updates yet</h3>
+                                <p className="max-w-md text-foreground-muted">
+                                    There are no {config.heading.toLowerCase()} available for {qualName} right now.
+                                </p>
                                 <Link
-                                    key={p}
-                                    href={`${basePath}?page=${p}`}
-                                    className={`inline-flex size-10 items-center justify-center rounded-lg border text-sm font-medium transition-colors ${p === page ? 'border-brand-600 bg-brand-600 text-white' : 'border-border text-foreground hover:bg-background-subtle'}`}
-                                    aria-current={p === page ? 'page' : undefined}
+                                    href="/"
+                                    className="mt-5 inline-flex items-center gap-2 rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700"
                                 >
-                                    {p}
+                                    View All Updates
                                 </Link>
-                            )
+                            </div>
                         )}
 
-                        {page < totalPages ? (
-                            <Link
-                                href={`${basePath}?page=${page + 1}`}
-                                className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background-subtle"
-                            >
-                                <span className="hidden sm:inline">Next</span>
-                                <ChevronRight className="size-4" />
-                            </Link>
-                        ) : (
-                            <span className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground-subtle opacity-50 cursor-not-allowed">
-                                <span className="hidden sm:inline">Next</span>
-                                <ChevronRight className="size-4" />
-                            </span>
+                        {/* Pagination */}
+                        {totalPages > 1 && !fetchError && (
+                            <nav className="mt-12 flex flex-wrap items-center justify-center gap-1.5" aria-label="Pagination">
+                                {page > 1 ? (
+                                    <Link
+                                        href={`${basePath}?page=${page - 1}`}
+                                        className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background-subtle"
+                                    >
+                                        <ChevronLeft className="size-4" />
+                                        <span className="hidden sm:inline">Previous</span>
+                                    </Link>
+                                ) : (
+                                    <span className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground-subtle opacity-50 cursor-not-allowed">
+                                        <ChevronLeft className="size-4" />
+                                        <span className="hidden sm:inline">Previous</span>
+                                    </span>
+                                )}
+
+                                {getPageNumbers(page, totalPages).map((p, i) =>
+                                    p === '...' ? (
+                                        <span key={`ellipsis-${i}`} className="px-2 py-2 text-sm text-foreground-subtle">&hellip;</span>
+                                    ) : (
+                                        <Link
+                                            key={p}
+                                            href={`${basePath}?page=${p}`}
+                                            className={`inline-flex size-10 items-center justify-center rounded-lg border text-sm font-medium transition-colors ${p === page ? 'border-brand-600 bg-brand-600 text-white' : 'border-border text-foreground hover:bg-background-subtle'}`}
+                                            aria-current={p === page ? 'page' : undefined}
+                                        >
+                                            {p}
+                                        </Link>
+                                    )
+                                )}
+
+                                {page < totalPages ? (
+                                    <Link
+                                        href={`${basePath}?page=${page + 1}`}
+                                        className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background-subtle"
+                                    >
+                                        <span className="hidden sm:inline">Next</span>
+                                        <ChevronRight className="size-4" />
+                                    </Link>
+                                ) : (
+                                    <span className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground-subtle opacity-50 cursor-not-allowed">
+                                        <span className="hidden sm:inline">Next</span>
+                                        <ChevronRight className="size-4" />
+                                    </span>
+                                )}
+                            </nav>
                         )}
-                    </nav>
-                )}
+                    </div>
+                </div>
 
                 <AdZone zoneSlug="below_content" postType={typeKey} className="mt-8" />
             </div>

@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { getStateBySlug, getStates } from '@/lib/queries/states'
 import { getPosts, getPostsCount } from '@/features/posts/queries'
 import { PostGrid } from '@/features/posts/components/PostGrid'
 import { AdZone } from '@/components/ads/AdZone'
@@ -12,7 +11,7 @@ import { PAGINATION } from '@/config/constants'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
 import { POST_TYPE_CONFIG } from '@/config/constants'
 import type { PostTypeKey } from '@/config/site'
-import { MapPin, FileText, ChevronLeft, ChevronRight, ServerCrash, FileX2 } from 'lucide-react'
+import { Calendar, ChevronLeft, ChevronRight, ServerCrash, FileX2 } from 'lucide-react'
 import { slugToKey, humanise } from '@/lib/utils'
 import type { PostCard } from '@/types/post.types'
 import { TaxonomyRibbon } from '@/features/taxonomy/components/TaxonomyRibbon'
@@ -21,105 +20,80 @@ import { Suspense } from 'react'
 // ── Types ─────────────────────────────────────────────────────────
 
 interface Props {
-    params: Promise<{ type: string; stateSlug: string }>
+    params: Promise<{ type: string; year: string }>
     searchParams: Promise<{ page?: string }>
+}
+
+// ── Validate year ─────────────────────────────────────────────────
+
+function isValidYear(year: string): boolean {
+    const y = parseInt(year, 10)
+    return !isNaN(y) && y >= 2020 && y <= 2027
 }
 
 // ── Static Params ─────────────────────────────────────────────────
 
 export async function generateStaticParams() {
-    // Generate top combinations at build time
-    try {
-        const states = await getStates().catch(() => [])
-        const topTypes = ['job', 'result', 'admit-card', 'syllabus', 'answer-key']
+    const currentYear = 2026
+    const years = [currentYear, currentYear - 1]
+    const topTypes = ['job', 'result', 'admit-card', 'answer-key', 'syllabus']
 
-        // Return a subset during development to avoid huge build times
-        if (process.env.NODE_ENV === 'development') {
-            return topTypes.map(type => ({ type, stateSlug: 'uttar-pradesh' }))
-        }
-
-        const params: { type: string; stateSlug: string }[] = []
-        states.forEach(state => {
-            topTypes.forEach(type => {
-                params.push({ type, stateSlug: state.slug })
-            })
-        })
-
-        // Ensure at least one result for build-time validation in Next.js 16
-        if (params.length === 0) {
-            return [{ type: 'job', stateSlug: 'uttar-pradesh' }]
-        }
-
-        return params
-    } catch {
-        return [{ type: 'job', stateSlug: 'uttar-pradesh' }]
+    if (process.env.NODE_ENV === 'development') {
+        return [{ type: 'job', year: String(currentYear) }]
     }
+
+    const params: { type: string; year: string }[] = []
+    years.forEach(y => {
+        topTypes.forEach(type => {
+            params.push({ type, year: String(y) })
+        })
+    })
+
+    return params.length > 0 ? params : [{ type: 'job', year: String(currentYear) }]
 }
 
 // ── Metadata ──────────────────────────────────────────────────────
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
-    const { type, stateSlug } = await params
+    const { type, year } = await params
     const typeKey = slugToKey(type)
-    if (!typeKey || !POST_TYPE_CONFIG[typeKey]) return {}
+    if (!typeKey || !POST_TYPE_CONFIG[typeKey] || !isValidYear(year)) return {}
 
     const { page: pageParam } = await searchParams
     const page = Math.max(1, Number(pageParam ?? '1'))
-    const year = 2026
 
-    let stateRecord: Awaited<ReturnType<typeof getStateBySlug>> = null
-    try {
-        stateRecord = await getStateBySlug(stateSlug)
-    } catch {
-        return {}
-    }
+    const typeName = POST_TYPE_CONFIG[typeKey].heading
+    const currentYear = 2026
+    const yearNum = parseInt(year, 10)
 
-    if (!stateRecord) return {}
+    // CTR-Optimized titles
+    let baseTitle: string
+    let description: string
 
-    const typeName = POST_TYPE_CONFIG[typeKey].heading // e.g., "Government Jobs", "Sarkari Result"
-
-    // CTR Optimized Title: UP Govt Jobs 2026: Latest Uttar Pradesh Vacancies
-    let baseTitle = `${stateRecord.name} ${typeName} ${year} - Latest Updates`
-    let description = `Find the latest ${typeName.toLowerCase()} in ${stateRecord.name} for ${year}. Get verified notifications, direct links, and eligibility details.`
-
-    // Add CTR urgency and emoji
-    if (typeKey === 'job') {
-        baseTitle = `${stateRecord.abbr || stateRecord.name} Govt Jobs ${year}: Latest ${stateRecord.name} Vacancies`
-        description = `Looking for ${stateRecord.name} Govt Jobs in ${year}? Get the latest recruitment notifications, eligibility criteria, and direct application links for all UPPSC, SSC, and Railway jobs in ${stateRecord.name}.`
-    } else if (typeKey === 'result') {
-        baseTitle = `${stateRecord.name} Sarkari Result ${year} [LIVE]: Check Cut Off & Merit List`
-        description = `Check your ${stateRecord.name} exam results ${year}. Get direct links for UP board, state commissions, and university results as soon as they are declared.`
-    } else if (typeKey === 'admit') {
-        baseTitle = `${stateRecord.name} Admit Card ${year}: Download Hall Tickets`
+    if (yearNum === currentYear) {
+        baseTitle = `${typeName} ${year}: All Latest Updates & Notifications`
+        description = `Complete list of ${typeName.toLowerCase()} for ${year}. Get latest notifications, eligibility, dates & direct application links. Updated daily.`
+    } else {
+        baseTitle = `${typeName} ${year}: Previous Year Archive`
+        description = `Archive of all ${typeName.toLowerCase()} from ${year}. Browse past results, notifications & recruitment records for reference.`
     }
 
     baseTitle = page > 1 ? `${baseTitle} (Page ${page})` : baseTitle
-    const url = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/in/${stateSlug}`
+    const url = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/archive/${year}`
     const canonical = page > 1 ? `${url}?page=${page}` : url
 
-    const totalCount = await getPostsCount({
-        type: typeKey as unknown as import('@/types/enums').PostType,
-        state_slug: stateSlug
-    }).catch(() => 0)
-    const totalPages = Math.ceil(totalCount / PAGINATION.DEFAULT_LIMIT)
-
-    const baseMetadata: Metadata = {
+    return {
         title: baseTitle,
         description,
-        alternates: {
-            canonical,
+        alternates: { canonical },
+        openGraph: {
+            title: baseTitle,
+            description,
+            url: canonical,
+            siteName: SITE.name,
+            type: 'website',
         },
     }
-
-    if (page > 1 || page < totalPages) {
-        baseMetadata.alternates = {
-            ...baseMetadata.alternates,
-            ...(page > 1 && { prev: page === 2 ? url : `${url}?page=${page - 1}` }),
-            ...(page < totalPages && { next: `${url}?page=${page + 1}` }),
-        }
-    }
-
-    return baseMetadata
 }
 
 // ── Pagination helpers ────────────────────────────────────────────
@@ -138,24 +112,19 @@ function getPageNumbers(current: number, total: number): (number | '...')[] {
 
 // ── Page ───────────────────────────────────────────────────────────
 
-export default async function TypeInStatePage({ params, searchParams }: Props) {
-    const { type, stateSlug } = await params
+export default async function TypeByYearPage({ params, searchParams }: Props) {
+    const { type, year } = await params
     const typeKey = slugToKey(type)
-    if (!typeKey || !POST_TYPE_CONFIG[typeKey]) notFound()
+    if (!typeKey || !POST_TYPE_CONFIG[typeKey] || !isValidYear(year)) notFound()
 
-    let stateRecord: Awaited<ReturnType<typeof getStateBySlug>> = null
-    try {
-        stateRecord = await getStateBySlug(stateSlug)
-    } catch {
-        notFound()
-    }
-
-    if (!stateRecord || !stateRecord.is_active) notFound()
+    const yearNum = parseInt(year, 10)
+    const yearStart = `${year}-01-01T00:00:00+05:30`
+    const yearEnd = `${year}-12-31T23:59:59+05:30`
 
     const { page: pageParam } = await searchParams
     const page = Math.max(1, Number(pageParam ?? '1'))
     const limit = PAGINATION.DEFAULT_LIMIT
-    const year = 2026
+    const currentYear = 2026
 
     let posts: PostCard[] = []
     let totalCount = 0
@@ -164,8 +133,16 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
     try {
         const [[p, c]] = await Promise.all([
             Promise.all([
-                getPosts({ type: typeKey as unknown as import('@/types/enums').PostType, state_slug: stateSlug }, page, limit),
-                getPostsCount({ type: typeKey as unknown as import('@/types/enums').PostType, state_slug: stateSlug }),
+                getPosts({
+                    type: typeKey as unknown as import('@/types/enums').PostType,
+                    published_after: yearStart,
+                    published_before: yearEnd,
+                }, page, limit),
+                getPostsCount({
+                    type: typeKey as unknown as import('@/types/enums').PostType,
+                    published_after: yearStart,
+                    published_before: yearEnd,
+                }),
             ])
         ])
         posts = p
@@ -175,23 +152,22 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
     }
 
     const totalPages = Math.ceil(totalCount / limit)
-    const basePath = `${ROUTE_PREFIXES[typeKey]}/in/${stateSlug}`
+    const basePath = `${ROUTE_PREFIXES[typeKey]}/archive/${year}`
     const config = POST_TYPE_CONFIG[typeKey]
 
     /* Breadcrumb JSON-LD */
     const breadcrumbJsonLd = buildBreadcrumbSchema([
         { name: 'Home', url: SITE.url },
-        { name: 'States', url: `${SITE.url}/states` },
-        { name: stateRecord.name, url: `${SITE.url}/states/${stateSlug}` },
-        { name: config.heading, url: `${SITE.url}${basePath}` },
+        { name: config.heading, url: `${SITE.url}${ROUTE_PREFIXES[typeKey]}` },
+        { name: `${year}`, url: `${SITE.url}${basePath}` },
     ])
 
     /* CollectionPage JSON-LD */
     const collectionJsonLd = {
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
-        name: `${stateRecord.name} ${config.heading} ${year}`,
-        description: `Latest ${config.heading.toLowerCase()} for the state of ${stateRecord.name}.`,
+        name: `${config.heading} ${year}`,
+        description: `All ${config.heading.toLowerCase()} published in ${year}.`,
         url: `${SITE.url}${basePath}`,
         isPartOf: { '@type': 'WebSite', name: SITE.name, url: SITE.url },
         ...(totalCount > 0 && {
@@ -208,6 +184,9 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
         }),
     }
 
+    /* Year navigation */
+    const prevYear = yearNum > 2020 ? yearNum - 1 : null
+    const nextYear = yearNum < currentYear ? yearNum + 1 : null
     const prevUrl = page > 1 ? (page === 2 ? basePath : `${basePath}?page=${page - 1}`) : null
     const nextUrl = page < totalPages ? `${basePath}?page=${page + 1}` : null
 
@@ -221,26 +200,25 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
             <div className="container mx-auto max-w-7xl px-4 py-8">
                 <Breadcrumb
                     items={[
-                        { label: 'States', href: '/states' },
-                        { label: stateRecord.name, href: `/states/${stateSlug}` },
-                        { label: humanise(type) },
+                        { label: config.heading, href: ROUTE_PREFIXES[typeKey] },
+                        { label: year },
                     ]}
                 />
 
                 <div className="mb-8 mt-4">
                     <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl flex items-center gap-3">
-                        <MapPin className="size-8 text-brand-600" />
-                        {stateRecord.name} {config.heading}
+                        <Calendar className="size-8 text-brand-600" />
+                        {config.heading} {year}
                     </h1>
-                    <div className="mt-4 flex flex-col gap-3">
-                        <p className="max-w-3xl text-lg font-medium text-foreground-muted leading-relaxed">
-                            Looking for the latest {config.heading.toLowerCase()} in {stateRecord.name}?
-                            We bring you verified updates, eligibility criteria, and direct links for all {year} opportunities.
-                        </p>
-                    </div>
+                    <p className="mt-4 max-w-3xl text-lg font-medium text-foreground-muted leading-relaxed">
+                        {yearNum === currentYear
+                            ? `Browse all ${config.heading.toLowerCase()} for ${year}. Updated daily with the latest official notifications.`
+                            : `Archive of ${config.heading.toLowerCase()} from ${year} for reference and preparation.`
+                        }
+                    </p>
                     {totalCount > 0 && (
                         <p className="mt-4 text-sm font-semibold text-brand-600 dark:text-brand-400">
-                            Showing page {page} of {totalPages} &middot; {totalCount.toLocaleString('en-IN')} updates
+                            Showing page {page} of {totalPages} &middot; {totalCount.toLocaleString('en-IN')} updates in {year}
                         </p>
                     )}
                 </div>
@@ -251,6 +229,31 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
                     {/* ── Left Sidebar (Filter Discovery) ── */}
                     <aside className="hidden lg:block">
                         <div className="sticky top-24 space-y-8">
+                            {/* Year navigation (Archive Specific) */}
+                            <section>
+                                <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-foreground-subtle">
+                                    Browse by Year
+                                </h3>
+                                <div className="flex flex-col gap-1.5">
+                                    {prevYear && (
+                                        <Link
+                                            href={`${ROUTE_PREFIXES[typeKey]}/archive/${prevYear}`}
+                                            className="rounded-lg px-3 py-2 text-sm font-medium text-foreground-muted transition-all hover:bg-brand-50 hover:text-brand-700 dark:hover:bg-brand-900/20"
+                                        >
+                                            {config.heading} {prevYear}
+                                        </Link>
+                                    )}
+                                    {nextYear && (
+                                        <Link
+                                            href={`${ROUTE_PREFIXES[typeKey]}/archive/${nextYear}`}
+                                            className="rounded-lg px-3 py-2 text-sm font-medium text-brand-700 bg-brand-50 dark:bg-brand-900/40 transition-all hover:bg-brand-100"
+                                        >
+                                            {config.heading} {nextYear}
+                                        </Link>
+                                    )}
+                                </div>
+                            </section>
+
                             <Suspense fallback={<div className="h-96 w-full animate-pulse rounded-2xl bg-background-muted" />}>
                                 <TaxonomyRibbon typeSlug={type} layout="sidebar" />
                             </Suspense>
@@ -261,8 +264,26 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
 
                     {/* ── Main Column ── */}
                     <div className="space-y-8">
-                        {/* Mobile-only Ribbon (Hidden on Desktop) */}
-                        <div className="lg:hidden">
+                        {/* Mobile-only Ribbons */}
+                        <div className="space-y-4 lg:hidden">
+                            <div className="flex flex-wrap gap-2">
+                                {prevYear && (
+                                    <Link
+                                        href={`${ROUTE_PREFIXES[typeKey]}/archive/${prevYear}`}
+                                        className="whitespace-nowrap rounded-lg border border-border bg-background-subtle px-3 py-1.5 text-xs font-semibold text-foreground transition-all hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700 active:scale-95"
+                                    >
+                                        {config.heading} {prevYear}
+                                    </Link>
+                                )}
+                                {nextYear && (
+                                    <Link
+                                        href={`${ROUTE_PREFIXES[typeKey]}/archive/${nextYear}`}
+                                        className="whitespace-nowrap rounded-lg border border-brand-200 bg-brand-50 px-3 py-1.5 text-xs font-semibold text-brand-700 transition-all hover:bg-brand-100 active:scale-95"
+                                    >
+                                        {config.heading} {nextYear}
+                                    </Link>
+                                )}
+                            </div>
                             <Suspense fallback={null}>
                                 <TaxonomyRibbon typeSlug={type} layout="ribbon" />
                             </Suspense>
@@ -277,9 +298,7 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
                                     <ServerCrash className="size-8 text-red-600" />
                                 </div>
                                 <h3 className="mb-2 text-lg font-semibold text-foreground">Connection Error</h3>
-                                <p className="max-w-md text-foreground-muted">
-                                    Could not load the latest updates.
-                                </p>
+                                <p className="text-foreground-muted max-w-md">Could not load the latest updates.</p>
                             </div>
                         ) : posts.length > 0 ? (
                             <PostGrid posts={posts} priority={2} />
@@ -288,15 +307,15 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
                                 <div className="mb-4 rounded-full bg-background-subtle p-4">
                                     <FileX2 className="size-8 text-foreground-muted" />
                                 </div>
-                                <h3 className="mb-2 text-lg font-semibold text-foreground">No updates yet</h3>
+                                <h3 className="mb-2 text-lg font-semibold text-foreground">No updates in {year}</h3>
                                 <p className="max-w-md text-foreground-muted">
-                                    There are no {config.heading.toLowerCase()} available for {stateRecord.name} right now.
+                                    No {config.heading.toLowerCase()} published for {year} yet.
                                 </p>
                                 <Link
-                                    href={`/states/${stateSlug}`}
+                                    href={ROUTE_PREFIXES[typeKey]}
                                     className="mt-5 inline-flex items-center gap-2 rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700"
                                 >
-                                    View All {stateRecord.name} Updates
+                                    View Latest {config.heading}
                                 </Link>
                             </div>
                         )}
@@ -305,17 +324,12 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
                         {totalPages > 1 && !fetchError && (
                             <nav className="mt-12 flex flex-wrap items-center justify-center gap-1.5" aria-label="Pagination">
                                 {page > 1 ? (
-                                    <Link
-                                        href={`${basePath}?page=${page - 1}`}
-                                        className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background-subtle"
-                                    >
-                                        <ChevronLeft className="size-4" />
-                                        <span className="hidden sm:inline">Previous</span>
+                                    <Link href={`${basePath}?page=${page - 1}`} className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background-subtle">
+                                        <ChevronLeft className="size-4" /><span className="hidden sm:inline">Previous</span>
                                     </Link>
                                 ) : (
                                     <span className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground-subtle opacity-50 cursor-not-allowed">
-                                        <ChevronLeft className="size-4" />
-                                        <span className="hidden sm:inline">Previous</span>
+                                        <ChevronLeft className="size-4" /><span className="hidden sm:inline">Previous</span>
                                     </span>
                                 )}
 
@@ -323,29 +337,19 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
                                     p === '...' ? (
                                         <span key={`ellipsis-${i}`} className="px-2 py-2 text-sm text-foreground-subtle">&hellip;</span>
                                     ) : (
-                                        <Link
-                                            key={p}
-                                            href={`${basePath}?page=${p}`}
-                                            className={`inline-flex size-10 items-center justify-center rounded-lg border text-sm font-medium transition-colors ${p === page ? 'border-brand-600 bg-brand-600 text-white' : 'border-border text-foreground hover:bg-background-subtle'}`}
-                                            aria-current={p === page ? 'page' : undefined}
-                                        >
+                                        <Link key={p} href={`${basePath}?page=${p}`} className={`inline-flex size-10 items-center justify-center rounded-lg border text-sm font-medium transition-colors ${p === page ? 'border-brand-600 bg-brand-600 text-white' : 'border-border text-foreground hover:bg-background-subtle'}`} aria-current={p === page ? 'page' : undefined}>
                                             {p}
                                         </Link>
                                     )
                                 )}
 
                                 {page < totalPages ? (
-                                    <Link
-                                        href={`${basePath}?page=${page + 1}`}
-                                        className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background-subtle"
-                                    >
-                                        <span className="hidden sm:inline">Next</span>
-                                        <ChevronRight className="size-4" />
+                                    <Link href={`${basePath}?page=${page + 1}`} className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background-subtle">
+                                        <span className="hidden sm:inline">Next</span><ChevronRight className="size-4" />
                                     </Link>
                                 ) : (
                                     <span className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground-subtle opacity-50 cursor-not-allowed">
-                                        <span className="hidden sm:inline">Next</span>
-                                        <ChevronRight className="size-4" />
+                                        <span className="hidden sm:inline">Next</span><ChevronRight className="size-4" />
                                     </span>
                                 )}
                             </nav>

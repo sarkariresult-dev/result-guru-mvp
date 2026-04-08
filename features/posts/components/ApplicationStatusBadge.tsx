@@ -14,6 +14,12 @@ const colorMap: Record<ApplicationStatus, 'green' | 'blue' | 'orange' | 'red' | 
 
 export function ApplicationStatusBadge({ status }: { status: string }) {
     const key = status as ApplicationStatus
+    
+    // Don't show anything for NA or None status
+    if (key === ApplicationStatus.NA || key === ApplicationStatus.None || !status) {
+        return null
+    }
+
     const config = APPLICATION_STATUS_CONFIG[key]
     return (
         <Badge variant={colorMap[key] ?? 'gray'}>

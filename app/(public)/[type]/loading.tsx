@@ -20,11 +20,24 @@ export default function ListingLoading() {
                 </div>
             </div>
 
-            {/* Filters/Tabs skeleton (simulated) */}
-            <div className="mb-8 flex gap-3 overflow-hidden">
-                {Array.from({ length: 4 }).map((_, i) => (
-                    <Skeleton key={i} className="h-10 w-24 rounded-full shrink-0" />
-                ))}
+            {/* Simulated Taxonomy Ribbon Skeleton */}
+            <div className="mb-6 space-y-4">
+                 <div className="flex items-center gap-3 overflow-hidden">
+                    <Skeleton className="h-4 w-28 shrink-0" />
+                    <div className="flex gap-2 overflow-hidden w-full">
+                        {Array.from({ length: 6 }).map((_, i) => (
+                            <Skeleton key={i} className="h-8 w-24 rounded-full shrink-0" />
+                        ))}
+                    </div>
+                </div>
+                <div className="flex items-center gap-3 overflow-hidden">
+                    <Skeleton className="h-4 w-24 shrink-0" />
+                    <div className="flex gap-2 overflow-hidden w-full">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                            <Skeleton key={i} className="h-8 w-28 rounded-full shrink-0" />
+                        ))}
+                    </div>
+                </div>
             </div>
 
             {/* Grid skeleton */}

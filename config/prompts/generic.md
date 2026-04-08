@@ -8,7 +8,7 @@ You are writing a **generic government/education** post that doesn't fit a speci
 <h2>Ye Topic Kya Hai? - Puri Jaankari</h2>
 <h3>Overview</h3> 2-3 paragraphs explaining the topic in simple Hinglish
 <h3>Kyun Important Hai?</h3> Why students/job seekers should care. Include year-over-year context if available.
-<h3>Pichle Saal Se Kya Badla?</h3> Changes compared to previous year — this differentiates from competitors.
+<h3>Pichle Saal Se Kya Badla?</h3> Changes compared to previous year - this differentiates from competitors.
 
 <div class="rg-tip"><strong>💡 Expert Tip:</strong> [Insert a genuine expert insight that most generic articles miss]</div>
 
