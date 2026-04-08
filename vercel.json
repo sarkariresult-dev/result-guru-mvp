@@ -11,8 +11,14 @@
         "app/(public)/[type]/[slug]/page.tsx": {
             "maxDuration": 15
         },
-        "app/sitemap.ts": {
+        "app/(public)/[type]/[slug]/opengraph-image.tsx": {
+            "maxDuration": 20
+        },
+        "app/sitemap.xml/route.ts": {
             "maxDuration": 30
+        },
+        "app/manifest.ts": {
+            "maxDuration": 10
         }
     },
     "crons": [

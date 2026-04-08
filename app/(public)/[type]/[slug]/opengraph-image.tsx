@@ -3,6 +3,8 @@ import { getPostBySlug } from '@/features/posts/queries'
 import { SITE } from '@/config/site'
 import { slugToKey, humanise } from '@/lib/utils'
 
+export const runtime = 'edge'
+
 export const alt = 'Result Guru Update'
 export const size = {
     width: 1200,
