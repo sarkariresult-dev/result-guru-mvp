@@ -41,9 +41,15 @@ export async function generateStaticParams() {
                 params.push({ type, qualificationSlug: q.slug })
             })
         })
+
+        // Ensure at least one result for build-time validation in Next.js 16
+        if (params.length === 0) {
+            return [{ type: 'job', qualificationSlug: '10th-pass' }]
+        }
+
         return params
     } catch {
-        return []
+        return [{ type: 'job', qualificationSlug: '10th-pass' }]
     }
 }
 

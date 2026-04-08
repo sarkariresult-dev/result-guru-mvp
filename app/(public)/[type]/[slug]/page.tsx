@@ -56,17 +56,22 @@ export async function generateStaticParams() {
             .order('published_at', { ascending: false })
             .limit(limit)
 
-        if (!data) return []
-
-        return data
+        const params = (data || [])
             .filter((p: { slug: string | null; type: string | null }) => p.slug && p.type)
             .map((p: { slug: string; type: string }) => ({
                 type: keyToSlug(p.type),
                 slug: p.slug,
             }))
+
+        // Ensure at least one result for build-time validation in Next.js 16
+        if (params.length === 0) {
+            return [{ type: 'job', slug: 'latest-vacancy' }]
+        }
+
+        return params
     } catch {
-        // If DB is unreachable during build, fall back to on-demand rendering
-        return []
+        // If DB is unreachable during build, return a fallback to avoid build error
+        return [{ type: 'job', slug: 'latest-vacancy' }]
     }
 }
 

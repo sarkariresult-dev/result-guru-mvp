@@ -42,9 +42,15 @@ export async function generateStaticParams() {
                 params.push({ type, stateSlug: state.slug })
             })
         })
+
+        // Ensure at least one result for build-time validation in Next.js 16
+        if (params.length === 0) {
+            return [{ type: 'job', stateSlug: 'uttar-pradesh' }]
+        }
+
         return params
     } catch {
-        return []
+        return [{ type: 'job', stateSlug: 'uttar-pradesh' }]
     }
 }
 
