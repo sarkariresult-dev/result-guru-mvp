@@ -12,7 +12,7 @@ import type { PostTypeKey } from '@/config/site'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { buildListingTitle, buildListingMeta } from '@/lib/metadata'
 import { slugToKey, keyToSlug, humanise } from '@/lib/utils'
-import { ChevronLeft, ChevronRight, FileX2, ServerCrash } from 'lucide-react'
+import { Icons } from '@/lib/icons'
 
 import { TaxonomyRibbon } from '@/features/taxonomy/components/TaxonomyRibbon'
 import { Suspense } from 'react'
@@ -41,8 +41,8 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     const totalCountRes = await getPostsCount({ type: typeKey as unknown as import('@/types/enums').PostType }).catch(() => 0)
     const totalPages = Math.ceil(totalCountRes / limit)
 
-    const title = buildListingTitle(typeKey as PostTypeKey, page)
-    const description = buildListingMeta(typeKey as PostTypeKey, page)
+    const title = buildListingTitle(typeKey as PostTypeKey, { page })
+    const description = buildListingMeta(typeKey as PostTypeKey, { page })
 
     const url = `${SITE.url}/${type}`
     const canonical = page > 1 ? `${url}?page=${page}` : url
@@ -237,7 +237,7 @@ export default async function PostListingPage({ params, searchParams }: Props) {
                         {fetchError ? (
                             <div className="flex min-h-[400px] flex-col items-center justify-center rounded-2xl border border-dashed border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20 p-8 text-center">
                                 <div className="mb-4 rounded-full bg-red-100 dark:bg-red-900/30 p-4">
-                                    <ServerCrash className="size-8 text-red-600" />
+                                    <Icons.AlertCircle className="size-8 text-red-600" />
                                 </div>
                                 <h3 className="mb-2 text-lg font-semibold text-foreground">Connection Error</h3>
                             </div>
@@ -246,7 +246,7 @@ export default async function PostListingPage({ params, searchParams }: Props) {
                         ) : (
                             <div className="flex min-h-[400px] flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface p-8 text-center">
                                 <div className="mb-4 rounded-full bg-background-subtle p-4">
-                                    <FileX2 className="size-8 text-foreground-muted" />
+                                    <Icons.Info className="size-8 text-foreground-muted" />
                                 </div>
                                 <h3 className="mb-2 text-lg font-semibold text-foreground">No updates found</h3>
                                 <Link href="/" className="mt-5 inline-flex items-center gap-2 rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700">Go to Homepage</Link>
@@ -258,11 +258,11 @@ export default async function PostListingPage({ params, searchParams }: Props) {
                             <nav className="mt-12 flex flex-wrap items-center justify-center gap-1.5" aria-label="Pagination">
                                 {page > 1 ? (
                                     <Link href={page === 2 ? basePath : `${basePath}?page=${page - 1}`} className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background-subtle">
-                                        <ChevronLeft className="size-4" /><span className="hidden sm:inline">Previous</span>
+                                        <Icons.ChevronLeft className="size-4" /><span className="hidden sm:inline">Previous</span>
                                     </Link>
                                 ) : (
                                     <span className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground-subtle opacity-50 cursor-not-allowed">
-                                        <ChevronLeft className="size-4" /><span className="hidden sm:inline">Previous</span>
+                                        <Icons.ChevronLeft className="size-4" /><span className="hidden sm:inline">Previous</span>
                                     </span>
                                 )}
 
@@ -278,11 +278,11 @@ export default async function PostListingPage({ params, searchParams }: Props) {
 
                                 {page < totalPages ? (
                                     <Link href={`${basePath}?page=${page + 1}`} className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background-subtle">
-                                        <span className="hidden sm:inline">Next</span><ChevronRight className="size-4" />
+                                        <span className="hidden sm:inline">Next</span><Icons.ChevronRight className="size-4" />
                                     </Link>
                                 ) : (
                                     <span className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground-subtle opacity-50 cursor-not-allowed">
-                                        <span className="hidden sm:inline">Next</span><ChevronRight className="size-4" />
+                                        <span className="hidden sm:inline">Next</span><Icons.ChevronRight className="size-4" />
                                     </span>
                                 )}
                             </nav>

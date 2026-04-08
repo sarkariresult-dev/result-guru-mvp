@@ -12,7 +12,8 @@ import { PAGINATION } from '@/config/constants'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
 import { POST_TYPE_CONFIG } from '@/config/constants'
 import type { PostTypeKey } from '@/config/site'
-import { Building2, ChevronLeft, ChevronRight, ServerCrash, FileX2, ExternalLink } from 'lucide-react'
+import { Icons } from '@/lib/icons'
+import { buildListingTitle, buildListingMeta } from '@/lib/metadata'
 import { slugToKey, humanise } from '@/lib/utils'
 import type { PostCard } from '@/types/post.types'
 import { TaxonomyRibbon } from '@/features/taxonomy/components/TaxonomyRibbon'
@@ -74,31 +75,15 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
     if (!orgRecord) return {}
 
-    const typeName = POST_TYPE_CONFIG[typeKey].heading
-    const orgDisplay = orgRecord.short_name || orgRecord.name
-
-    // CTR Optimized Titles per type
-    let baseTitle = `${orgDisplay} ${typeName} ${year} — Latest Updates`
-    let description = `Find the latest ${typeName.toLowerCase()} from ${orgRecord.name} (${orgDisplay}) for ${year}. Verified notifications, eligibility details & direct links.`
-
-    if (typeKey === 'job') {
-        baseTitle = `${orgDisplay} Recruitment ${year}: Latest ${orgRecord.name} Vacancies`
-        description = `${orgRecord.name} (${orgDisplay}) recruitment ${year}. Check all vacancies, eligibility, application form & exam dates. Apply before the last date →`
-    } else if (typeKey === 'result') {
-        baseTitle = `${orgDisplay} Result ${year} — Check Score, Cut Off & Merit List`
-        description = `${orgDisplay} exam results ${year}. Check scorecard, cut off marks, merit list & download marksheet. All results updated in real-time.`
-    } else if (typeKey === 'admit') {
-        baseTitle = `${orgDisplay} Admit Card ${year} — Download Hall Ticket`
-        description = `Download ${orgDisplay} admit card ${year}. Direct link to hall ticket, exam center details & important instructions. Download now →`
-    } else if (typeKey === 'syllabus') {
-        baseTitle = `${orgDisplay} Syllabus ${year}: Complete Subject-Wise Guide`
-        description = `${orgDisplay} syllabus ${year} with paper pattern, marking scheme & topic-wise weightage. Free PDF download & preparation tips.`
-    } else if (typeKey === 'answer_key') {
-        baseTitle = `${orgDisplay} Answer Key ${year}: Check Answers & Raise Objection`
-        description = `${orgDisplay} answer key ${year}. Download set-wise PDF, check your answers & raise objections before the last date →`
-    }
-
-    baseTitle = page > 1 ? `${baseTitle} (Page ${page})` : baseTitle
+    const title = buildListingTitle(typeKey as PostTypeKey, {
+        page,
+        orgName: orgRecord.name,
+        orgShortName: orgRecord.short_name || undefined
+    })
+    const description = buildListingMeta(typeKey as PostTypeKey, {
+        page,
+        orgName: orgRecord.name
+    })
     const url = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/org/${orgSlug}`
     const canonical = page > 1 ? `${url}?page=${page}` : url
 
@@ -109,13 +94,13 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     const totalPages = Math.ceil(totalCount / PAGINATION.DEFAULT_LIMIT)
 
     const baseMetadata: Metadata = {
-        title: baseTitle,
+        title,
         description,
         alternates: {
             canonical,
         },
         openGraph: {
-            title: baseTitle,
+            title,
             description,
             url: canonical,
             siteName: SITE.name,
@@ -252,7 +237,7 @@ export default async function TypeByOrgPage({ params, searchParams }: Props) {
 
                 <div className="mb-8 mt-4">
                     <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl flex items-center gap-3">
-                        <Building2 className="size-8 text-brand-600" />
+                        <Icons.Briefcase className="size-8 text-brand-600" />
                         {orgDisplay} {config.heading} {year}
                     </h1>
                     <div className="mt-4 flex flex-col gap-3">
@@ -267,7 +252,7 @@ export default async function TypeByOrgPage({ params, searchParams }: Props) {
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 hover:text-brand-700 transition-colors"
                             >
-                                <ExternalLink className="size-3.5" />
+                                <Icons.ExternalLink className="size-3.5" />
                                 Official Website: {orgRecord.official_url.replace(/^https?:\/\//, '').replace(/\/$/, '')}
                             </a>
                         )}
@@ -337,7 +322,7 @@ export default async function TypeByOrgPage({ params, searchParams }: Props) {
                         {fetchError ? (
                             <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-dashed border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20 p-8 text-center">
                                 <div className="mb-4 rounded-full bg-red-100 dark:bg-red-900/30 p-4">
-                                    <ServerCrash className="size-8 text-red-600" />
+                                    <Icons.AlertCircle className="size-8 text-red-600" />
                                 </div>
                                 <h3 className="mb-2 text-lg font-semibold text-foreground">Connection Error</h3>
                                 <p className="max-w-md text-foreground-muted">
@@ -349,7 +334,7 @@ export default async function TypeByOrgPage({ params, searchParams }: Props) {
                         ) : (
                             <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface p-8 text-center">
                                 <div className="mb-4 rounded-full bg-background-subtle p-4">
-                                    <FileX2 className="size-8 text-foreground-muted" />
+                                    <Icons.Info className="size-8 text-foreground-muted" />
                                 </div>
                                 <h3 className="mb-2 text-lg font-semibold text-foreground">No updates yet</h3>
                                 <p className="max-w-md text-foreground-muted">
@@ -372,12 +357,12 @@ export default async function TypeByOrgPage({ params, searchParams }: Props) {
                                         href={`${basePath}?page=${page - 1}`}
                                         className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background-subtle"
                                     >
-                                        <ChevronLeft className="size-4" />
+                                        <Icons.ChevronLeft className="size-4" />
                                         <span className="hidden sm:inline">Previous</span>
                                     </Link>
                                 ) : (
                                     <span className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground-subtle opacity-50 cursor-not-allowed">
-                                        <ChevronLeft className="size-4" />
+                                        <Icons.ChevronLeft className="size-4" />
                                         <span className="hidden sm:inline">Previous</span>
                                     </span>
                                 )}
@@ -403,12 +388,12 @@ export default async function TypeByOrgPage({ params, searchParams }: Props) {
                                         className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background-subtle"
                                     >
                                         <span className="hidden sm:inline">Next</span>
-                                        <ChevronRight className="size-4" />
+                                        <Icons.ChevronRight className="size-4" />
                                     </Link>
                                 ) : (
                                     <span className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground-subtle opacity-50 cursor-not-allowed">
                                         <span className="hidden sm:inline">Next</span>
-                                        <ChevronRight className="size-4" />
+                                        <Icons.ChevronRight className="size-4" />
                                     </span>
                                 )}
                             </nav>

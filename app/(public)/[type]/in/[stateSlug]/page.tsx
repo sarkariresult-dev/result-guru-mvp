@@ -12,7 +12,8 @@ import { PAGINATION } from '@/config/constants'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
 import { POST_TYPE_CONFIG } from '@/config/constants'
 import type { PostTypeKey } from '@/config/site'
-import { MapPin, FileText, ChevronLeft, ChevronRight, ServerCrash, FileX2 } from 'lucide-react'
+import { Icons } from '@/lib/icons'
+import { buildListingTitle, buildListingMeta } from '@/lib/metadata'
 import { slugToKey, humanise } from '@/lib/utils'
 import type { PostCard } from '@/types/post.types'
 import { TaxonomyRibbon } from '@/features/taxonomy/components/TaxonomyRibbon'
@@ -76,24 +77,14 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
     if (!stateRecord) return {}
 
-    const typeName = POST_TYPE_CONFIG[typeKey].heading // e.g., "Government Jobs", "Sarkari Result"
-
-    // CTR Optimized Title: UP Govt Jobs 2026: Latest Uttar Pradesh Vacancies
-    let baseTitle = `${stateRecord.name} ${typeName} ${year} - Latest Updates`
-    let description = `Find the latest ${typeName.toLowerCase()} in ${stateRecord.name} for ${year}. Get verified notifications, direct links, and eligibility details.`
-
-    // Add CTR urgency and emoji
-    if (typeKey === 'job') {
-        baseTitle = `${stateRecord.abbr || stateRecord.name} Govt Jobs ${year}: Latest ${stateRecord.name} Vacancies`
-        description = `Looking for ${stateRecord.name} Govt Jobs in ${year}? Get the latest recruitment notifications, eligibility criteria, and direct application links for all UPPSC, SSC, and Railway jobs in ${stateRecord.name}.`
-    } else if (typeKey === 'result') {
-        baseTitle = `${stateRecord.name} Sarkari Result ${year} [LIVE]: Check Cut Off & Merit List`
-        description = `Check your ${stateRecord.name} exam results ${year}. Get direct links for UP board, state commissions, and university results as soon as they are declared.`
-    } else if (typeKey === 'admit') {
-        baseTitle = `${stateRecord.name} Admit Card ${year}: Download Hall Tickets`
-    }
-
-    baseTitle = page > 1 ? `${baseTitle} (Page ${page})` : baseTitle
+    const title = buildListingTitle(typeKey as PostTypeKey, {
+        page,
+        stateName: stateRecord.name
+    })
+    const description = buildListingMeta(typeKey as PostTypeKey, {
+        page,
+        stateName: stateRecord.name
+    })
     const url = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/in/${stateSlug}`
     const canonical = page > 1 ? `${url}?page=${page}` : url
 
@@ -104,7 +95,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     const totalPages = Math.ceil(totalCount / PAGINATION.DEFAULT_LIMIT)
 
     const baseMetadata: Metadata = {
-        title: baseTitle,
+        title,
         description,
         alternates: {
             canonical,
@@ -229,7 +220,7 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
 
                 <div className="mb-8 mt-4">
                     <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl flex items-center gap-3">
-                        <MapPin className="size-8 text-brand-600" />
+                        <Icons.MapPin className="size-8 text-brand-600" />
                         {stateRecord.name} {config.heading}
                     </h1>
                     <div className="mt-4 flex flex-col gap-3">
@@ -274,7 +265,7 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
                         {fetchError ? (
                             <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-dashed border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20 p-8 text-center">
                                 <div className="mb-4 rounded-full bg-red-100 dark:bg-red-900/30 p-4">
-                                    <ServerCrash className="size-8 text-red-600" />
+                                    <Icons.AlertCircle className="size-8 text-red-600" />
                                 </div>
                                 <h3 className="mb-2 text-lg font-semibold text-foreground">Connection Error</h3>
                                 <p className="max-w-md text-foreground-muted">
@@ -286,7 +277,7 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
                         ) : (
                             <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface p-8 text-center">
                                 <div className="mb-4 rounded-full bg-background-subtle p-4">
-                                    <FileX2 className="size-8 text-foreground-muted" />
+                                    <Icons.Info className="size-8 text-foreground-muted" />
                                 </div>
                                 <h3 className="mb-2 text-lg font-semibold text-foreground">No updates yet</h3>
                                 <p className="max-w-md text-foreground-muted">
@@ -309,12 +300,12 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
                                         href={`${basePath}?page=${page - 1}`}
                                         className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background-subtle"
                                     >
-                                        <ChevronLeft className="size-4" />
+                                        <Icons.ChevronLeft className="size-4" />
                                         <span className="hidden sm:inline">Previous</span>
                                     </Link>
                                 ) : (
                                     <span className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground-subtle opacity-50 cursor-not-allowed">
-                                        <ChevronLeft className="size-4" />
+                                        <Icons.ChevronLeft className="size-4" />
                                         <span className="hidden sm:inline">Previous</span>
                                     </span>
                                 )}
@@ -340,12 +331,12 @@ export default async function TypeInStatePage({ params, searchParams }: Props) {
                                         className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background-subtle"
                                     >
                                         <span className="hidden sm:inline">Next</span>
-                                        <ChevronRight className="size-4" />
+                                        <Icons.ChevronRight className="size-4" />
                                     </Link>
                                 ) : (
                                     <span className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground-subtle opacity-50 cursor-not-allowed">
                                         <span className="hidden sm:inline">Next</span>
-                                        <ChevronRight className="size-4" />
+                                        <Icons.ChevronRight className="size-4" />
                                     </span>
                                 )}
                             </nav>

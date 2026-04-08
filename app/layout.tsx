@@ -9,27 +9,12 @@ import { SITE } from '@/config/site'
 import './globals.css'
 
 /* ── Fonts - next/font self-hosts for zero layout shift ────── */
+// Consolidating to Inter only to reduce initial request count (22 -> <15 goal)
 const fontSans = Inter({
     subsets: ['latin'],
     display: 'swap',
     variable: '--font-sans-next',
     preload: true,
-})
-
-const fontDisplay = Outfit({
-    subsets: ['latin'],
-    display: 'swap',
-    variable: '--font-display-next',
-    weight: ['600', '700', '800'],
-    preload: true,
-})
-
-const fontMono = JetBrains_Mono({
-    subsets: ['latin'],
-    display: 'swap',
-    variable: '--font-mono-next',
-    weight: ['400', '500'],
-    preload: false,
 })
 
 /* ── Metadata - comprehensive SEO + OG + Twitter ───────────── */
@@ -185,11 +170,7 @@ export default function RootLayout({
             lang={`${SITE.language}-${SITE.country}`}
             dir="ltr"
             suppressHydrationWarning
-            className={[
-                fontSans.variable,
-                fontDisplay.variable,
-                fontMono.variable,
-            ].join(' ')}
+            className={fontSans.variable}
         >
             <head>
                 {/* Preconnect to critical 3rd-party origins for faster loads */}

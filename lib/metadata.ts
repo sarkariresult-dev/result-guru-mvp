@@ -166,43 +166,81 @@ export function buildClickableMeta(
 }
 
 /**
- * Build a CTR-optimized listing page title.
- * Used by [type]/page.tsx for category listing pages.
+ * Build a CTR-optimized listing page title with long-tail keyword targeting.
+ * Used by [type]/page.tsx, state listings, qualification listings, and org listings.
  *
- * Example: "🔥 Latest Government Job 2026 - Apply Now | Result Guru"
+ * Examples:
+ *   "UP Govt Jobs 2026: Latest Uttar Pradesh Recruitment - Apply Now"
+ *   "10th Pass Govt Jobs 2026: High Salary Vacancies for Matric - Details"
  */
 export function buildListingTitle(
     type: PostTypeKey,
-    page: number = 1
+    opts?: {
+        page?: number
+        stateName?: string
+        qualificationName?: string
+        orgName?: string
+        orgShortName?: string
+    }
 ): string {
     const config = CTR_CONFIG[type]
     const year = 2026
-    const heading = config?.freshnessLabel || type.replace(/_/g, ' ')
+    const page = opts?.page || 1
+    const typeLabel = config?.freshnessLabel || type.replace(/_/g, ' ')
 
-    if (page > 1) {
-        return formatTitle(`${heading} ${year} - Page ${page}`)
+    let base = ''
+
+    if (opts?.stateName) {
+        // Long-tail: [State] Govt [Type] 2026
+        base = `${opts.stateName} Latest Govt ${typeLabel} ${year}`
+    } else if (opts?.qualificationName) {
+        // Long-tail: [Qualification] Pass Govt [Type] 2026
+        const qual = opts.qualificationName.includes('Pass')
+            ? opts.qualificationName
+            : `${opts.qualificationName} Pass`
+        base = `${qual} Govt ${typeLabel} ${year}`
+    } else if (opts?.orgName || opts?.orgShortName) {
+        // Long-tail: [Org] Recruitment [Type] 2026
+        const org = opts.orgShortName || opts.orgName
+        base = `${org} ${typeLabel} Notification ${year}`
+    } else {
+        // Standard: Latest [Type] 2026
+        base = `Latest ${typeLabel} ${year}`
     }
 
     const action = config?.urgencyWords[0] || ''
-    const base = `${heading} ${year} - ${action}`.trim()
+    const full = page > 1
+        ? `${base} - Page ${page}`
+        : `${base} - ${action}`
 
-    return formatTitle(base)
+    return formatTitle(full)
 }
 
 /**
- * Build a CTR-optimized listing page meta description.
+ * Build a CTR-optimized listing page meta description with high-relevancy signals.
  */
 export function buildListingMeta(
     type: PostTypeKey,
-    page: number = 1
+    opts?: {
+        page?: number
+        stateName?: string
+        qualificationName?: string
+        orgName?: string
+    }
 ): string {
     const config = CTR_CONFIG[type]
     const year = 2026
-    const label = config?.freshnessLabel || type.replace(/_/g, ' ')
+    const label = config?.freshnessLabel || type.replace(/_/g, ' ').toLowerCase()
+    const page = opts?.page || 1
+
+    let contextChunk = ''
+    if (opts?.stateName) contextChunk = ` specifically for ${opts.stateName}`
+    else if (opts?.qualificationName) contextChunk = ` for ${opts.qualificationName} candidates`
+    else if (opts?.orgName) contextChunk = ` from ${opts.orgName}`
 
     const base = page > 1
-        ? `Page ${page} of ${label.toLowerCase()} ${year}. Browse all verified updates, official notifications & direct apply links.`
-        : `Get the latest ${label.toLowerCase()} for ${year}. Verified official notifications, eligibility details & direct links. Updated daily.`
+        ? `Page ${page} of ${label}${contextChunk} for ${year}. Browse all verified updates, official notifications & direct apply links.`
+        : `Get the latest ${label}${contextChunk} for ${year}. Verified official notifications, eligibility details & direct links. Updated daily.`
 
     return buildClickableMeta(base, type)
 }
