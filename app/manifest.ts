@@ -1,6 +1,8 @@
 import type { MetadataRoute } from 'next'
 import { SITE } from '@/config/site'
 
+export const runtime = 'edge'
+
 /**
  * Web App Manifest - enables PWA "Add to Home Screen" and
  * provides metadata for browsers, search engines, and app stores.
