@@ -112,16 +112,30 @@ export function optimizeContentImages(html: string): string {
     )
 }
 
+import { injectInternalLinks } from './internal-linking'
+
 /**
  * Process HTML content for production rendering:
- * 1. Extract TOC headings and add IDs
- * 2. Wrap tables for responsiveness
- * 3. Optimize images
+ * 1. Inject contextual internal links for Programmatic SEO
+ * 2. Extract TOC headings and add IDs
+ * 3. Wrap tables for responsiveness
+ * 4. Optimize images
  */
-export function processContentHtml(html: string): { tocItems: TocItem[]; processedHtml: string } {
-    const { tocItems, processedHtml: withToc } = extractTocFromHtml(html)
-    let processed = wrapTablesForResponsive(withToc)
+export function processContentHtml(
+    html: string,
+    context?: { stateSlug?: string | null; stateName?: string | null; orgSlug?: string | null; orgName?: string | null; orgShortName?: string | null }
+): { tocItems: TocItem[]; processedHtml: string } {
+    let processed = html
+
+    // Inject internal links if context is provided
+    if (context) {
+        processed = injectInternalLinks(processed, context)
+    }
+
+    const { tocItems, processedHtml: withToc } = extractTocFromHtml(processed)
+    processed = wrapTablesForResponsive(withToc)
     processed = optimizeContentImages(processed)
+    
     return { tocItems, processedHtml: processed }
 }
 

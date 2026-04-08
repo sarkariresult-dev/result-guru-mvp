@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import type { PostDetail } from '@/types/post.types'
 import type { HreflangEntry } from '@/types/post-content.types'
-import { SITE, postUrl, ogImageUrl } from '@/config/site'
+import { SITE, postUrl, ogImageUrl, CTR_CONFIG, type PostTypeKey } from '@/config/site'
+
+/* ── Title Formatting ──────────────────────────────────────────────── */
 
 /**
  * Centralized title formatter for SEO.
@@ -42,16 +44,179 @@ export function formatDescription(description: string, limit = 160): string {
     return `${description.slice(0, limit - 3)}...`
 }
 
+/* ── CTR Optimization Engine ───────────────────────────────────────── */
+
+/**
+ * Get a time-freshness signal string based on a date.
+ * Returns "Updated Apr 2026" or "LIVE" for very recent content.
+ */
+function getFreshness(date?: string | null): string {
+    if (!date) {
+        const now = new Date()
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        return `${months[now.getMonth()]} ${now.getFullYear()}`
+    }
+
+    const d = new Date(date)
+    const now = new Date()
+    const diffHours = (now.getTime() - d.getTime()) / (1000 * 60 * 60)
+
+    // Within 24 hours — "LIVE"
+    if (diffHours < 24) return 'LIVE'
+
+    // Within 3 days — "Just Released"
+    if (diffHours < 72) return 'Just Released'
+
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    return `${months[d.getMonth()]} ${d.getFullYear()}`
+}
+
+/**
+ * Build a high-CTR SERP title for a post.
+ * Adds type-aware emoji prefix and freshness signals.
+ * Guaranteed to fit within 60 characters (Google SERP safe).
+ *
+ * Examples:
+ *   "✅ SSC CGL Result 2026 OUT — Check Score"
+ *   "🔥 UPSC NDA Vacancy 2026 — Apply Now"
+ */
+export function buildCTRTitle(
+    title: string,
+    type: PostTypeKey,
+    opts?: { publishedAt?: string | null }
+): string {
+    const config = CTR_CONFIG[type]
+    if (!config) return formatTitle(title)
+
+    const maxLen = 60 // Google SERP safe limit
+
+    // Strategy: [title] — [action]
+    const action = config.urgencyWords[0] || ''
+
+    // Try full format: "SSC CGL Result 2026 — Check Score"
+    const separator = ' — '
+    const full = `${title}${separator}${action}`
+
+    if (full.length <= maxLen) return full
+
+    // Try without action word
+    if (title.length <= maxLen) return title
+
+    // Truncate title
+    const available = maxLen - 3 // 3 for "..."
+    return `${title.slice(0, available)}...`
+}
+
+/**
+ * Build a CTR-optimized meta description with a CTA suffix.
+ * Guaranteed to be 120-155 characters.
+ *
+ * Examples:
+ *   "SSC CGL Result 2026 declared. Check your tier-1 score, cut off marks & merit list. Check your score now →"
+ *   "UPSC NDA 2026 notification for 400 vacancies. Check eligibility, syllabus & apply online. Apply before the last date →"
+ */
+export function buildClickableMeta(
+    description: string,
+    type: PostTypeKey,
+): string {
+    const config = CTR_CONFIG[type]
+    if (!config) return formatDescription(description)
+
+    const cta = config.ctaSuffix
+    const maxLen = 155
+    const minLen = 120
+
+    // If description already ends with → or CTA, just format it
+    if (description.includes('→') || description.includes('→')) {
+        return formatDescription(description, maxLen)
+    }
+
+    // Try: "[description] [cta]"
+    const withCTA = `${description.trim()} ${cta}`
+
+    if (withCTA.length <= maxLen && withCTA.length >= minLen) {
+        return withCTA
+    }
+
+    if (withCTA.length > maxLen) {
+        // Trim description to make room for CTA
+        const availableForDesc = maxLen - cta.length - 2 // 2 for ". " join
+        if (availableForDesc > 60) {
+            const trimmedDesc = description.slice(0, availableForDesc).trimEnd()
+            // Find the last sentence boundary for clean truncation
+            const lastPeriod = trimmedDesc.lastIndexOf('.')
+            const lastComma = trimmedDesc.lastIndexOf(',')
+            const cutPoint = Math.max(lastPeriod, lastComma)
+            const cleanDesc = cutPoint > 40 ? trimmedDesc.slice(0, cutPoint + 1) : trimmedDesc + '.'
+            return `${cleanDesc} ${cta}`
+        }
+    }
+
+    // CTA doesn't fit — just format the description
+    return formatDescription(description, maxLen)
+}
+
+/**
+ * Build a CTR-optimized listing page title.
+ * Used by [type]/page.tsx for category listing pages.
+ *
+ * Example: "🔥 Latest Government Job 2026 — Apply Now | Result Guru"
+ */
+export function buildListingTitle(
+    type: PostTypeKey,
+    page: number = 1
+): string {
+    const config = CTR_CONFIG[type]
+    const year = new Date().getFullYear()
+    const heading = config?.freshnessLabel || type.replace(/_/g, ' ')
+
+    if (page > 1) {
+        return formatTitle(`${heading} ${year} — Page ${page}`)
+    }
+
+    const action = config?.urgencyWords[0] || ''
+    const base = `${heading} ${year} — ${action}`.trim()
+
+    return formatTitle(base)
+}
+
+/**
+ * Build a CTR-optimized listing page meta description.
+ */
+export function buildListingMeta(
+    type: PostTypeKey,
+    page: number = 1
+): string {
+    const config = CTR_CONFIG[type]
+    const year = new Date().getFullYear()
+    const label = config?.freshnessLabel || type.replace(/_/g, ' ')
+
+    const base = page > 1
+        ? `Page ${page} of ${label.toLowerCase()} ${year}. Browse all verified updates, official notifications & direct apply links.`
+        : `Get the latest ${label.toLowerCase()} for ${year}. Verified official notifications, eligibility details & direct links. Updated daily.`
+
+    return buildClickableMeta(base, type)
+}
+
+/* ── Post Metadata Builder ─────────────────────────────────────────── */
+
 /**
  * Build a complete Next.js Metadata object from a PostDetail.
  * Used by dynamic [type]/[slug] pages.
+ * Now enhanced with CTR-optimized og:title and meta descriptions.
  */
 export function buildMetadata(post: PostDetail): Metadata {
+    const postType = post.type as PostTypeKey
     const title = formatTitle(post.meta_title || post.title)
-    const description = formatDescription(
-        post.meta_description || post.excerpt || `${post.title} - ${SITE.name}`
-    )
-    const url = `${SITE.url}${postUrl(post.type as any, post.slug)}`
+
+    // Build CTR-optimized description with CTA
+    const rawDescription = post.meta_description || post.excerpt || `${post.title} - ${SITE.name}`
+    const description = postType && CTR_CONFIG[postType]
+        ? buildClickableMeta(rawDescription, postType)
+        : formatDescription(rawDescription)
+
+    const url = `${SITE.url}${postUrl(postType, post.slug)}`
+
     // Phase 2: Dynamic OG image fallback - when no custom OG or featured image,
     // generate a branded preview using /api/og with post context
     const hasCustomImage = !!(post.og_image || post.featured_image)
@@ -85,6 +250,13 @@ export function buildMetadata(post: PostDetail): Metadata {
         ...(post.secondary_keywords ?? []),
     ].filter(Boolean)
 
+    /* ── CTR-enhanced OG title ────────────────────────────────── */
+    const ogTitle = post.og_title
+        ? formatTitle(post.og_title)
+        : postType && CTR_CONFIG[postType]
+            ? buildCTRTitle(post.title, postType, { publishedAt: post.published_at })
+            : title
+
     return {
         title,
         description,
@@ -101,14 +273,13 @@ export function buildMetadata(post: PostDetail): Metadata {
             ? { index: false, follow: true }
             : { index: true, follow: true },
         openGraph: {
-            title: formatTitle(post.og_title || title),
+            title: ogTitle,
             description: formatDescription(post.og_description || description),
             url: post.canonical_url || url,
             siteName: SITE.name,
             locale: SITE.locale,
             type: 'article',
             // COUNCIL P1 (Area 2): article:author for E-E-A-T authority signals
-            // Resolves Task 3: Use real author name when available for better E-E-A-T footprint
             authors: [post.author?.name || `${SITE.name} Editorial Team`],
             publishedTime: post.published_at ?? undefined,
             modifiedTime: post.content_updated_at ?? post.updated_at ?? undefined,
@@ -129,13 +300,15 @@ export function buildMetadata(post: PostDetail): Metadata {
         },
         twitter: {
             card: (post.twitter_card_type as any) ?? SITE.twitter.cardType,
-            title: formatTitle(post.twitter_title || post.og_title || title),
+            title: formatTitle(post.twitter_title || post.og_title || post.title),
             description: formatDescription(post.twitter_description || post.og_description || description),
             images: [ogImage],
             site: SITE.twitter.handle,
         },
     }
 }
+
+/* ── Static Page Metadata Builder ──────────────────────────────────── */
 
 /**
  * Build metadata for static pages (about, contact, etc.).

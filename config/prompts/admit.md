@@ -70,7 +70,9 @@ Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
 1. H3/H4 within every H2 - exam day section needs at least 3 H3s
 2. 3-5 internal links: `/syllabus`, `/exam-pattern`, `/result`, `/previous-paper`, `/cut-off`
 3. Tables MUST use `<thead>`, `<th scope="col">`
-4. Troubleshooting section is essential - high user intent query
-5. Include reporting time and gate closure details (frequently searched)
-6. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
-7. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.
+4. Include at least 2 `<div class="rg-tip">` expert callout boxes with genuine exam-day advice
+5. Troubleshooting section is essential - high user intent query
+6. Include reporting time and gate closure details (frequently searched)
+7. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
+8. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.
+

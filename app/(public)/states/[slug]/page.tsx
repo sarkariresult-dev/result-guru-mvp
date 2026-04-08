@@ -212,6 +212,40 @@ export default async function StateProfilePage({ params, searchParams }: Props) 
                                 dangerouslySetInnerHTML={{ __html: sanitizeHtml(stateRecord.intro_html) }}
                             />
                         )}
+
+                        {/* Programmatic SEO Quick Links (Phase 4) */}
+                        <div className="mt-8 flex flex-wrap gap-3 border-t border-border/50 pt-8">
+                            <Link 
+                                href={`/job/in/${slug}`}
+                                className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-4 py-2 text-sm font-medium text-brand-700 transition hover:bg-brand-100 hover:text-brand-800 dark:border-brand-800 dark:bg-brand-900/30 dark:text-brand-300 dark:hover:bg-brand-900/50"
+                            >
+                                {stateRecord.name} Jobs
+                            </Link>
+                            <Link 
+                                href={`/result/in/${slug}`}
+                                className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-foreground-subtle transition hover:bg-background-subtle hover:text-foreground"
+                            >
+                                {stateRecord.name} Results
+                            </Link>
+                            <Link 
+                                href={`/admit-card/in/${slug}`}
+                                className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-foreground-subtle transition hover:bg-background-subtle hover:text-foreground"
+                            >
+                                {stateRecord.name} Admit Cards
+                            </Link>
+                            <Link 
+                                href={`/syllabus/in/${slug}`}
+                                className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-foreground-subtle transition hover:bg-background-subtle hover:text-foreground"
+                            >
+                                {stateRecord.name} Syllabus
+                            </Link>
+                            <Link 
+                                href={`/answer-key/in/${slug}`}
+                                className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-foreground-subtle transition hover:bg-background-subtle hover:text-foreground"
+                            >
+                                {stateRecord.name} Answer Keys
+                            </Link>
+                        </div>
                     </div>
                 </div>
 

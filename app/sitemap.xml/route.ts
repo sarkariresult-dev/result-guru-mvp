@@ -46,6 +46,7 @@ const STATIC_PAGES = [
     { path: '/notification', changeFrequency: 'daily', priority: 0.8 },
     { path: '/search', changeFrequency: 'daily', priority: 0.8 },
     { path: '/states', changeFrequency: 'monthly', priority: 0.5 },
+    { path: '/qualifications', changeFrequency: 'monthly', priority: 0.5 },
     { path: '/organizations', changeFrequency: 'monthly', priority: 0.5 },
     { path: '/stories', changeFrequency: 'daily', priority: 0.6 },
     { path: '/site-map', changeFrequency: 'weekly', priority: 0.3 },
@@ -91,20 +92,25 @@ export async function GET() {
         entries.push(urlEntry(`${baseUrl}${page.path}`, now, page.changeFrequency, page.priority))
     }
 
-    /* ── Taxonomy (States, Orgs, Tags, Categories) ── */
+    /* ── Taxonomy (States, Orgs, Tags, Categories, Qualifications) ── */
     try {
         const supabase = createStaticClient()
-        const [statesResult, orgsResult, tagsResult, catsResult] = await Promise.allSettled([
+        const [statesResult, orgsResult, tagsResult, catsResult, qualsResult] = await Promise.allSettled([
             supabase.from('states').select('slug, created_at').eq('is_active', true).order('name'),
             supabase.from('organizations').select('slug, created_at').eq('is_active', true).order('name'),
             supabase.from('tags').select('slug, created_at').eq('is_active', true).order('name'),
             supabase.from('categories').select('slug, created_at').eq('is_active', true).order('name'),
+            supabase.from('qualifications').select('slug').eq('is_active', true).order('sort_order'),
         ])
 
         if (statesResult.status === 'fulfilled' && statesResult.value.data) {
             for (const state of statesResult.value.data as any[]) {
                 const mod = new Date(state.created_at ?? now).toISOString()
                 entries.push(urlEntry(`${baseUrl}/states/${state.slug}`, mod, 'weekly', 0.6))
+
+                Object.values(TYPE_SEGMENT).forEach((typeSegment) => {
+                    entries.push(urlEntry(`${baseUrl}/${typeSegment}/in/${state.slug}`, mod, 'weekly', 0.8))
+                })
             }
         }
 
@@ -126,6 +132,15 @@ export async function GET() {
             for (const cat of catsResult.value.data as any[]) {
                 const mod = new Date(cat.created_at ?? now).toISOString()
                 entries.push(urlEntry(`${baseUrl}/category/${cat.slug}`, mod, 'weekly', 0.6))
+            }
+        }
+
+        if (qualsResult.status === 'fulfilled' && qualsResult.value.data) {
+            for (const qual of qualsResult.value.data as any[]) {
+                // Phase 6 Programmatic SEO combinations: /[type]/for/[qualificationSlug]
+                Object.values(TYPE_SEGMENT).forEach((typeSegment) => {
+                    entries.push(urlEntry(`${baseUrl}/${typeSegment}/for/${qual.slug}`, now, 'weekly', 0.8))
+                })
             }
         }
     } catch (err) {

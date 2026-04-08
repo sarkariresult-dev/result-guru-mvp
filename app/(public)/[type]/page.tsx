@@ -10,6 +10,7 @@ import { POST_TYPE_CONFIG, PAGINATION } from '@/config/constants'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
 import type { PostTypeKey } from '@/config/site'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
+import { buildListingTitle, buildListingMeta } from '@/lib/metadata'
 import { slugToKey, keyToSlug, humanise } from '@/lib/utils'
 import { ChevronLeft, ChevronRight, FileX2, ServerCrash } from 'lucide-react'
 
@@ -42,17 +43,15 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     const limit = PAGINATION.DEFAULT_LIMIT
 
     if (!typeKey || !(typeKey in POST_TYPE_CONFIG)) return {}
-    const config = POST_TYPE_CONFIG[typeKey as PostTypeKey]
 
     // Fetch total count to determine total pages for 'next' link
     const totalCountRes = await getPostsCount({ type: typeKey as unknown as import('@/types/enums').PostType }).catch(() => 0)
     const totalPages = Math.ceil(totalCountRes / limit)
 
-    const year = new Date().getFullYear()
-    const title = page > 1 
-        ? `${config.heading} ${year} - Page ${page} | Latest Updates | ${SITE.name}` 
-        : `Latest ${config.heading} ${year} - Check Notification & Apply Online | ${SITE.name}`
-    const description = `Get the latest ${config.heading.toLowerCase()} for ${year}. Check official notifications, eligibility, and direct links to apply. ${config.description} across India.`
+    // CTR-optimized title & description
+    const title = buildListingTitle(typeKey as PostTypeKey, page)
+    const description = buildListingMeta(typeKey as PostTypeKey, page)
+
     const url = `${SITE.url}/${type}`
     const canonical = page > 1 ? `${url}?page=${page}` : url
 
@@ -74,12 +73,14 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
         },
         openGraph: {
             type: 'website',
+            title,
+            description,
             images: [{ url: SITE.defaultOgImage, width: SITE.defaultOgWidth, height: SITE.defaultOgHeight }],
         },
         twitter: {
             card: SITE.twitter.cardType,
-            title: `${config.heading} - Latest Update`,
-            description: config.description,
+            title,
+            description,
             site: SITE.twitter.handle,
         },
     }

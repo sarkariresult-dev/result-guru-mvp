@@ -24,7 +24,6 @@ export interface TypeSections {
 
 export interface TypeConfig {
     label: string
-    emoji: string
     description: string
     showAppStatus: boolean
     sections: TypeSections
@@ -32,79 +31,79 @@ export interface TypeConfig {
 
 export const TYPE_CONFIG: Record<string, TypeConfig> = {
     job: {
-        label: 'Job', emoji: '💼',
+        label: 'Job',
         description: 'Government job vacancy with full recruitment details',
         showAppStatus: true,
         sections: { dates: true, eligibility: true, applicationFee: true, vacancyDetails: true, totalVacancies: true, ageLimit: true, payScale: true, selectionProcess: true, howToApply: true, admitCardLink: false, resultLink: false, cutOffMarks: false, syllabus: false, examPattern: false, preparationTips: false, previousPapers: false, faq: true },
     },
     notification: {
-        label: 'Notification', emoji: '📢',
+        label: 'Notification',
         description: 'Official notification for recruitment or exam',
         showAppStatus: true,
         sections: { dates: true, eligibility: true, applicationFee: true, vacancyDetails: true, totalVacancies: true, ageLimit: true, payScale: true, selectionProcess: true, howToApply: true, admitCardLink: false, resultLink: false, cutOffMarks: false, syllabus: false, examPattern: false, preparationTips: false, previousPapers: false, faq: true },
     },
     admission: {
-        label: 'Admission', emoji: '🎓',
+        label: 'Admission',
         description: 'College/university admission notice',
         showAppStatus: true,
         sections: { dates: true, eligibility: true, applicationFee: true, vacancyDetails: false, totalVacancies: false, ageLimit: true, payScale: false, selectionProcess: true, howToApply: true, admitCardLink: false, resultLink: false, cutOffMarks: true, syllabus: false, examPattern: false, preparationTips: false, previousPapers: false, faq: true },
     },
     result: {
-        label: 'Result', emoji: '📊',
+        label: 'Result',
         description: 'Exam results with cut-off marks',
         showAppStatus: false,
         sections: { dates: true, eligibility: false, applicationFee: false, vacancyDetails: false, totalVacancies: false, ageLimit: false, payScale: false, selectionProcess: false, howToApply: false, admitCardLink: false, resultLink: true, cutOffMarks: true, syllabus: false, examPattern: false, preparationTips: false, previousPapers: false, faq: true },
     },
     admit: {
-        label: 'Admit Card', emoji: '🎫',
+        label: 'Admit Card',
         description: 'Admit card / Hall ticket download',
         showAppStatus: false,
         sections: { dates: true, eligibility: false, applicationFee: false, vacancyDetails: false, totalVacancies: false, ageLimit: false, payScale: false, selectionProcess: false, howToApply: false, admitCardLink: true, resultLink: false, cutOffMarks: false, syllabus: false, examPattern: false, preparationTips: false, previousPapers: false, faq: true },
     },
     answer_key: {
-        label: 'Answer Key', emoji: '🔑',
+        label: 'Answer Key',
         description: 'Official/unofficial answer key with objection details',
         showAppStatus: false,
         sections: { dates: true, eligibility: false, applicationFee: false, vacancyDetails: false, totalVacancies: false, ageLimit: false, payScale: false, selectionProcess: false, howToApply: false, admitCardLink: false, resultLink: true, cutOffMarks: true, syllabus: false, examPattern: false, preparationTips: false, previousPapers: true, faq: true },
     },
     exam: {
-        label: 'Exam', emoji: '📝',
+        label: 'Exam',
         description: 'Competitive exam overview with pattern and syllabus',
         showAppStatus: true,
         sections: { dates: true, eligibility: true, applicationFee: true, vacancyDetails: false, totalVacancies: false, ageLimit: true, payScale: false, selectionProcess: true, howToApply: true, admitCardLink: false, resultLink: false, cutOffMarks: false, syllabus: true, examPattern: true, preparationTips: true, previousPapers: true, faq: true },
     },
     scheme: {
-        label: 'Scheme', emoji: '📋',
+        label: 'Scheme',
         description: 'Government scheme',
         showAppStatus: true,
         sections: { dates: true, eligibility: true, applicationFee: false, vacancyDetails: false, totalVacancies: false, ageLimit: true, payScale: false, selectionProcess: true, howToApply: true, admitCardLink: false, resultLink: false, cutOffMarks: false, syllabus: false, examPattern: false, preparationTips: false, previousPapers: false, faq: true },
     },
     syllabus: {
-        label: 'Syllabus', emoji: '📚',
+        label: 'Syllabus',
         description: 'Detailed exam syllabus with subject breakdown',
         showAppStatus: false,
         sections: { dates: true, eligibility: false, applicationFee: false, vacancyDetails: false, totalVacancies: false, ageLimit: false, payScale: false, selectionProcess: false, howToApply: false, admitCardLink: false, resultLink: false, cutOffMarks: false, syllabus: true, examPattern: true, preparationTips: true, previousPapers: true, faq: true },
     },
     exam_pattern: {
-        label: 'Exam Pattern', emoji: '📐',
+        label: 'Exam Pattern',
         description: 'Paper pattern - marking, duration, question types',
         showAppStatus: false,
         sections: { dates: true, eligibility: false, applicationFee: false, vacancyDetails: false, totalVacancies: false, ageLimit: false, payScale: false, selectionProcess: false, howToApply: false, admitCardLink: false, resultLink: false, cutOffMarks: false, syllabus: true, examPattern: true, preparationTips: true, previousPapers: true, faq: true },
     },
     previous_paper: {
-        label: 'Previous Paper', emoji: '📄',
+        label: 'Previous Paper',
         description: 'Past year question papers with PDF downloads',
         showAppStatus: false,
         sections: { dates: false, eligibility: false, applicationFee: false, vacancyDetails: false, totalVacancies: false, ageLimit: false, payScale: false, selectionProcess: false, howToApply: false, admitCardLink: false, resultLink: false, cutOffMarks: false, syllabus: false, examPattern: true, preparationTips: true, previousPapers: true, faq: true },
     },
     cut_off: {
-        label: 'Cut Off', emoji: '✂️',
+        label: 'Cut Off',
         description: 'Category-wise cut-off marks for exams',
         showAppStatus: false,
         sections: { dates: true, eligibility: false, applicationFee: false, vacancyDetails: false, totalVacancies: false, ageLimit: false, payScale: false, selectionProcess: false, howToApply: false, admitCardLink: false, resultLink: true, cutOffMarks: true, syllabus: false, examPattern: false, preparationTips: false, previousPapers: false, faq: true },
     },
     scholarship: {
-        label: 'Scholarship', emoji: '🏅',
+        label: 'Scholarship',
         description: 'Government central or state scholarship / fellowship',
         showAppStatus: true,
         sections: { dates: true, eligibility: true, applicationFee: true, vacancyDetails: false, totalVacancies: false, ageLimit: true, payScale: false, selectionProcess: true, howToApply: true, admitCardLink: false, resultLink: false, cutOffMarks: false, syllabus: false, examPattern: false, preparationTips: false, previousPapers: false, faq: true },

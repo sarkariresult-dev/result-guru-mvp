@@ -74,7 +74,7 @@ export const getPosts = cache(unstable_cache(
     },
     ['posts-list'], // Cache key segment
     {
-        revalidate: 600, // 10 minutes default
+        revalidate: 300, // 5 min — faster freshness for listing pages
         tags: ['posts'],
     }
 ))
@@ -110,7 +110,7 @@ export const getPostBySlug = cache(unstable_cache(
     },
     ['post-by-slug'],
     {
-        revalidate: 3600, // 1 hour
+        revalidate: 1800, // 30 min — tighter for faster content updates
         tags: ['posts'],
     }
 ))
@@ -133,8 +133,8 @@ export const getRecentPosts = cache(unstable_cache(
     },
     ['recent-posts'],
     {
-        revalidate: 600,
-        tags: ['posts'],
+        revalidate: 300, // 5 min — homepage sections need fast updates
+        tags: ['posts', 'homepage'],
     }
 ))
 
@@ -203,7 +203,7 @@ export const getPostsCount = cache(unstable_cache(
     },
     ['posts-count'],
     {
-        revalidate: 600,
+        revalidate: 300, // 5 min — keep pagination metadata fresh
         tags: ['posts', 'posts-count'],
     }
 ))

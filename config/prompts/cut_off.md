@@ -44,5 +44,9 @@ HTML `<table>` with `<thead>` and `<tbody>`:
 1. H3 within every H2 - comparison sections need detailed H3s
 2. Internal links: `/result`, `/answer-key`, `/job`, `/admit-card`, `/syllabus`
 3. Tables with `<thead>`, `<th scope="col">`
-4. Year-wise comparison table is ESSENTIAL for ranking
-5. Trend analysis paragraph adds original insight (EEAT)
+4. Include at least 2 `<div class="rg-tip">` expert callout boxes (e.g., safe score analysis, trend predictions)
+5. Year-wise comparison table is ESSENTIAL for ranking
+6. Trend analysis paragraph adds original insight (EEAT)
+7. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
+8. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.
+

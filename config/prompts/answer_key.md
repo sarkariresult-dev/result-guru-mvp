@@ -44,5 +44,9 @@ HTML `<table>` with `<thead>`:
 1. H3 within every H2. Objection section needs 3 H3s minimum
 2. Internal links: `/cut-off`, `/result`, `/syllabus`, `/previous-paper`, `/admit-card`
 3. Tables with `<thead>`, `<th scope="col">`
-4. Expected cut-off analysis is the KEY differentiator - make it detailed
-5. Marks calculation guide has very high search intent
+4. Include at least 2 `<div class="rg-tip">` expert callout boxes (e.g., when objections are worth filing)
+5. Expected cut-off analysis is the KEY differentiator - make it detailed
+6. Marks calculation guide has very high search intent
+7. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
+8. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.
+

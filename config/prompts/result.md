@@ -1,77 +1,90 @@
-You are writing a **Government Exam Result** post. Adopt a congratulatory yet analytical tone with Hinglish voice. Target: **1200+ words** with cut-off analysis and verification steps.
+You are writing a **Government Exam Result** post. Use an urgent, celebratory Hinglish tone ("Result aa gaya!" energy). Target: **1200+ words**.
 
 ---
 
 ## Content Structure (use raw HTML)
 
-<h2>[Board Name] [Exam Name] Result [Year]: Direct Link to Check Score</h2>
-Write a 50-word featured snippet confirming the declaration date, what's available (scorecard/merit list/cut-off), and direct action: "Abhi check karein."
+<h2>[Board Name] [Exam Name] Result [Year]: Check Score & Download Scorecard</h2>
+50-word featured snippet: result date, how to check, direct link CTA. Include focus keyword.
 
-<h2>Result Check Kaise Karein? - Quick Guide</h2>
-<h3>Sabse Pehle Ye Jaano</h3>
-2 paragraphs in Hinglish. "Kya aapne apna result dekha? Agar nahi, toh tension mat lo - hum step by step bata rahe hain." Add a time-sensitive note: "Server heavy load pe hai isliye subah 6 AM ya raat 11 PM ke baad try karo."
-<h3>Result Ke Saath Kya Available Hai?</h3>
-Bullet list: scorecard, category-wise marks, qualifying status, rank (if applicable).
+<h2>Result Kab Aaya? - Latest Update</h2>
+<h3>Official Announcement</h3>
+"Breaking: [Board] ne officially [Exam] ka result declare kar diya hai [Date] ko. Candidates apna score aur rank ab check kar sakte hain." OR if pending: "Abhi tak result declared nahi hua hai. Expected date hai [Date]."
+<h3>Is Baar Result Mein Kya Naya Hai?</h3>
+Any changes — new scoring system, normalization update, result format changes vs last year.
+
+<div class="rg-tip"><strong>💡 Expert Tip:</strong> [Insert helpful insight — like "Result aate hi cut-off check karo, kyunki mains ke liye time bahut kam milta hai"]</div>
 
 <h2>Key Highlights</h2>
-Create an HTML `<table>` with `<thead>` and `<th scope="col">`:
-- Exam Conducting Body, Exam Name, Result Status, Total Appeared, Total Qualified, Result Date
+HTML `<table>` with `<thead>`, `<th scope="col">`:
+- Conducting Body, Exam Name, Exam Date, Result Declaration Date, Total Candidates Appeared, Qualified Candidates, Result Status
 
 <h2>Important Dates</h2>
-Create an HTML `<table>`:
-- Exam Date(s), Answer Key Release, Result Declaration, Score Card Download, Next Stage Expected
+HTML `<table>`: Exam Date, Answer Key Release, Objection Window, Result Date, Scorecard Download Last Date
 
-Hinglish note: "Score card ka printout zarur nikaal ke rakhein - aage document verification mein kaam aayega."
+<h2>Result Kaise Check Karein - Step by Step</h2>
+<h3>Method 1: Official Website Se</h3>
+10+ step detailed guide.
+- <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Check Result Online</a>
+- <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Official Website</a>
+<h3>Method 2: SMS / DigiLocker</h3>
+Alternative methods if available.
+<h3>Website Not Opening? Quick Fix</h3>
+Server overload tips, VPN suggestion, try different browser, off-peak hours hack.
+
+<h2>Scorecard Details - Kya Kya Milega?</h2>
+<h3>Information on Scorecard</h3>
+List: Name, Roll Number, Subject-wise Marks, Total Score, Percentile, Rank
+<h3>Score vs Percentile Kya Fark Hai?</h3>
+Explain the normalization/percentile concept in simple Hinglish.
 
 <!-- AdSense Placeholder -->
 
-<h2>Step-by-Step: Apna Result Check Karein</h2>
-<h3>Method 1: Official Website Se</h3>
-Provide a 10+ step numbered guide with login details (Roll Number / Reg ID / DOB).
-Include: <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Official Website Home Page</a>, <a target="_blank" rel="noopener noreferrer" href="/admit-card">Admit Card</a>
+<h2>Cut Off Analysis [Year]</h2>
+<h3>Category-Wise Cut Off (Expected/Official)</h3>
+HTML `<table>`: Category | Cut Off Marks | Previous Year | Change (↑/↓)
+<h3>Why Cut Off Changed</h3>
+Analysis: candidate count, paper difficulty, vacancy changes. Link to <a href="/cut-off">Detailed Cut Off Analysis</a>.
 
-<h3>Method 2: SMS/DigiLocker Se</h3>
-If applicable, explain alternative methods. If not, skip.
+<div class="rg-tip"><strong>💡 Expert Tip:</strong> [Insert cut-off related insight — like "General category ke liye safe score 200+ hai based on 3-year trend analysis"]</div>
 
-<h3>Server Down Hone Par Kya Karein?</h3>
-3-4 practical tips for handling heavy traffic on result day.
+<h2>Toppers & Statistics</h2>
+<h3>Top Performers</h3>
+If data available, mention top 3 scorers with their marks.
+<h3>Overall Pass Percentage</h3>
+Category-wise pass rate if available.
+<h3>Year-Over-Year Comparison</h3>
+HTML `<table>`: Year | Total Appeared | Total Qualified | Pass % | Cut Off (Gen)
 
-<h2>Official Cut-Off Marks Analysis [Year]</h2>
-<h3>Category-Wise Cut-Off</h3>
-Create a detailed table: Category | Written Marks | Interview/Skill | Final Cut-Off.
-<h3>Comparison with Previous Year</h3>
-"Pichle saal Gen category ka cut-off [X] tha, is saal [Y] hai - matlab [easier/tougher] raha paper." Provide analysis of why cut-off changed.
-<h3>What This Cut-Off Means for You</h3>
-Brief interpretation: if your score is above/below, what are your options?
+<h2>Qualify Kar Liya? Aage Kya Karein</h2>
+<h3>Next Stage Preparation</h3>
+What comes next (Mains/Interview/DV). Timeline. Link to <a href="/admit-card">Admit Card</a>.
+<h3>Document Verification Checklist</h3>
+Documents to keep ready. Link to <a href="/job">Latest Jobs</a>.
 
-<h2>Result Mein Ye Details Zarur Check Karo</h2>
-<h3>Personal Details Verification</h3>
-Numbered checklist: Name, Roll Number, Photo, DOB, Category, Marks per section, Qualifying status.
-<h3>Agar Result Mein Galti Hai Toh?</h3>
-Steps to raise an objection or contact the board. Include RTI mention if applicable.
+<h2>Qualify Nahi Hua? Tension Mat Lo</h2>
+<h3>Re-Exam / Next Attempt</h3>
+When the next exam is expected. Preparation strategy changes.
+<h3>Similar Exams to Try</h3>
+Alternative exams with overlapping syllabus. Link to <a href="/syllabus">Syllabus</a> and <a href="/answer-key">Answer Key</a>.
 
-<h2>Aage Kya? - Next Steps After Result</h2>
-<h3>Agar Qualify Kiya</h3>
-Next stage details (interview, DV, medical, training). Link to <a target="_blank" rel="noopener noreferrer" href="/admit-card">Admit Card</a> for next stage.
-<h3>Agar Qualify Nahi Kiya</h3>
-Motivational advice + link to upcoming similar <a target="_blank" rel="noopener noreferrer" href="/job">Jobs</a> and <a target="_blank" rel="noopener noreferrer" href="/syllabus">Syllabus</a> for preparation.
-
-<h2>Direct Important Links for [Board Name] [Year]</h2>
+<h2>Direct Important Links for [Exam Name] [Year]</h2>
 Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
 - Row 1: **Check Result / Score Card** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Click Here to Check</a>
 - Row 2: **Download Official Notification** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download PDF</a>
-- Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Portal</a>
-- Row 4: **Merit List / Selection List** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Link Activated</a>
+- Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Official Portal</a>
+- Row 4: **Check Cut Off Marks** | <a href="/cut-off">View Cut Off</a>
 - Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
 - Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
 
 ---
 
 **CRITICAL SEO RULES:**
-1. Use H3/H4 within every H2 - minimum 2 H3 per major H2
-2. Include 3-5 internal links: `/cut-off`, `/answer-key`, `/admit-card`, `/job`, `/syllabus`
-3. Tables MUST use `<thead>`, `<th scope="col">`, `<tbody>`
-4. Include cut-off comparison with previous year (essential for ranking)
-5. "Next Steps" section is mandatory - helps with user engagement metrics
-6. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
-7. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.
+1. H3 within every H2 - no flat structure
+2. Internal links: `/cut-off`, `/answer-key`, `/admit-card`, `/job`, `/syllabus`
+3. Tables with `<thead>`, `<th scope="col">`
+4. Year-over-year comparison table with pass % and cut-off trends is ESSENTIAL
+5. Include at least 2 `<div class="rg-tip">` expert callout boxes
+6. "Qualify Nahi Hua" section shows empathy and keeps bounce rate low — make it genuinely helpful
+7. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
+8. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.

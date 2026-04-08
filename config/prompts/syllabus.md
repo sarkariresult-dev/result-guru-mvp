@@ -52,5 +52,9 @@ Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
 1. EVERY subject must have its own H3 with topic table
 2. Internal links: `/exam-pattern`, `/previous-paper`, `/admit-card`, `/job`, `/result`
 3. Tables with `<thead>`, `<th scope="col">`
-4. Subject Priority Matrix is the unique value-add
-5. Preparation strategy phased approach shows expertise (EEAT)
+4. Include at least 2 `<div class="rg-tip">` expert callout boxes (e.g., high-weightage tricks, NCERT shortcuts)
+5. Subject Priority Matrix is the unique value-add
+6. Preparation strategy phased approach shows expertise (EEAT)
+7. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
+8. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.
+

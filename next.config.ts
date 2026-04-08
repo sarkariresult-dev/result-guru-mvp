@@ -48,6 +48,11 @@ const nextConfig: NextConfig = {
       'react-hook-form',
       'nuqs',
       'class-variance-authority',
+      '@vercel/analytics',
+      '@vercel/speed-insights',
+      'recharts',
+      'framer-motion',
+      'sonner',
     ],
     /* Default stale-times for client router cache (seconds) */
     staleTimes: {
@@ -157,6 +162,26 @@ const nextConfig: NextConfig = {
           {
             key: 'Cache-Control',
             value: 'public, s-maxage=3600, stale-while-revalidate=86400',
+          },
+        ],
+      },
+      /* API routes - short cache with stale-while-revalidate */
+      {
+        source: '/api/og',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=86400, stale-while-revalidate=604800',
+          },
+        ],
+      },
+      /* Supabase Storage proxy images */
+      {
+        source: '/storage/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=604800, stale-while-revalidate=86400',
           },
         ],
       },

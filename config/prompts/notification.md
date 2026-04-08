@@ -27,7 +27,9 @@ Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
 1. H3/H4 within every H2 section
 2. 3-5 internal links: `/syllabus`, `/admit-card`, `/previous-paper`, `/result`, `/exam-pattern`
 3. Tables MUST use `<thead>`, `<th scope="col">`
-4. Include "Notification PDF Analysis" section - unique differentiator
-5. Career advice section adds EEAT depth
-6. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
-7. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.
+4. Include at least 2 `<div class="rg-tip">` expert callout boxes with notification-specific advice
+5. Include "Notification PDF Analysis" section - unique differentiator
+6. Career advice section adds EEAT depth
+7. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
+8. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.
+

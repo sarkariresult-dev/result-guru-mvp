@@ -31,3 +31,22 @@ export async function getQualifications(): Promise<Qualification[]> {
     if (error) throw new Error(`getQualifications: ${error.message}`)
     return (data ?? []) as Qualification[]
 }
+
+/**
+ * Get a single qualification by its slug.
+ */
+export async function getQualificationBySlug(slug: string): Promise<Qualification | null> {
+    const supabase = await createServerClient()
+    const { data, error } = await supabase
+        .from('qualifications')
+        .select('slug, name, short_name, sort_order')
+        .eq('slug', slug)
+        .eq('is_active', true)
+        .single()
+        
+    if (error) {
+        if (error.code === 'PGRST116') return null // Not found
+        throw new Error(`getQualificationBySlug: ${error.message}`)
+    }
+    return data as Qualification
+}

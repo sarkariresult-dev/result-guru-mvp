@@ -244,7 +244,7 @@ export function PostDetail({ post, slug, url }: Props) {
                     priority
                     quality={75}
                 />
-                
+
                 {/* Top-left: status badge (overlay) */}
                 <div className="absolute top-3 left-3 flex flex-wrap gap-2">
                     <ApplicationStatusBadge status={post.application_status} />

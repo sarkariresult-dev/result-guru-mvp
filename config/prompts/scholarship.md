@@ -104,5 +104,9 @@ Brief list with links to <a target="_blank" rel="noopener noreferrer" href="/sch
 1. H3/H4 nesting within every H2 - eligibility section needs 3-4 H3s
 2. 3-5 internal links: `/admission`, `/scheme`, `/scholarship`, `/job`
 3. Tables MUST use `<thead>`, `<th scope="col">`
-4. "Similar Scholarships" section is essential for internal linking and user retention
-5. Document preparation tips are high-value (students frequently search for this)
+4. Include at least 2 `<div class="rg-tip">` expert callout boxes (e.g., document prep shortcuts, common rejection reasons)
+5. "Similar Scholarships" section is essential for internal linking and user retention
+6. Document preparation tips are high-value (students frequently search for this)
+7. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
+8. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.
+

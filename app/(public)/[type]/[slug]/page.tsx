@@ -14,14 +14,14 @@ import { PostDetailSkeleton } from '@/features/posts/components/PostCardSkeleton
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { TableOfContents } from '@/features/posts/components/TableOfContents'
 import { OrgInfoBox } from '@/features/posts/components/OrgInfoBox'
-import { AdZone, NewsletterForm } from '@/features/posts/components/PostPageClientParts'
+import { AdZone } from '@/features/posts/components/PostPageClientParts'
 import { POST_TYPE_CONFIG } from '@/config/constants'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
 import type { PostTypeKey } from '@/config/site'
 import type { PublishedPost } from '@/types/post.types'
 import type { FaqItem } from '@/types/post-content.types'
 import { slugToKey, humanise, keyToSlug } from '@/lib/utils'
-import { ExternalLink, Download, Bell, ListTree } from 'lucide-react'
+import { ExternalLink, Download, ListTree } from 'lucide-react'
 import { PageViewTracker } from '@/features/analytics/components/PageViewTracker'
 
 
@@ -136,9 +136,15 @@ export default async function PostDetailPage({ params }: Props) {
 
     jsonLdEntries.push(buildNewsArticleSchema(publishedPost as any))
 
-    /* ── Extract TOC items for sidebar ───────────────────────── */
+    /* ── Extract TOC items & Inject Internal Links ─────────────────── */
     const { tocItems } = publishedPost.content
-        ? processContentHtml(sanitizeHtml(publishedPost.content))
+        ? processContentHtml(sanitizeHtml(publishedPost.content), {
+            stateSlug: publishedPost.state_slug,
+            stateName: publishedPost.state_name,
+            orgSlug: publishedPost.org_short_name ? publishedPost.slug : null, // Assuming org slug would be related
+            orgName: publishedPost.org_name,
+            orgShortName: publishedPost.org_short_name,
+        })
         : { tocItems: [] as any[] }
 
     /* ── Fetch Dynamic Sidebar Silo Links ── */
@@ -182,7 +188,7 @@ export default async function PostDetailPage({ params }: Props) {
             <div className="container mx-auto max-w-7xl px-4 py-8">
                 <Breadcrumb
                     items={[
-                        { label: humanise(type), href: `/${type}` },
+                        { label: POST_TYPE_CONFIG[typeKey].heading, href: `/${type}` },
                         ...(publishedPost.state_slug ? [{ label: publishedPost.state_name || humanise(publishedPost.state_slug), href: `/states/${publishedPost.state_slug}` }] : []),
                         { label: publishedPost.title },
                     ]}
@@ -287,19 +293,6 @@ export default async function PostDetailPage({ params }: Props) {
                         <Suspense fallback={null}>
                             <AdZone zoneSlug="sidebar_top" postType={typeKey} postId={publishedPost.id} />
                         </Suspense>
-
-                        {/* ── Newsletter CTA ───────────────────── */}
-                        <div className="py-2 space-y-4">
-                            <h3 className="text-sm font-bold uppercase tracking-[0.05em] text-foreground-muted flex items-center gap-2">
-                                <Bell className="size-4 text-brand-500" /> Staying Updated
-                            </h3>
-                            <div className="rounded-2xl bg-linear-to-br from-background-muted to-background p-5 border border-border/50">
-                                <p className="text-xs text-foreground-muted leading-relaxed mb-4">
-                                    Get instant alerts for new {config.heading.toLowerCase()} posts.
-                                </p>
-                                <NewsletterForm />
-                            </div>
-                        </div>
 
                         {/* ── Sticky Ad ─────────────────────────── */}
                         <Suspense fallback={null}>

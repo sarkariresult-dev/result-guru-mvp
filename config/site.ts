@@ -18,7 +18,7 @@ export const SITE = {
 
     // ── Social handles ──────────────────────────────────────────────────
     twitter: {
-        handle: env.NEXT_PUBLIC_TWITTER_HANDLE ?? '@ResultGuruIn',
+        handle: env.NEXT_PUBLIC_TWITTER_HANDLE ?? '@ResultGuru247',
         cardType: 'summary_large_image' as const,
     },
 
@@ -28,9 +28,9 @@ export const SITE = {
         url: appUrl,
         logo: `${appUrl}/logo.png`,
         sameAs: [
-            'https://x.com/resultguruai',
-            'https://www.facebook.com/resultguru.co.in',
-            'https://www.instagram.com/resultguru.co.in',
+            'https://x.com/resultguru247',
+            'https://www.facebook.com/resultguru247',
+            'https://www.instagram.com/resultguru247',
         ],
     },
 
@@ -95,6 +95,101 @@ export const ROUTE_PREFIXES = {
 
 export type PostTypeKey = keyof typeof ROUTE_PREFIXES
 
+// ─── CTR Optimization Config ────────────────────────────────────────────────
+// Per-type signals for SERP title and meta description enhancement.
+
+export interface CTRTypeConfig {
+    /** Action words that trigger urgency in titles */
+    urgencyWords: string[]
+    /** Freshness label for the type */
+    freshnessLabel: string
+    /** CTA suffix for meta descriptions */
+    ctaSuffix: string
+    /** Generic action verb for this type */
+    actionVerb: string
+}
+
+export const CTR_CONFIG: Record<PostTypeKey, CTRTypeConfig> = {
+    job: {
+        urgencyWords: ['Apply Now', 'New Vacancy', 'Last Date Soon'],
+        freshnessLabel: 'Latest Vacancy',
+        ctaSuffix: 'Apply before the last date →',
+        actionVerb: 'Apply Online',
+    },
+    result: {
+        urgencyWords: ['OUT NOW', 'LIVE', 'Declared', 'Check Score'],
+        freshnessLabel: 'Result Update',
+        ctaSuffix: 'Check your score now →',
+        actionVerb: 'Check Result',
+    },
+    admit: {
+        urgencyWords: ['Download Now', 'Released', 'Hall Ticket LIVE'],
+        freshnessLabel: 'Admit Card Update',
+        ctaSuffix: 'Download admit card now →',
+        actionVerb: 'Download',
+    },
+    answer_key: {
+        urgencyWords: ['Released', 'Objection Open', 'Check Answers'],
+        freshnessLabel: 'Answer Key Update',
+        ctaSuffix: 'Check answers & raise objections →',
+        actionVerb: 'Check Answer Key',
+    },
+    cut_off: {
+        urgencyWords: ['Official', 'Category-Wise', 'Updated'],
+        freshnessLabel: 'Cut Off Update',
+        ctaSuffix: 'Check category-wise cut off marks →',
+        actionVerb: 'Check Cut Off',
+    },
+    syllabus: {
+        urgencyWords: ['Updated', 'Complete Guide', 'Subject-Wise'],
+        freshnessLabel: 'Syllabus Guide',
+        ctaSuffix: 'Download subject-wise syllabus PDF →',
+        actionVerb: 'Download Syllabus',
+    },
+    exam_pattern: {
+        urgencyWords: ['Updated', 'Detailed Analysis', 'Strategy'],
+        freshnessLabel: 'Exam Pattern Guide',
+        ctaSuffix: 'Check paper pattern & marking scheme →',
+        actionVerb: 'Check Pattern',
+    },
+    previous_paper: {
+        urgencyWords: ['Free Download', 'With Solutions', 'PDF'],
+        freshnessLabel: 'Previous Papers',
+        ctaSuffix: 'Download free PDF with solutions →',
+        actionVerb: 'Download Papers',
+    },
+    scheme: {
+        urgencyWords: ['Registration Open', 'Apply Free', 'New Benefit'],
+        freshnessLabel: 'Scheme Update',
+        ctaSuffix: 'Check eligibility & apply online →',
+        actionVerb: 'Apply Now',
+    },
+    exam: {
+        urgencyWords: ['Date Announced', 'Registration Open', 'Notification'],
+        freshnessLabel: 'Exam Update',
+        ctaSuffix: 'Check exam dates & start preparing →',
+        actionVerb: 'Check Details',
+    },
+    admission: {
+        urgencyWords: ['Open Now', 'Last Date', 'Counseling'],
+        freshnessLabel: 'Admission Update',
+        ctaSuffix: 'Apply for admission before the deadline →',
+        actionVerb: 'Apply Now',
+    },
+    scholarship: {
+        urgencyWords: ['Apply Free', 'Last Date', 'New Scholarship'],
+        freshnessLabel: 'Scholarship Update',
+        ctaSuffix: 'Check eligibility & apply for free →',
+        actionVerb: 'Apply for Scholarship',
+    },
+    notification: {
+        urgencyWords: ['New Release', 'Official', 'Important'],
+        freshnessLabel: 'Notification Update',
+        ctaSuffix: 'Read full notification & apply →',
+        actionVerb: 'Read Notification',
+    },
+}
+
 /** Build a canonical post URL from type + slug */
 export function postUrl(type: PostTypeKey, slug: string): string {
     return siteUrl(`${ROUTE_PREFIXES[type]}/${slug}`)
@@ -133,6 +228,7 @@ export const TOP_NAV_LINKS: NavItem[] = [
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
     { label: 'Organizations', href: '/organizations' },
+    { label: 'Qualifications', href: '/qualifications' },
     { label: 'States', href: '/states' },
     { label: 'Contact', href: '/contact' },
 ]
@@ -173,6 +269,7 @@ export const FOOTER_NAV: NavGroup[] = [
         items: [
             { label: 'Organizations', href: '/organizations' },
             { label: 'States', href: '/states' },
+            { label: 'Qualifications', href: '/qualifications' },
             { label: 'Admission', href: ROUTE_PREFIXES.admission },
             { label: 'Scholarship', href: ROUTE_PREFIXES.scholarship },
             { label: 'Govt Scheme', href: ROUTE_PREFIXES.scheme },

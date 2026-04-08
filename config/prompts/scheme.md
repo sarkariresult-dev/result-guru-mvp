@@ -43,7 +43,11 @@ Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
 
 **CRITICAL SEO RULES:**
 1. H3 within every H2
-2. Internal links: <a target="_blank" rel="noopener noreferrer" href="/scheme">/scheme</a>, <a target="_blank" rel="noopener noreferrer" href="/scholarship">/scholarship</a>, <a target="_blank" rel="noopener noreferrer" href="/admission">/admission</a>, <a target="_blank" rel="noopener noreferrer" href="/job">/job</a>
+2. Internal links: `/scheme`, `/scholarship`, `/admission`, `/job`
 3. Tables with `<thead>`, `<th scope="col">`
-4. Benefit comparison table with similar schemes is the differentiator
-5. Both online AND offline application methods show thoroughness
+4. Include at least 2 `<div class="rg-tip">` expert callout boxes (e.g., common rejection reasons, document tips)
+5. Benefit comparison table with similar schemes is the differentiator
+6. Both online AND offline application methods show thoroughness
+7. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
+8. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.
+

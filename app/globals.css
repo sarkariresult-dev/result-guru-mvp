@@ -360,6 +360,23 @@
         border-bottom: none;
     }
 
+    /* ── AI Expert Tip callout box (used in generated content) ── */
+    .rg-tip {
+        margin: 1.5em 0;
+        padding: 1rem 1.25rem;
+        border-left: 4px solid oklch(0.48 0.192 264);
+        border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+        background: oklch(0.97 0.012 264);
+        color: var(--fg);
+        font-size: 0.9em;
+        line-height: 1.6;
+    }
+
+    .dark .rg-tip {
+        background: oklch(0.18 0.018 264);
+        border-left-color: oklch(0.65 0.145 264);
+    }
+
     hr {
         border: none;
         border-top: 1px solid var(--border);

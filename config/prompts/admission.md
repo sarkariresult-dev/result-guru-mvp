@@ -45,5 +45,9 @@ Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
 1. H3 within every H2
 2. Internal links: `/scholarship`, `/scheme`, `/result`, `/admit-card`
 3. Tables with `<thead>`, `<th scope="col">`
-4. Fee + scholarship combined section shows practical helpfulness
-5. Placement data adds credibility (EEAT)
+4. Include at least 2 `<div class="rg-tip">` expert callout boxes (e.g., counseling strategy, seat matrix tips)
+5. Fee + scholarship combined section shows practical helpfulness
+6. Placement data adds credibility (EEAT)
+7. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
+8. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.
+

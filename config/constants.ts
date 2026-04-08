@@ -22,11 +22,11 @@ export const PAGINATION = {
 
 export const CACHE_TTL = {
     /** Home page - refresh often for latest posts */
-    HOME: 300,        // 5 min
+    HOME: 180,        // 3 min — faster homepage freshness
     /** Listing pages */
-    LISTING: 600,        // 10 min
+    LISTING: 300,        // 5 min (was 10 min)
     /** Individual post pages */
-    POST: 3_600,      // 1 hr
+    POST: 1_800,      // 30 min (was 1 hr)
     /** Static taxonomy pages (states, orgs) */
     TAXONOMY: 86_400,     // 24 hr
     /** Sitemap */

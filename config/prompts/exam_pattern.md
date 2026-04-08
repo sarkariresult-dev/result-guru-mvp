@@ -45,5 +45,9 @@ Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
 1. Each paper/stage needs its own H3 with table
 2. Internal links: `/syllabus`, `/previous-paper`, `/cut-off`, `/admit-card`, `/result`
 3. Tables with `<thead>`, `<th scope="col">`
-4. Time management strategy is the unique selling point
-5. Previous year difficulty comparison adds analytical depth
+4. Include at least 2 `<div class="rg-tip">` expert callout boxes (e.g., time management hacks, which section to attempt first)
+5. Time management strategy is the unique selling point
+6. Previous year difficulty comparison adds analytical depth
+7. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
+8. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.
+

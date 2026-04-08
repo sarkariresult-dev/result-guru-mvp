@@ -144,6 +144,20 @@ export const metadata: Metadata = {
 
     /* Prevent phone/email/address auto-detection */
     formatDetection: { telephone: false, email: false, address: false },
+
+    /* Alternates - RSS Auto-Discovery */
+    alternates: {
+        types: {
+            'application/rss+xml': '/feed.xml',
+        },
+    },
+
+    /* Apply PWA capabilities for iOS 'Add to Home Screen' */
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: 'default',
+        title: SITE.name,
+    },
 }
 
 /* ── Viewport - separate export (Next.js 14+) ──────────────── */
@@ -182,8 +196,11 @@ export default function RootLayout({
                 {supabaseUrl && (
                     <link rel="preconnect" href={supabaseUrl} crossOrigin="anonymous" />
                 )}
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+                <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
                 <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
                 <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+                <link rel="dns-prefetch" href="https://va.vercel-scripts.com" />
             </head>
             <body className="min-h-screen font-sans antialiased" suppressHydrationWarning>
                 {/* Skip-to-content link is in each route group layout (public/dashboard)

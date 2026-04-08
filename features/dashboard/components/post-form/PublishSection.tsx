@@ -54,17 +54,25 @@ export function PublishSection({ qualifications, tags }: PublishSectionProps) {
             if (result.success && result.data) {
                 const d = result.data
 
-                // Build partial state update from AI response
                 /* eslint-disable @typescript-eslint/no-explicit-any */
                 const update: Record<string, any> = {}
 
-                if (d.title) update.title = d.title
+                // Prefer CTR title (has urgency triggers) over plain title
+                if (d.ctrTitle) update.title = d.ctrTitle
+                else if (d.title) update.title = d.title
+
                 if (d.slug) { update.slug = d.slug; update.slugManual = true }
                 if (d.excerpt) update.excerpt = d.excerpt
                 if (d.metaTitle) update.metaTitle = d.metaTitle
                 if (d.metaDescription) update.metaDescription = d.metaDescription
                 if (d.focusKeyword) update.focusKeyword = d.focusKeyword
-                if (d.secondaryKeywords) update.secondaryKeywords = d.secondaryKeywords
+
+                // Merge secondary + long-tail + semantic keywords (deduplicated)
+                const allKeywords = new Set<string>()
+                for (const kw of d.secondaryKeywords ?? []) allKeywords.add(kw)
+                for (const kw of d.longTailKeywords ?? []) allKeywords.add(kw)
+                for (const kw of d.semanticKeywords ?? []) allKeywords.add(kw)
+                if (allKeywords.size > 0) update.secondaryKeywords = [...allKeywords]
 
                 // Process content placeholders
                 if (d.content) {
