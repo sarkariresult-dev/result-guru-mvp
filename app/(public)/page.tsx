@@ -133,11 +133,6 @@ export default async function HomePage() {
                     </div>
 
                     <div className="mx-auto mt-6 flex max-w-xl flex-wrap items-center justify-center gap-4 text-sm">
-                        <div className="flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-[10px] font-bold text-emerald-400 uppercase tracking-widest backdrop-blur-sm">
-                            <ShieldCheck className="size-3 fill-emerald-500/20" />
-                            100% Verified Info
-                        </div>
-                        <div className="h-4 w-px bg-white/10 hidden sm:block" />
                         <span className="text-blue-200/80 font-medium">Trending:</span>
                         {['SSC CGL', 'UPSC CSE', 'Railway NTPC'].map((topic) => (
                             <Link
@@ -254,7 +249,7 @@ export default async function HomePage() {
                             <Suspense fallback={<HomeSectionSkeleton count={5} />}>
                                 <HomeSection typeKey="result" heading="Latest Result" route={ROUTE_PREFIXES.result} cta="View All" limit={5} layout="list" themeColorClass="bg-orange-500" posts={sections.result} priority={2} />
                             </Suspense>
-                            
+
                             <Suspense fallback={<HomeSectionSkeleton count={3} />}>
                                 <HomeSection typeKey="admit" heading="Admit Card" route={ROUTE_PREFIXES.admit} cta="View All" limit={3} layout="list" themeColorClass="bg-green-600" posts={sections.admit} />
                             </Suspense>

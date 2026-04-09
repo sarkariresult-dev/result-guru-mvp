@@ -6,7 +6,7 @@ import { FAQAccordion } from './FAQAccordion'
 import { ApplicationStatusBadge } from './ApplicationStatusBadge'
 
 import { AffiliateProductsBox } from './AffiliateProductsBox'
-import { ImageActionButtons } from './ImageActionButtons'
+import { PostImageOverlay } from './PostImageOverlay'
 import { AdZone } from '@/components/ads/AdZone'
 import { processContentHtml, replacePlaceholders } from '@/lib/content-processing'
 import { POST_TYPE_CONFIG } from '@/config/constants'
@@ -263,21 +263,17 @@ export function PostDetail({ post, slug, url }: Props) {
                                 {post.state_name}
                             </span>
                         )}
-                        <span className="rounded-full bg-white/20 backdrop-blur-sm border border-white/20 px-2.5 py-0.5 text-[11px] font-semibold text-white flex items-center gap-1">
-                            <FileText className="size-3" />
-                            {post.reading_time_min} min read
-                        </span>
                     </div>
 
-                    {/* Bottom-right: share, copy, save */}
-                    <ImageActionButtons
-                        postId={post.id}
-                        slug={slug}
-                        title={post.title}
-                        type={typeKey}
-                        url={url}
-                    />
                 </div>
+                
+                {/* New Overlays: Top-Right (Save) & Bottom-Right (Read Time) */}
+                <PostImageOverlay 
+                    slug={slug} 
+                    title={post.title} 
+                    type={typeKey} 
+                    readingTime={post.reading_time_min} 
+                />
             </figure>
 
             {/* Excerpt */}

@@ -53,11 +53,11 @@ export function InstitutionalCTA({
                                 {badge}
                             </div>
                         )}
-                        
-                        <h2 className="text-2xl md:text-3xl xl:text-5xl font-black text-white leading-[1.1] tracking-tight break-words" 
+
+                        <h2 className="text-2xl md:text-3xl xl:text-5xl font-black text-white leading-[1.1] tracking-tight wrap-break-word"
                             dangerouslySetInnerHTML={{ __html: title.replace(/(Assistant|Directory|Pathways|Future|Results|Updates|Guarantee|Search|Rights|Use)/g, '<span class="text-brand-300">$1</span>') }}
                         />
-                        
+
                         <p className="text-base md:text-lg text-blue-100/90 leading-relaxed font-medium">
                             {description}
                         </p>
@@ -86,7 +86,7 @@ export function InstitutionalCTA({
                                 <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
                             </Link>
                         )}
-                        
+
                         {secondaryCTA && (
                             <p className="text-sm text-blue-100/60 font-medium text-center">
                                 {secondaryCTA.text}{' '}
@@ -95,9 +95,9 @@ export function InstitutionalCTA({
                                 </Link>
                             </p>
                         )}
-                        
+
                         <div className="h-px w-full max-w-[200px] bg-white/10" />
-                        
+
                         {footerText && (
                             <p className="text-[10px] md:text-xs text-white/40 text-center font-bold uppercase tracking-wider">
                                 {footerText}

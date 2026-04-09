@@ -56,14 +56,17 @@ export function ShareBar({ title, url }: Props) {
         },
     ]
 
+    const utilityBtnClass = "flex items-center gap-2 rounded-full bg-background-subtle border border-border px-4 py-2 text-xs font-bold text-foreground hover:bg-background transition-all shadow-sm active:scale-95"
+
     return (
-        <div className="flex flex-wrap items-center gap-3 py-6 my-4 border-y border-border/50">
+        <div className="flex flex-wrap items-center gap-4 py-6 my-4 border-y border-border/50">
             <div className="flex items-center gap-2 mr-2">
                 <Share2 className="size-4 text-brand-600" />
-                <span className="text-sm font-bold uppercase tracking-wider text-foreground">Share this update</span>
+                <span className="text-sm font-bold uppercase tracking-wider text-foreground">Spread the Word</span>
             </div>
             
             <div className="flex flex-wrap items-center gap-2">
+                {/* Social Share Buttons */}
                 {shareLinks.map((link) => (
                     <a
                         key={link.name}
@@ -76,10 +79,11 @@ export function ShareBar({ title, url }: Props) {
                         {link.name}
                     </a>
                 ))}
-                
+
+                {/* Copy Link Button */}
                 <button
                     onClick={() => copy(url)}
-                    className="flex items-center gap-2 rounded-full bg-background-subtle border border-border px-4 py-2 text-xs font-bold text-foreground hover:bg-background transition-all shadow-sm"
+                    className={utilityBtnClass}
                 >
                     {copied ? (
                         <>

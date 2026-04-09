@@ -144,7 +144,7 @@ const aiResponseSchema = {
         },
         ctrTitle: {
             type: Type.STRING,
-            description: 'High-CTR alternative title with urgency triggers (≤65 chars). Can include 1 emoji (✅, 🔥).',
+            description: 'High-CTR alternative title with urgency triggers (≤65 chars). NO emojis, symbols, or icons allowed. Use clean text only.',
         },
         seoTitle: {
             type: Type.STRING,
