@@ -26,8 +26,8 @@ import type { LucideIcon } from 'lucide-react'
 /* SEO Metadata */
 
 export const metadata = buildPageMetadata({
-    title: 'Result Guru - Sarkari Result 2026 | Jobs & Notifications',
-    description: 'India\'s leading Sarkari Result portal. Official notifications for Jobs, Admit Cards & Results in 2026. Verified daily updates.',
+    title: 'Result Guru - Latest Sarkari Result 2026 | Govt Job Notifications',
+    description: 'India\'s leading Sarkari Result portal. Get official notifications for Govt Jobs, Admit Cards & Results. Verified daily updates for candidates.',
     path: '/',
 })
 
@@ -92,9 +92,9 @@ export default async function HomePage() {
     /* Fetch all homepage data in parallel for fastest TTFB */
     const [statesResult, orgsResult, countsResult, sectionsResult] = await Promise.allSettled([
         getStates(),
-        getPopularOrganizations(12),
+        getPopularOrganizations(8),
         getPostCountsByType(),
-        getHomepageSections(8),
+        getHomepageSections(6),
     ])
 
     const states = statesResult.status === 'fulfilled' ? statesResult.value.map((s) => ({ slug: s.slug, name: s.name, abbr: s.abbr })) : []
@@ -133,8 +133,13 @@ export default async function HomePage() {
                     </div>
 
                     <div className="mx-auto mt-6 flex max-w-xl flex-wrap items-center justify-center gap-4 text-sm">
+                        <div className="flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-[10px] font-bold text-emerald-400 uppercase tracking-widest backdrop-blur-sm">
+                            <ShieldCheck className="size-3 fill-emerald-500/20" />
+                            100% Verified Info
+                        </div>
+                        <div className="h-4 w-px bg-white/10 hidden sm:block" />
                         <span className="text-blue-200/80 font-medium">Trending:</span>
-                        {['SSC CGL', 'UPSC CSE Prelims', 'Railway NTPC'].map((topic) => (
+                        {['SSC CGL', 'UPSC CSE', 'Railway NTPC'].map((topic) => (
                             <Link
                                 key={topic}
                                 href={`/search?q=${encodeURIComponent(topic)}`}
@@ -249,33 +254,33 @@ export default async function HomePage() {
                             <Suspense fallback={<HomeSectionSkeleton count={5} />}>
                                 <HomeSection typeKey="result" heading="Latest Result" route={ROUTE_PREFIXES.result} cta="View All" limit={5} layout="list" themeColorClass="bg-orange-500" posts={sections.result} priority={2} />
                             </Suspense>
-
-                            <Suspense fallback={<HomeSectionSkeleton count={4} />}>
-                                <HomeSection typeKey="answer_key" heading="Answer Key" route={ROUTE_PREFIXES.answer_key} cta="View All" limit={4} layout="list" themeColorClass="bg-blue-500" posts={sections.answer_key} />
+                            
+                            <Suspense fallback={<HomeSectionSkeleton count={3} />}>
+                                <HomeSection typeKey="admit" heading="Admit Card" route={ROUTE_PREFIXES.admit} cta="View All" limit={3} layout="list" themeColorClass="bg-green-600" posts={sections.admit} />
                             </Suspense>
-                            <Suspense fallback={<HomeSectionSkeleton count={4} />}>
-                                <HomeSection typeKey="syllabus" heading="Syllabus" route={ROUTE_PREFIXES.syllabus} cta="View All" limit={4} layout="list" themeColorClass="bg-emerald-500" posts={sections.syllabus} />
-                            </Suspense>
-
-                            <Suspense fallback={<HomeSectionSkeleton count={4} />}>
-                                <HomeSection typeKey="admit" heading="Admit Card" route={ROUTE_PREFIXES.admit} cta="View All" limit={4} layout="list" themeColorClass="bg-green-600" posts={sections.admit} />
-                            </Suspense>
-                            <Suspense fallback={<HomeSectionSkeleton count={4} />}>
-                                <HomeSection typeKey="exam_pattern" heading="Exam Pattern" route={ROUTE_PREFIXES.exam_pattern} cta="View All" limit={4} layout="list" themeColorClass="bg-cyan-500" posts={sections.exam_pattern} />
+                            <Suspense fallback={<HomeSectionSkeleton count={3} />}>
+                                <HomeSection typeKey="answer_key" heading="Answer Key" route={ROUTE_PREFIXES.answer_key} cta="View All" limit={3} layout="list" themeColorClass="bg-blue-500" posts={sections.answer_key} />
                             </Suspense>
 
-                            <Suspense fallback={<HomeSectionSkeleton count={4} />}>
-                                <HomeSection typeKey="previous_paper" heading="Previous Paper" route={ROUTE_PREFIXES.previous_paper} cta="View All" limit={4} layout="list" themeColorClass="bg-indigo-500" posts={sections.previous_paper} />
+                            <Suspense fallback={<HomeSectionSkeleton count={3} />}>
+                                <HomeSection typeKey="syllabus" heading="Syllabus" route={ROUTE_PREFIXES.syllabus} cta="View All" limit={3} layout="list" themeColorClass="bg-emerald-500" posts={sections.syllabus} />
                             </Suspense>
-                            <Suspense fallback={<HomeSectionSkeleton count={4} />}>
-                                <HomeSection typeKey="cut_off" heading="Cut Off Marks" route={ROUTE_PREFIXES.cut_off} cta="View All" limit={4} layout="list" themeColorClass="bg-rose-500" posts={sections.cut_off} />
+                            <Suspense fallback={<HomeSectionSkeleton count={3} />}>
+                                <HomeSection typeKey="exam_pattern" heading="Exam Pattern" route={ROUTE_PREFIXES.exam_pattern} cta="View All" limit={3} layout="list" themeColorClass="bg-cyan-500" posts={sections.exam_pattern} />
                             </Suspense>
 
-                            <Suspense fallback={<HomeSectionSkeleton count={4} />}>
-                                <HomeSection typeKey="exam" heading="Upcoming Exam" route={ROUTE_PREFIXES.exam} cta="View All" limit={4} layout="list" themeColorClass="bg-violet-500" posts={sections.exam} />
+                            <Suspense fallback={<HomeSectionSkeleton count={3} />}>
+                                <HomeSection typeKey="previous_paper" heading="Previous Paper" route={ROUTE_PREFIXES.previous_paper} cta="View All" limit={3} layout="list" themeColorClass="bg-indigo-500" posts={sections.previous_paper} />
                             </Suspense>
-                            <Suspense fallback={<HomeSectionSkeleton count={4} />}>
-                                <HomeSection typeKey="admission" heading="Admission" route={ROUTE_PREFIXES.admission} cta="View All" limit={4} layout="list" themeColorClass="bg-fuchsia-500" posts={sections.admission} />
+                            <Suspense fallback={<HomeSectionSkeleton count={3} />}>
+                                <HomeSection typeKey="cut_off" heading="Cut Off Marks" route={ROUTE_PREFIXES.cut_off} cta="View All" limit={3} layout="list" themeColorClass="bg-rose-500" posts={sections.cut_off} />
+                            </Suspense>
+
+                            <Suspense fallback={<HomeSectionSkeleton count={3} />}>
+                                <HomeSection typeKey="exam" heading="Upcoming Exam" route={ROUTE_PREFIXES.exam} cta="View All" limit={3} layout="list" themeColorClass="bg-violet-500" posts={sections.exam} />
+                            </Suspense>
+                            <Suspense fallback={<HomeSectionSkeleton count={3} />}>
+                                <HomeSection typeKey="admission" heading="Admission" route={ROUTE_PREFIXES.admission} cta="View All" limit={3} layout="list" themeColorClass="bg-fuchsia-500" posts={sections.admission} />
                             </Suspense>
 
                         </div>
@@ -291,7 +296,7 @@ export default async function HomePage() {
                                     heading="Notification"
                                     route={ROUTE_PREFIXES.notification}
                                     cta="All Updates"
-                                    limit={8}
+                                    limit={6}
                                     layout="numbered"
                                     themeColorClass="bg-brand-500"
                                     posts={sections.notification}
@@ -312,6 +317,7 @@ export default async function HomePage() {
                                         <Link
                                             href="https://t.me/resultguru247"
                                             target="_blank"
+                                            rel="noopener noreferrer"
                                             className="group/link flex items-center justify-between w-full p-4 rounded-2xl bg-[#0088cc] text-white transition-all hover:bg-[#0077b5] shadow-lg shadow-[#0088cc]/10 active:scale-[0.98]"
                                         >
                                             <div className="flex items-center gap-3">
@@ -323,6 +329,7 @@ export default async function HomePage() {
                                         <Link
                                             href="https://whatsapp.com/channel/0029Vb7XUqn1SWt7c9kqCV3I"
                                             target="_blank"
+                                            rel="noopener noreferrer"
                                             className="group/link flex items-center justify-between w-full p-4 rounded-2xl bg-[#25D366] text-white transition-all hover:bg-[#20bd5a] shadow-lg shadow-[#25D366]/10 active:scale-[0.98]"
                                         >
                                             <div className="flex items-center gap-3">
@@ -342,7 +349,7 @@ export default async function HomePage() {
                                     heading="Govt Scheme"
                                     route={ROUTE_PREFIXES.scheme}
                                     cta="View All"
-                                    limit={8}
+                                    limit={5}
                                     layout="list"
                                     themeColorClass="bg-pink-500"
                                     posts={sections.scheme}
@@ -384,7 +391,7 @@ export default async function HomePage() {
                                     heading="Scholarship"
                                     route={ROUTE_PREFIXES.scholarship}
                                     cta="View All"
-                                    limit={8}
+                                    limit={5}
                                     layout="list"
                                     themeColorClass="bg-amber-500"
                                     posts={sections.scholarship}

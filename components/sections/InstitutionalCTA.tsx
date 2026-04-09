@@ -35,7 +35,7 @@ export function InstitutionalCTA({
         { icon: Bell, label: "Priority Notifications" },
         { icon: Star, label: "Save for Later" }
     ],
-    footerText = "Trusted by 2M+ Aspirants Across India",
+    footerText = "100% Manually Verified Notifications for Indian Aspirants",
     className = ""
 }: InstitutionalCTAProps) {
     return (

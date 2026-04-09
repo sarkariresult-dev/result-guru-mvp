@@ -7,7 +7,7 @@ export const SITE = {
     name: env.NEXT_PUBLIC_APP_NAME ?? 'Result Guru',
     tagline: env.NEXT_PUBLIC_APP_TAGLINE ?? 'India\'s trusted source for Sarkari Updates',
     description:
-        'Result Guru - India\'s #1 platform for Sarkari Result 2026, Govt Jobs, Admit Cards & Answer Keys. Get instant, verified notifications from SSC, UPSC, Railway & all state commissions. Updated daily.',
+        'Result Guru - India\'s premier platform for Latest Sarkari Results, Govt Jobs, Admit Cards & Answer Keys. Get instant, 100% verified notifications from SSC, UPSC, Railway & state commissions.',
     url: appUrl,
     locale: 'en_IN',
     language: 'en',

@@ -31,31 +31,13 @@ export default function robots(): MetadataRoute.Robots {
 
     return {
         rules: [
-            /* ── Google, Bing, and legitimate search engines ── */
-            {
-                userAgent: [
-                    'Googlebot',
-                    'Googlebot-Image',
-                    'Googlebot-News',
-                    'Bingbot',
-                    'Slurp',             // Yahoo
-                    'DuckDuckBot',
-                    'Baiduspider',
-                    'YandexBot',
-                    'Applebot',          // Apple / Siri
-                ],
-                allow: ['/', '/_next/static/'],
-                disallow: [...DISALLOWED_PATHS],
-            },
-
-            /* ── Catch-all for other legitimate crawlers ── */
+            /* ── Global Allow-all for Search Engines & Legitimate Bots ── */
             {
                 userAgent: '*',
                 allow: ['/', '/_next/static/'],
                 disallow: [...DISALLOWED_PATHS],
             },
-
-            /* ── Enable AI content discovery (Open for Reasoning Agents) ── */
+            /* ── Explicitly Allow AI & Reasoning Agents ── */
             {
                 userAgent: [
                     'GPTBot',
@@ -71,11 +53,8 @@ export default function robots(): MetadataRoute.Robots {
                     'PerplexityBot',
                     'Cohere-ai',
                 ],
-                allow: ['/'],
-                disallow: [...DISALLOWED_PATHS],
             },
         ],
-
         sitemap: [
             `${baseUrl}/sitemap.xml`,
             `${baseUrl}/stories-sitemap.xml`,

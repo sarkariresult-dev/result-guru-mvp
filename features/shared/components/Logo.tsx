@@ -58,6 +58,7 @@ export function Logo({ variant = 'full', height = 40, className = '', forceDark,
                 height={height}
                 className={`dark:hidden -my-12 ${className}`}
                 priority={priority}
+                fetchPriority={priority ? "high" : undefined}
                 unoptimized
             />
             {/* Dark mode */}
@@ -68,6 +69,7 @@ export function Logo({ variant = 'full', height = 40, className = '', forceDark,
                 height={height}
                 className={`hidden dark:block -my-12 ${className}`}
                 priority={priority}
+                fetchPriority={priority ? "high" : undefined}
                 unoptimized
             />
         </>
