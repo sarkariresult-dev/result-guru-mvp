@@ -77,9 +77,9 @@ export function Footer() {
 
                         {/* Physical Address (E-E-A-T Signal) */}
                         <div className="mt-8 space-y-3">
-                            <h4 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-200">
+                            <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-200">
                                 <MapPin className="size-3.5 text-brand-500" /> Office Address
-                            </h4>
+                            </h3>
                             <address className="not-italic text-sm text-slate-500 leading-relaxed">
                                 {SITE.address.street}<br />
                                 {SITE.address.city}, {SITE.address.region} {SITE.address.postalCode}<br />
@@ -115,9 +115,14 @@ export function Footer() {
 
                 {/* Bottom Bar */}
                 <div className="mt-20 flex flex-col items-center justify-between gap-6 border-t border-white/5 pt-8 sm:flex-row">
-                    <p className="text-xs text-slate-600">
-                        © {year} <span className="text-slate-500">{SITE.name}</span>. All rights reserved.
-                    </p>
+                    <div className="flex flex-col gap-1 items-center sm:items-start">
+                        <p className="text-xs text-slate-600">
+                            © {year} <span className="text-slate-500">{SITE.name}</span>. All rights reserved.
+                        </p>
+                        <p className="text-[10px] text-slate-600 font-medium">
+                            Information last verified & updated: Apr {year}
+                        </p>
+                    </div>
 
                     {/* Social Media Icons (Clean & Flat) */}
                     <div className="flex items-center gap-5">
@@ -144,9 +149,12 @@ export function Footer() {
 
                     {/* Trust Signals / Certification */}
                     <div className="hidden md:flex items-center gap-4 border-l border-white/10 pl-6">
-                         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
-                            <ShieldCheck className="size-4 text-emerald-500" />
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-300">Verified & Accurate</span>
+                         <div className="flex flex-col gap-1.5">
+                             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                                <ShieldCheck className="size-4 text-emerald-500" />
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-100">Verified & Accurate</span>
+                             </div>
+                             <p className="text-[9px] text-slate-500 font-semibold uppercase tracking-widest text-center px-1">Content by Expert Editors</p>
                          </div>
                     </div>
                 </div>

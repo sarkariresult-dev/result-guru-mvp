@@ -39,6 +39,9 @@ export const SITE = {
             'https://x.com/resultguru247',
             'https://www.facebook.com/resultguru247',
             'https://www.instagram.com/resultguru247',
+            'https://www.threads.net/@resultguru247',
+            'https://www.linkedin.com/company/resultguru247',
+            'https://www.youtube.com/@resultguru247'
         ],
         editorialPolicy: '/editorial-policy',
         ethicsPolicy: '/editorial-policy#ethics',

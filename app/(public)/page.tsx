@@ -64,7 +64,7 @@ export default async function HomePage() {
     /* Fetch all homepage data in parallel for fastest TTFB */
     const [statesResult, orgsResult, countsResult, sectionsResult] = await Promise.allSettled([
         getStates(),
-        getPopularOrganizations(18),
+        getPopularOrganizations(12),
         getPostCountsByType(),
         getHomepageSections(8),
     ])
@@ -106,7 +106,7 @@ export default async function HomePage() {
 
                     <div className="mx-auto mt-6 flex max-w-xl flex-wrap items-center justify-center gap-4 text-sm">
                         <span className="text-blue-200/80 font-medium">Trending:</span>
-                        {['SSC CGL 2026', 'UPSC CSE Prelims', 'Railway NTPC'].map((topic) => (
+                        {['SSC CGL', 'UPSC CSE Prelims', 'Railway NTPC'].map((topic) => (
                             <Link
                                 key={topic}
                                 href={`/search?q=${encodeURIComponent(topic)}`}
@@ -292,7 +292,7 @@ export default async function HomePage() {
                                     </div>
 
                                     <p className="text-sm text-blue-50/90 mb-6 leading-relaxed font-medium">
-                                        Get instant alerts for <span className="text-white font-bold underline decoration-white/30 underline-offset-4">Sarkari Result 2026</span> directly on your phone.
+                                        Get instant alerts for <span className="text-white font-bold underline decoration-white/30 underline-offset-4">Sarkari Results</span> directly on your phone.
                                     </p>
 
                                     <Link
@@ -425,7 +425,7 @@ export default async function HomePage() {
                         {/* Right: Key Value Props */}
                         <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
                             {[
-                                { icon: Clock, title: 'Fastest Notification', desc: 'Real-time alerts for Latest Sarkari Result 2026 and upcoming Govt Jobs in India as soon as they are announced.' },
+                                { icon: Clock, title: 'Fastest Notification', desc: 'Real-time alerts for Latest Sarkari Results and upcoming Govt Jobs in India as soon as they are announced.' },
                                 { icon: ShieldCheck, title: '100% Verified Info', desc: 'Our team cross-verifies every news from official gazettes and commission portals like SSC, UPSC, and Railways.' },
                                 { icon: BookOpen, title: 'Complete Resources', desc: 'From Syllabus breakdowns to Exam Patterns and Previous Papers, we provide all the tools for your preparation.' },
                                 { icon: Star, title: 'Welfare Schemes', desc: 'Beyond jobs, stay updated with state and central government schemes, scholarships, and admission alerts.' }
@@ -500,7 +500,7 @@ export default async function HomePage() {
                                 className="mt-8 flex flex-wrap gap-2.5"
                                 aria-label="States directory"
                             >
-                                {states.slice(0, 12).map((state, idx) => (
+                                {states.slice(0, 8).map((state, idx) => (
                                         <Link
                                             key={state.slug}
                                             href={`/states/${state.slug}`}
@@ -548,6 +548,7 @@ export default async function HomePage() {
                             className="relative z-10 h-auto w-full max-w-md drop-shadow-lg dark:opacity-90 dark:brightness-90 dark:invert"
                             aria-hidden="true"
                             priority
+                            fetchPriority="high"
                         />
 
                         {/* Floating stat card */}
