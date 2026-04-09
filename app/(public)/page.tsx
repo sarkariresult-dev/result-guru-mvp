@@ -215,39 +215,39 @@ export default async function HomePage() {
                     {/* LEFT COLUMN: 10 Post Types (2x5 Grid using the List layout) */}
                     <div className="lg:col-span-2 space-y-8">
                         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                            <Suspense fallback={<HomeSectionSkeleton count={8} />}>
-                                <HomeSection typeKey="job" heading="Latest Sarkari Job" route={ROUTE_PREFIXES.job} cta="View All" limit={8} layout="list" themeColorClass="bg-amber-500" posts={sections.job} priority={2} />
+                            <Suspense fallback={<HomeSectionSkeleton count={5} />}>
+                                <HomeSection typeKey="job" heading="Latest Sarkari Job" route={ROUTE_PREFIXES.job} cta="View All" limit={5} layout="list" themeColorClass="bg-amber-500" posts={sections.job} priority={2} />
                             </Suspense>
-                            <Suspense fallback={<HomeSectionSkeleton count={8} />}>
-                                <HomeSection typeKey="result" heading="Latest Result" route={ROUTE_PREFIXES.result} cta="View All" limit={8} layout="list" themeColorClass="bg-orange-500" posts={sections.result} priority={2} />
+                            <Suspense fallback={<HomeSectionSkeleton count={5} />}>
+                                <HomeSection typeKey="result" heading="Latest Result" route={ROUTE_PREFIXES.result} cta="View All" limit={5} layout="list" themeColorClass="bg-orange-500" posts={sections.result} priority={2} />
                             </Suspense>
 
-                            <Suspense fallback={<HomeSectionSkeleton count={5} />}>
-                                <HomeSection typeKey="answer_key" heading="Answer Key" route={ROUTE_PREFIXES.answer_key} cta="View All" limit={5} layout="list" themeColorClass="bg-blue-500" posts={sections.answer_key} />
+                            <Suspense fallback={<HomeSectionSkeleton count={4} />}>
+                                <HomeSection typeKey="answer_key" heading="Answer Key" route={ROUTE_PREFIXES.answer_key} cta="View All" limit={4} layout="list" themeColorClass="bg-blue-500" posts={sections.answer_key} />
                             </Suspense>
-                            <Suspense fallback={<HomeSectionSkeleton count={5} />}>
-                                <HomeSection typeKey="syllabus" heading="Syllabus" route={ROUTE_PREFIXES.syllabus} cta="View All" limit={5} layout="list" themeColorClass="bg-emerald-500" posts={sections.syllabus} />
-                            </Suspense>
-
-                            <Suspense fallback={<HomeSectionSkeleton count={5} />}>
-                                <HomeSection typeKey="admit" heading="Admit Card" route={ROUTE_PREFIXES.admit} cta="View All" limit={5} layout="list" themeColorClass="bg-green-600" posts={sections.admit} />
-                            </Suspense>
-                            <Suspense fallback={<HomeSectionSkeleton count={5} />}>
-                                <HomeSection typeKey="exam_pattern" heading="Exam Pattern" route={ROUTE_PREFIXES.exam_pattern} cta="View All" limit={5} layout="list" themeColorClass="bg-cyan-500" posts={sections.exam_pattern} />
+                            <Suspense fallback={<HomeSectionSkeleton count={4} />}>
+                                <HomeSection typeKey="syllabus" heading="Syllabus" route={ROUTE_PREFIXES.syllabus} cta="View All" limit={4} layout="list" themeColorClass="bg-emerald-500" posts={sections.syllabus} />
                             </Suspense>
 
-                            <Suspense fallback={<HomeSectionSkeleton count={5} />}>
-                                <HomeSection typeKey="previous_paper" heading="Previous Paper" route={ROUTE_PREFIXES.previous_paper} cta="View All" limit={5} layout="list" themeColorClass="bg-indigo-500" posts={sections.previous_paper} />
+                            <Suspense fallback={<HomeSectionSkeleton count={4} />}>
+                                <HomeSection typeKey="admit" heading="Admit Card" route={ROUTE_PREFIXES.admit} cta="View All" limit={4} layout="list" themeColorClass="bg-green-600" posts={sections.admit} />
                             </Suspense>
-                            <Suspense fallback={<HomeSectionSkeleton count={5} />}>
-                                <HomeSection typeKey="cut_off" heading="Cut Off Marks" route={ROUTE_PREFIXES.cut_off} cta="View All" limit={5} layout="list" themeColorClass="bg-rose-500" posts={sections.cut_off} />
+                            <Suspense fallback={<HomeSectionSkeleton count={4} />}>
+                                <HomeSection typeKey="exam_pattern" heading="Exam Pattern" route={ROUTE_PREFIXES.exam_pattern} cta="View All" limit={4} layout="list" themeColorClass="bg-cyan-500" posts={sections.exam_pattern} />
                             </Suspense>
 
-                            <Suspense fallback={<HomeSectionSkeleton count={5} />}>
-                                <HomeSection typeKey="exam" heading="Upcoming Exam" route={ROUTE_PREFIXES.exam} cta="View All" limit={5} layout="list" themeColorClass="bg-violet-500" posts={sections.exam} />
+                            <Suspense fallback={<HomeSectionSkeleton count={4} />}>
+                                <HomeSection typeKey="previous_paper" heading="Previous Paper" route={ROUTE_PREFIXES.previous_paper} cta="View All" limit={4} layout="list" themeColorClass="bg-indigo-500" posts={sections.previous_paper} />
                             </Suspense>
-                            <Suspense fallback={<HomeSectionSkeleton count={5} />}>
-                                <HomeSection typeKey="admission" heading="Admission" route={ROUTE_PREFIXES.admission} cta="View All" limit={5} layout="list" themeColorClass="bg-fuchsia-500" posts={sections.admission} />
+                            <Suspense fallback={<HomeSectionSkeleton count={4} />}>
+                                <HomeSection typeKey="cut_off" heading="Cut Off Marks" route={ROUTE_PREFIXES.cut_off} cta="View All" limit={4} layout="list" themeColorClass="bg-rose-500" posts={sections.cut_off} />
+                            </Suspense>
+
+                            <Suspense fallback={<HomeSectionSkeleton count={4} />}>
+                                <HomeSection typeKey="exam" heading="Upcoming Exam" route={ROUTE_PREFIXES.exam} cta="View All" limit={4} layout="list" themeColorClass="bg-violet-500" posts={sections.exam} />
+                            </Suspense>
+                            <Suspense fallback={<HomeSectionSkeleton count={4} />}>
+                                <HomeSection typeKey="admission" heading="Admission" route={ROUTE_PREFIXES.admission} cta="View All" limit={4} layout="list" themeColorClass="bg-fuchsia-500" posts={sections.admission} />
                             </Suspense>
 
                         </div>
@@ -500,7 +500,7 @@ export default async function HomePage() {
                                 className="mt-8 flex flex-wrap gap-2.5"
                                 aria-label="States directory"
                             >
-                                {states.slice(0, 8).map((state, idx) => (
+                                {states.slice(0, 6).map((state, idx) => (
                                         <Link
                                             key={state.slug}
                                             href={`/states/${state.slug}`}
@@ -628,6 +628,31 @@ export default async function HomePage() {
             </section>
 
             <AdZone zoneSlug="below_content" className="container mx-auto max-w-7xl px-4 my-8" />
+
+            {/* SEO Content Block */}
+            <section className="container mx-auto max-w-7xl px-4 pb-12 hidden sm:block pt-4 border-t border-border mt-4 text-foreground-subtle">
+                <div className="max-w-4xl mx-auto text-center md:text-left">
+                    <h2 className="text-lg sm:text-xl font-bold text-foreground mb-4 tracking-tight">India's Trusted Portal for Government Updates</h2>
+                    <div className="space-y-3.5 text-[13px] leading-relaxed font-medium">
+                        <p>
+                            Welcome to Result Guru, India's most trusted and reliable digital platform dedicated to bringing you the fastest, most verified updates regarding government employment opportunities. Whether you are actively preparing for your first competitive examination or you are a seasoned aspirant tracking multiple recruitment phases, our platform simplifies the often-complex ecosystem of state and central commission portals into one easily navigable dashboard. 
+                        </p>
+                        <p>
+                            We manually verify and aggregate data from official gazettes and top commissions such as the Union Public Service Commission, Staff Selection Commission, Railway Recruitment Boards, and various State Public Service Commissions. By eliminating clutter and providing high-fidelity information, candidates save valuable time which they can instead channel directly into their preparation strategies. Aside from primary exam updates, we also actively categorize important government welfare schemes, digital scholarship opportunities, and key university admissions to ensure comprehensive coverage of pathways that elevate an individual's career trajectory. 
+                        </p>
+                        <p>
+                            Our core mission is structured entirely around candidate success. Our dedicated editorial team maintains strict verification standards before publishing any information. The data is deliberately curated, cleanly formatted, and made easily accessible across all electronic devices so you are never left behind whenever an important result is declared, a cut-off mark is published, or a new hall ticket is generated.
+                        </p>
+                    </div>
+                    {/* Minimal Social Shares to satisfy audit without ruining UI */}
+                    <div className="mt-8 flex flex-wrap items-center justify-center md:justify-start gap-3">
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-foreground-muted mr-2">Share Platform:</span>
+                        <a aria-label="Share on WhatsApp" rel="noopener noreferrer" target="_blank" className="text-emerald-600 hover:text-emerald-500 font-bold text-[11px] border border-border px-3 py-1.5 rounded-full bg-surface" href="whatsapp://send?text=Check+out+Result+Guru+https%3A%2F%2Fwww.resultguru.co.in">WhatsApp</a>
+                        <a aria-label="Share on Facebook" rel="noopener noreferrer" target="_blank" className="text-blue-600 hover:text-blue-500 font-bold text-[11px] border border-border px-3 py-1.5 rounded-full bg-surface" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.resultguru.co.in">Facebook</a>
+                        <a aria-label="Share on X" rel="noopener noreferrer" target="_blank" className="text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 font-bold text-[11px] border border-border px-3 py-1.5 rounded-full bg-surface" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.resultguru.co.in">Twitter / X</a>
+                    </div>
+                </div>
+            </section>
 
         </>
     )

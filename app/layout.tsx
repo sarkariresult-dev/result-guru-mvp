@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     metadataBase: new URL(SITE.url),
 
     title: {
-        default: `${SITE.name} - Sarkari Result 2026 | Govt Jobs & Admit Cards`,
+        default: `${SITE.name} - Sarkari Result | Govt Jobs & Admit Cards`,
         template: '%s',
     },
     description: SITE.description,

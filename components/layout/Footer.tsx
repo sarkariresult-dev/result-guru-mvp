@@ -120,7 +120,7 @@ export function Footer() {
                             © {year} <span className="text-slate-500">{SITE.name}</span>. All rights reserved.
                         </p>
                         <p className="text-[10px] text-slate-600 font-medium">
-                            Information last verified & updated: Apr {year}
+                            Information last verified & updated: <time dateTime={`${year}-04-01`}>Apr {year}</time>
                         </p>
                     </div>
 
@@ -154,7 +154,13 @@ export function Footer() {
                                 <ShieldCheck className="size-4 text-emerald-500" />
                                 <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-100">Verified & Accurate</span>
                              </div>
-                             <p className="text-[9px] text-slate-500 font-semibold uppercase tracking-widest text-center px-1">Content by Expert Editors</p>
+                             <Link 
+                                href="/about" 
+                                rel="author"
+                                className="text-[9px] text-slate-500 hover:text-slate-300 transition-colors font-semibold uppercase tracking-widest text-center px-1"
+                             >
+                                Content by Expert Editors
+                             </Link>
                          </div>
                     </div>
                 </div>

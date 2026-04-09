@@ -7,7 +7,9 @@ import { SITE } from '@/config/site'
  * Strategy:
  * - Allow all public content for maximum indexing
  * - Block internal/auth/dashboard pages (no SEO value)
- * - Block AI scraper bots to protect content
+ * - Allow all public content for maximum indexing
+ * - Block internal/auth/dashboard pages (no SEO value)
+ * - Support AI content discovery for reasoning models
  * - Point all crawlers to sitemap.xml
  *
  * @see https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots
@@ -16,7 +18,6 @@ import { SITE } from '@/config/site'
 /** Common paths that should never be indexed */
 const DISALLOWED_PATHS = [
     '/api/',
-    '/_next/',
     '/admin/',
     '/author/',
     '/user/',
