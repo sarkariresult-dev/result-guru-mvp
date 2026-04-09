@@ -7,7 +7,7 @@ import { getPosts, getPostsCount } from '@/features/posts/queries'
 import { getCategories } from '@/lib/queries/taxonomy'
 import { PostGrid } from '@/features/posts/components/PostGrid'
 import { PAGINATION } from '@/config/constants'
-import { ChevronRight, ChevronLeft, Folder } from 'lucide-react'
+import { ChevronRight, ChevronLeft, Folder, AlertCircle, ArrowRight } from 'lucide-react'
 
 interface Props {
     params: Promise<{ slug: string }>
@@ -117,103 +117,121 @@ export default async function CategoryArchivePage({ params, searchParams }: Prop
 
     return (
         <div className="flex min-h-screen flex-col bg-background">
-            {/* Header section */}
-            <header className="border-b border-border bg-linear-to-br from-brand-50 to-white pt-24 pb-12 dark:from-brand-950/20 dark:to-background">
-                <div className="container mx-auto max-w-5xl px-4 text-center">
-                    <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-2xl bg-brand-100 dark:bg-brand-900/40">
-                        <Folder className="size-6 text-brand-600 dark:text-brand-400" />
+            {/* 1. Immersive Brand Hero */}
+            <header className="relative bg-slate-50 border-b border-border/50 pt-12 pb-16 sm:pt-20 sm:pb-32 dark:bg-slate-950/20 overflow-hidden">
+                {/* Background Decorative Element */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+                    <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-brand-500/5 blur-[120px]" />
+                    <div className="absolute top-[20%] -right-[5%] w-[30%] h-[30%] rounded-full bg-accent-500/5 blur-[100px]" />
+                </div>
+
+                <div className="container relative mx-auto max-w-7xl px-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <div className="mx-auto max-w-4xl text-center">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-100 dark:bg-brand-900/30 dark:border-brand-800/50 mb-6 group transition-colors">
+                            <div className="size-2 rounded-full bg-brand-500 group-hover:scale-110 transition-transform" />
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-brand-700 dark:text-brand-400">Section Archive</span>
+                        </div>
+
+                        <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-fluid-4xl lg:text-7xl mb-6 leading-[1.1]">
+                            <span className="text-gradient-brand">{category.name}</span> <br className="hidden lg:block" />
+                            Latest Updates
+                        </h1>
+                        <p className="mx-auto max-w-2xl text-lg sm:text-xl text-foreground-muted leading-relaxed font-medium">
+                            Explore all verified government notifications, results, and admit cards organized under India&apos;s most trusted {category.name} database.
+                        </p>
                     </div>
-                    <h1 className="text-balance text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-                        {category.name} Updates
-                    </h1>
-                    <p className="mx-auto mt-4 max-w-2xl text-lg text-foreground-muted">
-                        Browse all the latest notifications and updates dynamically tagged under {category.name}.
-                    </p>
                 </div>
             </header>
 
-            {/* Main content */}
-            <main className="container mx-auto flex-1 max-w-5xl px-4 py-8" id="main-content">
+            {/* 2. Main content Archive */}
+            <main className="container mx-auto flex-1 max-w-7xl px-4 py-12 sm:py-20" id="main-content">
                 {fetchError ? (
-                    <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-6 text-center text-destructive">
-                        <p>We&apos;re having trouble loading posts right now. Please try again later.</p>
+                    <div className="rounded-4xl border border-destructive/20 bg-destructive/5 p-8 text-center text-destructive sm:p-12">
+                        <AlertCircle className="size-12 mx-auto mb-4 opacity-50" />
+                        <h2 className="text-xl font-black mb-2">Sync Interrupted</h2>
+                        <p className="font-medium">We&apos;re having trouble loading {category.name} updates right now. Please try again later.</p>
                     </div>
                 ) : posts.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-24 text-center">
-                        <div className="flex size-12 items-center justify-center rounded-full bg-surface">
-                            <Folder className="size-6 text-foreground-muted" />
+                    <div className="flex flex-col items-center justify-center rounded-[2.5rem] border border-border bg-slate-50/50 py-24 px-8 text-center dark:bg-slate-900/10">
+                        <div className="flex size-20 items-center justify-center rounded-4xl bg-white border border-border shadow-sm mb-8 dark:bg-slate-900">
+                            <Folder className="size-8 text-brand-500 opacity-50" />
                         </div>
-                        <h2 className="mt-4 text-lg font-semibold text-foreground">No posts found</h2>
-                        <p className="mt-2 max-w-sm text-sm text-foreground-muted">
-                            We haven&apos;t published any {category.name} updates yet. Check back soon!
+                        <h2 className="text-2xl font-black text-foreground mb-3">No Updates Found</h2>
+                        <p className="max-w-md text-foreground-muted font-medium leading-relaxed mb-10">
+                            We haven&apos;t published any verified {category.name} updates in this specific archive yet. They will appear here instantly once declared official.
                         </p>
                         <Link
                             href="/"
-                            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-700"
+                            className="inline-flex items-center gap-3 rounded-2xl bg-brand-600 px-8 py-4 text-base font-black text-white transition-all shadow-xl shadow-brand-500/20 hover:bg-brand-700 active:scale-95"
                         >
-                            Back to Home
+                            Explore Site Map
+                            <ArrowRight className="size-5" />
                         </Link>
                     </div>
                 ) : (
                     <PostGrid posts={posts} />
                 )}
 
-                {/* Pagination */}
+                {/* 3. Professional Pagination Navigation */}
                 {totalPages > 1 && (
-                    <nav className="mt-12 flex items-center justify-center gap-1 sm:gap-2" aria-label="Pagination Navigation">
-                        {page > 1 ? (
-                            <Link
-                                href={page === 2 ? basePath : `${basePath}?page=${page - 1}`}
-                                className="flex items-center gap-1 rounded-lg border border-border bg-surface px-3 py-2 text-sm font-medium text-foreground transition hover:bg-surface-hover"
-                                rel="prev"
-                            >
-                                <ChevronLeft className="size-4" />
-                                <span className="hidden sm:inline">Previous</span>
-                            </Link>
-                        ) : (
-                            <div className="flex items-center gap-1 rounded-lg border border-border/50 bg-background px-3 py-2 text-sm font-medium text-foreground-muted opacity-50">
-                                <ChevronLeft className="size-4" />
-                                <span className="hidden sm:inline">Previous</span>
-                            </div>
-                        )}
+                    <nav className="mt-20 flex flex-col items-center gap-8" aria-label="Archive Pagination">
+                        <div className="flex items-center gap-2">
+                            {page > 1 ? (
+                                <Link
+                                    href={page === 2 ? basePath : `${basePath}?page=${page - 1}`}
+                                    className="group flex size-12 items-center justify-center rounded-2xl border border-border bg-white text-foreground transition-all hover:border-brand-500/50 hover:text-brand-600 hover:shadow-lg dark:bg-slate-900"
+                                    rel="prev"
+                                    aria-label="Previous Page"
+                                >
+                                    <ChevronLeft className="size-5 transition-transform group-hover:-translate-x-0.5" />
+                                </Link>
+                            ) : (
+                                <div className="flex size-12 items-center justify-center rounded-2xl border border-border/50 bg-slate-50 text-foreground-muted opacity-30 dark:bg-slate-900/50" aria-disabled="true">
+                                    <ChevronLeft className="size-5" />
+                                </div>
+                            )}
 
-                        <div className="flex items-center gap-1 px-2">
-                            {getPageNumbers(page, totalPages).map((p, i) =>
-                                p === '...' ? (
-                                    <span key={`dots-${i}`} className="px-2 text-foreground-muted">
-                                        ...
-                                    </span>
-                                ) : (
-                                    <Link
-                                        key={p}
-                                        href={p === 1 ? basePath : `${basePath}?page=${p}`}
-                                        className={`flex size-9 items-center justify-center rounded-lg text-sm font-medium transition ${p === page
-                                            ? 'bg-brand-600 text-white'
-                                            : 'text-foreground hover:bg-surface-hover'
-                                            }`}
-                                        aria-current={p === page ? 'page' : undefined}
-                                    >
-                                        {p}
-                                    </Link>
-                                ),
+                            <div className="flex items-center gap-1.5 px-2">
+                                {getPageNumbers(page, totalPages).map((p, i) =>
+                                    p === '...' ? (
+                                        <span key={`dots-${i}`} className="px-3 text-foreground-muted font-bold">
+                                            ...
+                                        </span>
+                                    ) : (
+                                        <Link
+                                            key={p}
+                                            href={p === 1 ? basePath : `${basePath}?page=${p}`}
+                                            className={`flex size-12 items-center justify-center rounded-2xl text-sm font-black transition-all ${p === page
+                                                ? 'bg-brand-600 text-white shadow-lg shadow-brand-500/25 scale-105'
+                                                : 'text-foreground-muted hover:bg-slate-100 hover:text-foreground dark:hover:bg-slate-800'
+                                                }`}
+                                            aria-current={p === page ? 'page' : undefined}
+                                        >
+                                            {p}
+                                        </Link>
+                                    ),
+                                )}
+                            </div>
+
+                            {page < totalPages ? (
+                                <Link
+                                    href={`${basePath}?page=${page + 1}`}
+                                    className="group flex size-12 items-center justify-center rounded-2xl border border-border bg-white text-foreground transition-all hover:border-brand-500/50 hover:text-brand-600 hover:shadow-lg dark:bg-slate-900"
+                                    rel="next"
+                                    aria-label="Next Page"
+                                >
+                                    <ChevronRight className="size-5 transition-transform group-hover:translate-x-0.5" />
+                                </Link>
+                            ) : (
+                                <div className="flex size-12 items-center justify-center rounded-2xl border border-border/50 bg-slate-50 text-foreground-muted opacity-30 dark:bg-slate-900/50" aria-disabled="true">
+                                    <ChevronRight className="size-5" />
+                                </div>
                             )}
                         </div>
-
-                        {page < totalPages ? (
-                            <Link
-                                href={`${basePath}?page=${page + 1}`}
-                                className="flex items-center gap-1 rounded-lg border border-border bg-surface px-3 py-2 text-sm font-medium text-foreground transition hover:bg-surface-hover"
-                                rel="next"
-                            >
-                                <span className="hidden sm:inline">Next</span>
-                                <ChevronRight className="size-4" />
-                            </Link>
-                        ) : (
-                            <div className="flex items-center gap-1 rounded-lg border border-border/50 bg-background px-3 py-2 text-sm font-medium text-foreground-muted opacity-50">
-                                <span className="hidden sm:inline">Next</span>
-                                <ChevronRight className="size-4" />
-                            </div>
-                        )}
+                        
+                        <p className="text-xs font-bold uppercase tracking-widest text-foreground-muted/60">
+                            Showing Page {page} of {totalPages}
+                        </p>
                     </nav>
                 )}
             </main>

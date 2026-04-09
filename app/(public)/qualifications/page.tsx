@@ -1,11 +1,11 @@
 import Link from 'next/link'
 import { getQualifications } from '@/lib/queries/taxonomy'
 import { buildPageMetadata } from '@/lib/metadata'
-import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { SITE } from '@/config/site'
-import { GraduationCap, Search, ServerCrash, BookOpen, Briefcase, FileSignature, ArrowRight } from 'lucide-react'
+import { QualsGrid } from '@/components/qualifications/QualsGrid'
+import { Building2, Search, MapPin, ArrowRight, GraduationCap } from 'lucide-react'
 
 export const metadata = buildPageMetadata({
     title: 'Qualification-wise Government Jobs & Results',
@@ -44,98 +44,119 @@ export default async function QualificationsDirectoryPage() {
     } : null
 
     return (
-        <>
+        <div className="flex flex-col min-h-screen">
             <JsonLd data={itemListJsonLd ? [breadcrumbJsonLd, itemListJsonLd] : breadcrumbJsonLd} />
 
-            <div className="container mx-auto max-w-7xl px-4 py-8">
-                <Breadcrumb items={[{ label: 'Qualifications' }]} />
-
-                {/* Header */}
-                <div className="mb-10 mt-4 max-w-3xl">
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl flex items-center gap-3">
-                        <GraduationCap className="size-8 text-brand-600" />
-                        Explore by Qualification
-                    </h1>
-                    <p className="mt-4 text-lg text-foreground-muted leading-relaxed">
-                        Looking for a specific opportunity based on your education? We organize the latest Government Jobs, 
-                        Scholarships, and Exam Results by qualification to help you find the right match faster.
-                    </p>
-                </div>
-
-                {/* Count badge */}
-                {quals.length > 0 && (
-                    <div className="mb-6 flex items-center gap-3">
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-50 dark:bg-brand-900/30 px-3 py-1 text-sm font-medium text-brand-700 dark:text-brand-300">
-                            <GraduationCap className="size-3.5" />
-                            {quals.length} Qualifications
-                        </span>
-                    </div>
-                )}
-
-                {/* Grid */}
+            {/* Main Content Area - Delegated to QualsGrid Client Component */}
+            <div className="">
                 {quals.length > 0 ? (
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {quals.map((qual) => (
-                            <div
-                                key={qual.slug}
-                                className="group flex flex-col justify-between overflow-hidden rounded-xl border border-border bg-surface transition-all hover:border-brand-300 hover:shadow-md dark:hover:border-brand-700"
-                            >
-                                <div className="p-6">
-                                    <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-400">
-                                        <BookOpen className="size-6" />
-                                    </div>
-                                    <h2 className="text-xl font-bold text-foreground">
-                                        {qual.name}
-                                    </h2>
-                                    {qual.short_name && qual.short_name !== qual.name && (
-                                        <p className="mt-1 text-sm font-medium text-foreground-subtle">
-                                            {qual.short_name}
-                                        </p>
-                                    )}
-
-                                    {/* Programmatic SEO Quick Links inside the card */}
-                                    <div className="mt-6 flex flex-col gap-2">
-                                        <Link 
-                                            href={`/job/for/${qual.slug}`}
-                                            className="inline-flex items-center justify-between rounded-lg bg-background-muted px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-background-subtle hover:text-brand-600 group/link"
-                                        >
-                                            <span className="flex items-center gap-2"><Briefcase className="size-4" /> Latest Jobs</span>
-                                            <ArrowRight className="size-4 opacity-50 group-hover/link:translate-x-1 group-hover/link:opacity-100 transition-all" />
-                                        </Link>
-                                        <Link 
-                                            href={`/result/for/${qual.slug}`}
-                                            className="inline-flex items-center justify-between rounded-lg bg-background-muted px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-background-subtle hover:text-brand-600 group/link"
-                                        >
-                                            <span className="flex items-center gap-2"><FileSignature className="size-4" /> Results &amp; Updates</span>
-                                            <ArrowRight className="size-4 opacity-50 group-hover/link:translate-x-1 group-hover/link:opacity-100 transition-all" />
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                    <QualsGrid qualifications={quals} />
                 ) : fetchError ? (
-                    <div className="flex min-h-100 flex-col items-center justify-center rounded-2xl border border-dashed border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20 p-8 text-center">
-                        <div className="mb-5 flex size-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-                            <ServerCrash className="size-8 text-red-600" />
+                    <div className="container mx-auto max-w-7xl px-4 py-20">
+                        <div className="flex min-h-100 flex-col items-center justify-center rounded-3xl border border-dashed border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20 p-12 text-center">
+                            <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30 shadow-xl shadow-red-500/10">
+                                <Search className="size-10 text-red-600" />
+                            </div>
+                            <h3 className="mb-2 text-2xl font-black text-foreground">Service Interruption</h3>
+                            <p className="max-w-sm text-base text-foreground-muted">
+                                We are temporarily unable to load the qualification directory. Please check back in a few minutes.
+                            </p>
+                            <button 
+                                onClick={() => window.location.reload()}
+                                className="mt-8 px-6 py-3 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 transition-colors shadow-lg shadow-red-600/20"
+                            >
+                                Retry Connection
+                            </button>
                         </div>
-                        <h3 className="mb-2 text-lg font-semibold text-foreground">Connection Error</h3>
-                        <p className="max-w-sm text-sm text-foreground-muted">
-                            Could not load qualifications. Please try again in a moment.
-                        </p>
                     </div>
                 ) : (
-                    <div className="flex min-h-100 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface p-8 text-center">
-                        <div className="mb-5 flex size-16 items-center justify-center rounded-full bg-background-subtle">
-                            <Search className="size-8 text-foreground-muted" />
+                    <div className="container mx-auto max-w-7xl px-4 py-20">
+                        <div className="flex min-h-100 flex-col items-center justify-center rounded-3xl border border-dashed border-border bg-slate-50/50 p-12 text-center">
+                            <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-white dark:bg-slate-900 shadow-xl">
+                                <Search className="size-10 text-foreground-subtle" />
+                            </div>
+                            <h3 className="mb-2 text-2xl font-black text-foreground">No records found</h3>
+                            <p className="max-w-sm text-base text-foreground-muted">
+                                Our database of career qualifications is currently being updated.
+                            </p>
                         </div>
-                        <h3 className="mb-2 text-lg font-semibold text-foreground">No qualifications found</h3>
-                        <p className="max-w-sm text-sm text-foreground-muted">
-                            Check back soon for updates!
-                        </p>
                     </div>
                 )}
             </div>
-        </>
+
+            {/* Institutional Mission & Authority Section */}
+            <div className="bg-slate-50 dark:bg-slate-900/40 border-t border-border py-24">
+                <div className="container mx-auto max-w-7xl px-4">
+                    <div className="flex flex-col lg:flex-row gap-16 items-center">
+                        <div className="lg:w-1/2 space-y-8">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-500/10 text-accent-600 dark:text-accent-400 text-[10px] font-black uppercase tracking-[0.2em] border border-accent-500/20">
+                                Official Verification Mission
+                            </div>
+                            <h2 className="text-3xl font-black tracking-tight text-foreground sm:text-5xl leading-tight">
+                                Our Institutional <br />
+                                <span className="text-gradient-brand">Verification Protocol</span>
+                            </h2>
+                            <p className="text-lg text-foreground-muted leading-relaxed">
+                                We map educational criteria to specific notifications from 200+ government organizations. Every job link, result update, and exam notice is cross-referenced with educational gazettes to ensure you never miss an opportunity because of eligibility confusion.
+                            </p>
+                            <div className="flex flex-wrap gap-4">
+                                <Link 
+                                    href="/verify"
+                                    className="px-8 py-4 rounded-2xl bg-slate-950 dark:bg-white dark:text-slate-950 text-white font-black text-sm hover:scale-105 transition-transform"
+                                >
+                                    Verification Policy
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className="grid sm:grid-cols-2 gap-4 lg:w-1/2">
+                            {[
+                                {
+                                    icon: GraduationCap,
+                                    title: 'Academic Mapping',
+                                    desc: 'Precise matching of eligibility criteria from official board notifications.',
+                                    color: 'text-brand-500',
+                                    bg: 'bg-brand-500/10'
+                                },
+                                {
+                                    icon: Search,
+                                    title: 'Niche Sourcing',
+                                    desc: 'Tracking specialized diplomas, vocations, and trade certificates across India.',
+                                    color: 'text-accent-500',
+                                    bg: 'bg-accent-500/10'
+                                },
+                                {
+                                    icon: MapPin,
+                                    title: 'State Standards',
+                                    desc: 'Alignment with diverse state-specific educational boards and equivalencies.',
+                                    color: 'text-blue-500',
+                                    bg: 'bg-blue-500/10'
+                                },
+                                {
+                                    icon: ArrowRight,
+                                    title: 'Instant Sifting',
+                                    desc: 'Real-time filtering technology to help you find your exact career match.',
+                                    color: 'text-purple-500',
+                                    bg: 'bg-purple-500/10'
+                                }
+                            ].map((feature, i) => (
+                                <div 
+                                    key={i} 
+                                    className="p-6 rounded-3xl bg-white dark:bg-slate-950 border border-border shadow-sm hover:border-brand-500/50 transition-all hover:shadow-xl hover:shadow-brand-500/5 group"
+                                >
+                                    <div className={`size-12 rounded-2xl ${feature.bg} ${feature.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm`}>
+                                        <feature.icon className="size-6" />
+                                    </div>
+                                    <h3 className="text-lg font-black text-foreground mb-3">{feature.title}</h3>
+                                    <p className="text-sm text-foreground-muted leading-relaxed font-medium">
+                                        {feature.desc}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     )
 }

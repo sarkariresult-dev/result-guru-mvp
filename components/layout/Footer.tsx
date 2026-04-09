@@ -150,9 +150,9 @@ export function Footer() {
                     {/* Trust Signals / Certification */}
                     <div className="hidden md:flex items-center gap-4 border-l border-white/10 pl-6">
                          <div className="flex flex-col gap-1.5">
-                             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
-                                <ShieldCheck className="size-4 text-emerald-500" />
-                                <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-100">Verified & Accurate</span>
+                             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-accent-500/20 shadow-[0_0_15px_rgba(245,158,11,0.1)]">
+                                <ShieldCheck className="size-4 text-accent-500" />
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-accent-100">Verified & Accurate</span>
                              </div>
                              <Link 
                                 href="/about" 

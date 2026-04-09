@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Sparkles, Play, Search } from 'lucide-react'
+import { Sparkles, Play, Search, ShieldCheck, Zap, PlayCircle } from 'lucide-react'
 import { getPublicStories } from '@/lib/queries/stories'
 import { buildPageMetadata } from '@/lib/metadata'
 import { AdZone } from '@/components/ads/AdZone'
+import { InstitutionalCTA } from '@/components/sections/InstitutionalCTA'
 
 export const metadata = buildPageMetadata({
     title: 'Visual Web Stories - Sarkari Jobs & Results',
@@ -19,34 +20,46 @@ export default async function StoriesArchivePage() {
     const { data: stories, count } = await getPublicStories(ITEMS_PER_PAGE, 1)
 
     return (
-        <div className="flex flex-col gap-8 pb-16">
-            {/* Header Section */}
-            <section className="bg-brand-50/50 py-12 border-b border-border dark:bg-brand-950/20">
-                <div className="container mx-auto max-w-7xl px-4 text-center">
-                    <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-brand-100/50 border border-brand-200 shadow-sm dark:bg-brand-900/40 dark:border-brand-700/50 mb-5">
-                        <Sparkles className="size-6 text-brand-600 dark:text-brand-400" />
-                    </div>
-                    <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl text-balance">
-                        Visual <span className="text-brand-600 dark:text-brand-400">Web Stories</span>
-                    </h1>
-                    <p className="mx-auto mt-4 max-w-2xl text-base text-foreground-muted sm:text-lg text-balance">
-                        Quick, engaging, and mobile-first updates on the latest government jobs, results, and exam guides.
-                    </p>
-                    
-                    <div className="mt-8 flex justify-center gap-2">
-                         <span className="rounded-full bg-brand-100 text-brand-700 px-3 py-1 text-xs font-bold uppercase tracking-wider dark:bg-brand-900/50 dark:text-brand-300">
-                             {count} Stories Available
-                         </span>
+        <div className="flex flex-col pb-16">
+            {/* Immersive Hub Header */}
+            <div className="relative overflow-hidden bg-slate-50/50 dark:bg-slate-950/20 border-b border-border">
+                {/* Background Decoration */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] pointer-events-none overflow-hidden">
+                    <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-brand-500/5 blur-[120px]" />
+                    <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-brand-400/5 blur-[100px]" />
+                </div>
+
+                <div className="container mx-auto max-w-7xl px-4 py-12 sm:py-20 relative">
+                    <div className="flex flex-col items-center text-center">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-600 dark:text-brand-400 text-xs font-bold uppercase tracking-widest mb-6">
+                            <Sparkles className="size-3.5" />
+                            Visual Awareness Hub
+                        </div>
+
+                        <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-6xl max-w-4xl mb-6">
+                            Visual <span className="bg-linear-to-r from-brand-600 to-brand-400 bg-clip-text text-transparent">Web Stories</span>
+                        </h1>
+
+                        <p className="max-w-2xl text-lg sm:text-xl text-foreground-muted leading-relaxed mb-10 text-balance">
+                            Quick, engaging, and mobile-first updates on the latest government jobs, results, and exam guides.
+                        </p>
+
+                        <div className="flex items-center gap-4">
+                             <div className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-white dark:bg-slate-950 border border-border shadow-sm text-sm font-bold text-foreground">
+                                 <PlayCircle className="size-4 text-brand-600" />
+                                 {count} Verified Stories
+                             </div>
+                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <AdZone zoneSlug="below_header" className="container mx-auto max-w-7xl px-4" />
+            <AdZone zoneSlug="below_header" className="container mx-auto max-w-7xl px-4 my-8" />
 
             {/* Stories Grid */}
-            <section className="container mx-auto max-w-7xl px-4">
+            <section className="container mx-auto max-w-7xl px-4 mt-8">
                 {stories.length === 0 ? (
-                    <div className="rounded-3xl border border-dashed border-border py-24 text-center bg-surface">
+                    <div className="rounded-4xl border border-dashed border-border py-24 text-center bg-surface">
                         <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-background-muted mb-4">
                             <Search className="size-8 text-foreground-subtle" />
                         </div>
@@ -56,54 +69,57 @@ export default async function StoriesArchivePage() {
                         </p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 lg:gap-6">
+                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 lg:gap-6">
                         {stories.map((story) => (
                             <Link
                                 key={story.id}
                                 href={`/stories/${story.slug}`}
-                                className="group relative flex flex-col aspect-9/16 rounded-2xl overflow-hidden bg-surface shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 border border-border"
+                                className="group relative flex flex-col aspect-9/16 rounded-2xl overflow-hidden bg-surface shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-border"
                             >
                                 <Image
                                     src={story.cover_image}
                                     alt={story.title}
                                     fill
-                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                    className="object-cover transition-transform duration-1000 group-hover:scale-110"
                                     sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 16vw"
                                 />
                                 
-                                <div className="absolute inset-0 bg-linear-to-t from-black/95 via-black/40 to-transparent pointer-events-none transition-opacity duration-300 group-hover:opacity-90" />
+                                <div className="absolute inset-0 bg-linear-to-t from-black/95 via-black/30 to-transparent pointer-events-none transition-opacity duration-300 group-hover:opacity-90" />
                                 
-                                <div className="absolute top-2 right-2 size-7 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/20 z-10 transition-transform duration-300 group-hover:scale-110">
-                                    <Play className="size-3.5 text-white fill-white translate-x-px" />
+                                <div className="absolute top-3 right-3 size-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/20 z-10 transition-all duration-300 group-hover:scale-110 group-hover:bg-brand-600 group-hover:border-brand-500 shadow-xl">
+                                    <Play className="size-3.5 text-white fill-current translate-x-px" />
                                 </div>
 
-                                <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4 z-10 flex flex-col justify-end">
-                                    <h3 className="text-white text-sm sm:text-base font-bold leading-tight line-clamp-3 text-balance drop-shadow-lg group-hover:text-brand-100 transition-colors">
+                                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 z-10 flex flex-col justify-end">
+                                    <h3 className="text-white text-sm sm:text-[15px] font-bold leading-tight line-clamp-3 text-balance group-hover:text-brand-100 transition-colors drop-shadow-md">
                                         {story.title}
                                     </h3>
                                     
                                     {(story as any).author && (
-                                        <div className="mt-3 flex items-center gap-2 opacity-90">
+                                        <div className="mt-4 flex items-center gap-2.5 opacity-90 border-t border-white/10 pt-4">
                                             {(story as any).author.avatar_url ? (
                                                 <Image
                                                     src={(story as any).author.avatar_url}
                                                     alt={(story as any).author.name || 'Author'}
-                                                    width={20}
-                                                    height={20}
-                                                    className="rounded-full ring-2 ring-white/30"
+                                                    width={24}
+                                                    height={24}
+                                                    className="rounded-full ring-2 ring-white/20"
                                                 />
                                             ) : (
-                                                <div className="flex size-5 items-center justify-center rounded-full bg-brand-500 text-[9px] font-bold text-white ring-2 ring-white/30">
-                                                    {((story as any).author.name || 'A').substring(0, 1).toUpperCase()}
+                                                <div className="flex size-6 items-center justify-center rounded-full bg-brand-500 text-[10px] font-black text-white ring-2 ring-white/20 uppercase">
+                                                    {((story as any).author.name || 'A').substring(0, 1)}
                                                 </div>
                                             )}
-                                            <div className="flex flex-col">
-                                                <span className="text-[10px] text-white font-medium truncate w-24">
+                                            <div className="flex flex-col min-w-0">
+                                                <span className="text-[10px] text-white font-black truncate tracking-tight">
                                                     {(story as any).author.name || 'Admin'}
                                                 </span>
-                                                <span className="text-[8px] text-white/60 uppercase tracking-widest font-black">
-                                                    {new Date(story.published_at || story.created_at).toLocaleDateString('en-IN', { month: 'short', day: 'numeric'})}
-                                                </span>
+                                                <div className="flex items-center gap-1">
+                                                    <Zap className="size-2 text-brand-400 fill-current" />
+                                                    <span className="text-[9px] text-white/60 uppercase tracking-widest font-black">
+                                                        {new Date(story.published_at || story.created_at).toLocaleDateString('en-IN', { month: 'short', day: 'numeric'})}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     )}
@@ -113,6 +129,16 @@ export default async function StoriesArchivePage() {
                     </div>
                 )}
             </section>
+
+            {/* Standardized Institutional CTA */}
+            <div className="mt-20">
+                <InstitutionalCTA 
+                    title="Get Visual Updates on your favorite platforms"
+                    description="Never miss a verified result or job alert again. Join our visual awareness hub and get real-time stories delivered directly to your device."
+                    primaryCTA={{ label: "Join Telegram Hub", href: "https://t.me/resultguru247" }}
+                    secondaryCTA={{ text: "Prefer WhatsApp?", actionLabel: "Join Channel", href: "https://whatsapp.com/channel/0029Vb7XUqn1SWt7c9kqCV3I" }}
+                />
+            </div>
         </div>
     )
 }

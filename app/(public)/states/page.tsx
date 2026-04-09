@@ -5,7 +5,8 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { SITE } from '@/config/site'
-import { MapPin, Search, ServerCrash, ArrowRight } from 'lucide-react'
+import { MapPin, Search, ServerCrash, ArrowRight, ShieldCheck, Zap, Globe, FileCheck } from 'lucide-react'
+import { StatesGrid } from '@/components/states/StatesGrid'
 
 export const metadata = buildPageMetadata({
     title: 'State-wise Government Jobs & Results',
@@ -35,7 +36,7 @@ export default async function StatesDirectoryPage() {
         '@type': 'ItemList',
         name: 'Indian States & Union Territories',
         numberOfItems: states.length,
-        itemListElement: states.map((state, i) => ({
+        itemListElement: states.filter(state => state.name).map((state, i) => ({
             '@type': 'ListItem',
             position: i + 1,
             url: `${SITE.url}/states/${state.slug}`,
@@ -47,79 +48,126 @@ export default async function StatesDirectoryPage() {
         <>
             <JsonLd data={itemListJsonLd ? [breadcrumbJsonLd, itemListJsonLd] : breadcrumbJsonLd} />
 
-            <div className="container mx-auto max-w-7xl px-4 py-8">
-                <Breadcrumb items={[{ label: 'States' }]} />
-
-                {/* Header */}
-                <div className="mb-10 mt-4 max-w-3xl">
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                        State-wise Government Jobs &amp; Results
-                    </h1>
-                    <p className="mt-3 text-lg text-foreground-muted leading-relaxed">
-                        Browse government job notifications, exam results, admit cards, and updates specific to your state.
-                        Select a state below to find relevant opportunities.
-                    </p>
+            <div className="relative overflow-hidden bg-slate-50/50 dark:bg-slate-950/20">
+                {/* Background Decoration */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] pointer-events-none overflow-hidden">
+                    <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-brand-500/5 blur-[120px]" />
+                    <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-brand-400/5 blur-[100px]" />
                 </div>
 
-                {/* Count badge */}
-                {states.length > 0 && (
-                    <div className="mb-6 flex items-center gap-3">
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-50 dark:bg-brand-900/30 px-3 py-1 text-sm font-medium text-brand-700 dark:text-brand-300">
+                <div className="container mx-auto max-w-7xl px-4 py-12 sm:py-16 relative">
+                    <div className="flex flex-col items-center text-center">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-600 dark:text-brand-400 text-xs font-bold uppercase tracking-widest mb-6">
                             <MapPin className="size-3.5" />
-                            {states.length} States &amp; UTs
-                        </span>
-                    </div>
-                )}
+                            Official Directories
+                        </div>
 
-                {/* Grid */}
-                {states.length > 0 ? (
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                        {states.map((state) => (
-                            <Link
-                                key={state.slug}
-                                href={`/states/${state.slug}`}
-                                className="group flex items-center justify-between rounded-xl border border-border bg-surface p-5 transition-all hover:border-brand-300 hover:shadow-md dark:hover:border-brand-700 hover:-translate-y-0.5"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 transition-colors group-hover:bg-brand-100 dark:group-hover:bg-brand-900/60">
-                                        <MapPin className="size-5" />
+                        <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-6xl max-w-4xl mb-6">
+                            Browse Government Jobs <br />
+                            <span className="bg-linear-to-r from-brand-600 to-brand-400 bg-clip-text text-transparent">State-wise across India</span>
+                        </h1>
+
+                        <p className="max-w-2xl text-lg sm:text-xl text-foreground-muted leading-relaxed mb-12">
+                            Access real-time exam results, admit cards, and job notifications from all 28 states and 8 union territories on a single platform.
+                        </p>
+                    </div>
+
+                    {/* Integrated Client-side Grid with Search */}
+                    <StatesGrid states={states} />
+                </div>
+            </div>
+
+            {/* Mission & Verification Authority Section */}
+            <div className="bg-slate-50 dark:bg-slate-900/40 border-t border-border py-20">
+                <div className="container mx-auto max-w-7xl px-4">
+                    <div className="grid lg:grid-cols-2 gap-16 items-start">
+                        {/* Right: Feature Cards */}
+                        <div className="order-2 lg:order-1 grid sm:grid-cols-2 gap-4">
+                            {[
+                                {
+                                    icon: ShieldCheck,
+                                    title: 'Institutional Accuracy',
+                                    desc: 'Direct cross-referencing with official state PDF notifications for 100% verified data.',
+                                    color: 'text-emerald-500',
+                                    bg: 'bg-emerald-500/10'
+                                },
+                                {
+                                    icon: Zap,
+                                    title: 'Real-time Feeds',
+                                    desc: 'Near-zero latency between official portal announcements and platform updates.',
+                                    color: 'text-amber-500',
+                                    bg: 'bg-amber-500/10'
+                                },
+                                {
+                                    icon: Globe,
+                                    title: 'Pan-India Coverage',
+                                    desc: 'Comprehensive directory covering all 28 states and 8 union territories without exception.',
+                                    color: 'text-blue-500',
+                                    bg: 'bg-blue-500/10'
+                                },
+                                {
+                                    icon: FileCheck,
+                                    title: 'Expert Curation',
+                                    desc: 'Data verified by a dedicated editorial team specialized in Indian recruitment cycles.',
+                                    color: 'text-brand-500',
+                                    bg: 'bg-brand-500/10'
+                                }
+                            ].map((feature, i) => (
+                                <div 
+                                    key={i} 
+                                    className="p-6 rounded-2xl bg-white dark:bg-slate-950 border border-border shadow-sm hover:shadow-md transition-shadow"
+                                >
+                                    <div className={`size-10 rounded-xl ${feature.bg} ${feature.color} flex items-center justify-center mb-4`}>
+                                        <feature.icon className="size-5" />
                                     </div>
-                                    <div className="min-w-0 flex-1">
-                                        <h2 className="font-semibold text-foreground group-hover:text-brand-600 transition-colors">
-                                            {state.name}
-                                        </h2>
-                                        {state.abbr && (
-                                            <p className="mt-0.5 text-xs font-medium text-foreground-subtle">
-                                                {state.abbr}
-                                            </p>
-                                        )}
-                                    </div>
+                                    <h3 className="text-lg font-bold text-foreground mb-2">{feature.title}</h3>
+                                    <p className="text-sm text-foreground-muted leading-relaxed">
+                                        {feature.desc}
+                                    </p>
                                 </div>
-                                <ArrowRight className="size-4 text-foreground-subtle opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </Link>
-                        ))}
-                    </div>
-                ) : fetchError ? (
-                    <div className="flex min-h-100 flex-col items-center justify-center rounded-2xl border border-dashed border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20 p-8 text-center">
-                        <div className="mb-5 flex size-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-                            <ServerCrash className="size-8 text-red-600" />
+                            ))}
                         </div>
-                        <h3 className="mb-2 text-lg font-semibold text-foreground">Connection Error</h3>
-                        <p className="max-w-sm text-sm text-foreground-muted">
-                            Could not load states directory. Please try again in a moment.
-                        </p>
-                    </div>
-                ) : (
-                    <div className="flex min-h-100 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface p-8 text-center">
-                        <div className="mb-5 flex size-16 items-center justify-center rounded-full bg-background-subtle">
-                            <Search className="size-8 text-foreground-muted" />
+
+                        {/* Left: Mission Statement */}
+                        <div className="order-1 lg:order-2 space-y-8">
+                            <div>
+                                <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-brand-600 dark:text-brand-400 mb-4">
+                                    Why Result Guru?
+                                </h2>
+                                <h3 className="text-3xl font-black tracking-tight text-foreground sm:text-4xl leading-tight">
+                                    The definitive source for <br />
+                                    <span className="text-brand-600 dark:text-brand-400 underline decoration-brand-500/30 underline-offset-8">State Government updates.</span>
+                                </h3>
+                            </div>
+
+                            <p className="text-lg text-foreground-muted leading-relaxed">
+                                Our mission is to democratize access to official information. We ensure that a job aspirant in a remote village has the same speed of access to any state notification as someone in a major city.
+                            </p>
+
+                            <div className="pt-4 border-t border-border">
+                                <p className="text-sm font-medium text-foreground-muted mb-6 flex items-center gap-2">
+                                    <ShieldCheck className="size-4 text-emerald-500" />
+                                    Verified daily by our expert editorial team.
+                                </p>
+                                <div className="flex flex-wrap gap-4">
+                                    <Link 
+                                        href="/about" 
+                                        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-600 text-white font-bold text-sm hover:bg-brand-700 transition-colors shadow-lg shadow-brand-600/20"
+                                    >
+                                        Learn About Our Policy
+                                        <ArrowRight className="size-4" />
+                                    </Link>
+                                    <Link 
+                                        href="/contact" 
+                                        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white dark:bg-slate-950 border border-border text-foreground font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+                                    >
+                                        Correction/Report Error
+                                    </Link>
+                                </div>
+                            </div>
                         </div>
-                        <h3 className="mb-2 text-lg font-semibold text-foreground">No states found</h3>
-                        <p className="max-w-sm text-sm text-foreground-muted">
-                            We don&apos;t have any active states in our directory at the moment. Check back soon!
-                        </p>
                     </div>
-                )}
+                </div>
             </div>
         </>
     )

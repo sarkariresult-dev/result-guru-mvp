@@ -17,10 +17,10 @@ export const SITE = {
     timezone: 'Asia/Kolkata',
     /** Business physical presence for E-E-A-T */
     address: {
-        street: '12, Connaught Circus, Block B, Connaught Place',
+        street: 'A6, Mangal Bazar, Sector 33, Rohini',
         city: 'New Delhi',
         region: 'Delhi',
-        postalCode: '110001',
+        postalCode: '110099',
         country: 'India',
     },
 
@@ -295,8 +295,7 @@ export const FOOTER_NAV: NavGroup[] = [
             { label: 'Contact', href: '/contact' },
             { label: 'Privacy Policy', href: '/privacy-policy' },
             { label: 'Terms of Service', href: '/terms-of-service' },
-            { label: 'Editorial Policy', href: '/editorial-policy' },
-            { label: 'Ethics Policy', href: '/editorial-policy#ethics' },
+            { label: 'Editorial & Ethics', href: '/editorial-policy' },
             { label: 'Disclaimer', href: '/disclaimer' },
             { label: 'Sitemap', href: '/site-map' },
         ],

@@ -6,10 +6,11 @@ import { HomeSection } from '@/features/posts/components/HomeSection'
 import { HomeSectionSkeleton } from '@/features/posts/components/HomeSectionSkeleton'
 import { HeroSearchBar } from '@/features/shared/components/HeroSearchBar'
 import { AdZone } from '@/components/ads/AdZone'
+import { InstitutionalCTA } from '@/components/sections/InstitutionalCTA'
 const StoriesSection = dynamic(() => import('@/components/stories/StoriesSection').then(mod => mod.StoriesSection), {
     ssr: true,
 })
-import { ROUTE_PREFIXES } from '@/config/site'
+import { ROUTE_PREFIXES, SOCIAL_MEDIA_LINKS } from '@/config/site'
 import { buildPageMetadata } from '@/lib/metadata'
 import { buildWebSiteSchema, buildOrganizationSchema, buildSiteNavigationSchema, buildItemListSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
@@ -18,7 +19,7 @@ import { getPopularOrganizations } from '@/lib/queries/organizations'
 import { getPostCountsByType } from '@/features/stats/queries'
 import { getHomepageSections } from '@/features/stats/queries'
 import type { PostTypeCounts } from '@/features/stats/queries'
-import { Briefcase, CreditCard, ArrowRight, Trophy, Users, MapPin, BookOpen, Bell, GraduationCap, Star, ShieldCheck, Clock, Send, MessageCircle } from 'lucide-react'
+import { Briefcase, CreditCard, ArrowRight, Trophy, Users, MapPin, BookOpen, Bell, GraduationCap, Star, ShieldCheck, Clock, Send, MessageCircle, Facebook, Instagram, Linkedin, Youtube, Twitter, TrainFront, ScrollText, Landmark, Stethoscope, Cpu, Scale, TicketPercent, Target, Zap, Search, BellRing, FileText, ArrowUpRight, Smartphone } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 
@@ -53,6 +54,33 @@ function formatChange(counts: PostTypeCounts | undefined): string {
     const open = counts.open_count ?? 0
     if (open > 0) return `${open.toLocaleString('en-IN')} Open`
     return `${counts.total_count.toLocaleString('en-IN')} Total`
+}
+
+/* ── Custom SVG Icons for Mission Section ─────────────────────────────── */
+
+function XIcon({ className }: { className?: string }) {
+    return (
+        <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+        </svg>
+    )
+}
+
+function ThreadsIcon({ className }: { className?: string }) {
+    return (
+        <svg viewBox="0 0 192 192" className={className} fill="currentColor" aria-hidden="true">
+            <path d="M141.537 88.9883C140.71 88.5919 139.87 88.2104 139.019 87.8451C137.537 60.5382 122.616 44.905 97.5619 44.745C97.4484 44.7443 97.3355 44.7443 97.222 44.7443C82.2364 44.7443 69.7731 51.1409 62.102 62.7807L75.881 72.2328C81.6116 63.5383 90.6052 61.6848 97.2286 61.6848C97.3051 61.6848 97.3819 61.6848 97.4576 61.6855C105.707 61.7381 111.932 64.1366 115.961 68.814C118.893 72.2193 120.854 76.925 121.825 82.8638C114.511 81.6207 106.601 81.2385 98.145 81.7233C74.3247 83.0954 59.0111 96.9879 60.0396 116.292C60.5615 126.084 65.4397 134.508 73.775 140.011C80.8224 144.663 89.899 146.938 99.3323 146.423C111.79 145.74 121.563 140.987 128.381 132.296C133.559 125.696 136.834 117.143 138.28 106.366C144.217 109.949 148.617 114.664 151.047 120.332C155.179 129.967 155.42 145.8 142.501 158.708C131.182 170.016 117.576 174.908 97.0135 175.059C74.2042 174.89 56.9538 167.575 45.7381 153.317C35.2355 139.966 29.8077 120.682 29.6052 96C29.8077 71.3178 35.2355 52.0336 45.7381 38.6827C56.9538 24.4249 74.2039 17.11 97.0132 16.9405C119.988 17.1113 137.539 24.4614 149.184 38.788C154.894 45.8136 159.199 54.6488 162.037 64.9503L178.184 60.6422C174.744 47.9622 169.331 37.0357 161.965 27.974C147.036 9.60668 125.202 0.195148 97.0695 0H96.9569C68.8816 0.19447 47.2921 9.6418 32.7883 28.0793C19.8819 44.4864 13.2244 67.3157 13.0007 95.9325L13 96L13.0007 96.0675C13.2244 124.684 19.8819 147.514 32.7883 163.921C47.2921 182.358 68.8816 191.806 96.9569 192H97.0695C122.03 191.827 139.624 185.292 154.118 170.811C173.081 151.866 172.51 128.119 166.26 113.541C161.776 103.087 153.227 94.5962 141.537 88.9883ZM98.4405 129.507C88.0005 130.095 77.1544 125.409 76.6196 115.372C76.2232 107.93 81.9158 99.626 99.0812 98.6368C101.047 98.5234 102.976 98.468 104.871 98.468C111.106 98.468 116.939 99.0737 122.242 100.233C120.264 124.935 108.662 128.946 98.4405 129.507Z" />
+        </svg>
+    )
+}
+
+const ICON_MAP: Record<string, React.FC<{ className?: string }>> = {
+    Facebook,
+    Twitter: XIcon,
+    Instagram,
+    Threads: ThreadsIcon,
+    LinkedIn: Linkedin,
+    Youtube: Youtube,
 }
 
 export default async function HomePage() {
@@ -147,7 +175,7 @@ export default async function HomePage() {
                                     {value}
                                 </span>
                                 <div className="mt-0.5 flex items-center justify-between">
-                                    <span className="text-[11px] font-medium text-emerald-700 dark:text-emerald-400 sm:text-xs">
+                                    <span className="text-[11px] font-medium text-accent-700 dark:text-accent-400 sm:text-xs">
                                         {changeLabel}
                                     </span>
                                     <ArrowRight className="size-3 text-brand-500 opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0" />
@@ -270,51 +298,43 @@ export default async function HomePage() {
                                 />
                             </Suspense>
 
-                            {/* Telegram Community CTA */}
-                            <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#0088CC] to-[#0077B5] p-6 shadow-xl border border-white/10">
-                                {/* Decor */}
-                                <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/3 blur-2xl opacity-20 pointer-events-none">
-                                    <div className="w-40 h-40 bg-white rounded-full"></div>
+                            {/* Social Community Hub */}
+                            <div className="group relative rounded-[2.5rem] border border-border bg-surface p-8 shadow-sm overflow-hidden">
+                                {/* Background Decorative Icon */}
+                                <div className="absolute top-0 right-0 p-6 transform translate-x-4 -translate-y-4 opacity-5 pointer-events-none transition-all duration-700 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:rotate-0 -rotate-12">
+                                    <BellRing className="size-32 text-brand-600" />
                                 </div>
 
                                 <div className="relative z-10">
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <div className="flex size-11 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 shadow-inner">
-                                            <Send className="size-6 text-white fill-white -rotate-12 translate-x-px -translate-y-px" />
-                                        </div>
-                                        <div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="flex size-2 rounded-full bg-emerald-400 animate-pulse" />
-                                                <span className="text-[11px] font-bold text-emerald-100 uppercase tracking-widest">Live Updates</span>
+                                    <h3 className="text-xl font-black text-foreground">Join Community</h3>
+                                    <p className="mt-2 text-sm font-medium text-foreground-muted leading-relaxed">Get lightning-fast alerts on your favorite platforms.</p>
+                                    <div className="mt-8 space-y-3">
+                                        <Link
+                                            href="https://t.me/resultguru247"
+                                            target="_blank"
+                                            className="group/link flex items-center justify-between w-full p-4 rounded-2xl bg-[#0088cc] text-white transition-all hover:bg-[#0077b5] shadow-lg shadow-[#0088cc]/10 active:scale-[0.98]"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <Send className="size-5" />
+                                                <span className="font-bold text-sm">Telegram Channel</span>
                                             </div>
-                                            <h2 className="text-lg font-black text-white leading-tight">Join Community</h2>
-                                        </div>
-                                    </div>
-
-                                    <p className="text-sm text-blue-50/90 mb-6 leading-relaxed font-medium">
-                                        Get instant alerts for <span className="text-white font-bold underline decoration-white/30 underline-offset-4">Sarkari Results</span> directly on your phone.
-                                    </p>
-
-                                    <Link
-                                        href="https://t.me/resultguru247"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="group flex items-center justify-center gap-2.5 w-full bg-white text-[#0088CC] hover:bg-blue-50 py-3.5 rounded-2xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-black/10"
-                                    >
-                                        Join Telegram
-                                        <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-                                    </Link>
-
-                                    <div className="mt-4 flex items-center justify-center gap-4 text-xs font-bold text-white/80">
-                                        <div className="flex items-center gap-1.5">
-                                            <Users className="size-3" />
-                                            50K+ Joined
-                                        </div>
-                                        <div className="h-2.5 w-px bg-white/20" />
-                                        <span>Free Forever</span>
+                                            <ArrowUpRight className="size-4 opacity-50 group-hover/link:opacity-100 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all" />
+                                        </Link>
+                                        <Link
+                                            href="https://whatsapp.com/channel/0029Vb7XUqn1SWt7c9kqCV3I"
+                                            target="_blank"
+                                            className="group/link flex items-center justify-between w-full p-4 rounded-2xl bg-[#25D366] text-white transition-all hover:bg-[#20bd5a] shadow-lg shadow-[#25D366]/10 active:scale-[0.98]"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <MessageCircle className="size-5" />
+                                                <span className="font-bold text-sm">WhatsApp Channel</span>
+                                            </div>
+                                            <ArrowUpRight className="size-4 opacity-50 group-hover/link:opacity-100 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all" />
+                                        </Link>
                                     </div>
                                 </div>
                             </div>
+
                             {/* Govt Schemes List */}
                             <Suspense fallback={<HomeSectionSkeleton count={8} />}>
                                 <HomeSection
@@ -329,48 +349,30 @@ export default async function HomePage() {
                                 />
                             </Suspense>
 
-                            {/* WhatsApp Channel CTA */}
-                            <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#25D366] to-[#128C7E] p-6 shadow-xl border border-white/10">
-                                {/* Decor */}
-                                <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/3 blur-2xl opacity-20 pointer-events-none">
-                                    <div className="w-40 h-40 bg-white rounded-full"></div>
+                            {/* App Coming Soon Spotlight */}
+                            <div className="group relative rounded-4xl bg-linear-to-br from-brand-600 to-indigo-700 p-8 text-white shadow-xl overflow-hidden active:scale-[0.98] transition-all">
+                                {/* Decorative Background */}
+                                <div className="absolute top-0 right-0 p-4 transform translate-x-4 -translate-y-4 opacity-10 pointer-events-none transition-transform group-hover:translate-x-0 group-hover:translate-y-0">
+                                    <Smartphone className="size-40 rotate-15" />
                                 </div>
+                                <div className="absolute -bottom-10 -left-10 size-40 bg-white/10 blur-3xl rounded-full" />
 
-                                <div className="relative z-10">
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <div className="flex size-11 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 shadow-inner">
-                                            <MessageCircle className="size-6 text-white fill-white" />
-                                        </div>
-                                        <div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="flex size-2 rounded-full bg-white animate-pulse" />
-                                                <span className="text-[11px] font-bold text-white/90 uppercase tracking-widest">Official Channel</span>
-                                            </div>
-                                            <h2 className="text-lg font-black text-white leading-tight">Follow Channel</h2>
-                                        </div>
+                                <div className="relative z-10 space-y-4">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 border border-white/20 text-[10px] font-black uppercase tracking-widest">
+                                        <Zap className="size-3 fill-current" />
+                                        Next-Gen Experience
                                     </div>
-
-                                    <p className="text-sm text-white/90 mb-6 leading-relaxed font-medium">
-                                        Get instant <span className="text-white font-bold underline decoration-white/30 underline-offset-4">Job Notifications</span> and exam updates directly on WhatsApp.
+                                    <div className="space-y-1">
+                                        <h3 className="text-2xl font-black leading-tight tracking-tight">Result Guru</h3>
+                                        <p className="text-xl font-bold opacity-90 leading-tight">Mobile Experience</p>
+                                    </div>
+                                    <p className="text-sm font-medium text-white/80 leading-relaxed max-w-[200px]">
+                                        Verified job alerts and direct results delivered to your lockscreen. No noise, just speed.
                                     </p>
-
-                                    <Link
-                                        href="https://whatsapp.com/channel/0029Vb7XUqn1SWt7c9kqCV3I"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="group flex items-center justify-center gap-2.5 w-full bg-white text-[#128C7E] hover:bg-emerald-50 py-3.5 rounded-2xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-black/10"
-                                    >
-                                        Follow on WhatsApp
-                                        <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-                                    </Link>
-
-                                    <div className="mt-4 flex items-center justify-center gap-4 text-xs font-bold text-white/80">
-                                        <div className="flex items-center gap-1.5">
-                                            <Star className="size-3" />
-                                            Fastest Alerts
+                                    <div className="pt-2">
+                                        <div className="inline-flex items-center gap-2.5 px-6 py-3 rounded-2xl bg-white text-brand-600 font-black text-xs uppercase tracking-wider shadow-lg shadow-black/10 transition-transform group-hover:scale-105">
+                                            Coming Soon
                                         </div>
-                                        <div className="h-2.5 w-px bg-white/20" />
-                                        <span>Verified Channel</span>
                                     </div>
                                 </div>
                             </div>
@@ -395,12 +397,12 @@ export default async function HomePage() {
                 </div>
             </section>
 
-            {/* Professional About Section */}
-            <section className="border-t border-border bg-linear-to-b from-surface to-surface-subtle" aria-label="About Result Guru">
+            {/* Unified Mission & Verified Information Section (High EEAT + SEO) */}
+            <section className="border-t border-b border-border bg-linear-to-b from-surface to-surface-subtle" aria-label="About Result Guru">
                 <div className="container mx-auto max-w-7xl px-4 py-16">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-                        {/* Left: Branding & Core Mission */}
-                        <div className="lg:col-span-5 space-y-6">
+                        {/* Left: Mission Statement & SEO Context */}
+                        <div className="lg:col-span-7 space-y-6">
                             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-900/30 border border-brand-100 dark:border-brand-800/30 text-[11px] font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest">
                                 <ShieldCheck className="size-3" />
                                 India&apos;s Trusted Resource
@@ -408,64 +410,139 @@ export default async function HomePage() {
                             <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-foreground leading-[1.1]">
                                 Empowering Candidates with <span className="text-brand-600 dark:text-brand-400">Verified Jobs.</span>
                             </h2>
-                            <p className="text-base text-foreground-muted leading-relaxed">
-                                Result Guru simplifies your search for government exams. We gather notifications from official portals into one easy dashboard. Join millions of candidates across India today.
-                            </p>
-                            <div className="flex items-center gap-4 pt-4">
-                                <Link href="/about" className="inline-flex items-center gap-2 text-sm font-bold text-foreground hover:text-brand-600 transition-colors">
-                                    Our Story <ArrowRight className="size-4" />
-                                </Link>
-                                <div className="h-4 w-px bg-border mx-2" />
-                                <Link href="/contact" className="inline-flex items-center gap-2 text-sm font-bold text-foreground hover:text-brand-600 transition-colors">
-                                    Contact Us
-                                </Link>
+                            <div className="space-y-4 text-sm sm:text-base text-foreground-muted leading-relaxed font-medium">
+                                <p>
+                                    Welcome to Result Guru, India's most trusted and reliable digital platform dedicated to bringing you the fastest, most verified updates regarding government employment opportunities. Whether you are actively preparing for your first competitive examination or you are a seasoned aspirant tracking multiple recruitment phases, our platform simplifies the often-complex ecosystem of state and central commission portals into one easily navigable dashboard.
+                                </p>
+                                <p>
+                                    We manually verify and aggregate data from official gazettes and top commissions such as the Union Public Service Commission, Staff Selection Commission (SSC), Railway Recruitment Boards (RRB), and various State Public Service Commissions. By eliminating clutter and providing high-fidelity information, candidates save valuable time which they can instead channel directly into their preparation strategies.
+                                </p>
+                                <p>
+                                    Our core mission is structured entirely around candidate success. From Syllabus breakdowns to Exam Patterns and Previous Papers, we provide all the tools for your preparation. We also actively categorize government welfare schemes, digital scholarship opportunities, and key university admissions to ensure comprehensive coverage of pathways that elevate an individual's career.
+                                </p>
                             </div>
                         </div>
 
-                        {/* Right: Key Value Props */}
-                        <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            {[
-                                { icon: Clock, title: 'Fastest Notification', desc: 'Real-time alerts for Latest Sarkari Results and upcoming Govt Jobs in India as soon as they are announced.' },
-                                { icon: ShieldCheck, title: '100% Verified Info', desc: 'Our team cross-verifies every news from official gazettes and commission portals like SSC, UPSC, and Railways.' },
-                                { icon: BookOpen, title: 'Complete Resources', desc: 'From Syllabus breakdowns to Exam Patterns and Previous Papers, we provide all the tools for your preparation.' },
-                                { icon: Star, title: 'Welfare Schemes', desc: 'Beyond jobs, stay updated with state and central government schemes, scholarships, and admission alerts.' }
-                            ].map((prop) => (
-                                <div key={prop.title} className="flex gap-4 p-5 rounded-2xl bg-surface border border-border shadow-xs hover:border-brand-300 transition-colors">
-                                    <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400">
-                                        <prop.icon className="size-5" />
+                        {/* Right: Key Value Props (Grid) + Social Links */}
+                        <div className="lg:col-span-5 flex flex-col justify-between gap-8 lg:mt-12">
+                            <div className="grid grid-cols-1 gap-4">
+                                {[
+                                    { icon: Clock, title: 'Fastest Notification', desc: 'Real-time alerts for Latest Sarkari Results and upcoming Govt Jobs in India.' },
+                                    { icon: ShieldCheck, title: '100% Verified Info', desc: 'Every update is cross-verified from official gazettes and govt portals.' },
+                                    { icon: BookOpen, title: 'Complete Resources', desc: 'Syllabus, Exam Patterns, and Previous Papers all in one place.' },
+                                    { icon: Star, title: 'Welfare Schemes', desc: 'Stay updated with state and central government schemes and scholarships.' }
+                                ].map((prop) => (
+                                    <div key={prop.title} className="flex gap-4 p-5 rounded-2xl bg-surface border border-border shadow-xs hover:border-brand-300 transition-all hover:shadow-md">
+                                        <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400">
+                                            <prop.icon className="size-5" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <h3 className="text-sm font-bold text-foreground">{prop.title}</h3>
+                                            <p className="text-xs text-foreground-muted leading-relaxed">{prop.desc}</p>
+                                        </div>
                                     </div>
-                                    <div className="space-y-1">
-                                        <h3 className="text-sm font-bold text-foreground">{prop.title}</h3>
-                                        <p className="text-xs text-foreground-muted leading-relaxed">{prop.desc}</p>
-                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Social Sharing centered at bottom of right panel */}
+                            <div className="flex flex-col items-center gap-5 pt-8">
+                                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-foreground-muted opacity-60">Share Platform With Friends</span>
+                                <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-7">
+                                    {[
+                                        {
+                                            name: 'WhatsApp',
+                                            icon: MessageCircle,
+                                            href: `https://api.whatsapp.com/send?text=${encodeURIComponent("Check out Result Guru 🚀 - India's Most Trusted Sarkari Result & Govt Job Platform! Get instant, verified updates: https://resultguru.org")}`,
+                                            color: 'hover:text-emerald-500'
+                                        },
+                                        {
+                                            name: 'Telegram',
+                                            icon: Send,
+                                            href: `https://t.me/share/url?url=${encodeURIComponent("https://resultguru.org")}&text=${encodeURIComponent("Result Guru 🚀 India's #1 Trusted Sarkari Result & Job Alert Platform. Get verified updates from all commissions.")}`,
+                                            color: 'hover:text-sky-500'
+                                        },
+                                        {
+                                            name: 'X',
+                                            icon: XIcon,
+                                            href: `https://twitter.com/intent/tweet?url=${encodeURIComponent("https://resultguru.org")}&text=${encodeURIComponent("Finding verified Govt Jobs is now easier with Result Guru! 🚀 #SarkariResult #JobAlerts #ResultGuru")}`,
+                                            color: 'hover:text-foreground'
+                                        },
+                                        {
+                                            name: 'Facebook',
+                                            icon: Facebook,
+                                            href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent("https://resultguru.org")}`,
+                                            color: 'hover:text-[#1877F2]'
+                                        },
+                                        {
+                                            name: 'Instagram',
+                                            icon: Instagram,
+                                            href: `https://www.instagram.com/resultguru247`,
+                                            color: 'hover:text-[#E4405F]'
+                                        },
+                                        {
+                                            name: 'Threads',
+                                            icon: ThreadsIcon,
+                                            href: `https://www.threads.net/intent/post?text=${encodeURIComponent("Check out Result Guru 🚀 India's Most Trusted Sarkari Result & Job Platform! https://resultguru.org")}`,
+                                            color: 'hover:text-foreground'
+                                        },
+                                        {
+                                            name: 'LinkedIn',
+                                            icon: Linkedin,
+                                            href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent("https://resultguru.org")}`,
+                                            color: 'hover:text-[#0A66C2]'
+                                        }
+                                    ].map((platform) => (
+                                        <Link
+                                            key={platform.name}
+                                            href={platform.href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`text-foreground-muted ${platform.color} transition-all hover:scale-125`}
+                                            aria-label={`Share on ${platform.name}`}
+                                        >
+                                            <platform.icon className="size-6" />
+                                        </Link>
+                                    ))}
                                 </div>
-                            ))}
+                            </div>
                         </div>
                     </div>
-
-
                 </div>
             </section>
 
-            {/* Browse Categories */}
-            <section className="container mx-auto max-w-7xl px-4 py-10" aria-label="Browse by category">
-                <div className="mb-8 flex flex-col items-center justify-center">
-                    <h2 className="text-2xl font-bold tracking-tight text-foreground">Explore Categories</h2>
-                    <p className="text-xs text-foreground-muted mt-0.5 font-medium">Find the perfect job, exam, notifications and admission for you</p>
+            {/*  Premium Categories Section - Compact 3x3 Grid */}
+            <section className="container mx-auto max-w-7xl px-4 py-12 relative" aria-label="Expert-curated career pathways">
+                <div className="mb-10 text-center lg:text-left">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-900/30 border border-brand-100 dark:border-brand-800/30 text-[10px] font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">
+                        <Users className="size-3" />
+                        Career Pathway Directory
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground">Sarkari <span className="text-brand-600 dark:text-brand-400">Resource</span> Center</h2>
+                    <p className="mt-3 text-sm text-foreground-muted font-medium max-w-2xl">
+                        Your central hub for navigating India&apos;s complex recruitment landscape. We categorize updates from official portals into verified career pathways to help you stay ahead.
+                    </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {[
-                        { title: 'SSC & Railway', desc: 'Real-time alerts for SSC CGL, CHSL, MTS, Railway NTPC, and Group D vacancies. Follow for all technical and non-technical updates.' },
-                        { title: 'UPSC & State PSCs', desc: 'Deep-dive overviews of UPSC Civil Services, NDA, CDS, and State Public Service Commission exams including syllabus and exam dates.' },
-                        { title: 'Banking & Insurance', desc: 'From IBPS PO and SBI Clerk to LIC Assistant, we cover all major banking jobs ensuring you never miss an application deadline.' },
-                        { title: 'Police & Defence', desc: 'Updates on state police constable and SI recruitments, alongside Agniveer, Army, and paramilitary forces (CRPF, BSF, CISF).' },
-                        { title: 'Teaching & Eligibility', desc: 'Instant notifications for CTET, State TETs, TGT, PGT, and Assistant Professor vacancies across state and central universities.' },
-                        { title: 'Schemes & Admissions', desc: 'Stay updated with Central and State Government Schemes, Scholarships, and top university Admissions (CUET, JEE, NEET).' },
+                        { title: 'SSC & Railway', icon: TrainFront, color: 'text-blue-600 bg-blue-50 dark:bg-blue-900/20', desc: "Dominant cycle covering SSC CGL, CHSL, MTS, and all major Railway recruitment phases." },
+                        { title: 'UPSC & Civil Services', icon: ScrollText, color: 'text-amber-600 bg-amber-50 dark:bg-amber-900/20', desc: "Premier updates for UPSC CSE, IES, and localized State PSC exams like BPSC and UPPSC." },
+                        { title: 'Banking & Insurance', icon: Landmark, color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20', desc: "Verified result cycles for SBI PO, IBPS Clerk, NABARD, and national insurance carriers." },
+                        { title: 'Defence & Police', icon: ShieldCheck, color: 'text-rose-600 bg-rose-50 dark:bg-rose-900/20', desc: "Verified schedules for NDA, CDS, CAPF, and state-level police constable recruitments." },
+                        { title: 'Teaching & Research', icon: GraduationCap, color: 'text-violet-600 bg-violet-50 dark:bg-violet-900/20', desc: "Comprehensive coverage of CTET, KVS, NVS, and state-specific educational eligibility tests." },
+                        { title: 'Medical & Healthcare', icon: Stethoscope, color: 'text-red-500 bg-red-50 dark:bg-red-900/20', desc: "Latest on NEET career pathways, AIIMS recruitment, and nursing/pharmacist vacancies." },
+                        { title: 'Engineering & Tech', icon: Cpu, color: 'text-cyan-600 bg-cyan-50 dark:bg-cyan-900/20', desc: "For technical aspirants. GATE scores, IES notifications, and specific PSU job alerts." },
+                        { title: 'Law & Judicial', icon: Scale, color: 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20', desc: "Reliable updates for CLAT, State Judicial Services (PCS-J), and legal officer vacancies." },
+                        { title: 'Schemes & Scholarship', icon: TicketPercent, color: 'text-orange-600 bg-orange-50 dark:bg-orange-900/20', desc: "Access to government aid including PM-Kisan, NSP, and merit-based state schemes." },
                     ].map((item) => (
-                        <div key={item.title} className="rounded-2xl border border-border bg-surface p-6 shadow-sm hover:border-brand-300 transition-colors">
-                            <h3 className="text-sm sm:text-base font-bold text-foreground mb-1.5">{item.title}</h3>
-                            <p className="text-xs sm:text-sm text-foreground-muted leading-relaxed font-medium">
+                        <div key={item.title} className="group relative rounded-2xl border border-border bg-surface p-5 transition-all duration-300 hover:shadow-md hover:border-brand-300">
+                            <div className="flex items-center gap-4 mb-3">
+                                <div className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${item.color} transition-transform group-hover:scale-105`}>
+                                    <item.icon className="size-5" />
+                                </div>
+                                <h3 className="text-[15px] font-bold text-foreground leading-tight">{item.title}</h3>
+                            </div>
+                            <p className="text-[13px] text-foreground-muted leading-relaxed font-medium">
                                 {item.desc}
                             </p>
                         </div>
@@ -500,21 +577,21 @@ export default async function HomePage() {
                                 className="mt-8 flex flex-wrap gap-2.5"
                                 aria-label="States directory"
                             >
-                                {states.slice(0, 6).map((state, idx) => (
-                                        <Link
-                                            key={state.slug}
-                                            href={`/states/${state.slug}`}
-                                            className="group inline-flex items-center gap-2.5 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-medium text-foreground shadow-sm transition-all hover:border-brand-300 hover:shadow-md hover:-translate-y-0.5 dark:hover:border-brand-700"
-                                            title={`Government jobs & results in ${state.name}`}
-                                        >
+                                {states.slice(0, 15).map((state) => (
+                                    <Link
+                                        key={state.slug}
+                                        href={`/states/${state.slug}`}
+                                        className="group inline-flex items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-2 text-sm font-bold text-foreground shadow-sm transition-all hover:border-brand-300 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]"
+                                        title={`Government jobs & results in ${state.name}`}
+                                    >
                                         <span
-                                            className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-brand-600 text-[11px] font-bold leading-none text-white shadow-sm"
+                                            className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 text-[10px] font-black leading-none"
                                             aria-hidden="true"
                                         >
                                             {state.abbr || state.name.substring(0, 2).toUpperCase()}
                                         </span>
                                         <span
-                                            className="transition-colors group-hover:text-brand-700 dark:group-hover:text-brand-300"
+                                            className="transition-colors group-hover:text-brand-600 dark:group-hover:text-brand-400"
                                         >
                                             {state.name}
                                         </span>
@@ -522,14 +599,6 @@ export default async function HomePage() {
                                 ))}
                             </nav>
                         )}
-
-                        <Link
-                            href="/states"
-                            className="group mt-8 inline-flex items-center gap-2 text-sm font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300 transition-colors"
-                        >
-                            Explore all {states.length > 0 ? `${states.length} States & UTs` : 'States & UTs'}
-                            <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-                        </Link>
                     </div>
 
                     {/* Right - India map illustration */}
@@ -552,22 +621,24 @@ export default async function HomePage() {
                         />
 
                         {/* Floating stat card */}
-                        <div className="absolute bottom-6 right-4 z-20 flex items-center gap-3 rounded-2xl border border-border bg-surface/95 px-5 py-3.5 shadow-xl backdrop-blur-sm sm:bottom-10 sm:right-8">
-                            <div className="flex size-10 items-center justify-center rounded-full bg-brand-600 shadow-md">
-                                <MapPin className="size-5 text-white" />
+                        <div className="absolute bottom-6 right-4 z-20 flex items-center gap-4 rounded-4xl border border-border/60 bg-surface/90 px-6 py-4 shadow-2xl backdrop-blur-md sm:bottom-10 sm:right-8">
+                            <div className="relative flex size-12 items-center justify-center rounded-full bg-brand-600 text-white shadow-xl">
+                                <MapPin className="size-6" />
+                                <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-4 w-4 bg-accent-500 border-2 border-white dark:border-indigo-950"></span>
+                                </span>
                             </div>
-                            <div>
-                                <p className="text-sm font-bold text-foreground">Pan India Coverage</p>
-                                <p className="text-xs font-medium uppercase tracking-wide text-foreground-muted">
-                                    {states.length > 0 ? `${states.length} States & UTs` : 'All States & UTs'}
-                                </p>
+                            <div className="pr-4">
+                                <p className="text-[11px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Live Status</p>
+                                <p className="text-base font-black text-foreground">{states.length > 0 ? `${states.length} Active Regions` : 'Pan India'}</p>
                             </div>
                             <Link
                                 href="/states"
-                                className="ml-1 flex size-8 items-center justify-center rounded-full bg-brand-600 text-white shadow-sm transition-transform hover:scale-110"
+                                className="flex size-10 items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-transform hover:scale-110 active:scale-95"
                                 aria-label="View all states"
                             >
-                                <ArrowRight className="size-4" />
+                                <ArrowRight className="size-5" />
                                 <span className="sr-only">View all states</span>
                             </Link>
                         </div>
@@ -575,84 +646,13 @@ export default async function HomePage() {
                 </div>
             </section>
 
-            {/* Registration CTA Section - Replacing Newsletter */}
-            <section className="container mx-auto max-w-7xl px-4 py-8 mb-12">
-                <div className="relative overflow-hidden rounded-[2.5rem] bg-indigo-900 p-8 md:p-12 shadow-2xl border border-white/10">
-                    <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                        <div className="space-y-8">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[11px] font-bold text-white uppercase tracking-widest">
-                                <ShieldCheck className="size-3" />
-                                Secure & Verified
-                            </div>
-                            <h2 className="text-3xl md:text-5xl font-black text-white leading-[1.1]">
-                                Your Personal <span className="text-brand-300">Exam Assistant</span> starts here.
-                            </h2>
-                            <p className="text-lg text-blue-100/90 leading-relaxed font-medium">
-                                Create a free account to unlock your personalized dashboard, track saved jobs, and get instant verified notifications directly on your profile.
-                            </p>
-                            
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="flex items-center gap-3 text-white/90">
-                                    <div className="flex size-8 items-center justify-center rounded-lg bg-white/10">
-                                        <Bell className="size-4 text-brand-300" />
-                                    </div>
-                                    <span className="text-sm font-semibold">Priority Notifications</span>
-                                </div>
-                                <div className="flex items-center gap-3 text-white/90">
-                                    <div className="flex size-8 items-center justify-center rounded-lg bg-white/10">
-                                        <Star className="size-4 text-brand-300" />
-                                    </div>
-                                    <span className="text-sm font-semibold">Save for Later</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col items-center justify-center space-y-6 lg:border-l lg:border-white/10 lg:pl-12">
-                            <Link
-                                href="/register"
-                                className="group flex items-center justify-center gap-3 w-full max-w-sm bg-white text-indigo-900 hover:bg-slate-100 py-4 px-8 rounded-2xl text-lg font-bold transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-black/20"
-                            >
-                                Create Free Account
-                                <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
-                            </Link>
-                            <p className="text-sm text-blue-100/60 font-medium">
-                                Already have an account? <Link href="/login" className="text-white hover:underline decoration-white/30 transition-all font-bold">Sign In</Link>
-                            </p>
-                            <div className="h-px w-full max-w-[200px] bg-white/10" />
-                            <p className="text-xs text-white/40 text-center font-bold uppercase tracking-wider">
-                                Trusted by 2M+ Aspirants Across India
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            {/* Registration CTA Section */}
+            <InstitutionalCTA
+                title="Your Personal Exam Assistant starts here."
+                description="Create a free account to unlock your personalized dashboard, track saved jobs, and get instant verified notifications directly on your profile."
+            />
 
             <AdZone zoneSlug="below_content" className="container mx-auto max-w-7xl px-4 my-8" />
-
-            {/* SEO Content Block */}
-            <section className="container mx-auto max-w-7xl px-4 pb-12 hidden sm:block pt-4 border-t border-border mt-4 text-foreground-subtle">
-                <div className="max-w-4xl mx-auto text-center md:text-left">
-                    <h2 className="text-lg sm:text-xl font-bold text-foreground mb-4 tracking-tight">India's Trusted Portal for Government Updates</h2>
-                    <div className="space-y-3.5 text-[13px] leading-relaxed font-medium">
-                        <p>
-                            Welcome to Result Guru, India's most trusted and reliable digital platform dedicated to bringing you the fastest, most verified updates regarding government employment opportunities. Whether you are actively preparing for your first competitive examination or you are a seasoned aspirant tracking multiple recruitment phases, our platform simplifies the often-complex ecosystem of state and central commission portals into one easily navigable dashboard. 
-                        </p>
-                        <p>
-                            We manually verify and aggregate data from official gazettes and top commissions such as the Union Public Service Commission, Staff Selection Commission, Railway Recruitment Boards, and various State Public Service Commissions. By eliminating clutter and providing high-fidelity information, candidates save valuable time which they can instead channel directly into their preparation strategies. Aside from primary exam updates, we also actively categorize important government welfare schemes, digital scholarship opportunities, and key university admissions to ensure comprehensive coverage of pathways that elevate an individual's career trajectory. 
-                        </p>
-                        <p>
-                            Our core mission is structured entirely around candidate success. Our dedicated editorial team maintains strict verification standards before publishing any information. The data is deliberately curated, cleanly formatted, and made easily accessible across all electronic devices so you are never left behind whenever an important result is declared, a cut-off mark is published, or a new hall ticket is generated.
-                        </p>
-                    </div>
-                    {/* Minimal Social Shares to satisfy audit without ruining UI */}
-                    <div className="mt-8 flex flex-wrap items-center justify-center md:justify-start gap-3">
-                        <span className="text-[11px] font-bold uppercase tracking-widest text-foreground-muted mr-2">Share Platform:</span>
-                        <a aria-label="Share on WhatsApp" rel="noopener noreferrer" target="_blank" className="text-emerald-600 hover:text-emerald-500 font-bold text-[11px] border border-border px-3 py-1.5 rounded-full bg-surface" href="whatsapp://send?text=Check+out+Result+Guru+https%3A%2F%2Fwww.resultguru.co.in">WhatsApp</a>
-                        <a aria-label="Share on Facebook" rel="noopener noreferrer" target="_blank" className="text-blue-600 hover:text-blue-500 font-bold text-[11px] border border-border px-3 py-1.5 rounded-full bg-surface" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.resultguru.co.in">Facebook</a>
-                        <a aria-label="Share on X" rel="noopener noreferrer" target="_blank" className="text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 font-bold text-[11px] border border-border px-3 py-1.5 rounded-full bg-surface" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.resultguru.co.in">Twitter / X</a>
-                    </div>
-                </div>
-            </section>
 
         </>
     )

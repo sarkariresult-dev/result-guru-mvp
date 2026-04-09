@@ -6,6 +6,7 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
 import { ShieldCheck, Target, Zap, Users, Search, BellRing, FileText } from 'lucide-react'
 import * as Icons from 'lucide-react'
+import { InstitutionalCTA } from '@/components/sections/InstitutionalCTA'
 
 export const metadata = buildPageMetadata({
     title: 'About Us - Our Mission & Values',
@@ -56,30 +57,45 @@ export default function AboutPage() {
 
             <article className="pb-20">
                 {/* 1. Hero Section */}
-                <header className="bg-surface-subtle border-b border-border pt-4 pb-12 sm:pt-6 sm:pb-20">
-                    <div className="container mx-auto max-w-7xl px-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                        <Breadcrumb items={[{ label: 'About Us' }]} />
+                <header className="relative bg-slate-50 border-b border-border/50 pt-6 pb-12 sm:pt-10 sm:pb-24 dark:bg-slate-950/20">
+                    {/* Background Decorative Element */}
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+                        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-brand-500/5 blur-[120px]" />
+                        <div className="absolute top-[20%] -right-[5%] w-[30%] h-[30%] rounded-full bg-accent-500/5 blur-[100px]" />
+                    </div>
 
-                        <div className="mx-auto max-w-4xl text-center mt-6 sm:mt-10">
-                            <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-fluid-4xl lg:text-7xl mb-4 sm:mb-6">
-                                We make government updates <br className="hidden sm:block" />
-                                <span className="text-brand-600 inline-block">simple & verified.</span>
+                    <div className="container relative mx-auto max-w-7xl px-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                        <div className="mx-auto max-w-4xl text-center mt-8 sm:mt-16">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-100 dark:bg-brand-900/30 dark:border-brand-800/50 mb-6 group transition-colors">
+                                <div className="size-2 rounded-full bg-accent-500 animate-pulse" />
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-brand-700 dark:text-brand-400">Founded 2025</span>
+                            </div>
+
+                            <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-fluid-4xl lg:text-7xl mb-6 leading-[1.1]">
+                                We make government updates <br className="hidden lg:block" />
+                                <span className="text-gradient-brand">simple & verified.</span>
                             </h1>
-                            <p className="mx-auto max-w-2xl text-lg sm:text-xl text-foreground-muted leading-relaxed">
+                            <p className="mx-auto max-w-2xl text-lg sm:text-xl text-foreground-muted leading-relaxed font-medium">
                                 We started {SITE.name} because finding reliable government job notifications, admit cards, and exam results shouldn&apos;t be harder than passing the exam itself.
                             </p>
 
-                            <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm font-medium text-foreground-subtle">
-                                <span className="flex items-center gap-2">
-                                    <ShieldCheck className="size-5 text-emerald-500" />
+                            <div className="mt-12 flex flex-wrap items-center justify-center gap-x-10 gap-y-6 text-sm font-bold text-foreground-muted">
+                                <span className="flex items-center gap-2.5 group">
+                                    <div className="p-1.5 rounded-lg bg-white shadow-sm border border-border group-hover:border-accent-500/50 dark:bg-slate-900 transition-colors">
+                                        <ShieldCheck className="size-4 text-accent-500" />
+                                    </div>
                                     100% Verified Sources
                                 </span>
-                                <span className="flex items-center gap-2">
-                                    <Zap className="size-5 text-amber-500" />
+                                <span className="flex items-center gap-2.5 group">
+                                    <div className="p-1.5 rounded-lg bg-white shadow-sm border border-border group-hover:border-accent-500/50 dark:bg-slate-900 transition-colors">
+                                        <Zap className="size-4 text-accent-500" />
+                                    </div>
                                     Real-time Updates
                                 </span>
-                                <span className="flex items-center gap-2">
-                                    <Target className="size-5 text-brand-500" />
+                                <span className="flex items-center gap-2.5 group">
+                                    <div className="p-1.5 rounded-lg bg-white shadow-sm border border-border group-hover:border-accent-500/50 dark:bg-slate-900 transition-colors">
+                                        <Target className="size-4 text-accent-500" />
+                                    </div>
                                     No Clickbait
                                 </span>
                             </div>
@@ -88,110 +104,173 @@ export default function AboutPage() {
                 </header>
 
                 {/* 2. Platform Impact (Stats) */}
-                <section className="container mx-auto max-w-7xl px-4 -mt-8 relative z-10">
-                    <div className="rounded-xl border border-border bg-surface shadow-xl grid grid-cols-2 md:grid-cols-4 divide-x-0 md:divide-x divide-border">
-                        <div className="p-8 text-center animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100 flex flex-col justify-center">
-                            <div className="text-3xl sm:text-4xl font-black text-brand-600 mb-2">500+</div>
-                            <div className="text-[11px] sm:text-xs tracking-widest uppercase font-bold text-foreground-muted max-w-[140px] mx-auto">Organizations Tracked</div>
-                        </div>
-                        <div className="p-8 text-center animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200 flex flex-col justify-center">
-                            <div className="text-3xl sm:text-4xl font-black text-brand-600 mb-2">36</div>
-                            <div className="text-[11px] sm:text-xs tracking-widest uppercase font-bold text-foreground-muted max-w-[140px] mx-auto">States & UTs Covered</div>
-                        </div>
-                        <div className="p-8 text-center animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 flex flex-col justify-center">
-                            <div className="text-3xl sm:text-4xl font-black text-brand-600 mb-2">13</div>
-                            <div className="text-[11px] sm:text-xs tracking-widest uppercase font-bold text-foreground-muted max-w-[140px] mx-auto">Dedicated Categories</div>
-                        </div>
-                        <div className="p-8 text-center animate-in fade-in slide-in-from-bottom-4 duration-700 delay-400 flex flex-col justify-center">
-                            <div className="text-3xl sm:text-4xl font-black text-emerald-600 mb-2">Free</div>
-                            <div className="text-[11px] sm:text-xs tracking-widest uppercase font-bold text-foreground-muted max-w-[140px] mx-auto">For All Students, Always</div>
-                        </div>
+                <section className="container mx-auto max-w-7xl px-4 -mt-10 relative z-10">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                        {[
+                            { label: 'Organizations Tracked', value: '500+', color: 'text-brand-600', shadow: 'shadow-brand-500/10' },
+                            { label: 'States & UTs Covered', value: '36', color: 'text-brand-600', shadow: 'shadow-brand-500/10' },
+                            { label: 'Dedicated Categories', value: '13', color: 'text-brand-600', shadow: 'shadow-brand-500/10' },
+                            { label: 'For All Students, Always', value: 'Free', color: 'text-accent-600', shadow: 'shadow-accent-500/10' },
+                        ].map((stat, i) => (
+                            <div key={i} className={`bg-surface border border-border p-6 sm:p-10 rounded-2xl shadow-xl ${stat.shadow} flex flex-col items-center text-center group hover:border-brand-300 transition-all dark:hover:border-brand-700`}>
+                                <div className={`text-3xl sm:text-5xl font-black ${stat.color} mb-3 group-hover:scale-105 transition-transform`}>{stat.value}</div>
+                                <div className="text-[10px] sm:text-[11px] tracking-[0.2em] uppercase font-black text-foreground-muted leading-tight max-w-[150px]">
+                                    {stat.label}
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </section>
 
                 {/* 3. The Problem vs Solution (Why We Exist) */}
-                <section className="container mx-auto px-4 py-20 sm:py-28">
-                    <div className="space-y-16">
-                        <div className="text-center">
-                            <h2 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl mb-6">
-                                The internet is full of noise.<br />We filter it for you.
-                            </h2>
-                            <p className="text-lg text-foreground-muted leading-relaxed max-w-2xl mx-auto">
-                                Millions of students across India prepare for government examinations every year. It requires immense dedication, focus, and time. Yet, aspirants spend hours jumping between cluttered websites, dealing with fake links, outdated portals, and misleading headlines just to find out if an admit card is released.
-                            </p>
-                            <p className="text-lg text-foreground-muted leading-relaxed max-w-2xl mx-auto mt-4">
-                                <strong>That&apos;s why we built {SITE.name}.</strong> We believe information should be centralized, categorized, and beautiful. We do the heavy lifting of constantly monitoring official gazettes so you can focus strictly on your preparation.
-                            </p>
+                <section className="container mx-auto max-w-7xl px-4 py-20 sm:py-32">
+                    <div className="text-center mb-16 sm:mb-24">
+                        <h2 className="text-xs font-bold uppercase tracking-widest text-brand-600 mb-4 px-4 py-1.5 bg-brand-50 inline-block rounded-full dark:bg-brand-900/30">Our Purpose</h2>
+                        <h3 className="text-3xl font-black text-foreground sm:text-5xl mt-2 leading-[1.1]">
+                            The internet is full of noise. <br className="hidden md:block" />
+                            <span className="text-gradient-brand">We filter it for you.</span>
+                        </h3>
+                    </div>
+
+                    <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
+                        {/* The Problem Card */}
+                        <div className="group relative bg-white border border-border rounded-3xl p-8 sm:p-12 overflow-hidden dark:bg-slate-900/50">
+                            <div className="absolute top-0 right-0 p-8 transform translate-x-4 -translate-y-4 transition-transform group-hover:translate-x-0 group-hover:translate-y-0 opacity-10">
+                                <Search className="size-32 text-foreground" />
+                            </div>
+
+                            <div className="relative z-10">
+                                <div className="inline-flex size-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 mb-8 dark:bg-slate-800">
+                                    <Icons.Ban className="size-6" />
+                                </div>
+                                <h4 className="text-2xl font-bold text-foreground mb-6">The Current Chaos</h4>
+                                <ul className="space-y-5">
+                                    {[
+                                        'Endless loops of unverified links',
+                                        'Misleading thumbnails and clickbait',
+                                        'Cluttered portals filled with ads',
+                                        'Critical updates buried in official gazettes',
+                                        'Anxiety due to outdated information'
+                                    ].map((item, i) => (
+                                        <li key={i} className="flex items-start gap-3 text-foreground-muted font-medium">
+                                            <Icons.XCircle className="size-5 text-slate-300 mt-0.5 shrink-0" />
+                                            <span>{item}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+
+                        {/* The Solution Card */}
+                        <div className="group relative bg-brand-600 rounded-3xl p-8 sm:p-12 overflow-hidden shadow-2xl shadow-brand-500/20">
+                            <div className="absolute top-0 right-0 p-8 transform translate-x-4 -translate-y-4 transition-transform group-hover:translate-x-0 group-hover:translate-y-0 opacity-10">
+                                <Icons.CheckCircle2 className="size-32 text-white" />
+                            </div>
+
+                            {/* Decorative background accent */}
+                            <div className="absolute bottom-0 left-0 w-full h-1/2 bg-linear-to-t from-black/20 to-transparent pointer-events-none" />
+
+                            <div className="relative z-10">
+                                <div className="inline-flex size-12 items-center justify-center rounded-2xl bg-white/10 text-brand-100 mb-8 backdrop-blur-sm border border-white/20">
+                                    <Icons.Rocket className="size-6" />
+                                </div>
+                                <h4 className="text-2xl font-bold text-white mb-6">The Guru Standard</h4>
+                                <ul className="space-y-5">
+                                    {[
+                                        '100% verified official PDF links',
+                                        'Ad-free, lightning-fast experience',
+                                        'Centralized hubs for every state & org',
+                                        'Instant alerts on Telegram & WhatsApp',
+                                        'Structured data for easy discovery'
+                                    ].map((item, i) => (
+                                        <li key={i} className="flex items-start gap-3 text-brand-50 font-medium">
+                                            <Icons.CheckCircle2 className="size-5 text-accent-400 mt-0.5 shrink-0" />
+                                            <span>{item}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </section>
 
                 {/* 4. How We Work (Process) */}
-                <section className="bg-surface-subtle py-20 border-y border-border">
+                <section className="relative overflow-hidden bg-slate-50 py-24 border-y border-border/50 dark:bg-slate-950/20">
                     <div className="container mx-auto max-w-7xl px-4">
-                        <div className="text-center mb-16">
-                            <h2 className="text-xs font-bold uppercase tracking-widest text-brand-600 mb-2">Transparency</h2>
-                            <h3 className="text-3xl font-extrabold text-foreground">How we process information</h3>
-                        </div>
-
-                        <div className="grid md:grid-cols-3 gap-10 md:gap-8 relative max-w-5xl mx-auto">
-                            {/* Connecting Line (Desktop only) */}
-                            <div className="hidden md:block absolute top-6 left-[15%] right-[15%] h-0 border-t-2 border-dashed border-border-strong z-0" />
-
-                            <div className="relative bg-surface rounded-xl p-8 border border-border shadow-sm z-10 text-center flex flex-col items-center">
-                                <div className="size-12 rounded-full bg-brand-50 dark:bg-brand-900/30 border-4 border-surface text-brand-600 dark:text-brand-400 flex items-center justify-center mb-6 shadow-sm">
-                                    <Search className="size-5" />
-                                </div>
-                                <h4 className="text-xl font-bold mb-3">1. Continuous Monitoring</h4>
-                                <p className="text-foreground-muted text-sm leading-relaxed max-w-xs">
-                                    Our team and automated systems monitor hundreds of official government portals, employment news, and regional notification boards 24/7.
+                        <div className="flex flex-col lg:flex-row gap-16 lg:items-center">
+                            <div className="lg:w-1/3 text-center lg:text-left">
+                                <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600 mb-4">Precision Pipeline</h2>
+                                <h3 className="text-3xl font-black text-foreground sm:text-4xl leading-tight">
+                                    How we process <br className="hidden lg:block" />
+                                    <span className="text-gradient-brand">the stream of data.</span>
+                                </h3>
+                                <p className="mt-6 text-foreground-muted leading-relaxed">
+                                    Our methodology ensures that every notification published on Result Guru is 100% verified, structured, and instantly actionable.
                                 </p>
                             </div>
 
-                            <div className="relative bg-surface rounded-xl p-8 border border-border shadow-sm z-10 text-center flex flex-col items-center">
-                                <div className="size-12 rounded-full bg-brand-50 dark:bg-brand-900/30 border-4 border-surface text-brand-600 dark:text-brand-400 flex items-center justify-center mb-6 shadow-sm">
-                                    <ShieldCheck className="size-5" />
-                                </div>
-                                <h4 className="text-xl font-bold mb-3">2. Strict Verification</h4>
-                                <p className="text-foreground-muted text-sm leading-relaxed max-w-xs">
-                                    Before anything is published, we verify the source. We extract exact dates, vacancy counts, and syllabus details directly from official PDFs.
-                                </p>
-                            </div>
-
-                            <div className="relative bg-surface rounded-xl p-8 border border-border shadow-sm z-10 text-center flex flex-col items-center">
-                                <div className="size-12 rounded-full bg-brand-50 dark:bg-brand-900/30 border-4 border-surface text-brand-600 dark:text-brand-400 flex items-center justify-center mb-6 shadow-sm">
-                                    <BellRing className="size-5" />
-                                </div>
-                                <h4 className="text-xl font-bold mb-3">3. Instant Formatting</h4>
-                                <p className="text-foreground-muted text-sm leading-relaxed max-w-xs">
-                                    We format the data into clean, readable pages and instantly dispatch alerts to our Telegram and WhatsApp communities.
-                                </p>
+                            <div className="lg:w-2/3 grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
+                                {[
+                                    {
+                                        step: '01',
+                                        title: 'Continuous Monitoring',
+                                        desc: 'Our team and automated systems monitor hundreds of official portals, employment news, and regional notification boards 24/7.',
+                                        icon: Search,
+                                    },
+                                    {
+                                        step: '02',
+                                        title: 'Strict Verification',
+                                        desc: 'Before publishing, we extract exact dates, vacancy counts, and syllabus details directly from official PDFs to ensure zero misinformation.',
+                                        icon: ShieldCheck,
+                                    },
+                                    {
+                                        step: '03',
+                                        title: 'Instant Formatting',
+                                        desc: 'We format the data into clean, readable pages and instantly dispatch alerts to our active student communities.',
+                                        icon: BellRing,
+                                    }
+                                ].map((item, i) => (
+                                    <div key={i} className="group flex flex-col sm:flex-row gap-6 p-8 bg-surface border border-border rounded-3xl transition-all hover:border-brand-500/30 hover:shadow-xl hover:shadow-brand-500/5">
+                                        <div className="flex shrink-0 items-center justify-center size-16 rounded-2xl bg-brand-50 text-brand-600 dark:bg-brand-900/30 dark:text-brand-400 font-black text-xl border border-brand-100 dark:border-brand-800">
+                                            {item.step}
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <item.icon className="size-5 text-accent-500" />
+                                                <h4 className="text-xl font-black text-foreground">{item.title}</h4>
+                                            </div>
+                                            <p className="text-foreground-muted leading-relaxed text-sm lg:text-base max-w-xl">
+                                                {item.desc}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
                 </section>
 
                 {/* 5. Core Values */}
-                <section className="container mx-auto max-w-7xl px-4 py-20 sm:py-28">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl font-extrabold text-foreground mb-4">What drives us forward</h2>
-                        <p className="text-foreground-muted max-w-2xl mx-auto">The principles that guide every feature we build and every update we publish.</p>
+                <section className="container mx-auto max-w-7xl px-4 py-24 sm:py-32">
+                    <div className="text-center mb-16 sm:mb-20">
+                        <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600 mb-4">Our Integrity</h2>
+                        <h3 className="text-3xl font-black text-foreground sm:text-4xl">What drives us forward</h3>
                     </div>
 
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {[
-                            { icon: Zap, title: 'Lightning Fast', desc: 'We optimize our platform to load instantly, even on slower 3G networks in rural areas.' },
-                            { icon: ShieldCheck, title: 'Uncompromising Truth', desc: 'Trust is our currency. We never publish clickbait or unverified rumors.' },
-                            { icon: Target, title: 'Highly Organized', desc: 'Information is categorized cleanly by state, qualification, and organization for easy discovery.' },
-                            { icon: Users, title: 'Student First', desc: 'No intrusive pop-up ads or forced redirects. We respect your screen and your time.' },
-                        ].map((item) => {
+                            { icon: Zap, title: 'Lightning Fast', desc: 'Optimized to load instantly, ensuring critical updates reach you without delay, even on limited networks.' },
+                            { icon: ShieldCheck, title: 'Strictly Verified', desc: 'Trust is our currency. We never publish rumors; every update is cross-referenced with official gazettes.' },
+                            { icon: Target, title: 'Highly Organized', desc: 'Siloed data by state, qualification, and agency makes finding specific notifications effortless.' },
+                            { icon: Users, title: 'Student First', desc: 'No intrusive pop-ups or forced redirects. We respect your attention and focus by Keeping it 100% clean.' },
+                        ].map((item, i) => {
                             const Icon = item.icon
                             return (
-                                <div key={item.title} className="group rounded-xl border border-border bg-surface p-6 sm:p-8 transition-colors hover:border-brand-300 hover:shadow-md">
-                                    <div className="mb-5 inline-flex size-12 items-center justify-center rounded-xl bg-background-subtle text-foreground border border-border group-hover:bg-brand-50 group-hover:text-brand-600 group-hover:border-brand-200 transition-colors dark:group-hover:bg-brand-900/40 dark:group-hover:border-brand-700 dark:group-hover:text-brand-400">
-                                        <Icon className="size-5" />
+                                <div key={i} className="group relative bg-surface border border-border rounded-3xl p-8 transition-all hover:border-brand-500/30 hover:shadow-xl dark:hover:bg-brand-900/10">
+                                    <div className="mb-6 inline-flex size-14 items-center justify-center rounded-2xl bg-slate-50 text-foreground border border-border group-hover:bg-brand-50 group-hover:text-brand-600 group-hover:border-brand-200 transition-colors dark:bg-slate-900 dark:group-hover:bg-brand-900/40 dark:group-hover:border-brand-700 dark:group-hover:text-brand-400">
+                                        <Icon className="size-6 stroke-[1.5]" />
                                     </div>
-                                    <h3 className="mb-2 text-lg font-bold text-foreground">{item.title}</h3>
+                                    <h4 className="mb-3 text-xl font-black text-foreground">{item.title}</h4>
                                     <p className="text-sm text-foreground-muted leading-relaxed">{item.desc}</p>
                                 </div>
                             )
@@ -199,25 +278,27 @@ export default function AboutPage() {
                     </div>
                 </section>
 
-                {/* 6. What We Cover Grid */}
-                <section className="bg-surface-subtle py-20 border-y border-border">
-                    <div className="container mx-auto max-w-4xl px-4">
-                        <div className="text-center mb-12">
-                            <h2 className="text-3xl font-extrabold text-foreground mb-4">A complete ecosystem</h2>
-                            <p className="text-foreground-muted">From the moment a notification drops to the day you download your joining letter, we organize the entire lifecycle.</p>
+                {/* 6. A Complete Ecosystem */}
+                <section className="bg-slate-50 py-24 border-y border-border/50 dark:bg-slate-950/20">
+                    <div className="container mx-auto max-w-7xl px-4">
+                        <div className="text-center mb-16 sm:mb-20">
+                            <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600 mb-4">Comprehensive Coverage</h2>
+                            <h3 className="text-3xl font-black text-foreground sm:text-4xl">A complete student ecosystem.</h3>
                         </div>
 
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-                            {ECOSYSTEM_ITEMS.map((nav) => {
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                            {ECOSYSTEM_ITEMS.map((nav, i) => {
                                 const IconComponent = nav.icon ? (Icons as any)[nav.icon] : FileText
                                 return (
                                     <Link
-                                        key={nav.href}
+                                        key={i}
                                         href={nav.href}
-                                        className="bg-surface border border-border rounded-xl p-5 flex flex-col items-center justify-center gap-4 hover:border-brand-400 hover:bg-brand-50 transition-colors text-center shadow-sm dark:hover:bg-brand-950/30 dark:hover:border-brand-700"
+                                        className="bg-surface border border-border rounded-2xl p-6 flex flex-col items-center justify-center gap-4 hover:border-brand-500/50 hover:bg-brand-50 transition-all text-center shadow-sm dark:hover:bg-brand-950/30 dark:hover:border-brand-700 active:scale-95 group"
                                     >
-                                        <IconComponent className="size-8 stroke-[1.5] text-brand-600 dark:text-brand-400 opacity-80" />
-                                        <span className="text-sm font-bold text-foreground">{nav.label}</span>
+                                        <div className="size-12 rounded-xl bg-slate-50 flex items-center justify-center text-brand-600 dark:bg-slate-900 dark:text-brand-400 group-hover:bg-white dark:group-hover:bg-brand-900 transition-colors">
+                                            <IconComponent className="size-6 stroke-[1.5]" />
+                                        </div>
+                                        <span className="text-xs font-bold text-foreground-muted group-hover:text-brand-700 dark:group-hover:text-brand-300 transition-colors tracking-tight">{nav.label}</span>
                                     </Link>
                                 )
                             })}
@@ -225,51 +306,15 @@ export default function AboutPage() {
                     </div>
                 </section>
 
-                {/* 7. The Guarantee */}
-                <section className="container mx-auto max-w-4xl px-4 py-20">
-                    <div className="rounded-2xl bg-brand-600 p-8 md:p-12 text-center text-white relative overflow-hidden shadow-xl">
-                        <div className="relative z-10">
-                            <ShieldCheck className="size-12 mx-auto mb-6 text-brand-100" />
-                            <h2 className="text-2xl md:text-3xl font-extrabold mb-4">Our Guarantee to You</h2>
-                            <p className="text-brand-50 text-lg md:text-xl font-medium leading-relaxed max-w-2xl mx-auto opacity-90">
-                                No misleading thumbnails. No "Click Here to Download" loops. No hidden fees. Just direct, verified access to official government links and honest information.
-                            </p>
-                        </div>
-                    </div>
-                </section>
-
-                {/* 8. CTA */}
-                <section className="pt-8 pb-2">
-                    <div className="container mx-auto max-w-5xl px-4">
-                        <div className="border border-border bg-surface rounded-2xl p-8 sm:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-sm">
-                            <div className="text-center md:text-left">
-                                <h2 className="text-2xl font-extrabold text-foreground mb-3">Join millions of prepared aspirants</h2>
-                                <p className="text-foreground-muted max-w-md mx-auto md:mx-0">
-                                    Get instant alerts on your phone the minute a major notification or result is declared. Be the first to know.
-                                </p>
-                            </div>
-                            <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto mt-4 md:mt-0">
-                                <a
-                                    href="https://t.me/resultguru247"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 hover:bg-brand-700 px-6 py-3.5 text-sm font-bold text-white transition-all shadow-md shadow-brand-500/10 w-full sm:w-auto whitespace-nowrap"
-                                >
-                                    Join Telegram Channel
-                                </a>
-                                <a
-                                    href="https://whatsapp.com/channel/0029Vb7XUqn1SWt7c9kqCV3I"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 hover:bg-brand-700 px-6 py-3.5 text-sm font-bold text-white transition-all shadow-md shadow-brand-500/10 w-full sm:w-auto whitespace-nowrap"
-                                >
-                                    Join WhatsApp Group
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
+                {/* Standardized Institutional CTA */}
+                <InstitutionalCTA 
+                    badge="Zero-Noise Guarantee"
+                    title="India's Most Trusted Notification Pipeline."
+                    description="No misleading thumbnails. No 'Download' loops. No hidden fees. Just direct, verified access to official government links and honest information on every device."
+                    primaryCTA={{ label: "Join Telegram Community", href: "https://t.me/resultguru247" }}
+                    secondaryCTA={{ text: "Prefer WhatsApp?", actionLabel: "Join Channel", href: "https://whatsapp.com/channel/0029Vb7XUqn1SWt7c9kqCV3I" }}
+                    className="mb-24"
+                />
             </article>
         </>
     )

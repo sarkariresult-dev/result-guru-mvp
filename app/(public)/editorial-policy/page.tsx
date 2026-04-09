@@ -1,9 +1,9 @@
 import { buildPageMetadata } from '@/lib/metadata'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
-import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { SITE } from '@/config/site'
-import { Landmark, ShieldCheck, Search, HelpCircle } from 'lucide-react'
+import { Landmark, ShieldCheck, Search, HelpCircle, CheckCircle2, Info, ChevronRight, Mail, AlertTriangle, Lock } from 'lucide-react'
+import { InstitutionalCTA } from '@/components/sections/InstitutionalCTA'
 
 export const metadata = buildPageMetadata({
     title: 'Editorial Policy - Accuracy & Trust',
@@ -21,96 +21,119 @@ export default function EditorialPolicyPage() {
         <>
             <JsonLd data={breadcrumbJsonLd} />
 
-            <article className="container mx-auto max-w-4xl px-4 py-12 sm:py-20 animate-in fade-in duration-500">
-                <Breadcrumb items={[{ label: 'Editorial Policy' }]} />
+            {/* 1. Immersive Brand Hero */}
+            <header className="relative bg-slate-50 border-b border-border/50 pt-20 pb-20 sm:pt-32 sm:pb-32 dark:bg-slate-950/20 overflow-hidden">
+                <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+                    <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-brand-500/5 blur-[120px]" />
+                    <div className="absolute top-[20%] -right-[5%] w-[30%] h-[30%] rounded-full bg-accent-500/5 blur-[100px]" />
+                </div>
 
-                <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl mb-6 mt-4">
-                    Editorial & Ethics Policy
-                </h1>
-                <p className="text-foreground-muted mb-12 text-lg">
-                    At {SITE.name}, we understand that for millions of students and job seekers in India, accuracy is everything. 
-                    Our mission is to provideverified, real-time government job updates and examination results. This policy outlines 
-                    how we maintain the highest standards of reliability.
-                </p>
+                <div className="container relative mx-auto max-w-7xl px-4 text-center">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-100 dark:bg-brand-900/30 dark:border-brand-800/50 mb-8">
+                        <ShieldCheck className="size-3.5 text-brand-600" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-brand-700 dark:text-brand-400">Institutional Protocol</span>
+                    </div>
+                    <h1 className="text-4xl font-black text-foreground sm:text-6xl mb-6">
+                        Editorial & <span className="text-gradient-brand">Ethics Policy.</span>
+                    </h1>
+                    <p className="mx-auto max-w-2xl text-lg text-foreground-muted font-medium leading-relaxed">
+                        The definitive standard for government notification verification and public news integrity in India.
+                    </p>
+                </div>
+            </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-                    <div className="p-6 rounded-2xl bg-brand-50/50 border border-brand-100 dark:bg-brand-900/10 dark:border-brand-900/20">
-                        <Search className="size-8 text-brand-600 mb-4" />
-                        <h3 className="font-bold text-lg mb-2">Rigorous Verification</h3>
-                        <p className="text-sm text-foreground-muted leading-relaxed">
-                            Every single notification, admit card link, and result published on our platform goes through a 3-step human verification process.
+            <main className="container mx-auto max-w-4xl px-4 py-20 sm:py-32">
+                {/* 2. Key Pillars Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
+                    <div className="group p-8 rounded-[2.5rem] bg-surface border border-border transition-all hover:border-brand-500/30 hover:shadow-2xl hover:shadow-brand-500/5">
+                        <div className="size-14 rounded-2xl bg-brand-50 flex items-center justify-center text-brand-600 dark:bg-brand-900/30 mb-6 border border-brand-100 dark:border-brand-800">
+                            <Search className="size-6 stroke-[2.5]" />
+                        </div>
+                        <h3 className="text-xl font-black text-foreground mb-3">Sarkari Verification</h3>
+                        <p className="text-foreground-muted leading-relaxed font-medium">
+                            Every notification, result link, and PDF published on {SITE.name} undergoes a strict human-in-the-loop verification protocol.
                         </p>
                     </div>
-                    <div className="p-6 rounded-2xl bg-emerald-50/50 border border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-900/20">
-                        <ShieldCheck className="size-8 text-emerald-600 mb-4" />
-                        <h3 className="font-bold text-lg mb-2">Original Sourcing</h3>
-                        <p className="text-sm text-foreground-muted leading-relaxed">
-                            We ONLY source data from official government (.gov.in, .nic.in, .ac.in) portals and gazette notifications.
+                    <div className="group p-8 rounded-[2.5rem] bg-surface border border-border transition-all hover:border-brand-500/30 hover:shadow-2xl hover:shadow-brand-500/5">
+                        <div className="size-14 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600 dark:bg-amber-900/30 mb-6 border border-amber-100 dark:border-amber-800">
+                            <Landmark className="size-6 stroke-[2.5]" />
+                        </div>
+                        <h3 className="text-xl font-black text-foreground mb-3">Official Sourcing</h3>
+                        <p className="text-foreground-muted leading-relaxed font-medium">
+                            We cross-reference data ONLY with verified .gov.in, .nic.in, or official gazette domains to ensure 100% legal authenticity.
                         </p>
                     </div>
                 </div>
 
-                <div className="prose prose-brand dark:prose-invert max-w-none space-y-12 text-foreground leading-relaxed">
-                    <section id="verification">
-                        <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
-                            <Landmark className="size-8 text-brand-600" />
-                            1. Our Verification Process
-                        </h2>
-                        <p>
-                            To ensure the information you receive is 100% accurate, {SITE.name} follows a strict protocol:
-                        </p>
-                        <ul className="list-disc pl-6 space-y-3">
-                            <li><strong>Step 1: Primary Source Discovery</strong> - Our specialized tracking systems monitor over 500+ official Indian government domains for new PDF uploads.</li>
-                            <li><strong>Step 2: Authenticity Check</strong> - Content specialists verify the digital signature or official seal on the notification PDF.</li>
-                            <li><strong>Step 3: Data Extraction</strong> - Accurate key dates, vacancy numbers, and application links are extracted and cross-checked by a second editor.</li>
-                        </ul>
-                    </section>
+                <div className="space-y-24">
+                    {/* 3. The Precision Pipeline */}
+                    <section id="verification" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+                        <div className="flex items-center gap-4 mb-10">
+                            <div className="size-10 rounded-xl bg-brand-600 text-white flex items-center justify-center font-black text-sm shadow-lg shadow-brand-500/30">
+                                01
+                            </div>
+                            <h2 className="text-3xl font-black text-foreground tracking-tight">The Precision Pipeline</h2>
+                        </div>
 
-                    <section id="ethics">
-                        <h2 className="text-3xl font-bold mb-6 flex items-center gap-3 text-emerald-600 dark:text-emerald-400">
-                             Ethics & Transparency
-                        </h2>
-                        <p>
-                            We hold ourselves to the highest ethical standards in digital publishing:
-                        </p>
-                        <div className="space-y-6">
-                            <div>
-                                <h4 className="font-bold text-lg">Independency & Fairness</h4>
-                                <p className="text-foreground-muted">
-                                    {SITE.name} is an independent platform. We are not affiliated with any government department. Our content is objective and focused strictly on presenting official facts.
-                                </p>
-                            </div>
-                            <div>
-                                <h4 className="font-bold text-lg">No "Clickbait" Policy</h4>
-                                <p className="text-foreground-muted">
-                                    We prohibit the use of sensationalist or misleading headlines. We prioritize the "Sarkari Result" format which is factual and direct.
-                                </p>
-                            </div>
-                            <div>
-                                <h4 className="font-bold text-lg">Corruption Prevention</h4>
-                                <p className="text-foreground-muted">
-                                    We do not accept payments to promote specific private coaching centers or institutions within our primary news feed. Any sponsored content is explicitly labeled.
-                                </p>
+                        <div className="prose prose-brand dark:prose-invert max-w-none">
+                            <p className="text-lg font-medium leading-relaxed text-foreground-muted mb-8">
+                                To eliminate misinterpretation and spread of unverified rumors, {SITE.name} follows a standardized three-tier validation workflow:
+                            </p>
+                            <div className="grid gap-6">
+                                {[
+                                    { title: 'Primary Discovery', desc: 'Our automated tracking systems monitor 500+ official Indian government domains for new PDF uploads every 15 minutes.' },
+                                    { title: 'Specialist Audit', desc: 'A content expert manually verifies the digital signature, source link, and official authority seal of the notification.' },
+                                    { title: 'Editor Cross-Check', desc: 'A senior editor validates key dates (Apply/End), vacancy numbers, and direct application links before the post goes live.' }
+                                ].map((step, idx) => (
+                                    <div key={idx} className="flex gap-6 p-6 rounded-3xl bg-slate-50 dark:bg-white/5 border border-border/50">
+                                        <CheckCircle2 className="size-6 text-brand-600 shrink-0 mt-1" />
+                                        <div>
+                                            <h4 className="font-black text-foreground mb-1">{step.title}</h4>
+                                            <p className="text-sm font-medium text-foreground-muted leading-relaxed">{step.desc}</p>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </section>
 
-                    <section id="corrections">
-                        <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
-                            <HelpCircle className="size-8 text-brand-600" />
-                            Corrections & Complaints
-                        </h2>
-                        <p>
-                            Despite our best efforts, errors may occur due to changes at the official source level. We are committed to correcting material errors promptly.
-                        </p>
-                        <p>
-                            If you find a discrepancy in a last date, vacancy number, or link, please contact our Editorial Team immediately at:
-                            <br />
-                            <a href="mailto:editorial@resultguru.co.in" className="text-brand-600 font-bold hover:underline">editorial@resultguru.co.in</a>
-                        </p>
+                    {/* 4. Ethics & Transparency */}
+                    <section id="ethics" className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
+                        <div className="flex items-center gap-4 mb-10">
+                            <div className="size-10 rounded-xl bg-brand-600 text-white flex items-center justify-center font-black text-sm shadow-lg shadow-brand-500/30">
+                                02
+                            </div>
+                            <h2 className="text-3xl font-black text-foreground tracking-tight">Ethics & Transparency</h2>
+                        </div>
+
+                        <div className="grid gap-12 sm:grid-cols-2">
+                            <div>
+                                <h4 className="text-lg font-black text-foreground mb-4">Zero-Noise Guarantee</h4>
+                                <p className="text-foreground-muted font-medium leading-relaxed">
+                                    We explicitly prohibit clickbait titles or misleading &quot;Breaking news&quot; alerts. If the source government website is down or a link is broken, we clearly label it as &quot;Official link pending&quot; to avoid student confusion.
+                                </p>
+                            </div>
+                            <div>
+                                <h4 className="text-lg font-black text-foreground mb-4">Anti-Corruption Standard</h4>
+                                <p className="text-foreground-muted font-medium leading-relaxed">
+                                    {SITE.name} is an independent platform. We do not accept payments to bias any recruitment notice or prioritize private entities over public interests.
+                                </p>
+                            </div>
+                        </div>
                     </section>
                 </div>
-            </article>
+            </main>
+            {/* Standardized Institutional CTA */}
+            <InstitutionalCTA
+                badge="Public Integrity Standard"
+                title="Corrections & Complaint Hub."
+                description="Despite our rigorous pipeline, official source changes can occur. We are committed to correcting material errors within 4 hours of notification."
+                primaryCTA={{ label: "Contact Editorial Team", href: "mailto:support@resultguru.co.in" }}
+                features={[
+                    { icon: AlertTriangle, label: "Report Data Error" },
+                    { icon: Mail, label: "Email Verification" }
+                ]}
+            />
         </>
     )
 }

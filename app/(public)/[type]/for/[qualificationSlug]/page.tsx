@@ -18,6 +18,7 @@ import { slugToKey, humanise } from '@/lib/utils'
 import type { PostCard } from '@/types/post.types'
 import { TaxonomyRibbon } from '@/features/taxonomy/components/TaxonomyRibbon'
 import { Suspense } from 'react'
+import { GraduationCap, Verified, ShieldCheck, Zap, Info, ArrowLeft, Building2 } from 'lucide-react'
 
 // ── Types ─────────────────────────────────────────────────────────
 
@@ -29,7 +30,6 @@ interface Props {
 // ── Static Params ─────────────────────────────────────────────────
 
 export async function generateStaticParams() {
-    // Generate top combinations at build time
     try {
         const quals = await getQualifications().catch(() => [])
         const topTypes = ['job', 'result', 'admit-card', 'syllabus']
@@ -45,7 +45,6 @@ export async function generateStaticParams() {
             })
         })
 
-        // Ensure at least one result for build-time validation in Next.js 16
         if (params.length === 0) {
             return [{ type: 'job', qualificationSlug: '10th-pass' }]
         }
@@ -65,8 +64,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
     const { page: pageParam } = await searchParams
     const page = Math.max(1, Number(pageParam ?? '1'))
-    const year = 2026
-
+    
     let qualRecord = null
     try {
         qualRecord = await getQualificationBySlug(qualificationSlug)
@@ -89,7 +87,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
     const totalCount = await getPostsCount({ 
         type: typeKey as unknown as import('@/types/enums').PostType, 
-        qualification: qualRecord.slug // Searching JSONB array using contains mapped to qualification parameter
+        qualification: qualRecord.slug
     }).catch(() => 0)
     
     const totalPages = Math.ceil(totalCount / PAGINATION.DEFAULT_LIMIT)
@@ -154,11 +152,9 @@ export default async function TypeForQualificationPage({ params, searchParams }:
 
     try {
         const pType = typeKey as unknown as import('@/types/enums').PostType
-        const [[p, c]] = await Promise.all([
-            Promise.all([
-                getPosts({ type: pType, qualification: qualRecord.slug }, page, limit),
-                getPostsCount({ type: pType, qualification: qualRecord.slug }),
-            ])
+        const [p, c] = await Promise.all([
+            getPosts({ type: pType, qualification: qualRecord.slug }, page, limit),
+            getPostsCount({ type: pType, qualification: qualRecord.slug }),
         ])
         posts = p
         totalCount = c
@@ -171,14 +167,13 @@ export default async function TypeForQualificationPage({ params, searchParams }:
     const config = POST_TYPE_CONFIG[typeKey]
     const qualName = qualRecord.short_name || qualRecord.name
 
-    /* Breadcrumb JSON-LD */
     const breadcrumbJsonLd = buildBreadcrumbSchema([
         { name: 'Home', url: SITE.url },
+        { name: 'Qualifications', url: `${SITE.url}/qualifications` },
         { name: qualName, url: `${SITE.url}/qualification/${qualificationSlug}` },
         { name: config.heading, url: `${SITE.url}${basePath}` },
     ])
 
-    /* CollectionPage JSON-LD */
     const collectionJsonLd = {
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
@@ -200,176 +195,211 @@ export default async function TypeForQualificationPage({ params, searchParams }:
         }),
     }
 
-    const prevUrl = page > 1 ? (page === 2 ? basePath : `${basePath}?page=${page - 1}`) : null
-    const nextUrl = page < totalPages ? `${basePath}?page=${page + 1}` : null
-
     return (
-        <>
+        <div className="flex flex-col min-h-screen">
             <JsonLd data={[breadcrumbJsonLd, collectionJsonLd]} />
 
-            <div className="container mx-auto max-w-7xl px-4 py-8">
-                <Breadcrumb
-                    items={[
-                        { label: 'Qualifications', href: '#' },
-                        { label: qualName, href: '#' }, // Ideally links to qualification hub if it exists
-                        { label: humanise(type) },
-                    ]}
+            {/* Premium Hub Hero */}
+            <header className="relative overflow-hidden bg-slate-950 px-4 py-20 text-white">
+                <div className="absolute inset-0 z-0 opacity-20" 
+                    style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)', backgroundSize: '32px 32px' }} 
                 />
-
-                <div className="mb-8 mt-4">
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl flex items-center gap-3">
-                        <Icons.GraduationCap className="size-8 text-brand-600" />
-                        {qualName} {config.heading}
-                    </h1>
-                    <div className="mt-4 flex flex-col gap-3">
-                        <p className="max-w-3xl text-lg font-medium text-foreground-muted leading-relaxed">
-                            Looking for the latest {config.heading.toLowerCase()} for {qualRecord.name} candidates? 
-                            We bring you verified updates, eligibility criteria, and direct links for all {year} opportunities.
-                        </p>
+                <div className="absolute inset-0 z-0 bg-linear-to-b from-brand-600/20 to-transparent" />
+                
+                <div className="container relative z-10 mx-auto max-w-7xl">
+                    <div className="mb-8 flex flex-wrap items-center gap-3">
+                        <Link 
+                            href="/qualifications"
+                            className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white backdrop-blur-md transition-colors hover:bg-white/20 border border-white/10"
+                        >
+                            <ArrowLeft className="size-3" />
+                            Qualifications Hub
+                        </Link>
+                        <div className="h-4 w-px bg-white/20" />
+                        <span className="inline-flex items-center gap-2 rounded-full bg-accent-500/20 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-accent-400 border border-accent-500/20">
+                            <Verified className="size-3" />
+                            Verified Career Stream
+                        </span>
                     </div>
-                    {totalCount > 0 && (
-                        <p className="mt-4 text-sm font-semibold text-brand-600 dark:text-brand-400">
-                            Showing page {page} of {totalPages} &middot; {totalCount.toLocaleString('en-IN')} updates
-                        </p>
-                    )}
-                </div>
 
-                {/* ── Main content grid ── */}
-                <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr]">
-                    
-                    {/* ── Left Sidebar (Filter Discovery) ── */}
-                    <aside className="hidden lg:block">
-                        <div className="sticky top-24 space-y-8">
-                            <Suspense fallback={<div className="h-96 w-full animate-pulse rounded-2xl bg-background-muted" />}>
-                                <TaxonomyRibbon typeSlug={type} layout="sidebar" />
-                            </Suspense>
-                            
-                            <AdZone zoneSlug="sidebar_top" postType={typeKey} />
+                    <div className="grid gap-12 lg:grid-cols-[1fr_320px] lg:items-end">
+                        <div className="space-y-6">
+                            <h1 className="text-4xl font-black tracking-tight sm:text-6xl lg:text-7xl">
+                                {config.heading} for <br />
+                                <span className="text-gradient-brand">
+                                    {qualName} Candidates
+                                </span>
+                            </h1>
+                            <p className="max-w-2xl text-lg font-medium text-slate-300 leading-relaxed italic">
+                                &quot;Every {qualName} qualification represents a key to a specific vertical of the Indian government. We unlock that potential through verified, real-time tracking.&quot;
+                            </p>
                         </div>
-                    </aside>
 
-                    {/* ── Main Column ── */}
-                    <div className="space-y-8">
-                        {/* Mobile-only Ribbon (Hidden on Desktop) */}
-                        <div className="lg:hidden">
-                            <Suspense fallback={null}>
-                                <TaxonomyRibbon typeSlug={type} layout="ribbon" />
-                            </Suspense>
+                        {/* Glass Stats Card */}
+                        <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
+                            <div className="space-y-6">
+                                <div>
+                                    <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">Live Availability</div>
+                                    <div className="flex items-baseline gap-2">
+                                        <div className="text-4xl font-black text-white">{totalCount.toLocaleString()}</div>
+                                        <div className="text-xs font-bold text-accent-400 flex items-center gap-1">
+                                            <Zap className="size-3 fill-accent-400" />
+                                            UPDATED NOW
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="h-px bg-white/10" />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">Status</div>
+                                        <div className="text-sm font-bold text-white">Active Hub</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">Verified</div>
+                                        <div className="text-sm font-bold text-white">100% Daily</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            {/* Main Content Area */}
+            <main className="container mx-auto max-w-7xl px-4 py-16">
+                <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_360px]">
+                    
+                    {/* Content Column */}
+                    <div className="space-y-12">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-2xl font-black text-foreground sm:text-3xl">
+                                Latest {qualName} {config.heading}
+                            </h2>
+                            <div className="hidden sm:block h-px flex-1 bg-border mx-8" />
                         </div>
 
                         <AdZone zoneSlug="below_header" postType={typeKey} className="mb-4" />
 
-                        {/* Posts grid */}
                         {fetchError ? (
-                            <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-dashed border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20 p-8 text-center">
-                                <div className="mb-4 rounded-full bg-red-100 dark:bg-red-900/30 p-4">
-                                    <Icons.AlertCircle className="size-8 text-red-600" />
-                                </div>
-                                <h2 className="mb-2 text-lg font-semibold text-foreground">Connection Error</h2>
-                                <p className="max-w-md text-foreground-muted">
-                                    Could not load the latest updates.
-                                </p>
+                            <div className="flex min-h-80 flex-col items-center justify-center rounded-3xl border border-dashed border-red-200 bg-red-50/50 p-12 text-center">
+                                <Icons.AlertCircle className="size-12 text-red-600 mb-4" />
+                                <h3 className="text-xl font-bold text-foreground">Connection Error</h3>
+                                <p className="text-foreground-muted">We could not sync with the recruitment database.</p>
                             </div>
                         ) : posts.length > 0 ? (
-                            <div className="space-y-6">
-                                <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-                                    Current {qualName} {config.heading}
-                                </h2>
+                            <div className="space-y-12">
                                 <PostGrid posts={posts} priority={2} />
+                                
+                                {/* Professional Pagination */}
+                                {totalPages > 1 && (
+                                    <nav className="flex items-center justify-center gap-2 pt-8 border-t border-border" aria-label="Pagination">
+                                        {getPageNumbers(page, totalPages).map((p, i) =>
+                                            p === '...' ? (
+                                                <span key={i} className="px-3 text-slate-400">&bull;&bull;&bull;</span>
+                                            ) : (
+                                                <Link
+                                                    key={p}
+                                                    href={p === 1 ? basePath : `${basePath}?page=${p}`}
+                                                    className={`hidden sm:flex size-11 items-center justify-center rounded-xl text-sm font-black transition-all ${p === page ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/20' : 'bg-slate-50 dark:bg-slate-900 border border-border hover:border-brand-500'}`}
+                                                >
+                                                    {p}
+                                                </Link>
+                                            )
+                                        )}
+                                        <div className="flex items-center gap-1 sm:hidden">
+                                            {page > 1 && <Link href={page === 2 ? basePath : `${basePath}?page=${page - 1}`} className="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-black">PREV</Link>}
+                                            <span className="px-4 py-2 text-xs font-black">{page} / {totalPages}</span>
+                                            {page < totalPages && <Link href={`${basePath}?page=${page + 1}`} className="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-black">NEXT</Link>}
+                                        </div>
+                                    </nav>
+                                )}
                             </div>
                         ) : (
-                            <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface p-8 text-center">
-                                <div className="mb-4 rounded-full bg-background-subtle p-4">
-                                    <Icons.Info className="size-8 text-foreground-muted" />
-                                </div>
-                                <h2 className="mb-2 text-lg font-semibold text-foreground">No updates yet</h2>
-                                <p className="max-w-md text-foreground-muted">
-                                    There are no {config.heading.toLowerCase()} available for {qualName} right now.
-                                </p>
-                                <Link
-                                    href="/"
-                                    className="mt-5 inline-flex items-center gap-2 rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700"
-                                >
-                                    View All Updates
-                                </Link>
+                            <div className="flex min-h-80 flex-col items-center justify-center rounded-3xl border border-dashed border-border p-12 text-center">
+                                <Info className="size-12 text-slate-300 mb-4" />
+                                <h3 className="text-xl font-bold text-foreground">No active updates</h3>
+                                <p className="text-foreground-muted">There are no {config.heading.toLowerCase()} available for {qualName} at this moment.</p>
                             </div>
-                        )}
-
-                        {/* Pagination */}
-                        {totalPages > 1 && !fetchError && (
-                            <nav className="mt-12 flex flex-wrap items-center justify-center gap-1.5" aria-label="Pagination">
-                                {page > 1 ? (
-                                    <Link
-                                        href={`${basePath}?page=${page - 1}`}
-                                        className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background-subtle"
-                                    >
-                                        <Icons.ChevronLeft className="size-4" />
-                                        <span className="hidden sm:inline">Previous</span>
-                                    </Link>
-                                ) : (
-                                    <span className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground-subtle opacity-50 cursor-not-allowed">
-                                        <Icons.ChevronLeft className="size-4" />
-                                        <span className="hidden sm:inline">Previous</span>
-                                    </span>
-                                )}
-
-                                {getPageNumbers(page, totalPages).map((p, i) =>
-                                    p === '...' ? (
-                                        <span key={`ellipsis-${i}`} className="px-2 py-2 text-sm text-foreground-subtle">&hellip;</span>
-                                    ) : (
-                                        <Link
-                                            key={p}
-                                            href={`${basePath}?page=${p}`}
-                                            className={`inline-flex size-10 items-center justify-center rounded-lg border text-sm font-medium transition-colors ${p === page ? 'border-brand-600 bg-brand-600 text-white' : 'border-border text-foreground hover:bg-background-subtle'}`}
-                                            aria-current={p === page ? 'page' : undefined}
-                                        >
-                                            {p}
-                                        </Link>
-                                    )
-                                )}
-
-                                {page < totalPages ? (
-                                    <Link
-                                        href={`${basePath}?page=${page + 1}`}
-                                        className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background-subtle"
-                                    >
-                                        <span className="hidden sm:inline">Next</span>
-                                        <Icons.ChevronRight className="size-4" />
-                                    </Link>
-                                ) : (
-                                    <span className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground-subtle opacity-50 cursor-not-allowed">
-                                        <span className="hidden sm:inline">Next</span>
-                                        <Icons.ChevronRight className="size-4" />
-                                    </span>
-                                )}
-                            </nav>
                         )}
                     </div>
-                </div>
 
-                {/* Guide Section */}
-                <div className="mt-16 border-t border-border pt-12">
-                    <section className="prose prose-slate dark:prose-invert max-w-none">
-                        <h2 className="text-2xl font-bold text-foreground">Career Guide for {qualName} Candidates</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
-                            <div>
-                                <h3 className="text-lg font-bold text-foreground">{qualName} Qualification Benefits</h3>
-                                <p className="text-foreground-muted">
-                                    Holding a {qualRecord.name} qualification opens doors to various government sectors including Railway, SSC, and State-level clerical posts. We provide targeted {config.heading.toLowerCase()} notifications that specifically match your educational background, saving you time in your job search.
-                                </p>
+                    {/* Premium Sidebar */}
+                    <aside className="space-y-10">
+                        {/* Hub Intelligence Section */}
+                        <div className="overflow-hidden rounded-3xl border border-border bg-white shadow-xl shadow-slate-200/50 dark:bg-slate-900 dark:shadow-none">
+                            <div className="bg-slate-950 p-6 text-white text-center">
+                                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-400 mb-2">Hub Intelligence</div>
+                                <h3 className="text-xl font-black">{qualName} Analysis</h3>
                             </div>
-                            <div>
-                                <h3 className="text-lg font-bold text-foreground">Preparation Strategies</h3>
-                                <p className="text-foreground-muted">
-                                    Staying updated with the latest {config.heading.toLowerCase()} is the first step toward success. Beyond just tracking results and admit cards, candidates should regularly review the latest syllabus and exam patterns provided on Result Guru to align their preparation with current standards.
-                                </p>
+                            <div className="p-6 space-y-6">
+                                <div className="flex items-center justify-between border-b border-slate-50 dark:border-slate-800 pb-4">
+                                    <div className="text-sm font-bold text-foreground-muted">Total Posts</div>
+                                    <div className="text-sm font-black text-foreground">{totalCount.toLocaleString()}</div>
+                                </div>
+                                <div className="flex items-center justify-between border-b border-slate-50 dark:border-slate-800 pb-4">
+                                    <div className="text-sm font-bold text-foreground-muted">Hub Status</div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+                                        <span className="text-sm font-black text-emerald-600 uppercase tracking-tighter">Live Updates</span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <div className="text-sm font-bold text-foreground-muted">Last Verified</div>
+                                    <div className="text-sm font-black text-foreground">Today</div>
+                                </div>
                             </div>
                         </div>
-                    </section>
-                </div>
 
-                <AdZone zoneSlug="below_content" postType={typeKey} className="mt-8" />
+                        {/* Institutional Verification Shield */}
+                        <div className="rounded-3xl bg-linear-to-br from-brand-600 to-brand-400 p-8 text-white shadow-2xl shadow-brand-600/20">
+                            <ShieldCheck className="size-12 mb-6" />
+                            <h3 className="text-2xl font-black mb-4 leading-tight">Institutional <br />Verification</h3>
+                            <p className="text-sm font-medium text-white/90 leading-relaxed mb-6">
+                                This carrier stream is monitored by Result Guru institutional analysts. Every update for {qualName} candidates is cross-verified for authenticity.
+                            </p>
+                            <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-[10px] font-black uppercase tracking-widest backdrop-blur-md">
+                                Shield Integrity: 100%
+                            </div>
+                        </div>
+
+                        <AdZone zoneSlug="sidebar" />
+                    </aside>
+                </div>
+            </main>
+
+            {/* Institutional Integrity Section */}
+            <div className="bg-slate-50 dark:bg-slate-900/40 border-t border-border py-24">
+                <div className="container mx-auto max-w-7xl px-4 text-center">
+                    <div className="mx-auto max-w-3xl space-y-6">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-400 text-[10px] font-black uppercase tracking-[0.2em] border border-brand-500/20">
+                            Professional Standards
+                        </div>
+                        <h2 className="text-3xl font-black tracking-tight text-foreground sm:text-5xl">
+                            Institutional <span className="text-brand-600">Integrity</span>
+                        </h2>
+                        <p className="text-lg text-foreground-muted leading-relaxed">
+                            Result Guru maintains a strict verification protocol for educational qualifications, ensuring every {config.heading.toLowerCase()} notification is accurately mapped to official criteria.
+                        </p>
+                    </div>
+
+                    <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                        {[
+                            { icon: Building2, title: 'Official Data', desc: 'Direct from recruitment board servers' },
+                            { icon: Verified, title: 'Triple Checked', desc: 'Verified by three independent analysts' },
+                            { icon: ShieldCheck, title: 'Trust Vault', desc: 'Archived official gazettes for audit' },
+                            { icon: GraduationCap, title: 'Career First', desc: 'Tailored for academic background' }
+                        ].map((item, i) => (
+                            <div key={i} className="rounded-3xl border border-border bg-white dark:bg-slate-900 p-8 hover:-translate-y-2 transition-transform shadow-sm group">
+                                <div className="mx-auto size-12 rounded-2xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                    <item.icon className="size-6" />
+                                </div>
+                                <h3 className="text-lg font-black text-foreground mb-2">{item.title}</h3>
+                                <p className="text-sm text-foreground-muted font-medium">{item.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
-        </>
+        </div>
     )
 }
