@@ -3,7 +3,7 @@ import { unstable_cache } from 'next/cache'
 import { cache } from 'react'
 import { createStaticClient } from '@/lib/supabase/static'
 import { createServerClient } from '@/lib/supabase/server'
-import type { PostCard, Post, PostFilters, PostDetail } from '@/types/post.types'
+import type { PostCard, Post, PostFilters, PostDetail, PostTag } from '@/types/post.types'
 import { toPostCardDTO, toAdminPostDTO } from '@/lib/dal/mappers'
 import { PAGINATION } from '@/config/constants'
 

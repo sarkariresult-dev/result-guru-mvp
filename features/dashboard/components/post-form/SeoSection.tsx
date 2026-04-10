@@ -4,7 +4,6 @@
 'use client'
 
 import { useState } from 'react'
-import { AlertTriangle, CheckCircle2, X } from 'lucide-react'
 import { usePostForm } from './PostFormContext'
 import { Panel, Field, inputCls } from './primitives'
 
