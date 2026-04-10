@@ -27,7 +27,7 @@ SELECT
   c.name AS category_name, c.slug AS category_slug,
   
   p.featured_image, p.featured_image_alt, p.featured_image_width, p.featured_image_height, p.notification_pdf,
-  p.admit_card_link, p.result_link, p.answer_key_link,
+  p.primary_link,
   p.faq, p.related_post_ids,
   
   p.meta_title, p.meta_description, p.meta_keywords, p.focus_keyword, p.secondary_keywords,

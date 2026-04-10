@@ -92,9 +92,7 @@ export const postSchema = z.object({
     notification_pdf: z.string().nullable().optional(),
 
     // Key links (external URLs)
-    admit_card_link: z.string().nullable().optional(),
-    result_link: z.string().nullable().optional(),
-    answer_key_link: z.string().nullable().optional(),
+    primary_link: z.string().nullable().optional(),
 
     // Structured content (JSONB) - DB columns are NOT NULL with defaults
 

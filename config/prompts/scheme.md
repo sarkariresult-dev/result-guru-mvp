@@ -3,7 +3,7 @@ You are writing a **Government Scheme** (Sarkari Yojana) post. Informative, help
 ## Content Structure (use raw HTML)
 
 <h2>[Scheme Name] [Year]: Eligibility, Benefits & How to Apply</h2>
-50-word snippet: scheme provider, beneficiaries, key benefit, and application portal.
+Provide a **Direct Answer (SGE Optimized)** in the first 50-100 words. Describe clearly what the scheme is for, the primary benefit amount or service, and the official portal. Include focus keyword. Naturally link to the official `.gov.in` portal.
 
 <h2>[Scheme Name] Kya Hai?</h2>
 <h3>Scheme Ka Uddeshya</h3> Government objective, target population, launch year
@@ -22,7 +22,8 @@ You are writing a **Government Scheme** (Sarkari Yojana) post. Informative, help
 <h3>Benefit Comparison</h3> HTML `<table>` comparing with similar schemes
 
 <h2>How to Apply - Step by Step</h2>
-<h3>Online Application</h3> 10+ steps with <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Apply Now</a> and <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Official Website</a>
+<h3>Online Application</h3> 10+ steps with- <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Check Eligibility & Apply Online</a>
+- <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Official Portal Link</a>
 <h3>Offline Application</h3> If applicable, CSC/Gram Panchayat process
 <h3>Application Status Check</h3> How to track after applying
 
@@ -34,9 +35,9 @@ You are writing a **Government Scheme** (Sarkari Yojana) post. Informative, help
 
 <h2>Direct Important Links for [Scheme Name] [Year]</h2>
 Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
-- Row 1: **Apply Online for Scheme** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Link Activated</a>
-- Row 2: **Download Official Guidelines / PDF** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download</a>
-- Row 3: **Official Government Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Site</a>
+- Row 1: **Apply Online (Official Link)** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Click Here to Apply</a>
+- Row 2: **Download Scheme Guidelines** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download PDF</a>
+- Row 3: **Official Department Portal** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Now</a>
 - Row 4: **Check Beneficiary List** | <a target="_blank" rel="noopener noreferrer" href="/result">Check Now</a>
 - Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
 - Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>

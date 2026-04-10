@@ -197,15 +197,15 @@ const aiResponseSchema = {
         },
         content: {
             type: Type.STRING,
-            description: 'Full HTML content (1200+ words). Uses [officialWebsiteUrl], [applyOnlineUrl], [notificationPdfUrl] placeholders. MUST start with a Quick Summary Box.',
+            description: 'Full HTML content (1200+ words). Uses [officialWebsiteUrl], [primaryLink], [notificationPdfUrl] placeholders. MUST start with a Quick Summary Box.',
         },
         officialWebsiteUrl: {
             type: Type.STRING,
             description: 'Official domain URL. REQUIRED.',
         },
-        applyOnlineUrl: {
+        primaryLink: {
             type: Type.STRING,
-            description: 'Direct recruitment/apply link. REQUIRED.',
+            description: 'Primary action link (Apply, Check Result, Download, etc.). REQUIRED.',
         },
         notificationPdfUrl: {
             type: Type.STRING,
@@ -237,7 +237,7 @@ const aiResponseSchema = {
         'focusKeyword', 'secondaryKeywords', 'longTailKeywords', 'semanticKeywords',
         'suggestedTags', 'suggestedQualifications',
         'excerpt', 'content',
-        'officialWebsiteUrl', 'applyOnlineUrl', 'notificationPdfUrl',
+        'officialWebsiteUrl', 'primaryLink', 'notificationPdfUrl',
         'faq', 'readabilityScore',
     ],
 }

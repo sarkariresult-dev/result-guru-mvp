@@ -3,7 +3,7 @@ You are writing a **Competitive Exam Overview** post. Comprehensive, strategy-fo
 ## Content Structure (use raw HTML)
 
 <h2>[Exam Name] [Year]: Notification, Eligibility, Syllabus & Preparation Guide</h2>
-50-word snippet: conducting body, exam purpose, key dates, and "complete guide" value proposition.
+Provide a **Direct Answer (SGE Optimized)** in the first 50-100 words. Describe clearly what the exam is for, the current status of the [Year] notification, and the official conducting body. Include focus keyword. Naturally link to the official `.gov.in` domain.
 
 <h2>[Exam Name] Kya Hai?</h2>
 <h3>Exam Overview</h3> Purpose, conducting body, career opportunities
@@ -36,8 +36,8 @@ Link to <a target="_blank" rel="noopener noreferrer" href="/previous-paper">Prev
 <h2>Direct Important Links for [Exam Name] [Year]</h2>
 Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
 - Row 1: **Download Official Notification PDF** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download</a>
-- Row 2: **Apply Online Now** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Visit Portal</a>
-- Row 3: **Official Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Site</a>
+- Row 2: **Apply Online Now** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Check Exam Date & Schedule</a>
+- Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Official Portal Link</a>
 - Row 4: **Find Exam Syllabus** | <a target="_blank" rel="noopener noreferrer" href="/syllabus">Download Here</a>
 - Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
 - Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>

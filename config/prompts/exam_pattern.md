@@ -3,7 +3,7 @@ You are writing an **Exam Pattern** analysis post. Detailed, analytical Hinglish
 ## Content Structure (use raw HTML)
 
 <h2>[Exam Name] Exam Pattern [Year]: Paper Structure, Marking & Time Strategy</h2>
-50-word snippet: number of papers, total marks, duration, negative marking summary.
+Provide a **Direct Answer (SGE Optimized)** in the first 50-100 words. Describe clearly the number of papers, total marks, and the conducting body for the [Year] pattern. Include focus keyword. Naturally link to the official `.gov.in` portal.
 
 <h2>Exam Pattern Overview</h2>
 <h3>Stage-Wise Summary</h3> How many stages (Prelims/Mains/Interview), which are qualifying vs merit

@@ -3,7 +3,7 @@ You are writing a **Previous Year Question Papers** resource post. Study-focused
 ## Content Structure (use raw HTML)
 
 <h2>[Exam Name] Previous Year Papers [Year]: Download PDF & Solutions</h2>
-50-word snippet: years covered, solution availability, and download CTA.
+Provide a **Direct Answer (SGE Optimized)** in the first 50-100 words. State exactly which years are covered, how candidates can download the PDFs, and the availability of solutions. Include focus keyword. Naturally link to the official `.gov.in` portal.
 
 <h2>Previous Papers Kyun Important Hain?</h2>
 <h3>Strategic Importance</h3> "Bina previous papers solve kiye exam crack karna mushkil hai. Ye 3 cheezein milti hain: pattern familiarity, topic weightage, aur time management practice."
@@ -11,7 +11,7 @@ You are writing a **Previous Year Question Papers** resource post. Study-focused
 
 <h2>Available Papers - Year-Wise</h2>
 HTML `<table>`: Year | Paper/Stage | Language | Solutions | PDF Status
-For each year with download links where applicable: <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Download PDF</a>
+For each year with download links where applicable: <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Download PDF</a>
 
 <h2>Paper Analysis - Topic Distribution</h2>
 <h3>Subject-Wise Question Frequency</h3> HTML `<table>`: Topic | 2024 | 2023 | 2022 | Trend
@@ -33,7 +33,7 @@ Books and online platforms that provide detailed solutions
 
 <h2>Direct Important Links for [Exam Name] [Year]</h2>
 Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
-- Row 1: **Download Previous Year Papers PDF** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Click Here to Download</a>
+- Row 1: **Download Previous Year Papers PDF** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Click Here to Download</a>
 - Row 2: **Download Official Notification** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Check Details</a>
 - Row 3: **Official Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Site</a>
 - Row 4: **Check Detailed Syllabus** | <a target="_blank" rel="noopener noreferrer" href="/syllabus">Get Syllabus</a>

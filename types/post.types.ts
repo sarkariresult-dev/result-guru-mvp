@@ -50,9 +50,7 @@ export interface Post {
     notification_pdf: string | null    // Storage path - build URL via helper
 
     // Key links (external URLs, type-specific)
-    admit_card_link: string | null
-    result_link: string | null
-    answer_key_link: string | null
+    primary_link: string | null
 
     // Structured content (JSONB)
 

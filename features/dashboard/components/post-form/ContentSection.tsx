@@ -6,7 +6,7 @@
 import dynamic from 'next/dynamic'
 import { Plus } from 'lucide-react'
 import { usePostForm } from './PostFormContext'
-import { inputCls } from './primitives'
+import { inputCls, Field } from './primitives'
 import { TYPE_CONFIG } from './type-config'
 
 
@@ -35,57 +35,39 @@ export function ContentSection({ authUserId }: ContentSectionProps) {
 
     return (
         <div className="space-y-5">
-            {/* Excerpt */}
-            <div>
-                <div className="mb-1 flex items-center justify-between">
-                    <label htmlFor="post-excerpt" className="text-sm font-semibold text-foreground">
-                        Excerpt
-                    </label>
-                    <span className="text-[10px] text-foreground-subtle">
-                        {state.excerpt.length}/500
-                    </span>
-                </div>
+            <Field label="Post Excerpt" counter={`${state.excerpt.length}/500`} hint="Brief summary for search snippets and cards">
                 <textarea
                     id="post-excerpt"
                     value={state.excerpt}
                     onChange={e => dispatch({ type: 'SET_FIELD', field: 'excerpt', value: e.target.value })}
-                    placeholder="Write a brief excerpt for listing cards and meta descriptions…"
+                    placeholder="Write a brief excerpt…"
                     rows={2}
                     maxLength={500}
                     className={`${inputCls} resize-none`}
                 />
-            </div>
+            </Field>
 
-            {/* Content editor */}
-            <div>
-                <div className="mb-2 flex items-center justify-between">
-                    <label className="block text-sm font-semibold text-foreground">Content</label>
-                    <span className="text-[10px] text-foreground-subtle">
-                        ⌨️ Ctrl+S Save · Ctrl+Shift+P Publish
-                    </span>
-                </div>
+            <Field label="Main Content" hint="⌨️ Ctrl+S Save · Ctrl+Shift+P Publish">
                 <TiptapEditor
                     content={state.content}
                     onChange={(val: string) => dispatch({ type: 'SET_FIELD', field: 'content', value: val })}
                     uploadBucket="posts"
                     uploadFolder={authUserId}
                 />
-            </div>
-
+            </Field>
 
             {/* FAQ */}
             {s.faq && (
-                <div>
-                    <div className="mb-2 flex items-center justify-between">
-                        <label className="text-sm font-semibold text-foreground">
-                            FAQ ({state.faq.length})
-                        </label>
+                <Field 
+                    label={`Frequently Asked Questions (${state.faq.length})`}
+                >
+                    <div className="flex justify-end mb-2 -mt-7">
                         <button
                             type="button"
                             onClick={() => dispatch({ type: 'ADD_FAQ' })}
-                            className="flex items-center gap-1 text-xs text-brand-600 hover:underline font-medium"
+                            className="flex items-center gap-1 text-[10px] bg-brand-50 text-brand-600 hover:bg-brand-100 px-2 py-1 rounded font-bold uppercase tracking-wider transition-colors"
                         >
-                            <Plus className="size-3" /> Add
+                            <Plus className="size-3" /> Add Question
                         </button>
                     </div>
                     <div className="space-y-3">
@@ -116,7 +98,7 @@ export function ContentSection({ authUserId }: ContentSectionProps) {
                             </div>
                         ))}
                     </div>
-                </div>
+                </Field>
             )}
         </div>
     )

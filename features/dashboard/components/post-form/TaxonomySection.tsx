@@ -25,29 +25,35 @@ export function TaxonomySection({ states, organizations, categories, qualificati
 
     return (
         <Panel title="Taxonomy" defaultOpen>
-            <SearchableSelect
-                options={states}
-                value={state.stateSlug}
-                onChange={v => dispatch({ type: 'SET_FIELD', field: 'stateSlug', value: v })}
-                placeholder="Select State…"
-                emptyLabel="Select State…"
-            />
+            <Field label="State">
+                <SearchableSelect
+                    options={states}
+                    value={state.stateSlug}
+                    onChange={v => dispatch({ type: 'SET_FIELD', field: 'stateSlug', value: v })}
+                    placeholder="Select State…"
+                    emptyLabel="Select State…"
+                />
+            </Field>
 
-            <SearchableSelect
-                options={organizations}
-                value={state.organizationId}
-                onChange={v => dispatch({ type: 'SET_FIELD', field: 'organizationId', value: v })}
-                placeholder="Select Organization…"
-                emptyLabel="Select Organization…"
-            />
+            <Field label="Organization">
+                <SearchableSelect
+                    options={organizations}
+                    value={state.organizationId}
+                    onChange={v => dispatch({ type: 'SET_FIELD', field: 'organizationId', value: v })}
+                    placeholder="Select Organization…"
+                    emptyLabel="Select Organization…"
+                />
+            </Field>
 
-            <SearchableSelect
-                options={categories}
-                value={state.categoryId}
-                onChange={v => dispatch({ type: 'SET_FIELD', field: 'categoryId', value: v })}
-                placeholder="Select Category…"
-                emptyLabel="Select Category…"
-            />
+            <Field label="Category">
+                <SearchableSelect
+                    options={categories}
+                    value={state.categoryId}
+                    onChange={v => dispatch({ type: 'SET_FIELD', field: 'categoryId', value: v })}
+                    placeholder="Select Category…"
+                    emptyLabel="Select Category…"
+                />
+            </Field>
 
             <Field label="Qualifications">
                 <SearchableMultiSelect

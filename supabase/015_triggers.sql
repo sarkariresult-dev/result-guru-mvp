@@ -38,8 +38,16 @@ SECURITY INVOKER SET search_path = public AS $$
 DECLARE _wc INT;
 BEGIN
   _wc := COALESCE(array_length(string_to_array(trim(strip_html(NEW.content)), ' '), 1), 0);
-  NEW.word_count       := _wc;
-  NEW.reading_time_min := GREATEST(1, ROUND(_wc::NUMERIC / 200));
+  
+  -- Fallback only: preserve high-fidelity values from application layer
+  IF NEW.word_count IS NULL OR NEW.word_count = 0 THEN
+    NEW.word_count := _wc;
+  END IF;
+  
+  IF NEW.reading_time_min IS NULL OR NEW.reading_time_min = 0 THEN
+    NEW.reading_time_min := GREATEST(1, ROUND(COALESCE(NEW.word_count, _wc)::NUMERIC / 200));
+  END IF;
+
   IF TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NEW.content IS DISTINCT FROM OLD.content) THEN
     NEW.content_updated_at := NOW();
   END IF;
@@ -57,6 +65,12 @@ RETURNS TRIGGER LANGUAGE plpgsql
 SECURITY INVOKER SET search_path = public AS $$
 DECLARE _s INT := 0;
 BEGIN
+  -- If application layer has already calculated a high-fidelity score, trust it.
+  -- Only run fallback logic if score is missing (0/NULL).
+  IF NEW.seo_score > 0 THEN
+    RETURN NEW;
+  END IF;
+
   IF char_length(COALESCE(NEW.title,'')) BETWEEN 20 AND 70 THEN _s := _s + 20; ELSIF NEW.title IS NOT NULL THEN _s := _s + 10; END IF;
   IF char_length(COALESCE(NEW.meta_description,'')) BETWEEN 100 AND 160 THEN _s := _s + 15; ELSIF NEW.meta_description IS NOT NULL THEN _s := _s + 7;  END IF;
   IF char_length(COALESCE(NEW.meta_title,'')) BETWEEN 30 AND 60 THEN _s := _s + 10; ELSIF NEW.meta_title IS NOT NULL THEN _s := _s + 5;  END IF;

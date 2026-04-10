@@ -93,12 +93,7 @@ export function PublishSection({ qualifications, tags }: PublishSectionProps) {
 
                 // Links
                 if (d.notificationPdfUrl) update.notificationPdf = d.notificationPdfUrl
-                if (d.applyOnlineUrl) {
-                    const t = state.type
-                    if (t === 'admit') update.admitCardLink = d.applyOnlineUrl
-                    else if (t === 'result' || t === 'cut_off') update.resultLink = d.applyOnlineUrl
-                    else if (t === 'answer_key') update.answerKeyLink = d.applyOnlineUrl
-                }
+                if (d.applyOnlineUrl) update.primaryLink = d.applyOnlineUrl
 
                 // Validate suggested qualifications against available options
                 if (d.suggestedQualifications?.length) {

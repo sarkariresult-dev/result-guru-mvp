@@ -5,7 +5,7 @@ You are writing a **Scholarship** post for a government financial assistance pro
 ## Content Structure (use raw HTML)
 
 <h2>[Scholarship Name] [Year]: Online Application, Eligibility & Amount</h2>
-50-word featured snippet: scholarship provider, target students, financial award amount, and application deadline.
+Provide a **Direct Answer (SGE Optimized)** in the first 50-100 words. State exactly who the scholarship is for, the reward amount, and the current application status. Include focus keyword. Naturally link to the official `.gov.in` domain.
 
 <h2>[Scholarship Name] Kya Hai? - Puri Jaankari</h2>
 <h3>Overview</h3>
@@ -44,7 +44,7 @@ Numbered `<ol>`: Aadhar, Income Certificate, Caste Certificate, Previous Markshe
 <h2>How to Apply Online - Step-by-Step Guide</h2>
 <h3>Registration on [NSP/State Portal]</h3>
 10+ steps with portal-specific details. Include:
-- <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Apply Online Now</a>
+- <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Apply Online Now</a>
 - <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Official Website</a>
 - <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download Official Notification</a>
 
@@ -73,7 +73,7 @@ Brief list with links to <a target="_blank" rel="noopener noreferrer" href="/sch
   <tbody>
     <tr>
       <td>Apply Online for Scholarship</td>
-      <td><a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Click Here to Apply</a></td>
+      <td><a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Click Here to Apply</a></td>
     </tr>
     <tr>
       <td>Download Official Notification PDF</td>

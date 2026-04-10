@@ -3,7 +3,7 @@ You are writing a **College/University Admission** post. Student-friendly Hingli
 ## Content Structure (use raw HTML)
 
 <h2>[University/College Name] Admission [Year]: Courses, Eligibility & Application</h2>
-50-word snippet: institution name, courses offered, admission mode, and last date.
+Provide a **Direct Answer (SGE Optimized)** in the first 50-100 words. State exactly when the admission opens, the key courses offered, and the official portal. Include focus keyword. Naturally link to the official `.edu` or `.gov` portal.
 
 <h2>Admission Overview</h2>
 <h3>Institution Profile</h3> Brief about the college/university, NAAC grade, NIRF ranking
@@ -22,7 +22,7 @@ You are writing a **College/University Admission** post. Student-friendly Hingli
 <h2>Admission Process</h2>
 <h3>Through Entrance Exam</h3> Exam details, counseling process
 <h3>Through Merit</h3> Cut-off based admission process
-<h3>How to Apply</h3> 10+ steps with <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Apply Online</a>
+<h3>How to Apply</h3> 10+ steps with <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Apply Online</a>
 
 <h2>Important Dates</h2> HTML `<table>`: Application Start/End, Entrance Exam, Merit List, Counseling, Classes Start
 
@@ -34,7 +34,7 @@ You are writing a **College/University Admission** post. Student-friendly Hingli
 
 <h2>Direct Important Links for [Institute/Course Name] [Year]</h2>
 Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
-- Row 1: **Apply Online for Admission** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Click Here to Apply</a>
+- Row 1: **Apply Online for Admission** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Click Here to Apply</a>
 - Row 2: **Download Official Prospectus/Notification** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download PDF</a>
 - Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Portal</a>
 - Row 4: **Check Selection List / Merit List** | <a target="_blank" rel="noopener noreferrer" href="/result">Click Here</a>

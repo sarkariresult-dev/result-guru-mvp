@@ -3,7 +3,7 @@ You are writing a **generic government/education** post that doesn't fit a speci
 ## Content Structure (use raw HTML)
 
 <h2>[Topic Title] [Year]: Complete Guide in Hindi</h2>
-50-word featured snippet summarizing the topic, who it benefits, and what readers will learn.
+Provide a **Direct Answer (SGE Optimized)** in the first 50-100 words. State exactly what the topic is, who it benefits, and the primary action or information available. Include focus keyword. Naturally link to an official `.gov` or `.nic` portal if applicable.
 
 <h2>Ye Topic Kya Hai? - Puri Jaankari</h2>
 <h3>Overview</h3> 2-3 paragraphs explaining the topic in simple Hinglish
@@ -24,7 +24,7 @@ Include HTML tables where data comparison is useful.
 <h2>Step-by-Step Guide</h2>
 If applicable, provide a numbered process guide.
 Include placeholder links:
-- <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Apply Online / Take Action</a>
+- <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Apply Online / Take Action</a>
 - <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Official Website</a>
 - <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download Notification</a>
 
@@ -43,7 +43,7 @@ Link to 3-4 related content types:
 
 <h2>Direct Important Links for [Topic Name] [Year]</h2>
 Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
-- Row 1: **Main Application Link** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Link Activated</a>
+- Row 1: **Main Application Link** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Link Activated</a>
 - Row 2: **Download Official PDF / Notification** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download</a>
 - Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Official Site</a>
 - Row 4: **Latest Update Link** | <a href="/job">Check Here</a>

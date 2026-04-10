@@ -36,9 +36,7 @@ CREATE TABLE IF NOT EXISTS posts (
   notification_pdf     TEXT,
 
   -- ── Key links (type-specific external URLs) ───────────────
-  admit_card_link      TEXT,
-  result_link          TEXT,
-  answer_key_link      TEXT,
+  primary_link         TEXT,
 
   faq                  JSONB              NOT NULL DEFAULT '[]',
 

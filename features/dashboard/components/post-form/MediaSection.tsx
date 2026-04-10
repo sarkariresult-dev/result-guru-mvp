@@ -19,16 +19,18 @@ export function MediaSection({ authUserId }: MediaSectionProps) {
         <>
             {/* Featured Image Panel */}
             <Panel title="Featured Image" defaultOpen>
-                <FileUpload
-                    bucket="posts"
-                    folder={authUserId}
-                    value={state.featuredImage}
-                    onChange={(url: string) => dispatch({ type: 'SET_FIELD', field: 'featuredImage', value: url })}
-                    accept="image/jpeg,image/png,image/webp"
-                    maxSizeMB={5}
-                    preview="image"
-                    hint="JPG, PNG, WebP - max 5 MB (1200×630 recommended)"
-                />
+                <Field label="Social & Card Image" hint="Main image for social shares and listing cards (1200×630 recommended)">
+                    <FileUpload
+                        bucket="posts"
+                        folder={authUserId}
+                        value={state.featuredImage}
+                        onChange={(url: string) => dispatch({ type: 'SET_FIELD', field: 'featuredImage', value: url })}
+                        accept="image/jpeg,image/png,image/webp"
+                        maxSizeMB={5}
+                        preview="image"
+                        hint="JPG, PNG, WebP - max 5 MB"
+                    />
+                </Field>
                 {state.featuredImage && (
                     <>
                         <Field label="Alt Text" hint="Describe the image for accessibility and SEO">
@@ -49,19 +51,57 @@ export function MediaSection({ authUserId }: MediaSectionProps) {
                 )}
             </Panel>
 
-            {/* Notification PDF Panel */}
+            {/* Links & Documents Panel */}
             <Panel title="Links & Documents" defaultOpen>
-                <FileUpload
-                    bucket="posts"
-                    folder={authUserId}
-                    value={state.notificationPdf}
-                    onChange={(url: string) => dispatch({ type: 'SET_FIELD', field: 'notificationPdf', value: url })}
-                    accept="application/pdf"
-                    maxSizeMB={5}
-                    preview="pdf"
-                    hint="Upload official notification PDF - max 5 MB"
-                />
+                {/* Unified Action Link */}
+                <Field 
+                    label={getActionLinkLabel(state.type)} 
+                    hint="Paste the direct URL for the primary action (Apply, Check Result, Download, etc.)"
+                >
+                    <input
+                        value={state.primaryLink}
+                        onChange={e => dispatch({ type: 'SET_PRIMARY_LINK', payload: e.target.value })}
+                        placeholder="https://..."
+                        className={inputCls}
+                    />
+                </Field>
+
+                {/* Notification PDF */}
+                <Field label="Official Notification PDF" hint="Upload the official PDF document - max 5 MB">
+                    <FileUpload
+                        bucket="posts"
+                        folder={authUserId}
+                        value={state.notificationPdf}
+                        onChange={(url: string) => dispatch({ type: 'SET_FIELD', field: 'notificationPdf', value: url })}
+                        accept="application/pdf"
+                        maxSizeMB={5}
+                        preview="pdf"
+                        hint="Official PDF for transparency and trust"
+                    />
+                </Field>
             </Panel>
         </>
     )
+}
+
+/**
+ * Helper to get the semantic label for the primary action link
+ */
+function getActionLinkLabel(postType: string): string {
+    switch (postType) {
+        case 'job': return 'Apply Online Link'
+        case 'result': return 'Check Result Link'
+        case 'admit': return 'Download Admit Card'
+        case 'answer_key': return 'Download Answer Key'
+        case 'syllabus': return 'Download Syllabus'
+        case 'previous_paper': return 'Download Paper'
+        case 'admission': return 'Admission / Apply Link'
+        case 'scholarship': return 'Apply Online Link'
+        case 'scheme': return 'Official Scheme Link'
+        case 'exam':
+        case 'exam_pattern': return 'Official Exam Info Link'
+        case 'notification': return 'Official Notification Link'
+        case 'cut_off': return 'Check Cut-off'
+        default: return 'Primary Action Link'
+    }
 }

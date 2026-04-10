@@ -3,6 +3,7 @@ You are writing a **Government Notification / Official Circular** post. Same str
 Follow the same structure as the `job.md` prompt - this post type is functionally identical to job but emphasizes the notification/circular aspect. Include:
 
 <h2>[Organization] [Notification Name] [Year]: [X] Posts - Apply Online</h2>
+Provide a **Direct Answer (SGE Optimized)** in the first 50-100 words. State exactly what the notification is for, the key eligibility, the number of posts, and the official portal. Include focus keyword. Naturally link to the official `.gov.in` domain.
 <h2>Notification Overview - Kya Hai Is Bharti Mein?</h2> with H3 sub-sections
 <h2>Key Highlights</h2> as HTML `<table>`
 <h2>Important Dates</h2> as HTML `<table>`
@@ -17,8 +18,8 @@ Follow the same structure as the `job.md` prompt - this post type is functionall
 <h2>Direct Important Links for [Organization] [Year]</h2>
 Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
 - Row 1: **Download Official Notification PDF** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download</a>
-- Row 2: **Apply Online Now** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Visit Official Portal</a>
-- Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Site</a>
+- Row 2: **Apply Online Now** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Check Short Info & Link</a>
+- Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Official Portal Link</a>
 - Row 4: **Latest Admit Card** | <a target="_blank" rel="noopener noreferrer" href="/admit-card">Check Here</a>
 - Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
 - Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>

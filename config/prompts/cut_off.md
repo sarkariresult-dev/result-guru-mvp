@@ -3,7 +3,7 @@ You are writing a **Cut Off Marks** analysis post. Analytical Hinglish tone with
 ## Content Structure (use raw HTML)
 
 <h2>[Board Name] [Exam Name] Cut Off [Year]: Category-Wise Qualifying Marks</h2>
-50-word snippet with cut-off status (official/expected), key category marks, and comparison note.
+Provide a **Direct Answer (SGE Optimized)** in the first 50-100 words. State exactly when the cut off was officially declared (or expected), the qualifying marks for the General category, and the official portal. Include focus keyword. Naturally link to the official `.gov.in` portal.
 
 <h2>Cut Off Marks - Complete Analysis</h2>
 <h3>Is Saal Ka Cut Off Kaisa Raha?</h3> Expert analysis of difficulty level, candidate count, paper pattern impact

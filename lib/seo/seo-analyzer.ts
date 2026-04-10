@@ -6,6 +6,28 @@
  * Pure functions - safe for both server and client.
  */
 
+/**
+ * Helper to get the semantic label for the primary action button on the public page
+ */
+export function getActionLinkPageLabel(postType: string): string {
+    switch (postType) {
+        case 'job': return 'Apply Online'
+        case 'result': return 'Check Result'
+        case 'admit': return 'Download Admit Card'
+        case 'answer_key': return 'Download Answer Key'
+        case 'syllabus': return 'Download Syllabus'
+        case 'previous_paper': return 'Download Paper'
+        case 'admission': return 'Admission / Apply'
+        case 'scholarship': return 'Apply Online'
+        case 'scheme': return 'View Scheme'
+        case 'exam':
+        case 'exam_pattern': return 'Official Exam Info'
+        case 'notification': return 'Official Link'
+        case 'cut_off': return 'Check Cut-off'
+        default: return 'Primary Link'
+    }
+}
+
 // ── Types ────────────────────────────────────────────────────────────────────
 
 export type SeoCheckPriority = 'critical' | 'important' | 'nice'
@@ -33,6 +55,17 @@ export interface SeoAnalysisInput {
     featuredImageAlt: string
     faqCount: number
     postType: string
+    authorId?: string
+    // Guru SEO 2.0 Contextual Fields
+    orgName?: string | null
+    orgShortName?: string | null
+    stateName?: string | null
+    updatedAt?: string | null
+    admitCardLink?: string | null
+    resultLink?: string | null
+    answerKeyLink?: string | null
+    primaryLink?: string | null
+    notificationPdf?: string | null
 }
 
 export interface SeoAnalysisResult {
@@ -50,6 +83,152 @@ export interface ReadabilityResult {
     passiveVoicePercent: number
     grade: string
     score: number // 0-100
+}
+
+// ── Registries (Guru SEO 2.0) ────────────────────────────────────────────────
+
+const MUST_HAVE_HEADINGS: Record<string, string[]> = {
+    job: ['eligibility', 'vacancy', 'salary', 'date', 'fee', 'how to apply', 'important link'],
+    result: ['how to check', 'date', 'cut off', 'merit list', 'direct link'],
+    admit: ['how to download', 'exam date', 'center', 'instruction', 'direct link'],
+    syllabus: ['subject', 'exam pattern', 'topic', 'marking scheme', 'download pdf'],
+    scheme: ['objective', 'benefit', 'eligibility', 'document', 'how to apply'],
+    scholarship: ['eligibility', 'amount', 'document', 'date', 'how to apply'],
+    answer_key: ['objection', 'how to download', 'date', 'direct link'],
+    cut_off: ['category', 'previous year', 'expected', 'official'],
+    exam_pattern: ['marking', 'duration', 'subject', 'negative marking'],
+    previous_paper: ['download pdf', 'year', 'solution', 'exam name'],
+    exam: ['date', 'shift', 'analysis', 'review'],
+    admission: ['eligibility', 'course', 'college', 'counseling', 'last date'],
+    notification: ['official pdf', 'summary', 'important date', 'short info'],
+}
+
+const BOARD_ENTITIES = [
+    'SSC', 'UPSC', 'IBPS', 'RRB', 'NTA', 'CBSE', 'ICSE', 'UPPSC', 'BPSC', 'MPPSC',
+    'HSSC', 'UKSSSC', 'DSSSB', 'KVS', 'NVS', 'DRDO', 'ISRO', 'BARC', 'NPCIL',
+    'HAL', 'BEL', 'GAIL', 'SAIL', 'IOCL', 'ONGC', 'SBI', 'RBI', 'LIC', 'NIACL'
+]
+
+const INTENT_VERBS: Record<string, string[]> = {
+    transactional: ['download', 'apply', 'check', 'link', 'register', 'login'],
+    informational: ['guide', 'syllabus', 'pattern', 'detail', 'information', 'about'],
+}
+
+// ── Advanced Analysis Helpers (Guru SEO 2.0) ─────────────────────────────────
+
+export const TRANSACTIONAL_TYPES = ['job', 'result', 'admit', 'answer_key', 'scholarship', 'admission', 'previous_paper']
+
+function detectSearchIntent(title: string, postType: string): { intent: string; score: number } {
+    const t = title.toLowerCase()
+    const expectedIntent = TRANSACTIONAL_TYPES.includes(postType) ? 'transactional' : 'informational'
+
+    const verbs = INTENT_VERBS[expectedIntent] || []
+    const matchCount = verbs.filter(v => t.includes(v)).length
+    const score = matchCount > 0 ? 100 : 0
+
+    return { intent: expectedIntent, score }
+}
+
+function detectEntities(html: string, input: Partial<SeoAnalysisInput>): string[] {
+    const text = stripHtml(html)
+    const entities = new Set<string>()
+
+    // Check against Board Registry
+    BOARD_ENTITIES.forEach(e => {
+        if (text.includes(e)) entities.add(e)
+    })
+
+    // Add provided Org Entities
+    if (input.orgName) entities.add(input.orgName)
+    if (input.orgShortName) entities.add(input.orgShortName)
+    if (input.stateName) entities.add(input.stateName)
+
+    // Detect Capitalized Acronyms (3-5 letters)
+    const acronymMatches = text.match(/\b[A-Z]{3,5}\b/g)
+    if (acronymMatches) acronymMatches.forEach(a => entities.add(a))
+
+    return Array.from(entities)
+}
+
+function calculateTopicCoverage(html: string, postType: string): { score: number; missing: string[] } {
+    const headings = extractHeadings(html).map(h => h.text.toLowerCase())
+    const required = MUST_HAVE_HEADINGS[postType] || []
+
+    if (required.length === 0) return { score: 100, missing: [] }
+
+    const missing = required.filter(req => !headings.some(h => h.includes(req)))
+    const score = Math.round(((required.length - missing.length) / required.length) * 100)
+
+    return { score, missing }
+}
+
+function assessScannability(html: string): { score: number; issues: string[] } {
+    const paragraphs = html.split(/<\/p>/i).filter(p => stripHtml(p).length > 20)
+    const longParagraphs = paragraphs.filter(p => countWords(stripHtml(p)) > 50).length
+    const boldCount = (html.match(/<strong[^>]*>|<b>/gi) || []).length
+    const listCount = (html.match(/<li[^>]*>/gi) || []).length
+    const tableCount = (html.match(/<table[^>]*>/gi) || []).length
+
+    const issues: string[] = []
+    let score = 100
+
+    if (longParagraphs > 0) {
+        score -= 20
+        issues.push(`${longParagraphs} paragraphs are too long (>50 words).`)
+    }
+    if (boldCount < 3) {
+        score -= 10
+        issues.push('Use more bold text to highlight key info.')
+    }
+    if (listCount < 5) {
+        score -= 10
+        issues.push('Use bullet points for better scannability.')
+    }
+    if (tableCount === 0) {
+        score -= 10
+        issues.push('No tables found. Tables improve structural authority.')
+    }
+
+    return { score: Math.max(0, score), issues }
+}
+
+function checkSchemaHealth(input: SeoAnalysisInput): { status: SeoCheckStatus; issues: string[] } {
+    const issues: string[] = []
+
+    // Critical fields check for specific types
+    if (input.postType === 'job' && !input.orgName) {
+        issues.push('Missing Organization Name (required for Google Job Card).')
+    }
+
+    // Direct Action Link validation
+    if (!input.primaryLink) {
+        if (input.postType === 'result') issues.push('Result Link is missing. Users expect a direct path.')
+        else if (input.postType === 'admit') issues.push('Admit Card Link is missing.')
+        else if (input.postType === 'answer_key') issues.push('Answer Key Link is missing.')
+        else if (['job', 'scholarship', 'admission'].includes(input.postType)) issues.push('Primary Action Link (Apply Link) is missing.')
+    }
+
+    // Check for FAQ richness
+    if (input.faqCount < 3) {
+        issues.push('Fewer than 3 FAQs. Aim for 5+ to trigger rich snippets.')
+    }
+
+    return {
+        status: issues.length > 0 ? 'warn' : 'pass',
+        issues
+    }
+}
+
+function checkFreshness(input: SeoAnalysisInput): { status: SeoCheckStatus; recommendation?: string } {
+    const currentYear = '2026'
+    const titleHasYear = input.title.includes(currentYear)
+    const slugHasYear = input.slug.includes(currentYear)
+
+    if (!titleHasYear) {
+        return { status: 'warn', recommendation: `Include the current year (${currentYear}) in the title for freshness signals.` }
+    }
+
+    return { status: 'pass' }
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -95,6 +274,20 @@ function extractHeadings(html: string): { level: number; text: string }[] {
 function countInternalLinks(html: string): number {
     const regex = /href=["']\//g
     return (html.match(regex) || []).length
+}
+
+function extractExternalLinks(html: string): string[] {
+    const regex = /href=["'](https?:\/\/[^"']+)["']/gi
+    const links: string[] = []
+    let match
+    while ((match = regex.exec(html)) !== null) {
+        if (match[1]) links.push(match[1])
+    }
+    return links
+}
+
+function hasTable(html: string): boolean {
+    return /<table[^>]*>/i.test(html)
 }
 
 // Passive voice detection (simplified English + common patterns)
@@ -160,7 +353,11 @@ export function analyzeReadability(html: string): ReadabilityResult {
 // ── Main SEO Analysis ────────────────────────────────────────────────────────
 
 export function runSeoAnalysis(input: SeoAnalysisInput): SeoAnalysisResult {
-    const { title, slug, metaTitle, metaDescription, focusKeyword, secondaryKeywords, content, excerpt, featuredImage, featuredImageAlt, faqCount } = input
+    const { 
+        title, slug, metaTitle, metaDescription, focusKeyword, 
+        secondaryKeywords, content, excerpt, featuredImage, 
+        featuredImageAlt, faqCount, authorId, postType, notificationPdf, primaryLink 
+    } = input
 
     const plainContent = stripHtml(content)
     const wordCount = countWords(plainContent)
@@ -169,208 +366,144 @@ export function runSeoAnalysis(input: SeoAnalysisInput): SeoAnalysisResult {
     const hasFk = fk.length > 0
     const headings = extractHeadings(content)
     const internalLinks = countInternalLinks(content)
+    const externalLinks = extractExternalLinks(content)
     const sk = secondaryKeywords.filter(k => k.trim().length > 0)
 
-    // Keyword density
+    // Advanced Analysis Modules (Guru SEO 2.0)
+    const intentAnalysis = detectSearchIntent(title, postType)
+    const entities = detectEntities(content, input)
+    const topicCoverage = calculateTopicCoverage(content, postType)
+    const scannability = assessScannability(content)
+    const schemaHealth = checkSchemaHealth(input)
+    const freshness = checkFreshness(input)
+
+    // Technical Metrics
+    const metadataLinks = [input.primaryLink, input.notificationPdf].filter(Boolean).length
+    const govLinks = externalLinks.filter(l => /\.(gov|nic|edu|org)/.test(l)).length + (metadataLinks * 2) // Metadata links are high-trust
     const fkCount = hasFk ? countOccurrences(contentLower, fk) : 0
     const fkDensity = wordCount > 0 && hasFk ? (fkCount / wordCount) * 100 : 0
-
-    // First 100 words
     const first100Words = plainContent.split(/\s+/).slice(0, 100).join(' ').toLowerCase()
-
-    // Heading checks
-    const h2Count = headings.filter(h => h.level === 2).length
-    const h3Count = headings.filter(h => h.level === 3).length
-    const fkInHeading = hasFk && headings.some(h => h.text.toLowerCase().includes(fk))
-
-    // Secondary keywords in content
-    const skInContent = sk.filter(k => contentLower.includes(k.toLowerCase())).length
+    const hasDirectAnswer = hasFk && first100Words.includes(fk) && first100Words.length > 50
 
     const checks: SeoCheck[] = [
         // ═══ CRITICAL ═══
+        {
+            id: 'search-intent',
+            label: 'Search intent match',
+            status: intentAnalysis.score > 0 ? 'pass' : 'fail',
+            priority: 'critical',
+            recommendation: intentAnalysis.score === 0 ? `Target ${intentAnalysis.intent} intent more clearly in your title using verbs like ${INTENT_VERBS[intentAnalysis.intent]?.join(', ')}.` : undefined,
+        },
+        {
+            id: 'topic-coverage',
+            label: 'Topical coverage (Category Authority)',
+            status: topicCoverage.score >= 80 ? 'pass' : topicCoverage.score >= 50 ? 'warn' : 'fail',
+            priority: 'critical',
+            value: `${topicCoverage.score}%`,
+            recommendation: (topicCoverage.missing.length > 0 || (metadataLinks === 0 && TRANSACTIONAL_TYPES.includes(postType))) 
+                ? `Missing key sections or direct links: ${topicCoverage.missing.join(', ')}.` 
+                : undefined,
+        },
         {
             id: 'title-length',
             label: 'Title length (30-65 chars)',
             status: title.length >= 30 && title.length <= 65 ? 'pass' : title.length > 0 && title.length < 30 ? 'warn' : title.length > 65 ? 'warn' : 'fail',
             priority: 'critical',
             value: `${title.length} chars`,
-            recommendation: title.length < 30 ? 'Title is too short. Add more detail.' : title.length > 65 ? 'Title may get truncated in search results. Trim to 65 chars.' : undefined,
-        },
-        {
-            id: 'meta-title',
-            label: 'Meta title set & ≤60 chars',
-            status: metaTitle.length > 0 && metaTitle.length <= 60 ? 'pass' : metaTitle.length > 60 ? 'warn' : 'fail',
-            priority: 'critical',
-            value: metaTitle.length > 0 ? `${metaTitle.length}/60` : 'Missing',
-            recommendation: metaTitle.length === 0 ? 'Add a meta title for search results.' : metaTitle.length > 60 ? 'Meta title will get truncated. Shorten to 60 chars.' : undefined,
-        },
-        {
-            id: 'meta-desc',
-            label: 'Meta description 120-155 chars',
-            status: metaDescription.length >= 120 && metaDescription.length <= 155 ? 'pass' : metaDescription.length > 0 && metaDescription.length < 120 ? 'warn' : metaDescription.length > 155 ? 'warn' : 'fail',
-            priority: 'critical',
-            value: metaDescription.length > 0 ? `${metaDescription.length}/155` : 'Missing',
-            recommendation: metaDescription.length === 0 ? 'Add a compelling meta description.' : metaDescription.length < 120 ? 'Too short - Google may replace it with auto-generated text.' : metaDescription.length > 155 ? 'May be truncated in search snippets.' : undefined,
         },
         {
             id: 'focus-keyword',
             label: 'Focus keyword set',
             status: hasFk ? 'pass' : 'fail',
             priority: 'critical',
-            recommendation: !hasFk ? 'Set a primary keyword you want to rank for.' : undefined,
-        },
-        {
-            id: 'fk-in-title',
-            label: 'Keyword in title (first 60 chars)',
-            status: hasFk && title.slice(0, 60).toLowerCase().includes(fk) ? 'pass' : !hasFk ? 'warn' : 'fail',
-            priority: 'critical',
-            recommendation: hasFk && !title.slice(0, 60).toLowerCase().includes(fk) ? `Add "${focusKeyword}" to the first 60 characters of the title.` : undefined,
         },
         {
             id: 'content-depth',
-            label: 'Content has 500+ words',
-            status: wordCount >= 500 ? 'pass' : wordCount >= 300 ? 'warn' : 'fail',
+            label: 'Content length (Topic depth)',
+            status: wordCount >= 1000 ? 'pass' : wordCount >= 500 ? 'warn' : 'fail',
             priority: 'critical',
             value: `${wordCount} words`,
-            recommendation: wordCount < 300 ? 'Thin content - Google penalizes pages under 300 words.' : wordCount < 500 ? 'Add more depth. Aim for 1000+ words for ranking power.' : undefined,
-        },
-        {
-            id: 'featured-image',
-            label: 'Featured image set (Discover requirement)',
-            status: featuredImage.length > 0 ? 'pass' : 'fail',
-            priority: 'critical',
-            recommendation: !featuredImage ? 'Add a featured image ≥1200px wide for Google Discover eligibility.' : undefined,
+            recommendation: wordCount < 500 ? 'Thin content detected. Aim for 1000+ words to cover all relevant subtopics.' : undefined,
         },
 
         // ═══ IMPORTANT ═══
         {
-            id: 'fk-in-meta-desc',
-            label: 'Keyword in meta description',
-            status: hasFk && metaDescription.toLowerCase().includes(fk) ? 'pass' : !hasFk ? 'warn' : 'fail',
+            id: 'entities',
+            label: 'Entity SEO (Semantic Authority)',
+            status: entities.length >= 5 ? 'pass' : entities.length >= 3 ? 'warn' : 'fail',
             priority: 'important',
-            recommendation: hasFk && !metaDescription.toLowerCase().includes(fk) ? 'Include the focus keyword naturally in the meta description.' : undefined,
+            value: `${entities.length} entities`,
+            recommendation: entities.length < 5 ? 'Mention more specific organizations, boards, or exams to build semantic authority.' : undefined,
         },
         {
-            id: 'fk-in-slug',
-            label: 'Keyword in URL slug',
-            status: hasFk && slug.includes(fk.replace(/\s+/g, '-')) ? 'pass' : !hasFk ? 'warn' : 'fail',
+            id: 'scannability',
+            label: 'UX Scannability (User Signals)',
+            status: scannability.score >= 80 ? 'pass' : scannability.score >= 50 ? 'warn' : 'fail',
             priority: 'important',
+            recommendation: scannability.issues.join(' '),
         },
         {
-            id: 'fk-in-first-100',
-            label: 'Keyword in first 100 words',
-            status: hasFk && first100Words.includes(fk) ? 'pass' : !hasFk ? 'warn' : 'fail',
+            id: 'schema-health',
+            label: 'Structured Data Health (Schema.org)',
+            status: schemaHealth.status,
             priority: 'important',
-            recommendation: hasFk && !first100Words.includes(fk) ? 'Mention the focus keyword in the opening paragraph.' : undefined,
+            recommendation: schemaHealth.issues.join(' '),
         },
         {
-            id: 'fk-in-heading',
-            label: 'Keyword in at least one heading',
-            status: fkInHeading ? 'pass' : !hasFk ? 'warn' : 'fail',
+            id: 'sge-direct-answer',
+            label: 'SGE Direct Answer (First 100 words)',
+            status: hasDirectAnswer ? 'pass' : 'warn',
             priority: 'important',
-            recommendation: hasFk && !fkInHeading ? 'Include the focus keyword in at least one H2 or H3.' : undefined,
+            recommendation: !hasDirectAnswer ? 'Provide a clear, direct answer to the user query in the first paragraph.' : undefined,
+        },
+        {
+            id: 'author-trust',
+            label: 'Author Attribution (EEAT)',
+            status: authorId ? 'pass' : 'fail',
+            priority: 'important',
+            recommendation: !authorId ? 'Assign an author to establish transparency and trust.' : undefined,
         },
         {
             id: 'fk-density',
-            label: 'Keyword density 0.5-2.5%',
-            status: hasFk && fkDensity >= 0.5 && fkDensity <= 2.5 ? 'pass' : hasFk && fkDensity > 2.5 ? 'warn' : !hasFk ? 'warn' : 'fail',
+            label: 'Keyword density (0.5-2.5%)',
+            status: hasFk && fkDensity >= 0.5 && fkDensity <= 2.5 ? 'pass' : 'warn',
             priority: 'important',
-            value: hasFk ? `${fkDensity.toFixed(1)}%` : 'N/A',
-            recommendation: fkDensity > 2.5 ? 'Keyword stuffing detected - reduce usage for natural reading.' : fkDensity < 0.5 && hasFk ? 'Keyword appears too few times. Use it 3-5 more times naturally.' : undefined,
+            value: `${fkDensity.toFixed(1)}%`,
         },
         {
-            id: 'secondary-keywords',
-            label: 'Secondary keywords set (≥2)',
-            status: sk.length >= 2 ? 'pass' : sk.length === 1 ? 'warn' : 'fail',
+            id: 'gov-links',
+            label: 'Official Trust Links (.gov, .nic)',
+            status: govLinks > 0 ? 'pass' : 'warn',
             priority: 'important',
-            value: `${sk.length} set`,
-            recommendation: sk.length < 2 ? 'Add at least 2 secondary keywords for long-tail ranking.' : undefined,
-        },
-        {
-            id: 'sk-in-content',
-            label: 'Secondary keywords used in content',
-            status: sk.length > 0 && skInContent >= Math.ceil(sk.length * 0.5) ? 'pass' : sk.length > 0 ? 'warn' : 'fail',
-            priority: 'important',
-            value: sk.length > 0 ? `${skInContent}/${sk.length}` : 'N/A',
-        },
-        {
-            id: 'excerpt-set',
-            label: 'Excerpt set (listing & rich snippets)',
-            status: excerpt.length >= 50 ? 'pass' : excerpt.length > 0 ? 'warn' : 'fail',
-            priority: 'important',
-            value: `${excerpt.length} chars`,
-        },
-        {
-            id: 'heading-structure',
-            label: 'H2 headings used (content structure)',
-            status: h2Count >= 2 ? 'pass' : h2Count === 1 ? 'warn' : 'fail',
-            priority: 'important',
-            value: `${h2Count} H2, ${h3Count} H3`,
-            recommendation: h2Count < 2 ? 'Use H2 headings every ~200 words to improve scannability.' : undefined,
-        },
-        {
-            id: 'image-alt',
-            label: 'Featured image alt text set',
-            status: featuredImageAlt.length > 0 ? 'pass' : featuredImage.length > 0 ? 'warn' : 'pass',
-            priority: 'important',
-            recommendation: featuredImage && !featuredImageAlt ? 'Add descriptive alt text for accessibility and image SEO.' : undefined,
-        },
-        {
-            id: 'internal-links',
-            label: 'Internal links in content (≥2)',
-            status: internalLinks >= 2 ? 'pass' : internalLinks === 1 ? 'warn' : 'fail',
-            priority: 'important',
-            value: `${internalLinks} links`,
-            recommendation: internalLinks < 2 ? 'Add 2-3 internal links to related content (e.g., /syllabus, /admit-card).' : undefined,
+            value: `${govLinks} found`,
         },
 
         // ═══ NICE TO HAVE ═══
         {
-            id: 'slug-length',
-            label: 'URL slug is short (≤60 chars)',
-            status: slug.length > 0 && slug.length <= 60 ? 'pass' : slug.length > 60 ? 'warn' : 'fail',
-            priority: 'nice',
-            value: `${slug.length} chars`,
-        },
-        {
-            id: 'no-stop-words',
-            label: 'No stop words in slug',
-            status: !/(^|-)(the|and|is|in|to|for|of|a|an)(-|$)/.test(slug) ? 'pass' : 'warn',
-            priority: 'nice',
-        },
-        {
-            id: 'pillar-content',
-            label: 'Pillar content (1000+ words)',
-            status: wordCount >= 1000 ? 'pass' : wordCount >= 500 ? 'warn' : 'fail',
-            priority: 'nice',
-            value: `${wordCount} words`,
-        },
-        {
             id: 'year-freshness',
-            label: 'Year in title (freshness signal)',
-            status: /202[4-9]/.test(title) ? 'pass' : 'warn',
+            label: 'Content Freshness (2026)',
+            status: freshness.status,
             priority: 'nice',
-            recommendation: !/202[4-9]/.test(title) ? 'Include the current year (2026) in the title for freshness.' : undefined,
+            recommendation: freshness.recommendation,
         },
         {
-            id: 'h3-nesting',
-            label: 'H3 sub-headings used (deep structure)',
-            status: h3Count >= 2 ? 'pass' : h3Count === 1 ? 'warn' : h2Count > 0 ? 'fail' : 'warn',
+            id: 'internal-links',
+            label: 'Internal link depth',
+            status: internalLinks >= 3 ? 'pass' : 'warn',
             priority: 'nice',
-            recommendation: h3Count < 2 && h2Count > 0 ? 'Add H3 sub-headings under H2 sections for deeper topic coverage.' : undefined,
+            value: `${internalLinks} links`,
         },
         {
-            id: 'faq-present',
-            label: 'FAQ section added (FAQ schema)',
-            status: faqCount >= 3 ? 'pass' : faqCount > 0 ? 'warn' : 'fail',
+            id: 'meta-desc',
+            label: 'Meta description optimization',
+            status: metaDescription.length >= 120 && metaDescription.length <= 155 ? 'pass' : 'warn',
             priority: 'nice',
-            value: `${faqCount} items`,
-            recommendation: faqCount < 3 ? 'Add at least 5 FAQs for FAQ rich snippet eligibility.' : undefined,
+            value: `${metaDescription.length} chars`,
         },
     ]
 
     // Score calculation
-    const weights: Record<SeoCheckPriority, number> = { critical: 3, important: 2, nice: 1 }
+    const weights: Record<SeoCheckPriority, number> = { critical: 4, important: 2, nice: 1 }
 
     let totalWeight = 0
     let earnedWeight = 0
@@ -385,12 +518,18 @@ export function runSeoAnalysis(input: SeoAnalysisInput): SeoAnalysisResult {
     const score = Math.round((earnedWeight / totalWeight) * 100)
 
     const critical = checks.filter(c => c.priority === 'critical' && c.status === 'fail').length
-    const important = checks.filter(c => c.priority === 'important' && c.status === 'fail').length
+    const important = checks.filter(c => c.priority === 'important' && (c.status === 'fail' || c.status === 'warn')).length
     const nice = checks.filter(c => c.priority === 'nice' && c.status === 'fail').length
     const passed = checks.filter(c => c.status === 'pass').length
 
     return {
-        checks,
+        checks: checks.sort((a,b) => {
+            if (a.status === b.status) return weights[b.priority] - weights[a.priority]
+            if (a.status === 'fail') return -1
+            if (b.status === 'fail') return 1
+            if (a.status === 'warn') return -1
+            return 1
+        }),
         score,
         summary: { critical, important, nice, total: checks.length, passed },
         readability: analyzeReadability(content),

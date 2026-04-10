@@ -73,7 +73,7 @@ export function PostDetail({ post, slug, url }: Props) {
     /* Process content HTML */
     const mappings = {
         officialWebsiteUrl: post.org_official_url,
-        applyOnlineUrl: post.admit_card_link || post.result_link || post.answer_key_link || post.org_official_url,
+        applyOnlineUrl: post.primary_link || post.org_official_url,
         notificationPdfUrl: post.notification_pdf,
     }
 

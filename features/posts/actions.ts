@@ -7,6 +7,7 @@ import { z } from 'zod'
 import type { PostType, PostStatus, ApplicationStatus } from '@/types/enums'
 import { pushToGoogleIndexingApi } from '@/lib/seo/indexing'
 import { SITE, ROUTE_PREFIXES, type PostTypeKey } from '@/config/site'
+import { runSeoAnalysis } from '@/lib/seo/seo-analyzer'
 
 /**
  * Columns marked NOT NULL in 007_posts.sql with their DB DEFAULT values.
@@ -60,9 +61,7 @@ interface PostPayload {
     notification_pdf?: string | null
 
     // Key links (external URLs)
-    admit_card_link?: string | null
-    result_link?: string | null
-    answer_key_link?: string | null
+    primary_link?: string | null
 
     // Structured content (JSONB)
 
@@ -156,9 +155,7 @@ export async function createPost(data: PostPayload) {
         notification_pdf: data.notification_pdf ?? null,
 
         // Key links
-        admit_card_link: data.admit_card_link ?? null,
-        result_link: data.result_link ?? null,
-        answer_key_link: data.answer_key_link ?? null,
+        primary_link: data.primary_link ?? null,
 
 
         faq: data.faq ?? [],
@@ -190,6 +187,49 @@ export async function createPost(data: PostPayload) {
         author_id: data.author_id ?? null,
         published_at: data.published_at ?? null,
     }
+
+    // 3. Unified SEO Analysis & Metrics
+    // Fetch denormalized metadata if available for high-fidelity analysis
+    let orgName = null, orgShortName = null, stateName = null;
+    if (data.organization_id) {
+        const { data: org } = await supabase.from('organizations').select('name, short_name').eq('id', data.organization_id).single();
+        if (org) { orgName = org.name; orgShortName = org.short_name; }
+    }
+    if (data.state_slug) {
+        const { data: st } = await supabase.from('states').select('name').eq('slug', data.state_slug).single();
+        if (st) { stateName = st.name; }
+    }
+
+    const seoResult = runSeoAnalysis({
+        title: data.title,
+        slug: data.slug,
+        metaTitle: data.meta_title ?? '',
+        metaDescription: data.meta_description ?? '',
+        focusKeyword: data.focus_keyword ?? '',
+        secondaryKeywords: data.secondary_keywords ?? [],
+        content: data.content ?? '',
+        excerpt: data.excerpt ?? '',
+        featuredImage: data.featured_image ?? '',
+        featuredImageAlt: data.featured_image_alt ?? '',
+        faqCount: data.faq?.length ?? 0,
+        postType: data.type,
+        authorId: data.author_id ?? undefined,
+        // Guru SEO 2.0 Contextual Fields
+        orgName,
+        orgShortName,
+        stateName,
+        updatedAt: new Date().toISOString(),
+        notificationPdf: data.notification_pdf,
+        primaryLink: data.primary_link,
+    })
+
+    row.seo_score = seoResult.score
+    row.word_count = seoResult.readability.totalSentences * 15 // Roughly estimate or use exact word count from analyzer if added
+    // Let's update seo-analyzer to return wordCount properly if not already there.
+    // Actually, I'll use the stripHtml + filter logic here to match the analyzer's word count.
+    const wordCount = (data.content ?? '').replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length
+    row.word_count = wordCount
+    row.reading_time_min = Math.max(1, Math.round(wordCount / 200))
 
     const { data: inserted, error } = await supabase
         .from('posts')
@@ -258,6 +298,62 @@ export async function updatePost(id: string, data: Partial<PostPayload>) {
             }
         } else {
             updateRow[key] = finalValue
+        }
+    }
+
+    // 3. Unified SEO Analysis & Metrics (for updates)
+    // We only recalculate if the relevant fields are present in the update
+    const needsRecalc = ['title', 'content', 'focus_keyword', 'meta_title', 'meta_description', 'excerpt', 'featured_image'].some(k => k in dbFields)
+    
+    if (needsRecalc) {
+        // We need the full state to run a proper analysis. 
+        // For updates, we'll fetch existing data if any critical field is missing.
+        const { data: existing } = await supabase.from('posts').select('*').eq('id', id).single()
+        
+        if (existing) {
+            // Fetch denormalized metadata for high-fidelity analysis
+            let orgName = existing.org_name, orgShortName = existing.org_short_name, stateName = existing.state_name;
+            const targetOrgId = (dbFields.organization_id as string) || existing.organization_id;
+            const targetStateSlug = (dbFields.state_slug as string) || existing.state_slug;
+
+            if (dbFields.organization_id && dbFields.organization_id !== existing.organization_id) {
+                const { data: org } = await supabase.from('organizations').select('name, short_name').eq('id', dbFields.organization_id).single();
+                if (org) { orgName = org.name; orgShortName = org.short_name; }
+            }
+            if (dbFields.state_slug && dbFields.state_slug !== existing.state_slug) {
+                const { data: st } = await supabase.from('states').select('name').eq('slug', dbFields.state_slug).single();
+                if (st) { stateName = st.name; }
+            }
+
+            const analysisInput = {
+                title: (dbFields.title as string) ?? existing.title,
+                slug: (dbFields.slug as string) ?? existing.slug,
+                metaTitle: (dbFields.meta_title as string) ?? existing.meta_title ?? '',
+                metaDescription: (dbFields.meta_description as string) ?? existing.meta_description ?? '',
+                focusKeyword: (dbFields.focus_keyword as string) ?? existing.focus_keyword ?? '',
+                secondaryKeywords: (dbFields.secondary_keywords as string[]) ?? existing.secondary_keywords ?? [],
+                content: (dbFields.content as string) ?? existing.content ?? '',
+                excerpt: (dbFields.excerpt as string) ?? existing.excerpt ?? '',
+                featuredImage: (dbFields.featured_image as string) ?? existing.featured_image ?? '',
+                featuredImageAlt: (dbFields.featured_image_alt as string) ?? existing.featured_image_alt ?? '',
+                faqCount: (dbFields.faq as any[])?.length ?? existing.faq?.length ?? 0,
+                postType: (dbFields.type as string) ?? existing.type,
+                authorId: (dbFields.author_id as string) ?? existing.author_id ?? undefined,
+                // Guru SEO 2.0 Contextual Fields
+                orgName,
+                orgShortName,
+                stateName,
+                updatedAt: existing.updated_at,
+                notificationPdf: (dbFields.notification_pdf as string) ?? existing.notification_pdf,
+                primaryLink: (dbFields.primary_link as string) ?? existing.primary_link,
+            }
+
+            const seoResult = runSeoAnalysis(analysisInput)
+            updateRow.seo_score = seoResult.score
+            
+            const wordCount = analysisInput.content.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length
+            updateRow.word_count = wordCount
+            updateRow.reading_time_min = Math.max(1, Math.round(wordCount / 200))
         }
     }
 

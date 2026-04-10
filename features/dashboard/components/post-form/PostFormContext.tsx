@@ -6,7 +6,7 @@
  */
 'use client'
 
-import { createContext, useContext, useReducer, useEffect, useCallback, useMemo, type ReactNode } from 'react'
+import { createContext, useContext, useReducer, useEffect, useMemo, type ReactNode } from 'react'
 import { runSeoAnalysis, type SeoAnalysisResult } from '@/lib/seo/seo-analyzer'
 
 // ── State Shape ──────────────────────────────────────────────────────────────
@@ -45,9 +45,7 @@ export interface PostFormState {
     faq: FaqItem[]
 
     // Links
-    admitCardLink: string
-    resultLink: string
-    answerKeyLink: string
+    primaryLink: string
 
     // SEO
     metaTitle: string
@@ -79,6 +77,7 @@ type PostFormAction =
     | { type: 'SET_TITLE'; value: string }
     | { type: 'SET_SLUG'; value: string }
     | { type: 'SET_TYPE'; value: string }
+    | { type: 'SET_PRIMARY_LINK'; payload: string }
     | { type: 'SET_FAQ'; value: FaqItem[] }
     | { type: 'ADD_FAQ' }
     | { type: 'REMOVE_FAQ'; index: number }
@@ -125,6 +124,9 @@ function reducer(state: PostFormState, action: PostFormAction): PostFormState {
 
         case 'SET_TYPE':
             return { ...state, type: action.value, isDirty: true }
+
+        case 'SET_PRIMARY_LINK':
+            return { ...state, primaryLink: action.payload, isDirty: true }
 
         case 'SET_FAQ':
             return { ...state, faq: action.value, isDirty: true }
@@ -222,9 +224,7 @@ function createInitialState(initialData?: Record<string, unknown>): PostFormStat
         featuredImageAlt: (d.featured_image_alt as string) ?? '',
         notificationPdf: (d.notification_pdf as string) ?? '',
         faq,
-        admitCardLink: (d.admit_card_link as string) ?? '',
-        resultLink: (d.result_link as string) ?? '',
-        answerKeyLink: (d.answer_key_link as string) ?? '',
+        primaryLink: (d.primary_link as string) ?? '',
         metaTitle: (d.meta_title as string) ?? '',
         metaDescription: (d.meta_description as string) ?? '',
         focusKeyword: (d.focus_keyword as string) ?? '',
@@ -290,6 +290,7 @@ function useAutoSave(state: PostFormState, mode: 'create' | 'edit') {
                     focusKeyword: state.focusKeyword,
                     secondaryKeywords: state.secondaryKeywords,
                     faq: state.faq,
+                    primaryLink: state.primaryLink,
                 }
                 localStorage.setItem(DRAFT_KEY, JSON.stringify(draft))
             } catch { /* storage full or unavailable */ }
@@ -339,11 +340,21 @@ export function PostFormProvider({ children, mode, initialData, authorId }: Post
         featuredImageAlt: state.featuredImageAlt,
         faqCount: state.faq.length,
         postType: state.type,
+        authorId: state.authorId,
+        // Guru SEO 2.0 Contextual Fields
+        orgName: (initialData?.org_name as string) ?? null,
+        orgShortName: (initialData?.org_short_name as string) ?? null,
+        stateName: (initialData?.state_name as string) ?? null,
+        updatedAt: (initialData?.updated_at as string) || new Date().toISOString(),
+        primaryLink: state.primaryLink,
+        notificationPdf: state.notificationPdf,
     }), [
         state.title, state.slug, state.metaTitle, state.metaDescription,
         state.focusKeyword, state.secondaryKeywords, state.content,
         state.excerpt, state.featuredImage, state.featuredImageAlt,
-        state.faq.length, state.type,
+        state.faq.length, state.type, state.authorId, 
+        state.primaryLink, state.notificationPdf,
+        initialData?.org_name, initialData?.org_short_name, initialData?.state_name, initialData?.updated_at
     ])
 
     const value = useMemo<PostFormContextValue>(() => ({

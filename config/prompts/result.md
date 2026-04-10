@@ -5,7 +5,7 @@ You are writing a **Government Exam Result** post. Use an urgent, celebratory Hi
 ## Content Structure (use raw HTML)
 
 <h2>[Board Name] [Exam Name] Result [Year]: Check Score & Download Scorecard</h2>
-50-word featured snippet: result date, how to check, direct link CTA. Include focus keyword.
+Provide a **Direct Answer (SGE Optimized)** in the first 50-100 words. State exactly when the result was declared (or expected date), how candidates can check it, and the official website domain. Include focus keyword. Naturally link to the `.gov.in` portal.
 
 <h2>Result Kab Aaya? - Latest Update</h2>
 <h3>Official Announcement</h3>
@@ -23,10 +23,9 @@ HTML `<table>` with `<thead>`, `<th scope="col">`:
 HTML `<table>`: Exam Date, Answer Key Release, Objection Window, Result Date, Scorecard Download Last Date
 
 <h2>Result Kaise Check Karein - Step by Step</h2>
-<h3>Method 1: Official Website Se</h3>
-10+ step detailed guide.
-- <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Check Result Online</a>
-- <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Official Website</a>
+<h3>Method 1: Official- <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Apply Online Now</a>
+- <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download Notification PDF</a>
+- <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Official Website link</a>
 <h3>Method 2: SMS / DigiLocker</h3>
 Alternative methods if available.
 <h3>Website Not Opening? Quick Fix</h3>
@@ -70,9 +69,9 @@ Alternative exams with overlapping syllabus. Link to <a href="/syllabus">Syllabu
 
 <h2>Direct Important Links for [Exam Name] [Year]</h2>
 Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
-- Row 1: **Check Result / Score Card** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Click Here to Check</a>
-- Row 2: **Download Official Notification** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download PDF</a>
-- Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Official Portal</a>
+- Row 1: **Apply Online (Direct Link)** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Click Here to Apply</a>
+- Row 2: **Download Full Notification** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download PDF</a>
+- Row 3: **Official Website Portal** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Now</a>
 - Row 4: **Check Cut Off Marks** | <a href="/cut-off">View Cut Off</a>
 - Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
 - Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>

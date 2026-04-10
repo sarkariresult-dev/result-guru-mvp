@@ -24,6 +24,7 @@ import type { FaqItem } from '@/types/post-content.types'
 import { slugToKey, humanise, keyToSlug } from '@/lib/utils'
 import { ExternalLink, Download, ListTree } from 'lucide-react'
 import { PageViewTracker } from '@/features/analytics/components/PageViewTracker'
+import { getActionLinkPageLabel } from '@/lib/seo/seo-analyzer'
 
 
 
@@ -176,14 +177,13 @@ export default async function PostDetailPage({ params }: Props) {
     if (publishedPost.notification_pdf) {
         quickLinks.push({ href: publishedPost.notification_pdf, label: 'Notification PDF', icon: 'download' })
     }
-    if (publishedPost.admit_card_link) {
-        quickLinks.push({ href: publishedPost.admit_card_link, label: 'Admit Card', icon: 'external' })
-    }
-    if (publishedPost.result_link) {
-        quickLinks.push({ href: publishedPost.result_link, label: 'Result', icon: 'external' })
-    }
-    if (publishedPost.answer_key_link) {
-        quickLinks.push({ href: publishedPost.answer_key_link, label: 'Answer Key', icon: 'external' })
+    if (publishedPost.primary_link) {
+        quickLinks.push({ 
+            href: publishedPost.primary_link, 
+            label: getActionLinkPageLabel(typeKey), 
+            icon: 'external',
+            primary: true 
+        })
     }
 
     return (

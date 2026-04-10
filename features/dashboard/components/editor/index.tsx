@@ -227,13 +227,20 @@ export function TiptapEditor({
                 <BubbleMenu
                     editor={editor}
                     options={{ placement: 'top', offset: { mainAxis: 10, crossAxis: 0 } }}
-                    shouldShow={({ editor: e, from, to }) => {
+                    shouldShow={({ editor: e, from, to, state }) => {
                         // Only show when there's a text selection
                         if (from === to) return false
-                        // Don't show if we're in a table or other specialized blocks
-                        if (e.isActive('table')) return false
+
+                        // Check if it's a cell selection (selecting whole cells) 
+                        // in which case we prefer table tools
+                        const isCellSelection = state.selection.constructor.name === 'CellSelection'
+                        if (isCellSelection) return false
+
+                        // Don't show if we're in other specialized blocks
                         if (e.isActive('image')) return false
                         if (e.isActive('codeBlock')) return false
+
+                        // We allow it in tables now if text is selected!
                         return true
                     }}
                 >
@@ -244,8 +251,12 @@ export function TiptapEditor({
                 <BubbleMenu
                     editor={editor}
                     options={{ placement: 'top', offset: { mainAxis: 15, crossAxis: 0 } }}
-                    shouldShow={({ editor: e }) => {
-                        return e.isActive('table')
+                    shouldShow={({ editor: e, from, to, state }) => {
+                        const isCellSelection = state.selection.constructor.name === 'CellSelection'
+                        // Show table menu if we are in a table AND:
+                        // 1. It's just a cursor (from === to)
+                        // 2. OR it's a cell selection (multiple cells selected)
+                        return e.isActive('table') && (from === to || isCellSelection)
                     }}
                 >
                     <TableBubbleMenu editor={editor} />

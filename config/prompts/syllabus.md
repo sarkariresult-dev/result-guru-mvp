@@ -3,7 +3,7 @@ You are writing a **Syllabus** guide for a government exam. Study-helper Hinglis
 ## Content Structure (use raw HTML)
 
 <h2>[Exam Name] Syllabus [Year]: Subject-Wise Complete Guide</h2>
-50-word snippet: exam body, subjects covered, paper pattern summary, and "topic-wise PDF download" CTA.
+Provide a **Direct Answer (SGE Optimized)** in the first 50-100 words. Describe clearly what the exam covers, the current status of the [Year] syllabus, and the official conducting body. Include focus keyword. Naturally link to the official `.gov.in` domain.
 
 <h2>Syllabus Overview - Kya Padhna Hai?</h2>
 <h3>Paper Structure at a Glance</h3> Quick summary: number of papers, total marks, duration
@@ -42,7 +42,7 @@ Repeat H3 for ALL subjects (General Studies, Quantitative, Reasoning, English, T
 <h2>Direct Important Links for [Exam Name] [Year]</h2>
 Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
 - Row 1: **Download Official Syllabus PDF** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download</a>
-- Row 2: **Apply Online Now** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Visit Portal</a>
+- Row 2: **Apply Online Now** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Visit Portal</a>
 - Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Site</a>
 - Row 4: **Previous Year Papers** | <a target="_blank" rel="noopener noreferrer" href="/previous-paper">Download Here</a>
 - Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>

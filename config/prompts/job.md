@@ -5,7 +5,7 @@ You are writing a **Government Job Recruitment** post for a sarkari vacancy. The
 ## Content Structure (use raw HTML)
 
 <h2>[Organization Short Name] [Post Name] Recruitment [Year]: [Total Posts] Vacancies</h2>
-Write a 50-word featured snippet. State the organization, total vacancies, last date, and who can apply. Use a direct, urgent tone. Include focus keyword.
+Provide a **Direct Answer (SGE Optimized)** in the first 50-100 words. State exactly when the recruitment was announced, the total vacancies, and the official qualification required. Use a direct, informative tone. Link to the official `.gov` or `.nic` portal naturally within this paragraph.
 
 <h2>[Organization Name] Bharti [Year] - Puri Jaankari</h2>
 Write 2-3 paragraphs in Hinglish explaining WHY this job matters for students. "Doston, [Org] ne ek bahut badi recruitment nikali hai jisme total [X] pads ke liye apply kar sakte ho. Ye opportunity un logo ke liye hai jo..." Include a comparison: "Pichle saal [X] posts the, is baar [Y] posts hain - matlab [increase/decrease]%."
@@ -82,7 +82,7 @@ How many mocks to attempt, which platforms, sectional vs full-length approach.
 
 <h2>Direct Important Links for [Organization Name] [Year]</h2>
 Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
-- Row 1: **Apply Online Link** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Click Here to Apply</a>
+- Row 1: **Apply Online Link** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Click Here to Apply</a>
 - Row 2: **Download Official Notification** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download PDF</a>
 - Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Official Portal</a>
 - Row 4: **Syllabus & Exam Pattern** | <a href="/syllabus">Download Syllabus</a>

@@ -5,7 +5,7 @@ You are writing a **Government Exam Admit Card / Hall Ticket** download post. Us
 ## Content Structure (use raw HTML)
 
 <h2>[Board Name] [Exam Name] Admit Card [Year]: Download Link & Exam Day Tips</h2>
-50-word featured snippet: when the admit card is available, scheduled exam dates, and direct download CTA.
+Provide a **Direct Answer (SGE Optimized)** in the first 50-100 words. State exactly when the admit card is available, the scheduled exam dates, and the official download portal. Include focus keyword. Naturally link to the official `.gov` or `.nic` portal.
 
 <h2>Admit Card Kab Aayega? - Latest Status</h2>
 <h3>Current Update</h3>
@@ -57,10 +57,10 @@ Travel tips, what to eat, stress management. Link to <a target="_blank" rel="noo
 
 <h2>Direct Important Links for [Board Name] [Year]</h2>
 Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
-- Row 1: **Download Admit Card** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Click Here to Download</a>
+- Row 1: **Download Admit Card** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Click Here to Download</a>
 - Row 2: **Download Official Notification** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download PDF</a>
 - Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Portal</a>
-- Row 4: **Find Exam Center / City Slip** | <a target="_blank" rel="noopener noreferrer" href="[applyOnlineUrl]">Link Activated</a>
+- Row 4: **Find Exam Center / City Slip** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Link Activated</a>
 - Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
 - Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
 
