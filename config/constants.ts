@@ -7,7 +7,7 @@ import type { ApplicationStatus, PostStatus } from '@/types/enums'
 
 export const PAGINATION = {
     /** Default items per listing page */
-    DEFAULT_LIMIT: 20,
+    DEFAULT_LIMIT: 18,
     /** Infinite scroll page size */
     INFINITE_LIMIT: 15,
     /** Admin table page size */

@@ -559,6 +559,42 @@
         outline-offset: 2px;
         border-radius: var(--radius-sm);
     }
+
+    /* ── Tiptap Table Selection & Resizing ── */
+    .tiptap .tableWrapper {
+        overflow-x: auto;
+    }
+
+    .tiptap .column-resize-handle {
+        position: absolute;
+        right: -2px;
+        top: 0;
+        bottom: -2px;
+        width: 4px;
+        background-color: var(--color-brand-500);
+        pointer-events: none;
+    }
+
+    .tiptap .selectedCell:after {
+        z-index: 2;
+        position: absolute;
+        content: "";
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: oklch(0.48 0.192 264 / 0.1);
+        pointer-events: none;
+    }
+
+    .dark .tiptap .selectedCell:after {
+        background: oklch(0.65 0.145 264 / 0.15);
+    }
+
+    .tiptap .resize-cursor {
+        cursor: ew-resize;
+        cursor: col-resize;
+    }
 }
 
 /* ══════════════════════════════════════════════════════════════

@@ -84,7 +84,7 @@ export const getPostBySlug = cache(unstable_cache(
     async (
         slug: string,
         type?: string,
-    ): Promise<Post | null> => {
+    ): Promise<PostDetail | null> => {
         const supabase = createStaticClient()
         let query = supabase
             .from('v_published_posts')
@@ -106,7 +106,19 @@ export const getPostBySlug = cache(unstable_cache(
             }
         }
 
-        return post as Post
+        // Fetch tags separately to keep the main view performance high
+        const { data: tagData } = await supabase
+            .from('post_tags')
+            .select('tag:tags(id, name, slug, tag_type)')
+            .eq('post_id', post.id)
+
+        if (tagData) {
+            post.tags = tagData
+                .map((t: any) => t.tag)
+                .filter(Boolean) as PostTag[]
+        }
+
+        return post as PostDetail
     },
     ['post-by-slug'],
     {

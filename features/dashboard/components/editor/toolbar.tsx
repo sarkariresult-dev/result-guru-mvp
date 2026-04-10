@@ -10,6 +10,8 @@ import {
     Undo, Redo, Code, Minus, Pilcrow, Highlighter,
     Code2, Superscript, Subscript,
     X,
+    Columns, Rows, Plus, Trash2, Maximize2, Minimize2,
+    Grid, Heading as HeadingIcon, Merge, Split,
 } from 'lucide-react'
 
 // ─── Toolbar Button ─────────────────────────────────────────
@@ -33,11 +35,10 @@ function Btn({
             onClick={onClick}
             disabled={disabled}
             title={title}
-            className={`inline-flex size-8 items-center justify-center rounded-md transition-colors ${
-                active
+            className={`inline-flex size-8 items-center justify-center rounded-md transition-colors ${active
                     ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300'
                     : 'text-foreground-muted hover:bg-background-subtle hover:text-foreground'
-            } disabled:opacity-40`}
+                } disabled:opacity-40`}
         >
             {children}
         </button>
@@ -169,45 +170,113 @@ export function EditorToolbar({
 
 // ─── Table Controls ─────────────────────────────────────────
 
+// ─── Table Controls (Traditional Bar) ─────────────────────
 export function TableControls({ editor }: { editor: Editor }) {
     if (!editor.isActive('table')) return null
 
     return (
-        <div className="flex flex-wrap items-center gap-0.5 border-t border-border bg-brand-50/50 dark:bg-brand-900/10 px-2 py-1.5">
-            <span className="mr-1 text-[10px] font-semibold uppercase tracking-wider text-brand-600">
-                Table
-            </span>
-            <Btn onClick={() => editor.chain().focus().addColumnBefore().run()} title="Add column before">
-                <span className="text-[10px] font-bold">+Col←</span>
-            </Btn>
-            <Btn onClick={() => editor.chain().focus().addColumnAfter().run()} title="Add column after">
-                <span className="text-[10px] font-bold">+Col→</span>
-            </Btn>
-            <Btn onClick={() => editor.chain().focus().addRowBefore().run()} title="Add row above">
-                <span className="text-[10px] font-bold">+Row↑</span>
-            </Btn>
-            <Btn onClick={() => editor.chain().focus().addRowAfter().run()} title="Add row below">
-                <span className="text-[10px] font-bold">+Row↓</span>
-            </Btn>
+        <div className="flex flex-wrap items-center gap-1 border-t border-border bg-brand-50/50 dark:bg-brand-900/10 px-3 py-1.5 animate-in slide-in-from-top-1 duration-200">
+            <div className="flex items-center gap-1.5 mr-2 pr-2 border-r border-brand-200 dark:border-brand-800">
+                <Grid className="size-3.5 text-brand-600" />
+                <span className="text-[10px] font-bold uppercase tracking-wider text-brand-700 dark:text-brand-300">
+                    Table Tools
+                </span>
+            </div>
+
+            <div className="flex items-center gap-0.5">
+                <Btn onClick={() => editor.chain().focus().addColumnBefore().run()} title="Add column before">
+                    <Plus className="size-3.5 mr-0.5" /> <Columns className="size-3.5 text-xs" />
+                </Btn>
+                <Btn onClick={() => editor.chain().focus().addColumnAfter().run()} title="Add column after">
+                    <Columns className="size-3.5" /> <Plus className="size-3.5 ml-0.5" />
+                </Btn>
+                <Divider />
+                <Btn onClick={() => editor.chain().focus().addRowBefore().run()} title="Add row above">
+                    <Plus className="size-3.5 mr-0.5" /> <Rows className="size-3.5" />
+                </Btn>
+                <Btn onClick={() => editor.chain().focus().addRowAfter().run()} title="Add row below">
+                    <Rows className="size-3.5" /> <Plus className="size-3.5 ml-0.5" />
+                </Btn>
+            </div>
+
             <Divider />
-            <Btn onClick={() => editor.chain().focus().deleteColumn().run()} title="Delete column">
-                <span className="text-[10px] font-bold text-red-500">-Col</span>
+
+            <div className="flex items-center gap-0.5">
+                <Btn onClick={() => editor.chain().focus().mergeCells().run()} title="Merge selected cells">
+                    <Merge className="size-3.5" />
+                </Btn>
+                <Btn onClick={() => editor.chain().focus().splitCell().run()} title="Split cell">
+                    <Split className="size-3.5" />
+                </Btn>
+                <Btn onClick={() => editor.chain().focus().toggleHeaderRow().run()} active={editor.isActive('table', { headerRow: true })} title="Toggle header row">
+                    <HeadingIcon className="size-3.5" />
+                </Btn>
+            </div>
+
+            <Divider />
+
+            <div className="flex items-center gap-0.5">
+                <Btn onClick={() => editor.chain().focus().deleteColumn().run()} title="Delete column">
+                    <Trash2 className="size-3.5 text-red-500" />
+                </Btn>
+                <Btn onClick={() => editor.chain().focus().deleteRow().run()} title="Delete row">
+                    <Trash2 className="size-3.5 text-red-500" />
+                </Btn>
+                <Btn onClick={() => editor.chain().focus().deleteTable().run()} title="Delete entire table">
+                    <span className="text-[10px] font-bold text-red-600 px-1 opacity-80 hover:opacity-100">DELETE TABLE</span>
+                </Btn>
+            </div>
+        </div>
+    )
+}
+
+// ─── Table Bubble Menu ─────────────────────────────────────
+export function TableBubbleMenu({ editor }: { editor: Editor }) {
+    return (
+        <div className="flex items-center gap-0.5 rounded-lg border border-border bg-surface/95 backdrop-blur-sm p-1 shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="flex items-center px-2 mr-1 border-r border-border">
+                <Grid className="size-3.5 text-brand-500 mr-1.5" />
+                <span className="text-[10px] font-bold text-foreground-muted uppercase tracking-tight">Table</span>
+            </div>
+
+            <Btn onClick={() => editor.chain().focus().addColumnBefore().run()} title="Insert column left">
+                <div className="relative"><Columns className="size-3.5" /><Plus className="absolute -top-1 -left-1 size-2 font-bold" /></div>
             </Btn>
-            <Btn onClick={() => editor.chain().focus().deleteRow().run()} title="Delete row">
-                <span className="text-[10px] font-bold text-red-500">-Row</span>
+            <Btn onClick={() => editor.chain().focus().addColumnAfter().run()} title="Insert column right">
+                <div className="relative"><Columns className="size-3.5" /><Plus className="absolute -top-1 -right-1 size-2 font-bold" /></div>
             </Btn>
-            <Btn onClick={() => editor.chain().focus().toggleHeaderRow().run()} title="Toggle header row">
-                <span className="text-[10px] font-bold">H</span>
+
+            <Divider />
+
+            <Btn onClick={() => editor.chain().focus().addRowBefore().run()} title="Insert row above">
+                <div className="relative"><Rows className="size-3.5" /><Plus className="absolute -top-1 -left-1 size-2 font-bold" /></div>
             </Btn>
+            <Btn onClick={() => editor.chain().focus().addRowAfter().run()} title="Insert row below">
+                <div className="relative"><Rows className="size-3.5" /><Plus className="absolute -bottom-1 -left-1 size-2 font-bold" /></div>
+            </Btn>
+
+            <Divider />
+
             <Btn onClick={() => editor.chain().focus().mergeCells().run()} title="Merge cells">
-                <span className="text-[10px] font-bold">Merge</span>
+                <Merge className="size-3.5" />
             </Btn>
             <Btn onClick={() => editor.chain().focus().splitCell().run()} title="Split cell">
-                <span className="text-[10px] font-bold">Split</span>
+                <Split className="size-3.5" />
             </Btn>
+            <Btn onClick={() => editor.chain().focus().toggleHeaderRow().run()} title="Header row">
+                <HeadingIcon className="size-3.5" />
+            </Btn>
+
             <Divider />
+
+            <Btn onClick={() => editor.chain().focus().deleteColumn().run()} title="Delete column">
+                <Trash2 className="size-3.5 text-red-500/80" />
+            </Btn>
+            <Btn onClick={() => editor.chain().focus().deleteRow().run()} title="Delete row">
+                <Trash2 className="size-3.5 text-red-500/80" />
+            </Btn>
             <Btn onClick={() => editor.chain().focus().deleteTable().run()} title="Delete table">
-                <span className="text-[10px] font-bold text-red-500">Delete</span>
+                <Trash2 className="size-3.5 text-red-600" />
             </Btn>
         </div>
     )

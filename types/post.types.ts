@@ -125,6 +125,9 @@ export interface PublishedPost extends Post {
     
     // Computed from application_start_date and application_end_date in v_published_posts
     application_status: ApplicationStatus
+
+    /** Aggregated from post_tags + tags tables (fetched on demand for details) */
+    tags?: PostTag[] | null
 }
 
 // ── Post card (lightweight - used in listing pages) ───────
@@ -159,7 +162,6 @@ export type PostSummary = PostCard
 
 // ── Post detail (full data - used on detail pages) ────────
 export type PostDetail = PublishedPost & {
-    tags?: PostTagEntry[]
     author?: AuthorInfo | null
     affiliates?: PostAffiliateProductEntry[]
 }
@@ -193,15 +195,19 @@ export type PostSeoHead = Pick<
     | 'content_updated_at'
 >
 
-// ── Post tag (joined from post_tags + tags) ────────────────
+// ── Post tag (aggregated in v_published_posts) ───────────
+export interface PostTag {
+    id: string
+    slug: string
+    name: string
+    tag_type: string
+}
+
+/** @deprecated Use PostTag */
 export interface PostTagEntry {
     post_id: string
     tag_id: string
-    tag: {
-        slug: string
-        name: string
-        tag_type: string
-    }
+    tag: PostTag
 }
 
 // ── Post affiliate product (joined) ───────────────────────

@@ -83,8 +83,8 @@ export function PostDetail({ post, slug, url }: Props) {
 
     const processedHtml = replacePlaceholders(rawHtml, mappings)
 
-    /* Extract tags */
-    const tags = (post as any).tags as Array<{ id: string; name: string; slug: string }> | undefined
+    /* Tags are now aggregated in v_published_posts */
+    const tags = post.tags
 
     /* Determine section order */
     const sectionOrder = SECTION_ORDER[post.type] || SECTION_ORDER[typeKey] || DEFAULT_ORDER

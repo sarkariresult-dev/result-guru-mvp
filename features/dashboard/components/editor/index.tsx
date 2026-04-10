@@ -6,7 +6,7 @@ import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
 import { getEditorExtensions } from './extensions'
 import { SlashCommandExtension } from './slash-command'
 import { LinkModal, ImageModal, TableSizePicker } from './modals'
-import { EditorToolbar, TableControls, BubbleToolbar } from './toolbar'
+import { EditorToolbar, TableControls, BubbleToolbar, TableBubbleMenu } from './toolbar'
 import { SlashMenu } from './SlashMenu'
 import { Save } from 'lucide-react'
 
@@ -226,16 +226,29 @@ export function TiptapEditor({
                 {/* Bubble menu for text selection */}
                 <BubbleMenu
                     editor={editor}
-                    options={{ placement: 'top' }}
+                    options={{ placement: 'top', offset: { mainAxis: 10, crossAxis: 0 } }}
                     shouldShow={({ editor: e, from, to }) => {
-                        // Only show when there's a text selection (not for nodes like images)
+                        // Only show when there's a text selection
                         if (from === to) return false
+                        // Don't show if we're in a table or other specialized blocks
+                        if (e.isActive('table')) return false
                         if (e.isActive('image')) return false
                         if (e.isActive('codeBlock')) return false
                         return true
                     }}
                 >
                     <BubbleToolbar editor={editor} onLinkClick={openLinkModal} />
+                </BubbleMenu>
+
+                {/* Bubble menu for tables */}
+                <BubbleMenu
+                    editor={editor}
+                    options={{ placement: 'top', offset: { mainAxis: 15, crossAxis: 0 } }}
+                    shouldShow={({ editor: e }) => {
+                        return e.isActive('table')
+                    }}
+                >
+                    <TableBubbleMenu editor={editor} />
                 </BubbleMenu>
 
                 {/* Editor Content */}
