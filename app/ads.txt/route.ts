@@ -14,14 +14,16 @@
 export async function GET() {
     const lines: string[] = []
 
-
-
-    // Add more ad networks here as needed:
-    // lines.push('example.com, pub-12345, DIRECT, abc123')
+    // ── INSTRUCTIONS ──────────────────────────────────────────────
+    // When you get your AdSense Publisher ID, add it here:
+    // lines.push('google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0')
+    // ──────────────────────────────────────────────────────────────
 
     const body = lines.length > 0
         ? lines.join('\n') + '\n'
-        : '# No ad networks configured yet.\n# Add your ad network entries to app/ads.txt/route.ts\n'
+        : '# Result Guru - Authorized Digital Sellers (ads.txt)\n' +
+          '# AdSense application in progress...\n' +
+          '# This file will be updated with the publisher ID upon approval.\n'
 
     return new Response(body, {
         headers: {
