@@ -2,7 +2,7 @@ import { buildPageMetadata } from '@/lib/metadata'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { SITE } from '@/config/site'
-import { ShieldAlert, Lock, Eye, Server, MessageSquare, ChevronRight, CheckCircle2, Database, Search, Mail } from 'lucide-react'
+import { ShieldAlert, Lock, Eye, Server, MessageSquare, ChevronRight, CheckCircle2, Database, Search, Mail, ShieldCheck } from 'lucide-react'
 import { InstitutionalCTA } from '@/components/sections/InstitutionalCTA'
 
 export const metadata = buildPageMetadata({
@@ -40,7 +40,7 @@ export default function PrivacyPolicyPage() {
                         Transparency in how we safeguard your information while you access India&apos;s most trusted job notification ecosystem.
                     </p>
                     <div className="mt-8 text-xs font-bold text-foreground-muted uppercase tracking-widest">
-                        Last Updated: March 2026
+                        Last Updated: April 14, 2026
                     </div>
                 </div>
             </header>
@@ -115,16 +115,76 @@ export default function PrivacyPolicyPage() {
                     <section className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
                         <h2 className="text-3xl font-black text-foreground mb-8 flex items-center gap-4">
                             <span className="size-1.5 rounded-full bg-brand-600" />
-                            3. Strategic Transparency
+                            3. Cookies and Web Beacons
                         </h2>
-                        <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/20 rounded-4xl p-8 sm:p-12">
+                        <p className="font-medium text-foreground-muted leading-relaxed">
+                            Like any other website, {SITE.name} uses &apos;cookies&apos;. These cookies are used to store information including visitors&apos; preferences, and the pages on the website that the visitor accessed or visited. The information is used to optimize the users&apos; experience by customizing our web page content based on visitors&apos; browser type and/or other information.
+                        </p>
+                    </section>
+
+                    <section className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
+                        <h2 className="text-3xl font-black text-foreground mb-8 flex items-center gap-4">
+                            <span className="size-1.5 rounded-full bg-brand-600" />
+                            4. Google DoubleClick DART Cookie
+                        </h2>
+                        <p className="font-medium text-foreground-muted leading-relaxed">
+                            Google is one of the third-party vendors on our site. It also uses cookies, known as DART cookies, to serve ads to our site visitors based upon their visit to our website and other sites on the internet. However, visitors may choose to decline the use of DART cookies by visiting the Google ad and content network Privacy Policy at the following URL:
+                        </p>
+                        <div className="mt-6 p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-border flex items-center justify-between gap-4">
+                            <span className="text-sm font-bold text-brand-600 truncate">https://policies.google.com/technologies/ads</span>
+                            <a 
+                                href="https://policies.google.com/technologies/ads" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="px-4 py-2 rounded-lg bg-brand-600 text-white text-xs font-black uppercase tracking-widest transition-transform hover:scale-105 active:scale-95 whitespace-nowrap"
+                            >
+                                Opt Out
+                            </a>
+                        </div>
+                    </section>
+
+                    <section className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-400">
+                        <h2 className="text-3xl font-black text-foreground mb-8 flex items-center gap-4">
+                            <span className="size-1.5 rounded-full bg-brand-600" />
+                            5. Third-Party Privacy Policies
+                        </h2>
+                        <p className="font-medium text-foreground-muted leading-relaxed mb-6">
+                            {SITE.name}&apos;s Privacy Policy does not apply to other advertisers or websites. Thus, we are advising you to consult the respective Privacy Policies of these third-party ad servers for more detailed information. It may include their practices and instructions about how to opt-out of certain options.
+                        </p>
+                        <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/20 rounded-4xl p-8 sm:p-10">
                             <h4 className="text-xl font-black text-amber-900 dark:text-amber-400 mb-4 flex items-center gap-3">
                                 <ShieldAlert className="size-6" />
-                                Third-Party Links Notice
+                                External Portals Notice
                             </h4>
                             <p className="text-amber-900/80 dark:text-amber-400/80 font-semibold leading-relaxed">
-                                {SITE.name} provides direct links to official सरकारी (.gov.in) portals. Once you leave our ecosystem, their respective privacy policies apply. We do not control and are not responsible for the data practices of external government domains.
+                                Our platform provides direct links to official (.gov.in) portals. Once you leave our ecosystem, their respective privacy policies apply. We do not control and are not responsible for the data practices of external government domains.
                             </p>
+                        </div>
+                    </section>
+
+                    <section className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-500">
+                        <h2 className="text-3xl font-black text-foreground mb-8 flex items-center gap-4">
+                            <span className="size-1.5 rounded-full bg-brand-600" />
+                            6. Government Disclaimer
+                        </h2>
+                        <div className="p-8 rounded-4xl bg-slate-950 text-white dark:bg-brand-900/40 border border-brand-500/30 shadow-2xl">
+                            <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center mb-6">
+                                <div className="size-14 rounded-2xl bg-brand-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/20">
+                                    <ShieldCheck className="size-8" />
+                                </div>
+                                <div>
+                                    <h3 className="text-2xl font-black mb-1 text-white">Non-Governmental Entity</h3>
+                                    <p className="text-brand-300 font-bold uppercase tracking-widest text-[10px]">Official Verification Standard</p>
+                                </div>
+                            </div>
+                            <div className="space-y-4 text-slate-300 font-medium leading-relaxed">
+                                <p>
+                                    Result Guru ({SITE.url}) is a private informational platform. <strong className="text-white font-black">We are NOT affiliated, associated, authorized, endorsed by, or in any way officially connected with any government entity</strong> or any of its agencies.
+                                </p>
+                                <p>
+                                    All information provided here is gathered from official sources, newspapers, and public gazettes for educational and convenience purposes. While we strive for 100% accuracy, users are strictly advised to cross-verify all notifications on the respective official government websites before taking any action.
+                                </p>
+                            </div>
                         </div>
                     </section>
                 </div>
