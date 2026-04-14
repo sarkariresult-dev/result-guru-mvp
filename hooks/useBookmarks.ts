@@ -22,10 +22,13 @@ export interface BookmarkEntry {
 }
 
 export function useBookmarks() {
-    const [bookmarks, setBookmarks] = useLocalStorage<BookmarkEntry[]>(
+    const [storedBookmarks, setBookmarks] = useLocalStorage<BookmarkEntry[]>(
         STORAGE_KEYS.BOOKMARKS,
         [],
     )
+
+    // Ensure it's always an array in case of corruption or storage failure
+    const bookmarks = Array.isArray(storedBookmarks) ? storedBookmarks : []
 
     const isBookmarked = useCallback(
         (slug: string) => bookmarks.some((b) => b.slug === slug),

@@ -37,12 +37,27 @@ export function usePageView(postId: string | undefined) {
         if (!postId || firedRef.current || isBot()) return
 
         // Deduplicate within the same browser session
+        // In restricted iframes, accessing sessionStorage can throw a SecurityError
         const sessionKey = `pv_${postId}`
-        if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem(sessionKey)) return
+        let alreadyTracked = false
+        try {
+            if (typeof sessionStorage !== 'undefined') {
+                alreadyTracked = !!sessionStorage.getItem(sessionKey)
+            }
+        } catch {
+            alreadyTracked = false
+        }
+        
+        if (alreadyTracked) return
 
         firedRef.current = true
-        if (typeof sessionStorage !== 'undefined') {
-            sessionStorage.setItem(sessionKey, '1')
+        
+        try {
+            if (typeof sessionStorage !== 'undefined') {
+                sessionStorage.setItem(sessionKey, '1')
+            }
+        } catch {
+            // Silently ignore storage failure
         }
 
         // Fire and forget - don't block render

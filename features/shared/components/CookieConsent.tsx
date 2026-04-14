@@ -22,11 +22,13 @@ export function CookieConsent() {
 
     useEffect(() => {
         try {
+            if (typeof localStorage === 'undefined') {
+                setVisible(true)
+                return
+            }
             const stored = localStorage.getItem(STORAGE_KEYS.COOKIE_CONSENT)
             if (stored === 'accepted' || stored === 'rejected') {
-                // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage sync
                 setConsent(stored)
-                // Push consent state to GTM dataLayer
                 if (typeof window !== 'undefined' && stored === 'accepted') {
                     ; (window as unknown as { dataLayer: Record<string, unknown>[] }).dataLayer?.push({
                         event: 'cookie_consent_granted',
@@ -34,11 +36,9 @@ export function CookieConsent() {
                 }
                 return
             }
-            // Show banner after a small delay for better UX
             const timer = setTimeout(() => setVisible(true), 1500)
             return () => clearTimeout(timer)
         } catch {
-            // localStorage not available (private mode, etc.)
             setVisible(true)
             return
         }

@@ -189,7 +189,9 @@ export default async function PostDetailPage({ params }: Props) {
 
     return (
         <>
-            <PageViewTracker postId={publishedPost.id} />
+            <LocalErrorBoundary name="PageViewTracker" silent>
+                <PageViewTracker postId={publishedPost.id} />
+            </LocalErrorBoundary>
             <JsonLd data={jsonLdEntries} />
 
             <div className="container mx-auto max-w-7xl px-4 py-8">

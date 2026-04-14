@@ -75,9 +75,26 @@ export function PostActionBar({ postId, slug, title, type, initialViewCount, url
     useEffect(() => {
         if (viewTracked.current || isBot()) return
         const key = `pv_${postId}`
-        if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem(key)) return
+        
+        let alreadyTracked = false
+        try {
+            if (typeof sessionStorage !== 'undefined') {
+                alreadyTracked = !!sessionStorage.getItem(key)
+            }
+        } catch {
+            alreadyTracked = false
+        }
+        
+        if (alreadyTracked) return
         viewTracked.current = true
-        if (typeof sessionStorage !== 'undefined') sessionStorage.setItem(key, '1')
+        
+        try {
+            if (typeof sessionStorage !== 'undefined') {
+                sessionStorage.setItem(key, '1')
+            }
+        } catch {
+            // ignore
+        }
 
         fetch('/api/analytics/view', {
             method: 'POST',

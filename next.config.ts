@@ -95,7 +95,6 @@ const nextConfig: NextConfig = {
       {
         source: '/(.*)',
         headers: [
-          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           {
             key: 'Referrer-Policy',
@@ -128,6 +127,7 @@ const nextConfig: NextConfig = {
               "font-src 'self' https://fonts.gstatic.com",
               "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://*.analytics.google.com https://*.google.com https://*.g.doubleclick.net https://pagead2.googlesyndication.com https://www.googleadservices.com https://vitals.vercel-insights.com https://va.vercel-scripts.com",
               "frame-src 'self' https://www.googletagmanager.com https://googleads.g.doubleclick.net https://*.google.com https://tpc.googlesyndication.com",
+              "frame-ancestors 'self' https://*.google.com https://*.googlesyndication.com",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",

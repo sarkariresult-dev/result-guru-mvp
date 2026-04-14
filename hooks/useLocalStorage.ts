@@ -34,9 +34,15 @@ export function useLocalStorage<T>(
     const readValue = useCallback((): T => {
         if (typeof window === 'undefined') return initialValue
         try {
-            const item = window.localStorage.getItem(key)
+            // Check if localStorage is actually accessible
+            const storage = window.localStorage
+            if (!storage) return initialValue
+            
+            const item = storage.getItem(key)
             return item !== null ? deserialize(item) : initialValue
-        } catch {
+        } catch (error) {
+            // SecurityError or other storage restriction - fallback to in-memory
+            console.warn(`Storage access blocked for key "${key}":`, error)
             return initialValue
         }
     }, [key, initialValue, deserialize])
@@ -60,8 +66,13 @@ export function useLocalStorage<T>(
                 }
             }
         }
-        window.addEventListener('storage', handleStorageEvent)
-        return () => window.removeEventListener('storage', handleStorageEvent)
+        
+        try {
+            window.addEventListener('storage', handleStorageEvent)
+            return () => window.removeEventListener('storage', handleStorageEvent)
+        } catch {
+            return () => {}
+        }
     }, [key, deserialize])
 
     const setValue = useCallback(
@@ -71,7 +82,7 @@ export function useLocalStorage<T>(
                 try {
                     window.localStorage.setItem(key, serialize(next))
                 } catch {
-                    // Quota exceeded or private mode - silently ignore
+                    // Quota exceeded, private mode, or restricted iframe - silently ignore
                 }
                 return next
             })
