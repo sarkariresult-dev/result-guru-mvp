@@ -9,9 +9,6 @@ const nextConfig: NextConfig = {
   /* ── Turbopack (stable - default bundler in Next 16) ────── */
   turbopack: {},
 
-  /* ── Cache Components (Next 16 - replaces experimental.ppr) */
-  cacheComponents: true,
-
   /* ── Performance ────────────────────────────────────────── */
   poweredByHeader: false,
   compress: true,
@@ -22,16 +19,13 @@ const nextConfig: NextConfig = {
     removeConsole: process.env.NODE_ENV === 'production' ? true : false,
   },
 
-  /* ── React 19 Compiler (Stable in Next.js 15+) ──────────── */
-  reactCompiler: true,
-
   /* ── Server Dependencies ────────────────────────────────── */
   serverExternalPackages: [],
 
   /* ── Experimental ───────────────────────────────────────── */
   experimental: {
-    /* Enable Turbopack file-system caching for faster dev restarts */
-    turbopackFileSystemCacheForDev: true,
+    useCache: true,
+    reactCompiler: true,
     /* Server actions with larger body for post forms */
     serverActions: {
       bodySizeLimit: '2mb',
