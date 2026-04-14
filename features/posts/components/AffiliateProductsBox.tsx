@@ -1,12 +1,32 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { ExternalLink, ShoppingCart, Star } from 'lucide-react'
 import type { PostAffiliateProductEntry } from '@/types/post.types'
+import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
 
 interface Props {
     affiliates: PostAffiliateProductEntry[]
 }
 
 export function AffiliateProductsBox({ affiliates }: Props) {
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+    if (!isMounted) return null
+
+    return (
+        <LocalErrorBoundary name="AffiliateProducts">
+            <AffiliateProductsBoxContent affiliates={affiliates} />
+        </LocalErrorBoundary>
+    )
+}
+
+function AffiliateProductsBoxContent({ affiliates }: Props) {
     if (!affiliates || affiliates.length === 0) return null
 
     const sorted = [...affiliates].sort((a, b) => a.sort_order - b.sort_order)

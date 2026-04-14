@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ChevronDown, HelpCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
 
 interface FAQItem {
     question: string
@@ -10,13 +11,28 @@ interface FAQItem {
 }
 
 export function FAQAccordion({ items }: { items: FAQItem[] }) {
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+    if (!isMounted) return null
+
+    return (
+        <LocalErrorBoundary name="FAQAccordion">
+            <FAQAccordionContent items={items} />
+        </LocalErrorBoundary>
+    )
+}
+
+function FAQAccordionContent({ items }: { items: FAQItem[] }) {
     const [openIndex, setOpenIndex] = useState<number | null>(0)
 
     if (!items || items.length === 0) return null
 
     return (
         <section id="faq-section">
-            {/* Header */}
             <div className="flex items-center gap-2.5 mb-5">
                 <div className="flex size-8 items-center justify-center rounded-lg bg-brand-100 text-brand-600 dark:bg-brand-900/30 dark:text-brand-400">
                     <HelpCircle className="size-4.5" />
@@ -24,7 +40,6 @@ export function FAQAccordion({ items }: { items: FAQItem[] }) {
                 <h2 className="font-display text-lg font-bold text-foreground">Frequently Asked Questions</h2>
             </div>
 
-            {/* FAQ Items */}
             <div className="space-y-3">
                 {items.map((item, i) => {
                     const isOpen = openIndex === i

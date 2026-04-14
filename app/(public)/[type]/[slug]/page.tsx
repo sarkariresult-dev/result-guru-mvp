@@ -212,18 +212,7 @@ export default async function PostDetailPage({ params }: Props) {
 
                         <LocalErrorBoundary 
                             name="PostDetailMain" 
-                            fallback={(
-                                <div className="space-y-4">
-                                    <h1 className="text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl leading-tight">
-                                        {publishedPost.title}
-                                    </h1>
-                                    <div className="rounded-xl border border-dashed border-red-200 bg-red-50/20 p-6 text-center">
-                                        <p className="text-sm font-medium text-red-600/70">
-                                            Content display restricted in this browser environment.
-                                        </p>
-                                    </div>
-                                </div>
-                            )}
+                            fallback={<div className="min-h-[200px]" />}
                         >
                             <PostDetail post={publishedPost} slug={slug} url={canonicalUrl} />
                         </LocalErrorBoundary>
