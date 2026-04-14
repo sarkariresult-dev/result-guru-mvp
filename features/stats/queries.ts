@@ -1,5 +1,8 @@
 import 'server-only'
-import { cacheLife, cacheTag } from 'next/cache'
+import { 
+  unstable_cacheLife as cacheLife, 
+  unstable_cacheTag as cacheTag 
+} from 'next/cache'
 import { createStaticClient } from '@/lib/supabase/static'
 import type { PostCard } from '@/types/post.types'
 

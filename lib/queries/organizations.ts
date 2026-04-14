@@ -1,6 +1,6 @@
 import 'server-only'
 import { createStaticClient } from '@/lib/supabase/static'
-import { cacheLife, cacheTag } from 'next/cache'
+import { unstable_cacheLife as cacheLife, unstable_cacheTag as cacheTag } from 'next/cache'
 import type { Organization } from '@/types/taxonomy.types'
 
 /**

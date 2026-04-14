@@ -1,6 +1,6 @@
 import 'server-only'
 import { createStaticClient } from '@/lib/supabase/static'
-import { cacheLife, cacheTag } from 'next/cache'
+import { unstable_cacheLife as cacheLife, unstable_cacheTag as cacheTag } from 'next/cache'
 import type { Tag } from '@/types/taxonomy.types'
 import type { PostCard } from '@/types/post.types'
 import { PAGINATION } from '@/config/constants'
