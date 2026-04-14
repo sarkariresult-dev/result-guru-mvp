@@ -6,6 +6,8 @@ import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { SITE } from '@/config/site'
 import { QualsGrid } from '@/components/qualifications/QualsGrid'
 import { Building2, Search, MapPin, ArrowRight, GraduationCap } from 'lucide-react'
+import { RetryButton } from '@/components/shared/RetryButton'
+
 
 export const metadata = buildPageMetadata({
     title: 'Qualification-wise Government Jobs & Results',
@@ -61,12 +63,7 @@ export default async function QualificationsDirectoryPage() {
                             <p className="max-w-sm text-base text-foreground-muted">
                                 We are temporarily unable to load the qualification directory. Please check back in a few minutes.
                             </p>
-                            <button 
-                                onClick={() => window.location.reload()}
-                                className="mt-8 px-6 py-3 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 transition-colors shadow-lg shadow-red-600/20"
-                            >
-                                Retry Connection
-                            </button>
+                            <RetryButton />
                         </div>
                     </div>
                 ) : (
