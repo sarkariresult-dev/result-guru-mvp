@@ -58,7 +58,8 @@ function AdZoneContent({ zoneSlug, postType, postId, sticky, className }: Props)
     // Record impressions for visible ads
     useEffect(() => {
         try {
-            if (!ads?.length || error) return
+            const isIframe = typeof window !== 'undefined' && window.self !== window.top
+            if (!ads?.length || error || isIframe) return
             for (const ad of ads) {
                 if (!impressionSent.current.has(ad.id)) {
                     impressionSent.current.add(ad.id)

@@ -36,7 +36,10 @@ export function usePageView(postId: string | undefined) {
     useEffect(() => {
         // Entire effect is wrapped - analytics must NEVER crash the page
         try {
-            if (!postId || firedRef.current || isBot()) return
+            // Define iframe check
+            const isIframe = typeof window !== 'undefined' && window.self !== window.top
+
+            if (!postId || firedRef.current || isBot() || isIframe) return
 
             // Deduplicate within the same browser session
             const sessionKey = `pv_${postId}`

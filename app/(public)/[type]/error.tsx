@@ -16,7 +16,8 @@ export default function TypeError({
         console.error('Type Route Error:', error)
     }, [error])
 
-    const isConnectionError = !error.digest || error.message?.toLowerCase().includes('connection') || error.message?.toLowerCase().includes('digest')
+    const isConnectionError = error.message?.toLowerCase().includes('connection') || error.message?.toLowerCase().includes('digest')
+    const isIframe = typeof window !== 'undefined' && window.self !== window.top
 
     return (
         <div className="flex min-h-[70vh] flex-col items-center justify-center bg-background px-4 text-center">
