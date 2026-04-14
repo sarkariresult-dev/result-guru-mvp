@@ -4,6 +4,8 @@ import { useEffect } from 'react'
 import Link from 'next/link'
 import { ServerCrash, RotateCcw, Home, ChevronLeft } from 'lucide-react'
 
+import { isRestrictedIframe } from '@/lib/safe-env'
+
 export default function TypeError({
     error,
     reset,
@@ -16,8 +18,10 @@ export default function TypeError({
         console.error('Type Route Error:', error)
     }, [error])
 
-    const isConnectionError = error.message?.toLowerCase().includes('connection') || error.message?.toLowerCase().includes('digest')
-    const isIframe = typeof window !== 'undefined' && window.self !== window.top
+    // In Next.js 15, hydration errors often have no digest.
+    // We treat these as "recoverable" connection/state errors to avoid showing the crash UI immediately.
+    const isConnectionError = !error.digest || error.message?.toLowerCase().includes('connection') || error.message?.toLowerCase().includes('digest')
+    const isIframe = isRestrictedIframe()
 
     return (
         <div className="flex min-h-[70vh] flex-col items-center justify-center bg-background px-4 text-center">

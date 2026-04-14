@@ -186,14 +186,12 @@ export default function RootLayout({
                 <link rel="alternate" type="text/plain" title="LLM Context" href="/llms.txt" />
                 
                 {/* Google AdSense - Auto Ads */}
-                {/* Placed in head as requested by Google, with lazyOnload to prevent React 18 hydration crashes caused by third-party DOM modifications */}
+                {/* We use a raw script tag here instead of next/script to avoid 'data-nscript' attribute which can interfere with AdSense Auto Ads hydration and triggering 'Script doesn't support data-nscript' warnings. */}
                 {SITE.adsenseId && (
-                    <Script
-                        id="adsense-init"
+                    <script
                         async
                         src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsenseId}`}
                         crossOrigin="anonymous"
-                        strategy="lazyOnload"
                     />
                 )}
                 

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { useAds, recordAdEvent } from '@/hooks/useAds'
 import { AdDisplay } from './AdDisplay'
+import { isRestrictedIframe } from '@/lib/safe-env'
 import type { PostTypeKey } from '@/config/site'
 
 interface Props {
@@ -41,7 +42,10 @@ function AdZoneContent({ zoneSlug, postType, postId, sticky, className }: Props)
     let device: 'mobile' | 'tablet' | 'desktop' = 'desktop'
     try {
         if (typeof window !== 'undefined') {
-            device = window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop'
+            const w = window.innerWidth
+            if (w < 768) device = 'mobile'
+            else if (w < 1024) device = 'tablet'
+            else device = 'desktop'
         }
     } catch {
         // Fallback to desktop in restricted environments
@@ -58,7 +62,7 @@ function AdZoneContent({ zoneSlug, postType, postId, sticky, className }: Props)
     // Record impressions for visible ads
     useEffect(() => {
         try {
-            const isIframe = typeof window !== 'undefined' && window.self !== window.top
+            const isIframe = isRestrictedIframe()
             if (!ads?.length || error || isIframe) return
             for (const ad of ads) {
                 if (!impressionSent.current.has(ad.id)) {

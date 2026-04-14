@@ -13,6 +13,7 @@
  */
 
 import { useEffect, useRef } from 'react'
+import { isRestrictedIframe } from '@/lib/safe-env'
 
 // Bot UA patterns - skip tracking for known crawlers
 const BOT_PATTERN = /bot|crawl|spider|slurp|mediapartners|adsbot|lighthouse|prerender|headless/i
@@ -36,8 +37,8 @@ export function usePageView(postId: string | undefined) {
     useEffect(() => {
         // Entire effect is wrapped - analytics must NEVER crash the page
         try {
-            // Define iframe check
-            const isIframe = typeof window !== 'undefined' && window.self !== window.top
+            // Use safe iframe check
+            const isIframe = isRestrictedIframe()
 
             if (!postId || firedRef.current || isBot() || isIframe) return
 

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { X, Cookie } from 'lucide-react'
 import { STORAGE_KEYS } from '@/config/constants'
+import { isRestrictedIframe } from '@/lib/safe-env'
 
 type ConsentState = 'pending' | 'accepted' | 'rejected'
 
@@ -22,10 +23,7 @@ export function CookieConsent() {
 
     useEffect(() => {
         try {
-            // In cross-origin iframes, localStorage object exists but all
-            // operations throw SecurityError. Test actual access, not typeof.
-            const isIframe = typeof window !== 'undefined' && window.self !== window.top
-            if (isIframe) return
+            if (isRestrictedIframe()) return
 
             const stored = localStorage.getItem(STORAGE_KEYS.COOKIE_CONSENT)
             if (stored === 'accepted' || stored === 'rejected') {
