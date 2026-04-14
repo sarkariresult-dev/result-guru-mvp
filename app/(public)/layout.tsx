@@ -1,9 +1,5 @@
 import { Header } from '@/components/layout/Header'
-import dynamic from 'next/dynamic'
-
-const Footer = dynamic(() => import('@/components/layout/Footer').then(mod => mod.Footer), {
-    ssr: true, // Keep SEO beneficial content in SSR
-})
+import { Footer } from '@/components/layout/Footer'
 import { OrganizationJsonLd } from '@/components/seo/OrganizationJsonLd'
 import { createServerClient } from '@/lib/supabase/server'
 import type { PublicUser } from '@/types/user.types'

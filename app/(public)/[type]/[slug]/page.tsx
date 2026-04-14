@@ -14,7 +14,7 @@ import { PostDetailSkeleton } from '@/features/posts/components/PostCardSkeleton
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { TableOfContents } from '@/features/posts/components/TableOfContents'
 import { OrgInfoBox } from '@/features/posts/components/OrgInfoBox'
-import { AdZone } from '@/features/posts/components/PostPageClientParts'
+import { AdZone } from '@/components/ads/AdZone'
 import { POST_TYPE_CONFIG } from '@/config/constants'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
 import type { PostTypeKey } from '@/config/site'
