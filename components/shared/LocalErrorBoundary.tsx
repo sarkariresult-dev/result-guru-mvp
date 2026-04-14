@@ -34,7 +34,14 @@ export class LocalErrorBoundary extends Component<Props, State> {
 
   public render() {
     if (this.state.hasError) {
-      return this.props.fallback || null
+      if (this.props.fallback !== undefined) return this.props.fallback
+      
+      // Default subtle debug fallback to identify failing components inrestricted previews
+      return (
+        <div className="my-2 border border-dashed border-red-200 bg-red-50/30 px-2 py-1 text-[9px] font-medium text-red-500/60 rounded">
+          [!] {this.props.name || 'Component'} Restricted
+        </div>
+      )
     }
 
     return this.props.children

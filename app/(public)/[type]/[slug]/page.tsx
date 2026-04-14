@@ -216,7 +216,9 @@ export default async function PostDetailPage({ params }: Props) {
 
                         <LocalErrorBoundary name="PostDetailMain">
                             <PostDetail post={publishedPost} slug={slug} url={canonicalUrl} />
+                        </LocalErrorBoundary>
 
+                        <LocalErrorBoundary name="RelatedPosts">
                             {/* Smart Related posts via API logic */}
                             <Suspense fallback={<PostDetailSkeleton />}>
                                 <SmartRelatedPosts postId={publishedPost.id} />

@@ -144,15 +144,27 @@ export function PostDetail({ post, slug, url }: Props) {
 
             case 'affiliates':
                 if (!affiliates || affiliates.length === 0) return null
-                return <AffiliateProductsBox key="affiliates" affiliates={affiliates} />
+                return (
+                    <LocalErrorBoundary key="affiliates-boundary" name="AffiliateProducts">
+                        <AffiliateProductsBox key="affiliates" affiliates={affiliates} />
+                    </LocalErrorBoundary>
+                )
 
             case 'author':
                 if (!post.author) return null
-                return <AuthorBox key="author" author={post.author} />
+                return (
+                    <LocalErrorBoundary key="author-boundary" name="AuthorBox">
+                        <AuthorBox key="author" author={post.author} />
+                    </LocalErrorBoundary>
+                )
 
             case 'faq':
                 if (!faq || faq.length === 0) return null
-                return <FAQAccordion key="faq" items={faq.map(f => ({ question: f.q, answer: f.a }))} />
+                return (
+                    <LocalErrorBoundary key="faq-boundary" name="FAQAccordion">
+                        <FAQAccordion key="faq" items={faq.map(f => ({ question: f.q, answer: f.a }))} />
+                    </LocalErrorBoundary>
+                )
 
             case 'tags':
                 if (!tags || tags.length === 0) return null
@@ -287,7 +299,9 @@ export function PostDetail({ post, slug, url }: Props) {
                     <p className="border-l-4 border-brand-500 pl-4 py-1 text-lg italic font-medium text-foreground-muted bg-linear-to-r from-brand-50/50 to-transparent dark:from-brand-900/10 rounded-r-lg leading-relaxed">
                         {post.excerpt}
                     </p>
-                    <ShareBar title={post.title} url={url} />
+                    <LocalErrorBoundary name="ShareBar">
+                        <ShareBar title={post.title} url={url} />
+                    </LocalErrorBoundary>
                 </div>
             )}
 
