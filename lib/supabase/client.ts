@@ -73,7 +73,7 @@ export function createClient() {
                 // When navigator.locks is unavailable (cross-origin iframe),
                 // provide a no-op lock to prevent SecurityError crashes.
                 ...(!useLocks ? {
-                    lock: async (_name: string, _acquireTimeout: number, fn: (lock: unknown) => Promise<unknown>) => {
+                    lock: async <R>(_name: string, _acquireTimeout: number, fn: (lock: unknown) => Promise<R>): Promise<R> => {
                         return await fn('noop-lock')
                     }
                 } : {}),
