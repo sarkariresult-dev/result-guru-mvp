@@ -94,6 +94,8 @@ export function PostDetail({ post, slug, url }: Props) {
         switch (section) {
 
 
+            case 'dates':
+                if (!post.application_start_date && !post.application_end_date) return null
                 return (
                     <div key="dates" className="flex flex-wrap items-center gap-x-8 gap-y-4 py-2 border-y border-border/50">
                         <div className="flex items-center gap-3">
