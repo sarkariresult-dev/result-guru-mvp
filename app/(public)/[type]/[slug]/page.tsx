@@ -214,7 +214,15 @@ export default async function PostDetailPage({ params }: Props) {
                             </Suspense>
                         </LocalErrorBoundary>
 
-                        <LocalErrorBoundary name="PostDetailMain" silent>
+                        <LocalErrorBoundary 
+                            name="PostDetailMain" 
+                            fallback={
+                                <div className="p-8 border-2 border-dashed border-border rounded-2xl text-center">
+                                    <h1 className="text-2xl font-bold mb-4">{publishedPost.title}</h1>
+                                    <p className="text-foreground-muted">Content preview restricted in this browser environment.</p>
+                                </div>
+                            }
+                        >
                             <PostDetail post={publishedPost} slug={slug} url={canonicalUrl} />
                         </LocalErrorBoundary>
 

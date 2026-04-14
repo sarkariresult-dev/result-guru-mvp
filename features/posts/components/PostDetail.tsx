@@ -71,18 +71,28 @@ export function PostDetail({ post, slug, url }: Props) {
     const faq = post.faq as FaqItem[] | null
     const affiliates = (post as any).affiliates as PostAffiliateProductEntry[] | undefined
 
-    /* Process content HTML */
-    const mappings = {
-        officialWebsiteUrl: post.org_official_url,
-        applyOnlineUrl: post.primary_link || post.org_official_url,
-        notificationPdfUrl: post.notification_pdf,
+    /* Process content HTML with absolute safety */
+    let processedHtml = ''
+    try {
+        const { processedHtml: rawHtml } = post.content
+            ? processContentHtml(sanitizeHtml(post.content))
+            : { processedHtml: '' }
+        
+        const mappings = {
+            officialWebsiteUrl: post.org_official_url,
+            applyOnlineUrl: post.primary_link || post.org_official_url,
+            notificationPdfUrl: post.notification_pdf,
+        }
+        processedHtml = replacePlaceholders(rawHtml, mappings)
+    } catch (err) {
+        console.error('PostDetail Content Processing Crash:', err)
+        // Extreme fallback: Try basic sanitization if complex processing failed
+        try {
+            processedHtml = post.content ? sanitizeHtml(post.content) : ''
+        } catch {
+            processedHtml = ''
+        }
     }
-
-    const { processedHtml: rawHtml } = post.content
-        ? processContentHtml(sanitizeHtml(post.content))
-        : { processedHtml: '' }
-
-    const processedHtml = replacePlaceholders(rawHtml, mappings)
 
     /* Tags are now aggregated in v_published_posts */
     const tags = post.tags
@@ -217,7 +227,7 @@ export function PostDetail({ post, slug, url }: Props) {
     }
 
     return (
-        <div className="space-y-8 animate-fade-in md:space-y-10" suppressHydrationWarning>
+        <div className="space-y-8" suppressHydrationWarning>
             {/* ── Header: Title, Org, Dates ────────────────────────── */}
             <header className="space-y-5 animate-fade-up">
                 {/* Title */}
