@@ -23,6 +23,7 @@ import type { PublishedPost } from '@/types/post.types'
 import type { FaqItem } from '@/types/post-content.types'
 import { slugToKey, humanise, keyToSlug } from '@/lib/utils'
 import { ExternalLink, Download, ListTree } from 'lucide-react'
+import { PageViewTracker } from '@/features/analytics/components/PageViewTracker'
 import { getActionLinkPageLabel } from '@/lib/seo/seo-analyzer'
 import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
 

@@ -223,6 +223,17 @@ export default function RootLayout({
                     </>
                 )}
 
+                {/* Google AdSense - Auto Ads */}
+                {SITE.adsenseId && (
+                    <Script
+                        id="adsense-init"
+                        async
+                        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsenseId}`}
+                        crossOrigin="anonymous"
+                        strategy="afterInteractive"
+                    />
+                )}
+
                 {/* GTM noscript fallback */}
                 {SITE.gtmId && (
                     <noscript>

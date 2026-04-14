@@ -60,6 +60,7 @@ export const SITE = {
 
     gaId: env.NEXT_PUBLIC_GA_ID,
     gtmId: env.NEXT_PUBLIC_GTM_ID,
+    adsenseId: env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID,
 
     // ── Search engine verification meta tags ─────────────────────────────
     verification: {
