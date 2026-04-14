@@ -57,7 +57,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
     // Revalidate key cache tags for homepage freshness
     const tags = ['posts', 'stats', 'homepage-sections']
     for (const tag of tags) {
-        revalidateTag(tag, 'default')
+        revalidateTag(tag)
     }
 
     return successResponse({
