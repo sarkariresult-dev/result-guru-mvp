@@ -28,7 +28,6 @@ export function MobileNav({ open, onClose, initialUser }: MobileNavProps) {
     const effectiveIsAuthor = loading ? (initialUser?.role === 'author' || initialUser?.role === 'admin') : isAuthor
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration setup
         setMounted(true)
     }, [])
 

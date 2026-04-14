@@ -414,13 +414,13 @@ export default async function HomePage() {
                             </h2>
                             <div className="space-y-4 text-sm sm:text-base text-foreground-muted leading-relaxed font-medium">
                                 <p>
-                                    Welcome to Result Guru, India's most trusted and reliable digital platform dedicated to bringing you the fastest, most verified updates regarding government employment opportunities. Whether you are actively preparing for your first competitive examination or you are a seasoned aspirant tracking multiple recruitment phases, our platform simplifies the often-complex ecosystem of state and central commission portals into one easily navigable dashboard.
+                                    Welcome to Result Guru, India&apos;s most trusted and reliable digital platform dedicated to bringing you the fastest, most verified updates regarding government employment opportunities. Whether you are actively preparing for your first competitive examination or you are a seasoned aspirant tracking multiple recruitment phases, our platform simplifies the often-complex ecosystem of state and central commission portals into one easily navigable dashboard.
                                 </p>
                                 <p>
                                     We manually verify and aggregate data from official gazettes and top commissions such as the Union Public Service Commission, Staff Selection Commission (SSC), Railway Recruitment Boards (RRB), and various State Public Service Commissions. By eliminating clutter and providing high-fidelity information, candidates save valuable time which they can instead channel directly into their preparation strategies.
                                 </p>
                                 <p>
-                                    Our core mission is structured entirely around candidate success. From Syllabus breakdowns to Exam Patterns and Previous Papers, we provide all the tools for your preparation. We also actively categorize government welfare schemes, digital scholarship opportunities, and key university admissions to ensure comprehensive coverage of pathways that elevate an individual's career.
+                                    Our core mission is structured entirely around candidate success. From Syllabus breakdowns to Exam Patterns and Previous Papers, we provide all the tools for your preparation. We also actively categorize government welfare schemes, digital scholarship opportunities, and key university admissions to ensure comprehensive coverage of pathways that elevate an individual&apos;s career.
                                 </p>
                             </div>
                         </div>

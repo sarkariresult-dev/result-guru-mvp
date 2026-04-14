@@ -285,7 +285,6 @@ function CollapsibleGroup({
     /* Auto-expand only when a child becomes active (navigation) */
     useEffect(() => {
         if (hasActiveChild) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect -- expanding sidebar if active child
             setIsOpen(true)
         }
     }, [hasActiveChild])
