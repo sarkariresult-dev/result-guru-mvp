@@ -15,6 +15,7 @@ import type { PostDetail as PostDetailType, PostAffiliateProductEntry } from '@/
 import type { FaqItem } from '@/types/post-content.types'
 import { AuthorBox } from './AuthorBox'
 import { ShareBar } from './ShareBar'
+import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
 import { Award, Calendar, Clock, FileText, Tag, ShieldCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -304,7 +305,9 @@ export function PostDetail({ post, slug, url }: Props) {
                 </div>
             )}
 
-            <AdZone zoneSlug="above_content" postType={typeKey} postId={post.id} className="my-6" />
+            <LocalErrorBoundary name="AdAboveContent">
+                <AdZone zoneSlug="above_content" postType={typeKey} postId={post.id} className="my-6" />
+            </LocalErrorBoundary>
 
             {/* ── Type-aware content sections ────────────────────── */}
             {renderedSections}
