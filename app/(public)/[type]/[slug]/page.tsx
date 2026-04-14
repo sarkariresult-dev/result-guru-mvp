@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { Suspense } from 'react'
 import { getPostBySlug } from '@/features/posts/queries'
 import { buildMetadata } from '@/lib/metadata'
 import { buildJobPostingSchema, buildBreadcrumbSchema, buildFAQPageSchema, buildGovernmentServiceSchema, buildNewsArticleSchema, buildHowToSchema } from '@/lib/jsonld'
@@ -211,9 +210,7 @@ export default async function PostDetailPage({ params }: Props) {
                     <article>
                         {/* Below-content ad - streamed independently */}
                         <LocalErrorBoundary name="AdHeader" silent>
-                            <Suspense fallback={null}>
-                                <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} className="mt-8" />
-                            </Suspense>
+                            <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} className="mt-8" />
                         </LocalErrorBoundary>
 
                         <LocalErrorBoundary 
@@ -245,10 +242,8 @@ export default async function PostDetailPage({ params }: Props) {
 
                         <LocalErrorBoundary name="RelatedPosts" silent>
                             {/* Smart Related posts via API logic */}
-                            <Suspense fallback={<PostDetailSkeleton />}>
-                                <SmartRelatedPosts postId={publishedPost.id} />
-                                <RelatedPosts post={publishedPost} />
-                            </Suspense>
+                            <SmartRelatedPosts postId={publishedPost.id} />
+                            <RelatedPosts post={publishedPost} />
                         </LocalErrorBoundary>
                     </article>
 
@@ -328,9 +323,7 @@ export default async function PostDetailPage({ params }: Props) {
 
                         {/* ── Sidebar Ad ────────────────────────── */}
                         <LocalErrorBoundary name="AdSidebar" silent>
-                            <Suspense fallback={null}>
-                                <AdZone zoneSlug="sidebar_top" postType={typeKey} postId={publishedPost.id} />
-                            </Suspense>
+                            <AdZone zoneSlug="sidebar_top" postType={typeKey} postId={publishedPost.id} />
                         </LocalErrorBoundary>
 
                         {/* ── Sticky Group (TOC & Sticky Ad) ────────────────── */}
@@ -342,9 +335,7 @@ export default async function PostDetailPage({ params }: Props) {
                             </LocalErrorBoundary>
                             
                             <LocalErrorBoundary name="AdSticky" silent>
-                                <Suspense fallback={null}>
-                                    <AdZone zoneSlug="sidebar_sticky" postType={typeKey} postId={publishedPost.id} sticky />
-                                </Suspense>
+                                <AdZone zoneSlug="sidebar_sticky" postType={typeKey} postId={publishedPost.id} sticky />
                             </LocalErrorBoundary>
                         </div>
                     </aside>
