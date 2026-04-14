@@ -228,80 +228,81 @@ export function PostDetail({ post, slug, url }: Props) {
 
     return (
         <div className="space-y-8" suppressHydrationWarning>
-            {/* ── Header: Title, Org, Dates ────────────────────────── */}
-            <header className="space-y-5 animate-fade-up">
-                {/* Title */}
-                <h1 className="text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl leading-tight">
-                    {post.title}
-                </h1>
+            <LocalErrorBoundary name="ArticleHeader" silent>
+                {/* ── Header: Title, Org, Dates ────────────────────────── */}
+                <header className="space-y-5 animate-fade-up">
+                    {/* Title */}
+                    <h1 className="text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl leading-tight">
+                        {post.title}
+                    </h1>
 
-                {/* Meta row */}
-                <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-foreground-muted">
-                    {post.org_name && (
-                        <span className="flex items-center gap-1.5">
-                            <Award className="size-4 text-brand-500" />
-                            {post.org_name}
-                        </span>
-                    )}
-                    {post.published_at && (
-                        <time dateTime={formatDate(post.published_at, 'ISO')} className="flex items-center gap-1.5 border-r border-border pr-4">
-                            <Calendar className="size-4 text-brand-500" />
-                            <span className="hidden sm:inline">Published </span>{formatDate(post.published_at)}
-                        </time>
-                    )}
-                    {post.content_updated_at && post.content_updated_at !== post.published_at && (
-                        <time dateTime={formatDate(post.content_updated_at, 'ISO')} className="flex items-center gap-1.5 border-r border-border pr-4 text-emerald-600 dark:text-emerald-400">
-                             <Clock className="size-4" />
-                            <span className="hidden sm:inline">Updated </span>{formatDate(post.content_updated_at)}
-                        </time>
-                    )}
-                    <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full border border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/30">
-                        <ShieldCheck className="size-3.5" />
-                        <span className="text-[10px] font-bold uppercase tracking-wider">Sarkari Verified</span>
-                    </div>
-                </div>
-            </header>
-
-            {/* ── Featured Image with overlay badges + actions ─────── */}
-            <figure className="relative overflow-hidden rounded-2xl shadow-md border border-border group bg-background-muted flex flex-col items-center justify-center">
-                <Image
-                    src={post.featured_image || '/images/placeholder-post.png'}
-                    alt={post.featured_image_alt ?? post.title}
-                    width={1200}
-                    height={675}
-                    className="w-full h-auto transition-transform duration-slow group-hover:scale-[1.01]"
-                    sizes="(max-width: 768px) 100vw, 1200px"
-                    priority
-                    quality={75}
-                />
-
-                {/* Top-left: status badge (overlay) */}
-                <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-                    <ApplicationStatusBadge status={post.application_status} />
-                </div>
-
-                {/* Bottom bar (overlay) */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between bg-linear-to-t from-black/60 via-black/20 to-transparent">
-                    {/* Bottom-left: info badges */}
-                    <div className="flex flex-wrap items-center gap-2">
-                        {post.state_name && (
-                            <span className="rounded-full bg-white/20 backdrop-blur-sm border border-white/20 px-2.5 py-0.5 text-[11px] font-semibold text-white uppercase tracking-wide">
-                                {post.state_name}
+                    {/* Meta row */}
+                    <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-foreground-muted">
+                        {post.org_name && (
+                            <span className="flex items-center gap-1.5">
+                                <Award className="size-4 text-brand-500" />
+                                {post.org_name}
                             </span>
                         )}
+                        {post.published_at && (
+                            <time dateTime={formatDate(post.published_at, 'ISO')} className="flex items-center gap-1.5 border-r border-border pr-4">
+                                <Calendar className="size-4 text-brand-500" />
+                                <span className="hidden sm:inline">Published </span>{formatDate(post.published_at)}
+                            </time>
+                        )}
+                        {post.content_updated_at && post.content_updated_at !== post.published_at && (
+                            <time dateTime={formatDate(post.content_updated_at, 'ISO')} className="flex items-center gap-1.5 border-r border-border pr-4 text-emerald-600 dark:text-emerald-400">
+                                <Clock className="size-4" />
+                                <span className="hidden sm:inline">Updated </span>{formatDate(post.content_updated_at)}
+                            </time>
+                        )}
+                        <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full border border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/30">
+                            <ShieldCheck className="size-3.5" />
+                            <span className="text-[10px] font-bold uppercase tracking-wider">Sarkari Verified</span>
+                        </div>
+                    </div>
+                </header>
+
+                {/* ── Featured Image with overlay badges + actions ─────── */}
+                <figure className="relative overflow-hidden rounded-2xl shadow-md border border-border group bg-background-muted flex flex-col items-center justify-center">
+                    <Image
+                        src={post.featured_image || '/images/placeholder-post.png'}
+                        alt={post.featured_image_alt ?? post.title}
+                        width={1200}
+                        height={675}
+                        className="w-full h-auto transition-transform duration-slow group-hover:scale-[1.01]"
+                        sizes="(max-width: 768px) 100vw, 1200px"
+                        priority
+                        quality={75}
+                    />
+
+                    {/* Top-left: status badge (overlay) */}
+                    <div className="absolute top-3 left-3 flex flex-wrap gap-2">
+                        <ApplicationStatusBadge status={post.application_status} />
                     </div>
 
-                </div>
-                
-                <LocalErrorBoundary name="PostImageOverlay">
-                    <PostImageOverlay 
-                        slug={slug} 
-                        title={post.title} 
-                        type={typeKey} 
-                        readingTime={post.reading_time_min} 
-                    />
-                </LocalErrorBoundary>
-            </figure>
+                    {/* Bottom bar (overlay) */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between bg-linear-to-t from-black/60 via-black/20 to-transparent">
+                        {/* Bottom-left: info badges */}
+                        <div className="flex flex-wrap items-center gap-2">
+                            {post.state_name && (
+                                <span className="rounded-full bg-white/20 backdrop-blur-sm border border-white/20 px-2.5 py-0.5 text-[11px] font-semibold text-white uppercase tracking-wide">
+                                    {post.state_name}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                    
+                    <LocalErrorBoundary name="PostImageOverlay">
+                        <PostImageOverlay 
+                            slug={slug} 
+                            title={post.title} 
+                            type={typeKey} 
+                            readingTime={post.reading_time_min} 
+                        />
+                    </LocalErrorBoundary>
+                </figure>
+            </LocalErrorBoundary>
 
             {/* Excerpt */}
             {post.excerpt && (

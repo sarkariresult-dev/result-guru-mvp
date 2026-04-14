@@ -21,12 +21,27 @@ export function useMediaQuery(query: string): boolean {
     const [matches, setMatches] = useState(false)
 
     useEffect(() => {
-        const mq = window.matchMedia(query)
-        // eslint-disable-next-line react-hooks/set-state-in-effect -- media query match sync
-        setMatches(mq.matches)
-        const handler = (e: MediaQueryListEvent) => setMatches(e.matches)
-        mq.addEventListener('change', handler)
-        return () => mq.removeEventListener('change', handler)
+        if (typeof window === 'undefined' || !window.matchMedia) {
+            return
+        }
+
+        let mq: MediaQueryList | null = null
+        let handler: ((e: MediaQueryListEvent) => void) | null = null
+
+        try {
+            mq = window.matchMedia(query)
+            setMatches(mq.matches)
+            handler = (e: MediaQueryListEvent) => setMatches(e.matches)
+            mq.addEventListener('change', handler)
+        } catch (err) {
+            console.error('Media query error:', err)
+        }
+
+        return () => {
+            if (mq && handler) {
+                mq.removeEventListener('change', handler)
+            }
+        }
     }, [query])
 
     return matches

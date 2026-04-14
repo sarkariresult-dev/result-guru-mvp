@@ -48,21 +48,21 @@ export function formatDate(
         ISO: {},
     }
 
-    if (typeof format === 'string') {
-        if (format === 'ISO') {
-            try {
-                return d.toISOString()
-            } catch {
-                return ''
-            }
-        }
-        return d.toLocaleDateString('en-IN', presets[format] ?? presets.DISPLAY)
-    }
-
     try {
+        if (typeof format === 'string') {
+            if (format === 'ISO') {
+                return d.toISOString()
+            }
+            return d.toLocaleDateString('en-IN', presets[format] ?? presets.DISPLAY)
+        }
         return d.toLocaleDateString('en-IN', format)
     } catch {
-        return '-'
+        // Safe fallback for restricted environments
+        try {
+            return d.toDateString()
+        } catch {
+            return '-'
+        }
     }
 }
 
@@ -131,7 +131,11 @@ export function stripHtml(html: string): string {
 /** Format a number with Indian-style commas (e.g. 12,34,567) */
 export function formatNumber(num: number | null | undefined): string {
     if (num == null) return '0'
-    return num.toLocaleString('en-IN')
+    try {
+        return num.toLocaleString('en-IN')
+    } catch {
+        return num.toString()
+    }
 }
 
 /** Format views compactly (e.g. 1.2K, 3.4L) */
