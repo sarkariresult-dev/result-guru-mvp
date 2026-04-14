@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import Link from 'next/link'
-import { ServerCrash, RotateCcw, Home, ChevronLeft } from 'lucide-react'
+import { ServerCrash, RotateCcw, Home } from 'lucide-react'
 
 import { isRestrictedIframe } from '@/lib/safe-env'
 
@@ -28,6 +28,8 @@ export default function TypeError({
             }, 2000)
             return () => clearTimeout(timer)
         }
+        
+        return undefined
     }, [error, reset, isIframe])
 
     // In Next.js 15, hydration errors often have no digest.
