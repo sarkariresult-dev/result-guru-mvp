@@ -1,3 +1,6 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import { BadgeCheck, Twitter, Linkedin, Facebook, Award, Briefcase } from 'lucide-react'
 import Image from 'next/image'
 import type { AuthorInfo } from '@/types/user.types'
@@ -7,6 +10,18 @@ interface Props {
 }
 
 export function AuthorBox({ author }: Props) {
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+    if (!isMounted) return null
+
+    return <AuthorBoxContent author={author} />
+}
+
+function AuthorBoxContent({ author }: Props) {
     if (!author) return null
 
     const initials = author.name

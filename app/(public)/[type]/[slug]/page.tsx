@@ -210,12 +210,7 @@ export default async function PostDetailPage({ params }: Props) {
                             <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} className="mt-8" />
                         </Suspense>
 
-                        <LocalErrorBoundary 
-                            name="PostDetailMain" 
-                            fallback={<div className="min-h-[200px]" />}
-                        >
-                            <PostDetail post={publishedPost} slug={slug} url={canonicalUrl} />
-                        </LocalErrorBoundary>
+                        <PostDetail post={publishedPost} slug={slug} url={canonicalUrl} />
 
                         <LocalErrorBoundary name="RelatedPosts">
                             {/* Smart Related posts via API logic */}
