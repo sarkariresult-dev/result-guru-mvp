@@ -15,7 +15,7 @@ import type { PostDetail as PostDetailType, PostAffiliateProductEntry } from '@/
 import type { FaqItem } from '@/types/post-content.types'
 import { AuthorBox } from './AuthorBox'
 import { ShareBar } from './ShareBar'
-import { ShieldCheck } from 'lucide-react'
+import { Award, Calendar, Clock, FileText, Tag, ShieldCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
 
