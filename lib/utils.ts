@@ -49,11 +49,21 @@ export function formatDate(
     }
 
     if (typeof format === 'string') {
-        if (format === 'ISO') return d.toISOString()
+        if (format === 'ISO') {
+            try {
+                return d.toISOString()
+            } catch {
+                return ''
+            }
+        }
         return d.toLocaleDateString('en-IN', presets[format] ?? presets.DISPLAY)
     }
 
-    return d.toLocaleDateString('en-IN', format)
+    try {
+        return d.toLocaleDateString('en-IN', format)
+    } catch {
+        return '-'
+    }
 }
 
 // ─── Slug helpers ───────────────────────────────────────────────────────────

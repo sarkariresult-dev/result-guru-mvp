@@ -244,13 +244,13 @@ export function PostDetail({ post, slug, url }: Props) {
                         </span>
                     )}
                     {post.published_at && (
-                        <time dateTime={new Date(post.published_at).toISOString()} className="flex items-center gap-1.5 border-r border-border pr-4">
+                        <time dateTime={formatDate(post.published_at, 'ISO')} className="flex items-center gap-1.5 border-r border-border pr-4">
                             <Calendar className="size-4 text-brand-500" />
                             <span className="hidden sm:inline">Published </span>{formatDate(post.published_at)}
                         </time>
                     )}
                     {post.content_updated_at && post.content_updated_at !== post.published_at && (
-                        <time dateTime={new Date(post.content_updated_at).toISOString()} className="flex items-center gap-1.5 border-r border-border pr-4 text-emerald-600 dark:text-emerald-400">
+                        <time dateTime={formatDate(post.content_updated_at, 'ISO')} className="flex items-center gap-1.5 border-r border-border pr-4 text-emerald-600 dark:text-emerald-400">
                              <Clock className="size-4" />
                             <span className="hidden sm:inline">Updated </span>{formatDate(post.content_updated_at)}
                         </time>
@@ -320,13 +320,15 @@ export function PostDetail({ post, slug, url }: Props) {
             </LocalErrorBoundary>
 
             {/* ── Type-aware content sections ────────────────────── */}
-            {renderedSections}
+            <LocalErrorBoundary name="PostContentBody">
+                {renderedSections}
+            </LocalErrorBoundary>
 
             {/* ── Last reviewed notice ───────────────────────────── */}
             {(post as any).last_reviewed_at && (
                 <p className="text-xs text-foreground-subtle italic pt-2 border-t border-border">
                     This information was last reviewed and verified on{' '}
-                    <time dateTime={new Date((post as any).last_reviewed_at).toISOString()}>
+                    <time dateTime={formatDate((post as any).last_reviewed_at, 'ISO')}>
                         {formatDate((post as any).last_reviewed_at)}
                     </time>
                     .
