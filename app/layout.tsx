@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import { Providers } from '@/components/providers'
 import CookieConsentWrapper from '@/components/CookieConsentWrapper'
+import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { SITE } from '@/config/site'
@@ -214,8 +215,8 @@ export default function RootLayout({
                                 get length() { return Object.keys(this._data).length; }
                             };
                             try {
-                                Object.defineProperty(window, 'sessionStorage', { value: memoryStorage });
-                                Object.defineProperty(window, 'localStorage', { value: memoryStorage });
+                                Object.defineProperty(window, 'sessionStorage', { value: memoryStorage, writable: true, configurable: true });
+                                Object.defineProperty(window, 'localStorage', { value: memoryStorage, writable: true, configurable: true });
                             } catch (err) {
                                 // Fallback if browser explicitly denies defineProperty on window.sessionStorage
                             }
@@ -229,7 +230,7 @@ export default function RootLayout({
                     to target the correct main content container. */}
 
                 <Providers>
-                    <div className="flex min-h-screen flex-col">
+                    <div className="flex min-h-screen flex-col" suppressHydrationWarning>
                         {children}
                     </div>
                     <CookieConsentWrapper />
@@ -277,8 +278,13 @@ export default function RootLayout({
                     </noscript>
                 )}
 
-                <Analytics />
-                <SpeedInsights />
+                <LocalErrorBoundary name="VercelAnalytics" silent>
+                    <Analytics />
+                </LocalErrorBoundary>
+                
+                <LocalErrorBoundary name="VercelInsights" silent>
+                    <SpeedInsights />
+                </LocalErrorBoundary>
             </body>
         </html>
     )

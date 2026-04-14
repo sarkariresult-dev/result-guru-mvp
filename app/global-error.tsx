@@ -87,7 +87,24 @@ export default function GlobalError({
                             A critical error occurred. Please try refreshing the page. If the
                             issue persists, contact support.
                         </p>
-                        {error.digest && (
+                        {error?.message && (
+                            <p
+                                style={{
+                                    marginTop: 12,
+                                    fontSize: 12,
+                                    color: '#b91c1c',
+                                    fontFamily: 'monospace',
+                                    padding: '8px',
+                                    background: '#fee2e2',
+                                    borderRadius: 4,
+                                    textAlign: 'left'
+                                }}
+                            >
+                                <strong>Technical Details:</strong><br />
+                                {error.message}
+                            </p>
+                        )}
+                        {error?.digest && (
                             <p
                                 style={{
                                     marginTop: 12,
