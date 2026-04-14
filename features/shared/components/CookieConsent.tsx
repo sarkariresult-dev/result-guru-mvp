@@ -22,10 +22,8 @@ export function CookieConsent() {
 
     useEffect(() => {
         try {
-            if (typeof localStorage === 'undefined') {
-                setVisible(true)
-                return
-            }
+            // In cross-origin iframes, localStorage object exists but all
+            // operations throw SecurityError. Test actual access, not typeof.
             const stored = localStorage.getItem(STORAGE_KEYS.COOKIE_CONSENT)
             if (stored === 'accepted' || stored === 'rejected') {
                 setConsent(stored)
@@ -39,8 +37,9 @@ export function CookieConsent() {
             const timer = setTimeout(() => setVisible(true), 1500)
             return () => clearTimeout(timer)
         } catch {
-            setVisible(true)
-            return
+            // Storage blocked (restricted iframe) — show banner with in-memory state
+            const timer = setTimeout(() => setVisible(true), 1500)
+            return () => clearTimeout(timer)
         }
     }, [])
 

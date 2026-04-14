@@ -38,13 +38,18 @@ export function AdZone({ zoneSlug, postType, postId, sticky, className }: Props)
 }
 
 function AdZoneContent({ zoneSlug, postType, postId, sticky, className }: Props) {
-    const device = typeof window !== 'undefined'
-        ? window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop'
-        : 'desktop'
+    let device: 'mobile' | 'tablet' | 'desktop' = 'desktop'
+    try {
+        if (typeof window !== 'undefined') {
+            device = window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop'
+        }
+    } catch {
+        // Fallback to desktop in restricted environments
+    }
 
     const { data: ads, isLoading, error } = useAds(zoneSlug, {
         post_type: postType,
-        device: device as 'mobile' | 'tablet' | 'desktop',
+        device,
         post_id: postId,
     })
 
@@ -52,12 +57,16 @@ function AdZoneContent({ zoneSlug, postType, postId, sticky, className }: Props)
 
     // Record impressions for visible ads
     useEffect(() => {
-        if (!ads?.length || error) return
-        for (const ad of ads) {
-            if (!impressionSent.current.has(ad.id)) {
-                impressionSent.current.add(ad.id)
-                recordAdEvent(ad.id, ad.zone_id ?? '', 'impression', { post_id: postId, device })
+        try {
+            if (!ads?.length || error) return
+            for (const ad of ads) {
+                if (!impressionSent.current.has(ad.id)) {
+                    impressionSent.current.add(ad.id)
+                    recordAdEvent(ad.id, ad.zone_id ?? '', 'impression', { post_id: postId, device })
+                }
             }
+        } catch {
+            // Impression tracking must never crash the page
         }
     }, [ads, postId, device, error])
 

@@ -34,47 +34,46 @@ export function usePageView(postId: string | undefined) {
     const firedRef = useRef(false)
 
     useEffect(() => {
-        if (!postId || firedRef.current || isBot()) return
-
-        // Deduplicate within the same browser session
-        // In restricted iframes, accessing sessionStorage can throw a SecurityError
-        const sessionKey = `pv_${postId}`
-        let alreadyTracked = false
+        // Entire effect is wrapped - analytics must NEVER crash the page
         try {
-            if (typeof sessionStorage !== 'undefined') {
-                alreadyTracked = !!sessionStorage.getItem(sessionKey)
+            if (!postId || firedRef.current || isBot()) return
+
+            // Deduplicate within the same browser session
+            const sessionKey = `pv_${postId}`
+            let alreadyTracked = false
+            try {
+                alreadyTracked = !!window.sessionStorage.getItem(sessionKey)
+            } catch {
+                alreadyTracked = false
             }
-        } catch {
-            alreadyTracked = false
-        }
-        
-        if (alreadyTracked) return
+            
+            if (alreadyTracked) return
 
-        firedRef.current = true
-        
-        try {
-            if (typeof sessionStorage !== 'undefined') {
-                sessionStorage.setItem(sessionKey, '1')
+            firedRef.current = true
+            
+            try {
+                window.sessionStorage.setItem(sessionKey, '1')
+            } catch {
+                // Silently ignore storage failure
             }
+
+            // Fire and forget - don't block render
+            const payload = {
+                post_id: postId,
+                referrer: typeof document !== 'undefined' ? document.referrer : '',
+                device: getDevice(),
+            }
+
+            fetch('/api/analytics/view', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+                keepalive: true,
+            }).catch(() => {
+                // Silently ignore network errors
+            })
         } catch {
-            // Silently ignore storage failure
+            // Absolute safety net - analytics failure must never crash the page
         }
-
-        // Fire and forget - don't block render
-        const payload = {
-            post_id: postId,
-            referrer: typeof document !== 'undefined' ? document.referrer : '',
-            device: getDevice(),
-        }
-
-        fetch('/api/analytics/view', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-            // keepalive ensures the request completes even if the user navigates away
-            keepalive: true,
-        }).catch(() => {
-            // Silently ignore network errors - analytics must never break the page
-        })
     }, [postId])
 }

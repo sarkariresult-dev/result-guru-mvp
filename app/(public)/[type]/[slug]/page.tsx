@@ -219,9 +219,24 @@ export default async function PostDetailPage({ params }: Props) {
                         <LocalErrorBoundary 
                             name="PostDetailMain" 
                             fallback={
-                                <div className="p-8 border-2 border-dashed border-border rounded-2xl text-center">
-                                    <h1 className="text-2xl font-bold mb-4">{publishedPost.title}</h1>
-                                    <p className="text-foreground-muted">Content preview restricted in this browser environment.</p>
+                                <div className="space-y-6">
+                                    <h1 className="text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl leading-tight">{publishedPost.title}</h1>
+                                    {publishedPost.excerpt && (
+                                        <p className="border-l-4 border-brand-500 pl-4 py-1 text-lg italic font-medium text-foreground-muted leading-relaxed">
+                                            {publishedPost.excerpt}
+                                        </p>
+                                    )}
+                                    {publishedPost.content && (
+                                        <div
+                                            className="prose prose-lg max-w-none dark:prose-invert"
+                                            dangerouslySetInnerHTML={{
+                                                __html: (() => {
+                                                    try { return sanitizeHtml(publishedPost.content) } catch { return '' }
+                                                })()
+                                            }}
+                                            suppressHydrationWarning
+                                        />
+                                    )}
                                 </div>
                             }
                         >

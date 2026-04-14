@@ -73,35 +73,36 @@ export function PostActionBar({ postId, slug, title, type, initialViewCount, url
 
     // ── Track page view once per session ────────────────────────────────
     useEffect(() => {
-        if (viewTracked.current || isBot()) return
-        const key = `pv_${postId}`
-        
-        let alreadyTracked = false
+        // Entire effect is wrapped - analytics must NEVER crash the page
         try {
-            if (typeof sessionStorage !== 'undefined') {
-                alreadyTracked = !!sessionStorage.getItem(key)
+            if (viewTracked.current || isBot()) return
+            const key = `pv_${postId}`
+            
+            let alreadyTracked = false
+            try {
+                alreadyTracked = !!window.sessionStorage.getItem(key)
+            } catch {
+                alreadyTracked = false
             }
-        } catch {
-            alreadyTracked = false
-        }
-        
-        if (alreadyTracked) return
-        viewTracked.current = true
-        
-        try {
-            if (typeof sessionStorage !== 'undefined') {
-                sessionStorage.setItem(key, '1')
+            
+            if (alreadyTracked) return
+            viewTracked.current = true
+            
+            try {
+                window.sessionStorage.setItem(key, '1')
+            } catch {
+                // ignore
             }
-        } catch {
-            // ignore
-        }
 
-        fetch('/api/analytics/view', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ post_id: postId, referrer: document.referrer || '', device: getDevice() }),
-            keepalive: true,
-        }).catch(() => { /* analytics must never break the page */ })
+            fetch('/api/analytics/view', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ post_id: postId, referrer: document.referrer || '', device: getDevice() }),
+                keepalive: true,
+            }).catch(() => { /* analytics must never break the page */ })
+        } catch {
+            // Absolute safety net
+        }
     }, [postId])
 
     // ── Close share dropdown on outside click ──────────────────────────

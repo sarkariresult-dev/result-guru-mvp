@@ -34,15 +34,16 @@ export function useLocalStorage<T>(
     const readValue = useCallback((): T => {
         if (typeof window === 'undefined') return initialValue
         try {
-            // Check if localStorage is actually accessible
+            // In cross-origin iframes (AdSense preview), even accessing
+            // window.localStorage can throw SecurityError in some browsers.
+            // Double-wrap to be absolutely safe during initial render.
             const storage = window.localStorage
             if (!storage) return initialValue
             
             const item = storage.getItem(key)
             return item !== null ? deserialize(item) : initialValue
-        } catch (error) {
-            // SecurityError or other storage restriction - fallback to in-memory
-            console.warn(`Storage access blocked for key "${key}":`, error)
+        } catch {
+            // SecurityError, QuotaExceeded, or any storage restriction - use in-memory value
             return initialValue
         }
     }, [key, initialValue, deserialize])
