@@ -23,8 +23,8 @@ import type { PublishedPost } from '@/types/post.types'
 import type { FaqItem } from '@/types/post-content.types'
 import { slugToKey, humanise, keyToSlug } from '@/lib/utils'
 import { ExternalLink, Download, ListTree } from 'lucide-react'
-import { PageViewTracker } from '@/features/analytics/components/PageViewTracker'
 import { getActionLinkPageLabel } from '@/lib/seo/seo-analyzer'
+import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
 
 
 
@@ -188,7 +188,9 @@ export default async function PostDetailPage({ params }: Props) {
 
     return (
         <>
-            <PageViewTracker postId={publishedPost.id} />
+            <LocalErrorBoundary name="PageViewTracker">
+                <PageViewTracker postId={publishedPost.id} />
+            </LocalErrorBoundary>
             <JsonLd data={jsonLdEntries} />
 
             <div className="container mx-auto max-w-7xl px-4 py-8">
@@ -209,7 +211,9 @@ export default async function PostDetailPage({ params }: Props) {
 
                         {/* Below-content ad - streamed independently */}
                         <Suspense fallback={null}>
-                            <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} className="mt-8" />
+                            <LocalErrorBoundary name="AdZone-BelowContent">
+                                <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} className="mt-8" />
+                            </LocalErrorBoundary>
                         </Suspense>
 
                         {/* Smart Related posts via API logic */}
@@ -289,7 +293,9 @@ export default async function PostDetailPage({ params }: Props) {
 
                         {/* ── Sidebar Ad ────────────────────────── */}
                         <Suspense fallback={null}>
-                            <AdZone zoneSlug="sidebar_top" postType={typeKey} postId={publishedPost.id} />
+                            <LocalErrorBoundary name="AdZone-SidebarTop">
+                                <AdZone zoneSlug="sidebar_top" postType={typeKey} postId={publishedPost.id} />
+                            </LocalErrorBoundary>
                         </Suspense>
 
                         {/* ── Sticky Group (TOC & Sticky Ad) ────────────────── */}
@@ -299,7 +305,9 @@ export default async function PostDetailPage({ params }: Props) {
                             )}
                             
                             <Suspense fallback={null}>
-                                <AdZone zoneSlug="sidebar_sticky" postType={typeKey} postId={publishedPost.id} sticky />
+                                <LocalErrorBoundary name="AdZone-SidebarSticky">
+                                    <AdZone zoneSlug="sidebar_sticky" postType={typeKey} postId={publishedPost.id} sticky />
+                                </LocalErrorBoundary>
                             </Suspense>
                         </div>
                     </aside>

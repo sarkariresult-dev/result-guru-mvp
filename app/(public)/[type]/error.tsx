@@ -46,8 +46,13 @@ export default function TypeError({
                 </Link>
             </div>
 
-            <div className="mt-12 flex items-center justify-center border-t border-border pt-8 text-sm text-foreground-subtle">
+            <div className="mt-12 flex flex-col items-center justify-center border-t border-border pt-8 text-sm text-foreground-subtle">
                 <p>Error ID: <span className="font-mono text-xs">{error.digest || 'no-digest'}</span></p>
+                {error.message && (
+                    <p className="mt-2 max-w-md bg-background-muted p-2 rounded text-[10px] font-mono opacity-50">
+                        {error.message}
+                    </p>
+                )}
             </div>
         </div>
     )

@@ -20,7 +20,7 @@ export function AdZone({ zoneSlug, postType, postId, sticky, className }: Props)
         ? window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop'
         : 'desktop'
 
-    const { data: ads, isLoading } = useAds(zoneSlug, {
+    const { data: ads, isLoading, error } = useAds(zoneSlug, {
         post_type: postType,
         device: device as 'mobile' | 'tablet' | 'desktop',
         post_id: postId,
@@ -30,16 +30,21 @@ export function AdZone({ zoneSlug, postType, postId, sticky, className }: Props)
 
     // Record impressions for visible ads
     useEffect(() => {
-        if (!ads?.length) return
+        if (!ads?.length || error) return
         for (const ad of ads) {
             if (!impressionSent.current.has(ad.id)) {
                 impressionSent.current.add(ad.id)
                 recordAdEvent(ad.id, ad.zone_id ?? '', 'impression', { post_id: postId, device })
             }
         }
-    }, [ads, postId, device])
+    }, [ads, postId, device, error])
 
-    // Nothing to render
+    // Nothing to render on error or no data
+    if (error) {
+        console.error(`AdZone (${zoneSlug}) error:`, error)
+        return null
+    }
+
     if (!isLoading && (!ads || ads.length === 0)) return null
 
     return (
