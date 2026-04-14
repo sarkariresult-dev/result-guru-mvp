@@ -18,7 +18,6 @@ import { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react
 
 export function useThrottle<T>(value: T, limit = 100): T {
     const [throttled, setThrottled] = useState<T>(value)
-    // eslint-disable-next-line react-hooks/purity -- safe initialization
     const lastRan = useRef<number>(Date.now())
 
     useEffect(() => {

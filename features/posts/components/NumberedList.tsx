@@ -10,7 +10,6 @@ interface Props {
     now?: number
 }
 
-// eslint-disable-next-line react-hooks/purity -- Date.now() is safe for display labels
 export function NumberedList({ posts, now = Date.now() }: Props) {
     if (posts.length === 0) {
         return (

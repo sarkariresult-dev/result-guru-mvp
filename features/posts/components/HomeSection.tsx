@@ -125,9 +125,7 @@ export async function HomeSection({
             </div>
 
             <div className="flex-1">
-                {/* eslint-disable-next-line react-hooks/purity -- Date.now() safe for display labels */}
                 {layout === 'list' && <PostList posts={posts} themeColorClass={themeColorClass} now={Date.now()} />}
-                {/* eslint-disable-next-line react-hooks/purity -- Date.now() safe for display labels */}
                 {layout === 'numbered' && <NumberedList posts={posts} now={Date.now()} />}
                 {layout === 'grid' && <PostGrid posts={posts} priority={priority} />}
             </div>

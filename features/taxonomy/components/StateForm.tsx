@@ -47,7 +47,6 @@ export function StateForm({ open, onClose, state }: StateFormProps) {
     useEffect(() => {
         if (open) {
             if (state) {
-                // eslint-disable-next-line react-hooks/set-state-in-effect -- form initialization
                 setForm({
                     slug: state.slug,
                     name: state.name,
