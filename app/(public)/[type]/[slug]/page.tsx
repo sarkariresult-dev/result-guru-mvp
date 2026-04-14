@@ -207,9 +207,6 @@ export default async function PostDetailPage({ params }: Props) {
 
                     {/* ═══════════════════════════════════════════ MAIN CONTENT COLUMN ═══════════════════════════════════════════ */}
                     <article>
-                        {/* Main post detail */}
-                        <PostDetail post={publishedPost} slug={slug} url={canonicalUrl} />
-
                         {/* Below-content ad - streamed independently */}
                         <Suspense fallback={null}>
                             <LocalErrorBoundary name="AdZone-BelowContent">
@@ -217,11 +214,15 @@ export default async function PostDetailPage({ params }: Props) {
                             </LocalErrorBoundary>
                         </Suspense>
 
-                        {/* Smart Related posts via API logic */}
-                        <Suspense fallback={<PostDetailSkeleton />}>
-                             <SmartRelatedPosts postId={publishedPost.id} />
-                             <RelatedPosts post={publishedPost} />
-                        </Suspense>
+                        <LocalErrorBoundary name="PostDetailMain">
+                            <PostDetail post={publishedPost} slug={slug} url={canonicalUrl} />
+
+                            {/* Smart Related posts via API logic */}
+                            <Suspense fallback={<PostDetailSkeleton />}>
+                                <SmartRelatedPosts postId={publishedPost.id} />
+                                <RelatedPosts post={publishedPost} />
+                            </Suspense>
+                        </LocalErrorBoundary>
                     </article>
 
                     {/* ═══════════════════════════════════════════

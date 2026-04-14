@@ -15,8 +15,9 @@ import type { PostDetail as PostDetailType, PostAffiliateProductEntry } from '@/
 import type { FaqItem } from '@/types/post-content.types'
 import { AuthorBox } from './AuthorBox'
 import { ShareBar } from './ShareBar'
-import { Award, Calendar, Clock, FileText, Tag, ShieldCheck } from 'lucide-react'
+import { ShieldCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
 
 /* ── Section IDs ─────────────────────────────────────────────── */
 
@@ -188,13 +189,15 @@ export function PostDetail({ post, slug, url }: Props) {
             // Insert inline ad zone after every 3rd rendered section
             if (sectionCount % 3 === 0 && section !== 'tags') {
                 renderedSections.push(
-                    <AdZone
-                        key={`ad-inline-${sectionCount}`}
-                        zoneSlug={`inline_${sectionCount}`}
-                        postType={typeKey}
-                        postId={post.id}
-                        className="my-2"
-                    />
+                    <LocalErrorBoundary key={`ad-boundary-${sectionCount}`} name={`AdZone-Inline-${sectionCount}`}>
+                        <AdZone
+                            key={`ad-inline-${sectionCount}`}
+                            zoneSlug={`inline_${sectionCount}`}
+                            postType={typeKey}
+                            postId={post.id}
+                            className="my-2"
+                        />
+                    </LocalErrorBoundary>
                 )
             }
         }
@@ -268,12 +271,14 @@ export function PostDetail({ post, slug, url }: Props) {
                 </div>
                 
                 {/* New Overlays: Top-Right (Save) & Bottom-Right (Read Time) */}
-                <PostImageOverlay 
-                    slug={slug} 
-                    title={post.title} 
-                    type={typeKey} 
-                    readingTime={post.reading_time_min} 
-                />
+                <LocalErrorBoundary name="PostImageOverlay">
+                    <PostImageOverlay 
+                        slug={slug} 
+                        title={post.title} 
+                        type={typeKey} 
+                        readingTime={post.reading_time_min} 
+                    />
+                </LocalErrorBoundary>
             </figure>
 
             {/* Excerpt */}
@@ -287,7 +292,9 @@ export function PostDetail({ post, slug, url }: Props) {
             )}
 
             {/* ── Above Content Ad ─────────────────────────────── */}
-            <AdZone zoneSlug="above_content" postType={typeKey} postId={post.id} className="my-6" />
+            <LocalErrorBoundary name="AdZone-AboveContent">
+                <AdZone zoneSlug="above_content" postType={typeKey} postId={post.id} className="my-6" />
+            </LocalErrorBoundary>
 
             {/* ── Type-aware content sections ────────────────────── */}
             {renderedSections}

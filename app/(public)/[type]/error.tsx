@@ -26,7 +26,7 @@ export default function TypeError({
                 Something went wrong!
             </h1>
             <p className="mb-10 max-w-lg text-lg text-foreground-muted leading-relaxed">
-                We encountered an error while loading these listings. This could be due to a temporary connection issue or an invalid filter combination.
+                We encountered an error while loading this content. Please try again later.
             </p>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
