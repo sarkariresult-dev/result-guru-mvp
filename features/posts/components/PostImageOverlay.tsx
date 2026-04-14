@@ -11,7 +11,22 @@ interface Props {
     readingTime: number
 }
 
+import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
+
 export function PostImageOverlay({ slug, title, type, readingTime }: Props) {
+    return (
+        <LocalErrorBoundary name="PostImageOverlay">
+            <PostImageOverlayInternal 
+                slug={slug} 
+                title={title} 
+                type={type} 
+                readingTime={readingTime} 
+            />
+        </LocalErrorBoundary>
+    )
+}
+
+function PostImageOverlayInternal({ slug, title, type, readingTime }: Props) {
     const { toggle, isBookmarked } = useBookmarks()
     const bookmarked = isBookmarked(slug)
 

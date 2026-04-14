@@ -23,7 +23,17 @@ function XIcon({ className }: { className?: string }) {
     )
 }
 
+import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
+
 export function ShareBar({ title, url }: Props) {
+    return (
+        <LocalErrorBoundary name="ShareBar">
+            <ShareBarContent title={title} url={url} />
+        </LocalErrorBoundary>
+    )
+}
+
+function ShareBarContent({ title, url }: Props) {
     const { copy, copied } = useCopyToClipboard()
     
     const encodedUrl = encodeURIComponent(url)

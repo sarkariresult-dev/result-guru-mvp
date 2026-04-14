@@ -17,7 +17,6 @@ import { AuthorBox } from './AuthorBox'
 import { ShareBar } from './ShareBar'
 import { Award, Calendar, Clock, FileText, Tag, ShieldCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
 
 /* ── Section IDs ─────────────────────────────────────────────── */
 
@@ -95,8 +94,6 @@ export function PostDetail({ post, slug, url }: Props) {
         switch (section) {
 
 
-            case 'dates':
-                if (!post.application_start_date && !post.application_end_date) return null
                 return (
                     <div key="dates" className="flex flex-wrap items-center gap-x-8 gap-y-4 py-2 border-y border-border/50">
                         <div className="flex items-center gap-3">
@@ -137,6 +134,7 @@ export function PostDetail({ post, slug, url }: Props) {
                         key="content"
                         className="prose prose-lg max-w-none dark:prose-invert prose-headings:tracking-tight prose-headings:scroll-mt-20 prose-a:text-brand-600 prose-a:no-underline hover:prose-a:underline prose-img:rounded-lg prose-img:shadow-md prose-table:overflow-hidden prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-code:before:content-none prose-code:after:content-none"
                         dangerouslySetInnerHTML={{ __html: processedHtml }}
+                        suppressHydrationWarning
                     />
                 )
 
@@ -144,27 +142,15 @@ export function PostDetail({ post, slug, url }: Props) {
 
             case 'affiliates':
                 if (!affiliates || affiliates.length === 0) return null
-                return (
-                    <LocalErrorBoundary key="affiliates-boundary" name="AffiliateProducts">
-                        <AffiliateProductsBox key="affiliates" affiliates={affiliates} />
-                    </LocalErrorBoundary>
-                )
+                return <AffiliateProductsBox key="affiliates" affiliates={affiliates} />
 
             case 'author':
                 if (!post.author) return null
-                return (
-                    <LocalErrorBoundary key="author-boundary" name="AuthorBox">
-                        <AuthorBox key="author" author={post.author} />
-                    </LocalErrorBoundary>
-                )
+                return <AuthorBox key="author" author={post.author} />
 
             case 'faq':
                 if (!faq || faq.length === 0) return null
-                return (
-                    <LocalErrorBoundary key="faq-boundary" name="FAQAccordion">
-                        <FAQAccordion key="faq" items={faq.map(f => ({ question: f.q, answer: f.a }))} />
-                    </LocalErrorBoundary>
-                )
+                return <FAQAccordion key="faq" items={faq.map(f => ({ question: f.q, answer: f.a }))} />
 
             case 'tags':
                 if (!tags || tags.length === 0) return null
@@ -201,15 +187,13 @@ export function PostDetail({ post, slug, url }: Props) {
             // Insert inline ad zone after every 3rd rendered section
             if (sectionCount % 3 === 0 && section !== 'tags') {
                 renderedSections.push(
-                    <LocalErrorBoundary key={`ad-boundary-${sectionCount}`} name={`AdZone-Inline-${sectionCount}`}>
-                        <AdZone
-                            key={`ad-inline-${sectionCount}`}
-                            zoneSlug={`inline_${sectionCount}`}
-                            postType={typeKey}
-                            postId={post.id}
-                            className="my-2"
-                        />
-                    </LocalErrorBoundary>
+                    <AdZone
+                        key={`ad-inline-${sectionCount}`}
+                        zoneSlug={`inline_${sectionCount}`}
+                        postType={typeKey}
+                        postId={post.id}
+                        className="my-2"
+                    />
                 )
             }
         }
@@ -282,15 +266,12 @@ export function PostDetail({ post, slug, url }: Props) {
 
                 </div>
                 
-                {/* New Overlays: Top-Right (Save) & Bottom-Right (Read Time) */}
-                <LocalErrorBoundary name="PostImageOverlay">
-                    <PostImageOverlay 
-                        slug={slug} 
-                        title={post.title} 
-                        type={typeKey} 
-                        readingTime={post.reading_time_min} 
-                    />
-                </LocalErrorBoundary>
+                <PostImageOverlay 
+                    slug={slug} 
+                    title={post.title} 
+                    type={typeKey} 
+                    readingTime={post.reading_time_min} 
+                />
             </figure>
 
             {/* Excerpt */}
@@ -299,16 +280,11 @@ export function PostDetail({ post, slug, url }: Props) {
                     <p className="border-l-4 border-brand-500 pl-4 py-1 text-lg italic font-medium text-foreground-muted bg-linear-to-r from-brand-50/50 to-transparent dark:from-brand-900/10 rounded-r-lg leading-relaxed">
                         {post.excerpt}
                     </p>
-                    <LocalErrorBoundary name="ShareBar">
-                        <ShareBar title={post.title} url={url} />
-                    </LocalErrorBoundary>
+                    <ShareBar title={post.title} url={url} />
                 </div>
             )}
 
-            {/* ── Above Content Ad ─────────────────────────────── */}
-            <LocalErrorBoundary name="AdZone-AboveContent">
-                <AdZone zoneSlug="above_content" postType={typeKey} postId={post.id} className="my-6" />
-            </LocalErrorBoundary>
+            <AdZone zoneSlug="above_content" postType={typeKey} postId={post.id} className="my-6" />
 
             {/* ── Type-aware content sections ────────────────────── */}
             {renderedSections}

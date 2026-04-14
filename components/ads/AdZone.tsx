@@ -15,7 +15,23 @@ interface Props {
     className?: string
 }
 
+import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
+
 export function AdZone({ zoneSlug, postType, postId, sticky, className }: Props) {
+    return (
+        <LocalErrorBoundary name={`AdZone-${zoneSlug}`}>
+            <AdZoneInternal 
+                zoneSlug={zoneSlug} 
+                postType={postType} 
+                postId={postId} 
+                sticky={sticky} 
+                className={className} 
+            />
+        </LocalErrorBoundary>
+    )
+}
+
+function AdZoneInternal({ zoneSlug, postType, postId, sticky, className }: Props) {
     const device = typeof window !== 'undefined'
         ? window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop'
         : 'desktop'
