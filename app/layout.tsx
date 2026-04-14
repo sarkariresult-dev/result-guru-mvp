@@ -183,6 +183,34 @@ export default function RootLayout({
                 <link rel="dns-prefetch" href="https://www.google-analytics.com" />
                 {/* AI discoverability link */}
                 <link rel="alternate" type="text/plain" title="LLM Context" href="/llms.txt" />
+                
+                {/* ── SECURITY ERROR PREVENTER FOR CROSS-ORIGIN IFRAMES ── */}
+                {/* Next.js internally uses sessionStorage for scroll restoration. In restricted iframes (like AdSense Preview), accessing sessionStorage throws a DOMException, crashing the entire hydration process and triggering global-error.tsx. This inline script catches that and polyfills the APIs before Next.js runs. */}
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                        try {
+                            window.sessionStorage.getItem('__test');
+                        } catch (e) {
+                            var memoryStorage = {
+                                _data: {},
+                                getItem: function(k) { return this._data[k] || null; },
+                                setItem: function(k, v) { this._data[k] = String(v); },
+                                removeItem: function(k) { delete this._data[k]; },
+                                clear: function() { this._data = {}; },
+                                key: function(i) { return Object.keys(this._data)[i] || null; },
+                                get length() { return Object.keys(this._data).length; }
+                            };
+                            try {
+                                Object.defineProperty(window, 'sessionStorage', { value: memoryStorage });
+                                Object.defineProperty(window, 'localStorage', { value: memoryStorage });
+                            } catch (err) {
+                                // Fallback if browser explicitly denies defineProperty on window.sessionStorage
+                            }
+                        }
+                        `
+                    }}
+                />
             </head>
             <body className="min-h-screen font-sans antialiased" suppressHydrationWarning>
                 {/* Skip-to-content link is in each route group layout (public/dashboard)

@@ -119,13 +119,16 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://www.google.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://va.vercel-scripts.com",
+              // AdSense requires 'unsafe-inline' 'unsafe-eval'; 'strict-dynamic' lets trusted scripts load their own sub-scripts
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com https://*.google-analytics.com https://*.googlesyndication.com https://*.google.com https://*.googleadservices.com https://*.doubleclick.net https://va.vercel-scripts.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in https://images.unsplash.com https://www.google-analytics.com https://stats.g.doubleclick.net https://www.googletagmanager.com https://*.g.doubleclick.net https://*.google.com https://pagead2.googlesyndication.com",
+              // Google ad pixels come from many TLDs (google.co.in, google.de, etc) — use broad wildcard
+              "img-src 'self' data: blob: https: http:",
               "font-src 'self' https://fonts.gstatic.com",
-              "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://*.analytics.google.com https://*.google.com https://*.g.doubleclick.net https://pagead2.googlesyndication.com https://www.googleadservices.com https://vitals.vercel-insights.com https://va.vercel-scripts.com",
-              "frame-src 'self' https://www.googletagmanager.com https://googleads.g.doubleclick.net https://*.google.com https://tpc.googlesyndication.com",
-              "frame-ancestors 'self' https://*.google.com https://*.googlesyndication.com https://*.googleads.g.doubleclick.net https://adsense.google.com https://*.googleadservices.com",
+              // AdSense traffic quality checks use dynamic domains like ep1.adtrafficquality.google
+              "connect-src 'self' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.google-analytics.com https://*.analytics.google.com https://*.doubleclick.net https://*.googlesyndication.com https://*.googleadservices.com https://*.adtrafficquality.google https://vitals.vercel-insights.com https://va.vercel-scripts.com",
+              "frame-src 'self' https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.googlesyndication.com",
+              "frame-ancestors 'self' https://*.google.com https://*.googlesyndication.com https://*.doubleclick.net https://*.googleadservices.com",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",

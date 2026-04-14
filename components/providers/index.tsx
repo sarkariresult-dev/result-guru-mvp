@@ -2,7 +2,7 @@
 
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useState, type ReactNode } from 'react'
+import { useState, type ReactNode, Component, type ErrorInfo } from 'react'
 import { STALE_TIME } from '@/config/constants'
 
 function makeQueryClient() {
@@ -27,19 +27,53 @@ function makeQueryClient() {
     })
 }
 
+/**
+ * Ultra-safe wrapper around next-themes ThemeProvider.
+ * In cross-origin iframes (AdSense preview), ThemeProvider can crash
+ * because it accesses localStorage during hydration. Since it wraps
+ * the ENTIRE app, this crash kills everything. This boundary catches
+ * it and renders children without theming instead.
+ */
+class SafeThemeProvider extends Component<
+    { children: ReactNode },
+    { hasError: boolean }
+> {
+    state = { hasError: false }
+
+    static getDerivedStateFromError(): { hasError: boolean } {
+        return { hasError: true }
+    }
+
+    componentDidCatch(error: Error, info: ErrorInfo) {
+        console.warn('ThemeProvider crashed (restricted env):', error.message)
+    }
+
+    render() {
+        if (this.state.hasError) {
+            // Render children without theming — better than a dead page
+            return this.props.children
+        }
+        return (
+            <NextThemesProvider
+                attribute="class"
+                defaultTheme="light"
+                enableSystem
+                disableTransitionOnChange
+            >
+                {this.props.children}
+            </NextThemesProvider>
+        )
+    }
+}
+
 export function Providers({ children }: { children: ReactNode }) {
     const [queryClient] = useState(makeQueryClient)
 
     return (
         <QueryClientProvider client={queryClient}>
-            <NextThemesProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-                disableTransitionOnChange
-            >
+            <SafeThemeProvider>
                 {children}
-            </NextThemesProvider>
+            </SafeThemeProvider>
         </QueryClientProvider>
     )
 }
