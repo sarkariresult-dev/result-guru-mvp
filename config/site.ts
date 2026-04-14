@@ -57,10 +57,9 @@ export const SITE = {
     backgroundColor: '#ffffff',
 
     // ── Google / Ads ─────────────────────────────────────────────────────
-
     gaId: env.NEXT_PUBLIC_GA_ID,
     gtmId: env.NEXT_PUBLIC_GTM_ID,
-    adsenseId: env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID,
+    adsenseId: env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || 'ca-pub-2318647751686627',
 
     // ── Search engine verification meta tags ─────────────────────────────
     verification: {

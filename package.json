@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "node --max-old-space-size=4096 node_modules/next/dist/bin/next build",
+    "build": "node --max-old-space-size=6144 node_modules/next/dist/bin/next build",
     "start": "next start",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -79,6 +79,7 @@
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "playwright": "^1.59.1",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.2.0",
     "typescript": "^5"

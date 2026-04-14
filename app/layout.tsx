@@ -184,6 +184,18 @@ export default function RootLayout({
                 {/* AI discoverability link */}
                 <link rel="alternate" type="text/plain" title="LLM Context" href="/llms.txt" />
                 
+                {/* Google AdSense - Auto Ads */}
+                {/* Placed in head as requested by Google, with lazyOnload to prevent React 18 hydration crashes caused by third-party DOM modifications */}
+                {SITE.adsenseId && (
+                    <Script
+                        id="adsense-init"
+                        async
+                        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsenseId}`}
+                        crossOrigin="anonymous"
+                        strategy="lazyOnload"
+                    />
+                )}
+                
                 {/* ── SECURITY ERROR PREVENTER FOR CROSS-ORIGIN IFRAMES ── */}
                 {/* Next.js internally uses sessionStorage for scroll restoration. In restricted iframes (like AdSense Preview), accessing sessionStorage throws a DOMException, crashing the entire hydration process and triggering global-error.tsx. This inline script catches that and polyfills the APIs before Next.js runs. */}
                 <script
@@ -251,16 +263,6 @@ export default function RootLayout({
                     </>
                 )}
 
-                {/* Google AdSense - Auto Ads */}
-                {SITE.adsenseId && (
-                    <Script
-                        id="adsense-init"
-                        async
-                        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsenseId}`}
-                        crossOrigin="anonymous"
-                        strategy="afterInteractive"
-                    />
-                )}
 
                 {/* GTM noscript fallback */}
                 {SITE.gtmId && (
