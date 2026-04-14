@@ -185,15 +185,7 @@ export default function RootLayout({
                 {/* AI discoverability link */}
                 <link rel="alternate" type="text/plain" title="LLM Context" href="/llms.txt" />
                 
-                {/* Google AdSense - Auto Ads */}
-                {/* We use a raw script tag here instead of next/script to avoid 'data-nscript' attribute which can interfere with AdSense Auto Ads hydration and triggering 'Script doesn't support data-nscript' warnings. */}
-                {SITE.adsenseId && (
-                    <script
-                        async
-                        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsenseId}`}
-                        crossOrigin="anonymous"
-                    />
-                )}
+                {/* Google AdSense moved to end of body for stability */}
                 
                 {/* ── SECURITY ERROR PREVENTER FOR CROSS-ORIGIN IFRAMES ── */}
                 {/* Next.js internally uses sessionStorage for scroll restoration. In restricted iframes (like AdSense Preview), accessing sessionStorage throws a DOMException, crashing the entire hydration process and triggering global-error.tsx. This inline script catches that and polyfills the APIs before Next.js runs. */}
@@ -283,6 +275,15 @@ export default function RootLayout({
                 <LocalErrorBoundary name="VercelInsights" silent>
                     <SpeedInsights />
                 </LocalErrorBoundary>
+
+                {/* Google AdSense - Loaded last to prevent hydration mismatches */}
+                {SITE.adsenseId && (
+                    <script
+                        async
+                        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsenseId}`}
+                        crossOrigin="anonymous"
+                    />
+                )}
             </body>
         </html>
     )

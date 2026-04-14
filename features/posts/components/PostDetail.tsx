@@ -230,14 +230,14 @@ export function PostDetail({ post, slug, url }: Props) {
         <div className="space-y-8" suppressHydrationWarning>
             <LocalErrorBoundary name="ArticleHeader" silent>
                 {/* ── Header: Title, Org, Dates ────────────────────────── */}
-                <header className="space-y-5 animate-fade-up">
+                <header className="space-y-5 animate-fade-up" suppressHydrationWarning>
                     {/* Title */}
                     <h1 className="text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl leading-tight">
                         {post.title}
                     </h1>
 
                     {/* Meta row */}
-                    <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-foreground-muted">
+                    <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-foreground-muted" suppressHydrationWarning>
                         {post.org_name && (
                             <span className="flex items-center gap-1.5">
                                 <Award className="size-4 text-brand-500" />
@@ -322,7 +322,9 @@ export function PostDetail({ post, slug, url }: Props) {
 
             {/* ── Type-aware content sections ────────────────────── */}
             <LocalErrorBoundary name="PostContentBody">
-                {renderedSections}
+                <article suppressHydrationWarning>
+                    {renderedSections}
+                </article>
             </LocalErrorBoundary>
 
             {/* ── Last reviewed notice ───────────────────────────── */}
