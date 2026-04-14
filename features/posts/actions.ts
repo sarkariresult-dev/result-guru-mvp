@@ -257,7 +257,7 @@ export async function createPost(data: PostPayload) {
 
     revalidatePath('/author/posts')
     revalidatePath('/')
-    revalidateTag('posts', 'default')
+    revalidateTag('posts')
     return { success: true, id: inserted?.id, slug: inserted?.slug }
 }
 
@@ -385,10 +385,10 @@ export async function updatePost(id: string, data: Partial<PostPayload>) {
 
     revalidatePath('/author/posts')
     revalidatePath('/')
-    revalidateTag('posts', 'default')
+    revalidateTag('posts')
     // COUNCIL P0 (Area 9): Revalidate sitemap on published post updates
     if (dbFields.status === 'published' || updateRow.status === undefined) {
-        revalidateTag('sitemap', 'default')
+        revalidateTag('sitemap')
     }
     return { success: true }
 }
@@ -436,9 +436,9 @@ export async function publishPost(id: string) {
     revalidatePath('/author/posts')
     revalidatePath('/admin/posts')
     revalidatePath('/')
-    revalidateTag('posts', 'default')
+    revalidateTag('posts')
     // COUNCIL P0 (Area 9): Revalidate sitemap immediately after publish
-    revalidateTag('sitemap', 'default')
+    revalidateTag('sitemap')
 
     // COUNCIL P0 (Area 9): Fire-and-forget Indexing API call
     // PRIYA: Non-blocking - don't await, don't fail the publish on API error
@@ -480,9 +480,9 @@ export async function deletePost(id: string) {
     revalidatePath('/author/posts')
     revalidatePath('/admin/posts')
     revalidatePath('/')
-    revalidateTag('posts', 'default')
+    revalidateTag('posts')
     // COUNCIL P0 (Area 9): Revalidate sitemap on deletion
-    revalidateTag('sitemap', 'default')
+    revalidateTag('sitemap')
 
     // COUNCIL P0 (Area 9): Notify Google to deindex deleted published posts
     if (existingPost?.status === 'published' && existingPost.slug && existingPost.type) {

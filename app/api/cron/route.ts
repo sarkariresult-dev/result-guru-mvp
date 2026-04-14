@@ -38,8 +38,8 @@ export const GET = withErrorHandling(async (request: Request) => {
             publishedCount = ids.length
 
             // Revalidate sitemap once for all published posts
-            revalidateTag('sitemap', undefined as any)
-            revalidateTag('posts', undefined as any)
+            revalidateTag('sitemap')
+            revalidateTag('posts')
 
             // Fire-and-forget Indexing API for each newly published post
             for (const post of scheduledPosts) {

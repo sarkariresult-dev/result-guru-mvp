@@ -25,8 +25,8 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
     }
 
     if (tag) {
-        // Next.js 16: revalidateTag(tag, profile) - use 'default' profile
-        revalidateTag(tag, 'default')
+        // Next.js 15 (Stable): revalidateTag(tag)
+        revalidateTag(tag)
         return successResponse({ revalidated: true, tag })
     }
 

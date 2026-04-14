@@ -22,7 +22,7 @@ function revalidateTaxonomy() {
     revalidatePath('/admin/tags')
     revalidatePath('/admin/organizations')
     revalidatePath('/admin/states')
-    revalidateTag('taxonomy', 'default')
+    revalidateTag('taxonomy')
 }
 
 // ── Categories ─────────────────────────────────────────────
