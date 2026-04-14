@@ -3,6 +3,7 @@
 import { Bookmark, BookmarkCheck, FileText } from 'lucide-react'
 import { useBookmarks } from '@/hooks/useBookmarks'
 import { cn } from '@/lib/utils'
+import { useState, useEffect } from 'react'
 
 interface Props {
     slug: string
@@ -11,18 +12,22 @@ interface Props {
     readingTime: number
 }
 
-import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
-
 export function PostImageOverlay({ slug, title, type, readingTime }: Props) {
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+    if (!isMounted) return null
+
     return (
-        <LocalErrorBoundary name="PostImageOverlay">
-            <PostImageOverlayInternal 
-                slug={slug} 
-                title={title} 
-                type={type} 
-                readingTime={readingTime} 
-            />
-        </LocalErrorBoundary>
+        <PostImageOverlayInternal 
+            slug={slug} 
+            title={title} 
+            type={type} 
+            readingTime={readingTime} 
+        />
     )
 }
 

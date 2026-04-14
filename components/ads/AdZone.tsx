@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { useAds, recordAdEvent } from '@/hooks/useAds'
 import { AdDisplay } from './AdDisplay'
@@ -15,23 +15,29 @@ interface Props {
     className?: string
 }
 
-import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
-
 export function AdZone({ zoneSlug, postType, postId, sticky, className }: Props) {
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+    // Best Practice: Render nothing on server to avoid hydration mismatch
+    // especially important for ad zones that AdSense might modify.
+    if (!isMounted) return null
+
     return (
-        <LocalErrorBoundary name={`AdZone-${zoneSlug}`}>
-            <AdZoneInternal 
-                zoneSlug={zoneSlug} 
-                postType={postType} 
-                postId={postId} 
-                sticky={sticky} 
-                className={className} 
-            />
-        </LocalErrorBoundary>
+        <AdZoneContent 
+            zoneSlug={zoneSlug} 
+            postType={postType} 
+            postId={postId} 
+            sticky={sticky} 
+            className={className} 
+        />
     )
 }
 
-function AdZoneInternal({ zoneSlug, postType, postId, sticky, className }: Props) {
+function AdZoneContent({ zoneSlug, postType, postId, sticky, className }: Props) {
     const device = typeof window !== 'undefined'
         ? window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop'
         : 'desktop'

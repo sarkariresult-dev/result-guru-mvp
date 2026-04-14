@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard'
 import { SITE } from '@/config/site'
+import { useState, useEffect } from 'react'
 
 interface Props {
     title: string
@@ -23,14 +24,16 @@ function XIcon({ className }: { className?: string }) {
     )
 }
 
-import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
-
 export function ShareBar({ title, url }: Props) {
-    return (
-        <LocalErrorBoundary name="ShareBar">
-            <ShareBarContent title={title} url={url} />
-        </LocalErrorBoundary>
-    )
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+    if (!isMounted) return null
+
+    return <ShareBarContent title={title} url={url} />
 }
 
 function ShareBarContent({ title, url }: Props) {

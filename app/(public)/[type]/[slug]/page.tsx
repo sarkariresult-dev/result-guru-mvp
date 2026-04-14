@@ -189,9 +189,7 @@ export default async function PostDetailPage({ params }: Props) {
 
     return (
         <>
-            <LocalErrorBoundary name="PageViewTracker">
-                <PageViewTracker postId={publishedPost.id} />
-            </LocalErrorBoundary>
+            <PageViewTracker postId={publishedPost.id} />
             <JsonLd data={jsonLdEntries} />
 
             <div className="container mx-auto max-w-7xl px-4 py-8">
@@ -209,9 +207,7 @@ export default async function PostDetailPage({ params }: Props) {
                     <article>
                         {/* Below-content ad - streamed independently */}
                         <Suspense fallback={null}>
-                            <LocalErrorBoundary name="AdZone-BelowContent">
-                                <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} className="mt-8" />
-                            </LocalErrorBoundary>
+                            <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} className="mt-8" />
                         </Suspense>
 
                         <LocalErrorBoundary 
@@ -311,21 +307,17 @@ export default async function PostDetailPage({ params }: Props) {
 
                         {/* ── Sidebar Ad ────────────────────────── */}
                         <Suspense fallback={null}>
-                            <LocalErrorBoundary name="AdZone-SidebarTop">
-                                <AdZone zoneSlug="sidebar_top" postType={typeKey} postId={publishedPost.id} />
-                            </LocalErrorBoundary>
+                            <AdZone zoneSlug="sidebar_top" postType={typeKey} postId={publishedPost.id} />
                         </Suspense>
 
                         {/* ── Sticky Group (TOC & Sticky Ad) ────────────────── */}
-                        <div className="sticky top-24 space-y-6">
+                        <div className="sticky top-24 space-y-6" suppressHydrationWarning>
                             {tocItems.length >= 2 && (
                                 <TableOfContents items={tocItems} />
                             )}
                             
                             <Suspense fallback={null}>
-                                <LocalErrorBoundary name="AdZone-SidebarSticky">
-                                    <AdZone zoneSlug="sidebar_sticky" postType={typeKey} postId={publishedPost.id} sticky />
-                                </LocalErrorBoundary>
+                                <AdZone zoneSlug="sidebar_sticky" postType={typeKey} postId={publishedPost.id} sticky />
                             </Suspense>
                         </div>
                     </aside>

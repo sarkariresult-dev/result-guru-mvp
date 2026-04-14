@@ -9,17 +9,7 @@ interface FAQItem {
     answer: string
 }
 
-import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
-
 export function FAQAccordion({ items }: { items: FAQItem[] }) {
-    return (
-        <LocalErrorBoundary name="FAQAccordion">
-            <FAQAccordionInternal items={items} />
-        </LocalErrorBoundary>
-    )
-}
-
-function FAQAccordionInternal({ items }: { items: FAQItem[] }) {
     const [openIndex, setOpenIndex] = useState<number | null>(0)
 
     if (!items || items.length === 0) return null
