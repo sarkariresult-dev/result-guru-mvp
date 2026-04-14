@@ -16,17 +16,25 @@ export default function TypeError({
         console.error('Type Route Error:', error)
     }, [error])
 
+    const isConnectionError = !error.digest || error.message?.toLowerCase().includes('connection') || error.message?.toLowerCase().includes('digest')
+
     return (
         <div className="flex min-h-[70vh] flex-col items-center justify-center bg-background px-4 text-center">
-            <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-red-100 dark:bg-red-950/30">
-                <ServerCrash className="size-10 text-red-600 dark:text-red-500" />
+            <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-background-subtle">
+                {isConnectionError ? (
+                    <RotateCcw className="size-10 text-brand-600 animate-spin-slow" />
+                ) : (
+                    <ServerCrash className="size-10 text-red-600 dark:text-red-500" />
+                )}
             </div>
 
-            <h1 className="mb-2 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-                Something went wrong!
+            <h1 className="mb-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                {isConnectionError ? 'Refreshing content...' : 'Something went wrong!'}
             </h1>
-            <p className="mb-10 max-w-lg text-lg text-foreground-muted leading-relaxed">
-                We encountered an error while loading this content. Please try again later.
+            <p className="mb-10 max-w-lg text-base text-foreground-muted leading-relaxed">
+                {isConnectionError 
+                    ? 'The connection was interrupted. We are trying to restore the page.' 
+                    : 'We encountered an error while loading this content. Our team has been notified.'}
             </p>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -46,14 +54,11 @@ export default function TypeError({
                 </Link>
             </div>
 
-            <div className="mt-12 flex flex-col items-center justify-center border-t border-border pt-8 text-sm text-foreground-subtle">
-                <p>Error ID: <span className="font-mono text-xs">{error.digest || 'no-digest'}</span></p>
-                {error.message && (
-                    <p className="mt-2 max-w-md bg-background-muted p-2 rounded text-[10px] font-mono opacity-50">
-                        {error.message}
-                    </p>
-                )}
-            </div>
+            {!isConnectionError && (
+                <div className="mt-12 flex flex-col items-center justify-center border-t border-border pt-8 text-sm text-foreground-subtle">
+                    <p>Reference ID: <span className="font-mono text-xs">{error.digest || 'system-fallback'}</span></p>
+                </div>
+            )}
         </div>
     )
 }

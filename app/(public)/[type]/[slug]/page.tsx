@@ -193,26 +193,32 @@ export default async function PostDetailPage({ params }: Props) {
             <JsonLd data={jsonLdEntries} />
 
             <div className="container mx-auto max-w-7xl px-4 py-8">
-                <Breadcrumb
-                    items={[
-                        { label: POST_TYPE_CONFIG[typeKey].heading, href: `/${type}` },
-                        ...(publishedPost.state_slug ? [{ label: publishedPost.state_name || humanise(publishedPost.state_slug), href: `/states/${publishedPost.state_slug}` }] : []),
-                        { label: publishedPost.title },
-                    ]}
-                />
+                <LocalErrorBoundary name="Breadcrumb" silent>
+                    <Breadcrumb
+                        items={[
+                            { label: POST_TYPE_CONFIG[typeKey].heading, href: `/${type}` },
+                            ...(publishedPost.state_slug ? [{ label: publishedPost.state_name || humanise(publishedPost.state_slug), href: `/states/${publishedPost.state_slug}` }] : []),
+                            { label: publishedPost.title },
+                        ]}
+                    />
+                </LocalErrorBoundary>
 
                 <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_340px]">
 
                     {/* ═══════════════════════════════════════════ MAIN CONTENT COLUMN ═══════════════════════════════════════════ */}
                     <article>
                         {/* Below-content ad - streamed independently */}
-                        <Suspense fallback={null}>
-                            <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} className="mt-8" />
-                        </Suspense>
+                        <LocalErrorBoundary name="AdHeader" silent>
+                            <Suspense fallback={null}>
+                                <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} className="mt-8" />
+                            </Suspense>
+                        </LocalErrorBoundary>
 
-                        <PostDetail post={publishedPost} slug={slug} url={canonicalUrl} />
+                        <LocalErrorBoundary name="PostDetailMain" silent>
+                            <PostDetail post={publishedPost} slug={slug} url={canonicalUrl} />
+                        </LocalErrorBoundary>
 
-                        <LocalErrorBoundary name="RelatedPosts">
+                        <LocalErrorBoundary name="RelatedPosts" silent>
                             {/* Smart Related posts via API logic */}
                             <Suspense fallback={<PostDetailSkeleton />}>
                                 <SmartRelatedPosts postId={publishedPost.id} />
@@ -227,82 +233,94 @@ export default async function PostDetailPage({ params }: Props) {
                     <aside className="hidden lg:block space-y-6" aria-label="Post sidebar">
 
                         {/* ── Organization Info ─────────────────── */}
-                        <OrgInfoBox
-                            name={publishedPost.org_name}
-                            shortName={publishedPost.org_short_name}
-                            logoUrl={publishedPost.org_logo_url}
-                            officialUrl={publishedPost.org_official_url}
-                        />
+                        <LocalErrorBoundary name="OrgInfo" silent>
+                            <OrgInfoBox
+                                name={publishedPost.org_name}
+                                shortName={publishedPost.org_short_name}
+                                logoUrl={publishedPost.org_logo_url}
+                                officialUrl={publishedPost.org_official_url}
+                            />
+                        </LocalErrorBoundary>
 
                         {/* ── Quick Action Links ───────────────── */}
-                        {quickLinks.length > 0 && (
-                            <div className="py-2 space-y-4">
-                                <h3 className="text-sm font-bold uppercase tracking-[0.05em] text-foreground-muted flex items-center gap-2">
-                                    <ExternalLink className="size-4 text-brand-500" /> Key Resources
-                                </h3>
-                                <div className="flex flex-col gap-2.5">
-                                    {quickLinks.map((link: { href: string; label: string; icon: 'external' | 'download'; primary?: boolean }, i: number) => (
-                                        <a
-                                            key={i}
-                                            href={link.href}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className={`flex items-center gap-2.5 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${link.primary
-                                                ? 'bg-brand-600 text-white hover:bg-brand-700 shadow-sm hover:shadow-md'
-                                                : 'border border-border text-foreground hover:bg-background-subtle'
-                                                }`}
-                                        >
-                                            {link.icon === 'download' ? (
-                                                <Download className="size-4 shrink-0" />
-                                            ) : (
-                                                <ExternalLink className="size-4 shrink-0" />
-                                            )}
-                                            <span className="truncate">{link.label}</span>
-                                        </a>
-                                    ))}
+                        <LocalErrorBoundary name="QuickLinks" silent>
+                            {quickLinks.length > 0 && (
+                                <div className="py-2 space-y-4">
+                                    <h3 className="text-sm font-bold uppercase tracking-[0.05em] text-foreground-muted flex items-center gap-2">
+                                        <ExternalLink className="size-4 text-brand-500" /> Key Resources
+                                    </h3>
+                                    <div className="flex flex-col gap-2.5">
+                                        {quickLinks.map((link: { href: string; label: string; icon: 'external' | 'download'; primary?: boolean }, i: number) => (
+                                            <a
+                                                key={i}
+                                                href={link.href}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className={`flex items-center gap-2.5 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${link.primary
+                                                    ? 'bg-brand-600 text-white hover:bg-brand-700 shadow-sm hover:shadow-md'
+                                                    : 'border border-border text-foreground hover:bg-background-subtle'
+                                                    }`}
+                                            >
+                                                {link.icon === 'download' ? (
+                                                    <Download className="size-4 shrink-0" />
+                                                ) : (
+                                                    <ExternalLink className="size-4 shrink-0" />
+                                                )}
+                                                <span className="truncate">{link.label}</span>
+                                            </a>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </LocalErrorBoundary>
 
                         {/* ── SEO Silo Links (Content Strategy) ── */}
-                        {siloPosts.length > 0 && (
-                            <div className="py-2 space-y-4">
-                                <h3 className="text-sm font-bold uppercase tracking-[0.05em] text-foreground-muted flex items-center gap-2">
-                                    <ListTree className="size-4 text-brand-500" /> More Related
-                                </h3>
-                                <div className="flex flex-col gap-3">
-                                    {siloPosts.map((p) => (
-                                        <Link 
-                                            key={p.id} 
-                                            href={`${ROUTE_PREFIXES[p.type as PostTypeKey]}/${p.slug}`} 
-                                            className="group flex flex-col gap-0.5"
-                                        >
-                                            <span className="text-sm font-bold text-foreground group-hover:text-brand-600 transition-colors line-clamp-2">
-                                                {p.title}
-                                            </span>
-                                            <span className="text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
-                                                {humanise(p.type)}
-                                            </span>
-                                        </Link>
-                                    ))}
+                        <LocalErrorBoundary name="SiloPosts" silent>
+                            {siloPosts.length > 0 && (
+                                <div className="py-2 space-y-4">
+                                    <h3 className="text-sm font-bold uppercase tracking-[0.05em] text-foreground-muted flex items-center gap-2">
+                                        <ListTree className="size-4 text-brand-500" /> More Related
+                                    </h3>
+                                    <div className="flex flex-col gap-3">
+                                        {siloPosts.map((p) => (
+                                            <Link 
+                                                key={p.id} 
+                                                href={`${ROUTE_PREFIXES[p.type as PostTypeKey]}/${p.slug}`} 
+                                                className="group flex flex-col gap-0.5"
+                                            >
+                                                <span className="text-sm font-bold text-foreground group-hover:text-brand-600 transition-colors line-clamp-2">
+                                                    {p.title}
+                                                </span>
+                                                <span className="text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
+                                                    {humanise(p.type)}
+                                                </span>
+                                            </Link>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </LocalErrorBoundary>
 
                         {/* ── Sidebar Ad ────────────────────────── */}
-                        <Suspense fallback={null}>
-                            <AdZone zoneSlug="sidebar_top" postType={typeKey} postId={publishedPost.id} />
-                        </Suspense>
+                        <LocalErrorBoundary name="AdSidebar" silent>
+                            <Suspense fallback={null}>
+                                <AdZone zoneSlug="sidebar_top" postType={typeKey} postId={publishedPost.id} />
+                            </Suspense>
+                        </LocalErrorBoundary>
 
                         {/* ── Sticky Group (TOC & Sticky Ad) ────────────────── */}
                         <div className="sticky top-24 space-y-6" suppressHydrationWarning>
-                            {tocItems.length >= 2 && (
-                                <TableOfContents items={tocItems} />
-                            )}
+                            <LocalErrorBoundary name="TOC" silent>
+                                {tocItems.length >= 2 && (
+                                    <TableOfContents items={tocItems} />
+                                )}
+                            </LocalErrorBoundary>
                             
-                            <Suspense fallback={null}>
-                                <AdZone zoneSlug="sidebar_sticky" postType={typeKey} postId={publishedPost.id} sticky />
-                            </Suspense>
+                            <LocalErrorBoundary name="AdSticky" silent>
+                                <Suspense fallback={null}>
+                                    <AdZone zoneSlug="sidebar_sticky" postType={typeKey} postId={publishedPost.id} sticky />
+                                </Suspense>
+                            </LocalErrorBoundary>
                         </div>
                     </aside>
                 </div>

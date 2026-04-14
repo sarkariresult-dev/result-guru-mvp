@@ -6,6 +6,7 @@ interface Props {
   children: ReactNode
   fallback?: ReactNode
   name?: string
+  silent?: boolean
 }
 
 interface State {
@@ -29,7 +30,9 @@ export class LocalErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error(`LocalErrorBoundary (${this.props.name || 'unnamed'}):`, error, errorInfo)
+    if (!this.props.silent) {
+      console.error(`LocalErrorBoundary (${this.props.name || 'unnamed'}):`, error, errorInfo)
+    }
   }
 
   public render() {
