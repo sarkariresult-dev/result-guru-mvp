@@ -17,6 +17,7 @@ const envSchema = z.object({
     // ── Google ────────────────────────────────────────────────────────────
     NEXT_PUBLIC_GA_ID: z.string().regex(/^G-[A-Z0-9]+$/).optional(),
     NEXT_PUBLIC_GTM_ID: z.string().regex(/^GTM-[A-Z0-9]+$/).optional(),
+    NEXT_PUBLIC_ADSENSE_PUBLISHER_ID: z.string().optional(),
 
     // ── Search engine verification ────────────────────────────────────────
     NEXT_PUBLIC_GSC_VERIFICATION: z.string().optional(),
@@ -54,6 +55,7 @@ const _parsed = envSchema.safeParse({
 
     NEXT_PUBLIC_GA_ID: process.env.NEXT_PUBLIC_GA_ID,
     NEXT_PUBLIC_GTM_ID: process.env.NEXT_PUBLIC_GTM_ID,
+    NEXT_PUBLIC_ADSENSE_PUBLISHER_ID: process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID,
 
     NEXT_PUBLIC_GSC_VERIFICATION: process.env.NEXT_PUBLIC_GSC_VERIFICATION,
 

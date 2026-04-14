@@ -1,29 +1,28 @@
+import { env } from "@/config"
+
 /**
- * GET /ads.txt
+ * ads.txt - Authorized Digital Sellers
  *
- * Serves the ads.txt file required by programmatic
- * programmatic advertising networks. This file declares which
- * ad networks are authorised to sell inventory on the domain.
+ * This route programmatically serves the ads.txt file.
+ * Configuration is managed via NEXT_PUBLIC_ADSENSE_PUBLISHER_ID in environment variables.
  *
- * Format: <domain>, <publisher-id>, <relationship>, <certification-authority-id>
- *
- * @see https://developers.google.com/authorized-sellers/ads-txt
- * @see https://iabtechlab.com/ads-txt/
  * @see https://iabtechlab.com/ads-txt-v1-1/
  */
 export async function GET() {
+    const publisherId = env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID
     const lines: string[] = []
 
-    // ── INSTRUCTIONS ──────────────────────────────────────────────
-    // When you get your AdSense Publisher ID, add it here:
-    // lines.push('google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0')
-    // ──────────────────────────────────────────────────────────────
+    if (publisherId) {
+        // Standard AdSense entry format
+        const id = publisherId.startsWith('pub-') ? publisherId : `pub-${publisherId}`
+        lines.push(`google.com, ${id}, DIRECT, f08c47fec0942fa0`)
+    }
 
     const body = lines.length > 0
         ? lines.join('\n') + '\n'
         : '# Result Guru - Authorized Digital Sellers (ads.txt)\n' +
-          '# AdSense application in progress...\n' +
-          '# This file will be updated with the publisher ID upon approval.\n'
+        '# AdSense implementation in progress...\n' +
+        '# Status: Waiting for NEXT_PUBLIC_ADSENSE_PUBLISHER_ID in environment variables.\n'
 
     return new Response(body, {
         headers: {
