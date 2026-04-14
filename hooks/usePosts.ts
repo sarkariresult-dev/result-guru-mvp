@@ -161,8 +161,8 @@ export function usePost(slug: string) {
 
             return {
                 ...post,
-                tags: tagsRes.data?.flatMap((r) => r.tags ?? []) ?? [],
-                affiliates: affiliatesRes.data?.map((r) => r.affiliate_products) ?? [],
+                tags: tagsRes.data?.flatMap((r: any) => r.tags ?? []) ?? [],
+                affiliates: affiliatesRes.data?.map((r: any) => r.affiliate_products) ?? [],
             } as PostDetail
         },
     })

@@ -16,7 +16,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import type { Session, User, AuthError } from '@supabase/supabase-js'
+import type { Session, User, AuthError, AuthChangeEvent } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/client'
 import { queryKeys } from '@/config/query-keys'
 import type { UserRole } from '@/types/enums'
@@ -110,7 +110,7 @@ export function useAuth(): UseAuthReturn {
         init()
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            async (event, newSession) => {
+            async (event: AuthChangeEvent, newSession: Session | null) => {
                 if (!mounted) return
                 setSession(newSession)
                 if (newSession?.user) {
