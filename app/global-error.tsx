@@ -23,6 +23,36 @@ export default function GlobalError({
         })
     }, [error])
 
+    // IFRAME STABLE MODE: Prevent crash loops in AdSense preview
+    if (typeof window !== 'undefined' && window.self !== window.top) {
+        return (
+            <html lang="en">
+                <head>
+                    <title>Guru Stable Mode</title>
+                </head>
+                <body style={{ margin: 0, padding: 0, backgroundColor: '#0f172a', color: '#94a3b8', fontFamily: 'sans-serif' }}>
+                    <div id="guru-iframe-error" style={{ padding: '20px' }}>
+                        <h1 style={{ color: '#ef4444', fontSize: '16px' }}>[Guru] Critical Layout Error</h1>
+                        <p style={{ fontSize: '12px' }}>Mode: Restricted Iframe (AdSense Safety)</p>
+                        <pre style={{ fontSize: '10px', background: '#1e293b', padding: '10px', borderRadius: '4px', overflow: 'auto' }}>
+                            {error.message}
+                            {error.stack}
+                        </pre>
+                    </div>
+                    {/* Re-injecting a basic heartbeat in case layout failed */}
+                    <script dangerouslySetInnerHTML={{ __html: `
+                        (function() {
+                            var dot = document.createElement('div');
+                            dot.style.cssText = "position:fixed;bottom:10px;right:10px;width:8px;height:8px;background:red;border-radius:50%;z-index:9999;box-shadow:0 0 10px red;";
+                            document.body.appendChild(dot);
+                            setInterval(function() { dot.style.opacity = dot.style.opacity === "0.3" ? "1" : "0.3"; }, 1000);
+                        })();
+                    `}} />
+                </body>
+            </html>
+        )
+    }
+
     return (
         <html lang="en-IN" dir="ltr">
             <head>

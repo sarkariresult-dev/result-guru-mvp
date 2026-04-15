@@ -97,6 +97,21 @@ export function useAuth(): UseAuthReturn {
         let mounted = true
 
         const init = async () => {
+            // SILENT MODE FOR CROSS-ORIGIN IFRAMES
+            // Accessing session in restricted iframes often crashes or loops.
+            try {
+                if (typeof window !== 'undefined' && window.self !== window.top) {
+                    try {
+                        // Attempt a dummy read to see if storage is blocked
+                        window.sessionStorage.getItem('__auth_test');
+                    } catch (e) {
+                        console.info('[useAuth] Restricted environment detected, skipping auth init');
+                        setLoading(false);
+                        return;
+                    }
+                }
+            } catch (e) {}
+
             const { data: { session: s }, error: err } = await supabase.auth.getSession()
             if (!mounted) return
             if (err) setError(err)
@@ -109,26 +124,32 @@ export function useAuth(): UseAuthReturn {
         }
         init()
 
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            async (event: AuthChangeEvent, newSession: Session | null) => {
-                if (!mounted) return
-                setSession(newSession)
-                if (newSession?.user) {
-                    const enriched = await loadProfile(newSession.user)
-                    setUser(enriched)
-                } else {
-                    setUser(null)
-                    // Clear user-specific queries on sign-out
-                    queryClient.removeQueries({ queryKey: queryKeys.auth.user() })
-                    queryClient.removeQueries({ queryKey: queryKeys.auth.session() })
-                }
-                setLoading(false)
-            },
-        )
+        // Only setup listener if we are in a top-level window or storage is working
+        let subscription: any = null;
+        try {
+            const result = supabase.auth.onAuthStateChange(
+                async (event: AuthChangeEvent, newSession: Session | null) => {
+                    if (!mounted) return
+                    setSession(newSession)
+                    if (newSession?.user) {
+                        const enriched = await loadProfile(newSession.user)
+                        setUser(enriched)
+                    } else {
+                        setUser(null)
+                        queryClient.removeQueries({ queryKey: queryKeys.auth.user() })
+                        queryClient.removeQueries({ queryKey: queryKeys.auth.session() })
+                    }
+                    setLoading(false)
+                },
+            )
+            subscription = result.data.subscription;
+        } catch (e) {
+            console.warn('[useAuth] Failed to setup auth listener (likely restricted iframe)')
+        }
 
         return () => {
             mounted = false
-            subscription.unsubscribe()
+            if (subscription) subscription.unsubscribe()
         }
     }, [supabase, loadProfile, queryClient])
 

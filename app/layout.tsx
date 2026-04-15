@@ -187,49 +187,84 @@ export default function RootLayout({
                 
                 {/* Google AdSense moved to end of body for stability */}
                 
-                {/* ── SECURITY ERROR PREVENTER FOR CROSS-ORIGIN IFRAMES ── */}
-                {/* Next.js internally uses sessionStorage for scroll restoration. In restricted iframes (like AdSense Preview), accessing sessionStorage throws a DOMException, crashing the entire hydration process and triggering global-error.tsx. This inline script catches that and polyfills the APIs before Next.js runs. */}
+                {/* ── GURU ADSENSE HARDENING (NUCLEAR MODE) ── */}
                 <script
                     dangerouslySetInnerHTML={{
                         __html: `
-                        // 1. Force hard navigation in AdSense Preview / cross-origin iframes
-                        // Next.js SPA transitions can crash due to restricted sessionStorage or break AdSense Auto Ads DOM listeners.
-                        try {
-                            if (window.self !== window.top) {
-                                window.addEventListener('click', function(e) {
-                                    var t = e.target;
-                                    while (t && t.tagName !== 'A') {
-                                        t = t.parentNode;
-                                    }
-                                    if (t && t.href && t.host === window.location.host && !t.hasAttribute('download') && t.target !== '_blank') {
-                                        e.stopImmediatePropagation(); // Prevent Next.js from intercepting
-                                        e.preventDefault(); // Prevent default link behavior
-                                        window.location.href = t.href;
-                                    }
-                                }, true); // capture phase
-                            }
-                        } catch (e) {}
+                        (function() {
+                            if (window.self === window.top) return;
 
-                        // 2. Storage Polyfill for hydration/crash prevention
-                        try {
-                            window.sessionStorage.getItem('__test');
-                        } catch (e) {
-                            var memoryStorage = {
-                                _data: {},
-                                getItem: function(k) { return this._data[k] || null; },
-                                setItem: function(k, v) { this._data[k] = String(v); },
-                                removeItem: function(k) { delete this._data[k]; },
-                                clear: function() { this._data = {}; },
-                                key: function(i) { return Object.keys(this._data)[i] || null; },
-                                get length() { return Object.keys(this._data).length; }
-                            };
-                            try {
-                                Object.defineProperty(window, 'sessionStorage', { value: memoryStorage, writable: true, configurable: true });
-                                Object.defineProperty(window, 'localStorage', { value: memoryStorage, writable: true, configurable: true });
-                            } catch (err) {
-                                // Fallback if browser explicitly denies defineProperty on window.sessionStorage
+                            // 1. Guru Debug & Heartbeat
+                            var debugDiv = document.createElement('div');
+                            debugDiv.id = 'guru-debug-overlay';
+                            debugDiv.style.cssText = 'position:fixed;top:0;left:0;right:0;background:rgba(0,0,0,0.9);color:#0f0;font-family:monospace;font-size:10px;padding:6px;z-index:999999;border-bottom:1px solid #0f0;pointer-events:none;';
+                            var header = document.createElement('div');
+                            header.innerHTML = '<b>[GURU] STABLE MODE</b> | Heartbeat: <span id="guru-hb">0s</span>';
+                            debugDiv.appendChild(header);
+                            var errorC = document.createElement('div');
+                            debugDiv.appendChild(errorC);
+                            
+                            function logGuru(msg, color) {
+                                var e = document.createElement('div');
+                                e.style.color = color || '#fff';
+                                e.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+                                errorC.insertBefore(e, errorC.firstChild);
+                                if (errorC.childNodes.length > 3) errorC.removeChild(errorC.lastChild);
                             }
-                        }
+
+                            var start = Date.now();
+                            setInterval(function() {
+                                var hb = document.getElementById('guru-hb');
+                                if (hb) hb.textContent = Math.floor((Date.now() - start)/1000) + 's';
+                            }, 5000); // 5s heartbeat for maximum stability
+
+                            window.onerror = function(m, u, l) { logGuru('Err: ' + m + ' (L' + l + ')', '#f44'); };
+                            window.onunhandledrejection = function(e) { logGuru('Promise: ' + (e.reason?.message || e.reason), '#ff0'); };
+
+                            // 2. Storage & History Polyfills
+                            var mockS = { getItem:function(){}, setItem:function(){}, removeItem:function(){}, clear:function(){}, key:function(){}, length:0 };
+                            try {
+                                Object.defineProperties(window, {
+                                    'sessionStorage': { value: mockS, configurable: true },
+                                    'localStorage': { value: mockS, configurable: true }
+                                });
+                            } catch(e) { try { window.sessionStorage = window.localStorage = mockS; } catch(err){} }
+
+                            if (window.history) {
+                                ['pushState', 'replaceState'].forEach(function(m) {
+                                    var orig = window.history[m];
+                                    window.history[m] = function() {
+                                        try { return orig.apply(this, arguments); } catch(e) { logGuru('Blocked ' + m, '#0af'); return null; }
+                                    };
+                                });
+                            }
+
+                            // 3. Iron Seal Navigation & Popup Lock
+                            window.location.reload = function() { logGuru('Blocked reload'); };
+                            window.location.replace = function() { logGuru('Blocked replace'); };
+                            window.location.assign = function() { logGuru('Blocked assign'); };
+                            window.open = function() { logGuru('Blocked popup'); return null; };
+                            window.alert = window.confirm = window.prompt = function() { logGuru('Blocked dialog'); return false; };
+
+                            window.onbeforeunload = function() { return "Navigation locked."; };
+
+                            window.addEventListener('click', function(e) {
+                                var t = e.target;
+                                while (t && t.tagName !== 'A') t = t.parentNode;
+                                if (t && t.tagName === 'A') {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    logGuru('Link Blocked: ' + t.href, '#0af');
+                                }
+                            }, true);
+
+                            // 4. Systemic UI Hiding (CSS Fallback)
+                            var style = document.createElement('style');
+                            style.innerHTML = 'a[href*="login"], a[href*="register"], a[href*="signin"], a[href*="signup"], button:contains("Login"), button:contains("Sign In") { display: none !important; }';
+                            document.head.appendChild(style);
+
+                            document.addEventListener('DOMContentLoaded', function() { document.body.appendChild(debugDiv); });
+                        })();
                         `
                     }}
                 />

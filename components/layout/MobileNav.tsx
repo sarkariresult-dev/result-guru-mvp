@@ -119,66 +119,69 @@ export function MobileNav({ open, onClose, initialUser }: MobileNavProps) {
 
                 {/* Bottom - Auth aware */}
                 <div className="shrink-0 border-t border-border bg-background-subtle/50 px-4 py-4">
-                    {showProfile ? (
-                        <div className="space-y-1">
-                            {/* User info */}
-                            <div className="flex items-center gap-3 px-1 pb-2">
-                                <Avatar 
-                                    src={(loading ? initialUser?.avatar_url : user?.avatarUrl)} 
-                                    alt={displayName} 
-                                    fallback={displayName} 
-                                    size="sm" 
-                                    className="ring-1 ring-border" 
-                                />
-                                <div className="min-w-0">
-                                    <p className="truncate text-sm font-medium text-foreground">{displayName}</p>
-                                    <p className="truncate text-xs text-foreground-subtle">{loading ? '' : user?.email}</p>
+                    {/* HIDE AUTH IN RESTRICTED IFRAMES (ADSENSE PREVIEW) */}
+                    {(typeof window !== 'undefined' && window.self !== window.top) ? null : (
+                        showProfile ? (
+                            <div className="space-y-1">
+                                {/* User info */}
+                                <div className="flex items-center gap-3 px-1 pb-2">
+                                    <Avatar 
+                                        src={(loading ? initialUser?.avatar_url : user?.avatarUrl)} 
+                                        alt={displayName} 
+                                        fallback={displayName} 
+                                        size="sm" 
+                                        className="ring-1 ring-border" 
+                                    />
+                                    <div className="min-w-0">
+                                        <p className="truncate text-sm font-medium text-foreground">{displayName}</p>
+                                        <p className="truncate text-xs text-foreground-subtle">{loading ? '' : user?.email}</p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <Link
-                                href={dashboardHref}
-                                onClick={onClose}
-                                className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-foreground-muted transition-colors hover:bg-background-subtle hover:text-foreground"
-                            >
-                                <LayoutDashboard className="size-4" />
-                                Dashboard
-                            </Link>
-                            <Link
-                                href={`${dashboardHref}/profile`}
-                                onClick={onClose}
-                                className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-foreground-muted transition-colors hover:bg-background-subtle hover:text-foreground"
-                            >
-                                <UserIcon className="size-4" />
-                                Profile
-                            </Link>
-                            {effectiveIsAdmin && (
                                 <Link
-                                    href="/admin/settings"
+                                    href={dashboardHref}
                                     onClick={onClose}
                                     className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-foreground-muted transition-colors hover:bg-background-subtle hover:text-foreground"
                                 >
-                                    <Settings className="size-4" />
-                                    Settings
+                                    <LayoutDashboard className="size-4" />
+                                    Dashboard
                                 </Link>
-                            )}
-                            <button
-                                onClick={handleSignOut}
-                                disabled={isPending}
-                                className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 dark:hover:bg-red-950/30"
+                                <Link
+                                    href={`${dashboardHref}/profile`}
+                                    onClick={onClose}
+                                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-foreground-muted transition-colors hover:bg-background-subtle hover:text-foreground"
+                                >
+                                    <UserIcon className="size-4" />
+                                    Profile
+                                </Link>
+                                {effectiveIsAdmin && (
+                                    <Link
+                                        href="/admin/settings"
+                                        onClick={onClose}
+                                        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-foreground-muted transition-colors hover:bg-background-subtle hover:text-foreground"
+                                    >
+                                        <Settings className="size-4" />
+                                        Settings
+                                    </Link>
+                                )}
+                                <button
+                                    onClick={handleSignOut}
+                                    disabled={isPending}
+                                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 dark:hover:bg-red-950/30"
+                                >
+                                    {isPending ? <Loader2 className="size-4 animate-spin" /> : <LogOut className="size-4" />}
+                                    {isPending ? 'Signing out…' : 'Log out'}
+                                </button>
+                            </div>
+                        ) : (
+                            <Link
+                                href="/login"
+                                onClick={onClose}
+                                className="flex w-full items-center justify-center rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-700 transition-colors shadow-sm"
                             >
-                                {isPending ? <Loader2 className="size-4 animate-spin" /> : <LogOut className="size-4" />}
-                                {isPending ? 'Signing out…' : 'Log out'}
-                            </button>
-                        </div>
-                    ) : (
-                        <Link
-                            href="/login"
-                            onClick={onClose}
-                            className="flex w-full items-center justify-center rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-700 transition-colors shadow-sm"
-                        >
-                            Login / Register
-                        </Link>
+                                Login / Register
+                            </Link>
+                        )
                     )}
                 </div>
             </div>

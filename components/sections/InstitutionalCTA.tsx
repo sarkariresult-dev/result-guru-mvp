@@ -77,23 +77,32 @@ export function InstitutionalCTA({
                     </div>
 
                     <div className="flex flex-col items-center justify-center space-y-6 xl:border-l xl:border-white/10 xl:pl-12">
-                        {primaryCTA && (
-                            <Link
-                                href={primaryCTA.href}
-                                className="group flex items-center justify-center gap-3 w-full max-w-sm bg-white text-indigo-900 hover:bg-slate-100 py-3.5 md:py-4 px-6 md:px-8 rounded-2xl text-base md:text-lg font-bold transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-black/20"
-                            >
-                                {primaryCTA.label}
-                                <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
-                            </Link>
-                        )}
+                        {/* HIDE AUTH CTAs IN RESTRICTED IFRAMES (ADSENSE PREVIEW) */}
+                        {(typeof window !== 'undefined' && window.self !== window.top) ? (
+                             <div className="text-blue-100/40 text-[10px] font-bold uppercase tracking-widest text-center">
+                                Restricted Mode Active
+                             </div>
+                        ) : (
+                            <>
+                                {primaryCTA && (
+                                    <Link
+                                        href={primaryCTA.href}
+                                        className="group flex items-center justify-center gap-3 w-full max-w-sm bg-white text-indigo-900 hover:bg-slate-100 py-3.5 md:py-4 px-6 md:px-8 rounded-2xl text-base md:text-lg font-bold transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-black/20"
+                                    >
+                                        {primaryCTA.label}
+                                        <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
+                                    </Link>
+                                )}
 
-                        {secondaryCTA && (
-                            <p className="text-sm text-blue-100/60 font-medium text-center">
-                                {secondaryCTA.text}{' '}
-                                <Link href={secondaryCTA.href} className="text-white hover:underline decoration-white/30 transition-all font-bold">
-                                    {secondaryCTA.actionLabel}
-                                </Link>
-                            </p>
+                                {secondaryCTA && (
+                                    <p className="text-sm text-blue-100/60 font-medium text-center">
+                                        {secondaryCTA.text}{' '}
+                                        <Link href={secondaryCTA.href} className="text-white hover:underline decoration-white/30 transition-all font-bold">
+                                            {secondaryCTA.actionLabel}
+                                        </Link>
+                                    </p>
+                                )}
+                            </>
                         )}
 
                         <div className="h-px w-full max-w-[200px] bg-white/10" />

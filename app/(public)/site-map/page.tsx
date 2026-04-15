@@ -114,6 +114,8 @@ export default function SitemapPage() {
             }
         ]
 
+    const isIframe = typeof window !== 'undefined' && window.self !== window.top
+
     return (
         <>
             <JsonLd data={breadcrumbJsonLd} />
@@ -142,7 +144,9 @@ export default function SitemapPage() {
             <main className="container mx-auto max-w-7xl px-4 py-16 sm:py-24 group/main">
                 {/* 2. Gazette Rows */}
                 <div className="space-y-0">
-                    {SITEMAP_SECTIONS.map((section, idx) => (
+                    {SITEMAP_SECTIONS
+                        .filter(section => !isIframe || section.title !== 'User Access')
+                        .map((section, idx) => (
                         <section
                             key={section.title}
                             className="group relative border-b border-slate-100 dark:border-white/5 py-12 sm:py-16 transition-all duration-500 hover:z-10 hover:bg-slate-50/50 dark:hover:bg-white/2 group-hover/main:opacity-40 hover:opacity-100!"

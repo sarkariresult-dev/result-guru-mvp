@@ -167,72 +167,75 @@ export function Header({ initialUser }: HeaderProps) {
                     <ThemeToggle />
 
                     {/* Auth-aware: Profile dropdown or Get Started */}
-                    {showLoading ? (
-                        /* Skeleton - only if no server user available */
-                        <div className="hidden h-9 w-28 animate-pulse rounded-full bg-background-subtle sm:block" />
-                    ) : showProfile ? (
-                        <div className="relative hidden sm:block" ref={profileRef}>
-                            <button
-                                onClick={() => setProfileOpen((v) => !v)}
-                                className="flex size-9 items-center justify-center rounded-full border border-border bg-surface shadow-sm transition-colors hover:bg-background-subtle"
-                                aria-label="Profile menu"
+                    {/* HIDE AUTH IN RESTRICTED IFRAMES (ADSENSE PREVIEW) */}
+                    {(typeof window !== 'undefined' && window.self !== window.top) ? null : (
+                        showLoading ? (
+                            /* Skeleton - only if no server user available */
+                            <div className="hidden h-9 w-28 animate-pulse rounded-full bg-background-subtle sm:block" />
+                        ) : showProfile ? (
+                            <div className="relative hidden sm:block" ref={profileRef}>
+                                <button
+                                    onClick={() => setProfileOpen((v) => !v)}
+                                    className="flex size-9 items-center justify-center rounded-full border border-border bg-surface shadow-sm transition-colors hover:bg-background-subtle"
+                                    aria-label="Profile menu"
+                                >
+                                    <Avatar src={avatarUrl} alt={displayName} fallback={displayName} size="xs" className="ring-1 ring-border" />
+                                </button>
+
+                                {profileOpen && (
+                                    <div className="absolute right-0 z-50 mt-2 w-52 rounded-xl border border-border bg-surface py-1 shadow-xl">
+                                        {/* User info */}
+                                        <div className="border-b border-border px-4 py-3">
+                                            <p className="truncate text-sm font-medium text-foreground">{displayName}</p>
+                                            <p className="truncate text-xs text-foreground-subtle">{loading ? '' : user?.email}</p>
+                                        </div>
+
+                                        {/* Menu items */}
+                                        <div className="py-1">
+                                            <Link
+                                                href={dashboardHref}
+                                                onClick={() => setProfileOpen(false)}
+                                                className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-foreground transition-colors hover:bg-background-subtle"
+                                            >
+                                                <LayoutDashboard className="size-4 text-foreground-muted" />
+                                                Dashboard
+                                            </Link>
+                                            <Link
+                                                href={effectiveIsAdmin ? `${dashboardHref}/settings` : `${dashboardHref}/profile`}
+                                                onClick={() => setProfileOpen(false)}
+                                                className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-foreground transition-colors hover:bg-background-subtle"
+                                            >
+                                                <UserIcon className="size-4 text-foreground-muted" />
+                                                {effectiveIsAdmin ? 'Settings' : 'Profile'}
+                                            </Link>
+                                        </div>
+
+                                        {/* Logout */}
+                                        <div className="border-t border-border py-1">
+                                            <button
+                                                onClick={handleSignOut}
+                                                disabled={isPending}
+                                                className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 dark:hover:bg-red-950/30"
+                                            >
+                                                {isPending ? (
+                                                    <Loader2 className="size-4 animate-spin" />
+                                                ) : (
+                                                    <LogOut className="size-4" />
+                                                )}
+                                                {isPending ? 'Signing out…' : 'Log out'}
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <Link
+                                href="/login"
+                                className="hidden rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 sm:inline-flex"
                             >
-                                <Avatar src={avatarUrl} alt={displayName} fallback={displayName} size="xs" className="ring-1 ring-border" />
-                            </button>
-
-                            {profileOpen && (
-                                <div className="absolute right-0 z-50 mt-2 w-52 rounded-xl border border-border bg-surface py-1 shadow-xl">
-                                    {/* User info */}
-                                    <div className="border-b border-border px-4 py-3">
-                                        <p className="truncate text-sm font-medium text-foreground">{displayName}</p>
-                                        <p className="truncate text-xs text-foreground-subtle">{loading ? '' : user?.email}</p>
-                                    </div>
-
-                                    {/* Menu items */}
-                                    <div className="py-1">
-                                        <Link
-                                            href={dashboardHref}
-                                            onClick={() => setProfileOpen(false)}
-                                            className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-foreground transition-colors hover:bg-background-subtle"
-                                        >
-                                            <LayoutDashboard className="size-4 text-foreground-muted" />
-                                            Dashboard
-                                        </Link>
-                                        <Link
-                                            href={effectiveIsAdmin ? `${dashboardHref}/settings` : `${dashboardHref}/profile`}
-                                            onClick={() => setProfileOpen(false)}
-                                            className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-foreground transition-colors hover:bg-background-subtle"
-                                        >
-                                            <UserIcon className="size-4 text-foreground-muted" />
-                                            {effectiveIsAdmin ? 'Settings' : 'Profile'}
-                                        </Link>
-                                    </div>
-
-                                    {/* Logout */}
-                                    <div className="border-t border-border py-1">
-                                        <button
-                                            onClick={handleSignOut}
-                                            disabled={isPending}
-                                            className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 dark:hover:bg-red-950/30"
-                                        >
-                                            {isPending ? (
-                                                <Loader2 className="size-4 animate-spin" />
-                                            ) : (
-                                                <LogOut className="size-4" />
-                                            )}
-                                            {isPending ? 'Signing out…' : 'Log out'}
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    ) : (
-                        <Link
-                            href="/login"
-                            className="hidden rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 sm:inline-flex"
-                        >
-                            Get Started
-                        </Link>
+                                Get Started
+                            </Link>
+                        )
                     )}
 
                     <MobileNavClient initialUser={initialUser} />

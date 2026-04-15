@@ -69,14 +69,24 @@ export function createClient() {
             auth: {
                 persistSession: useStorage,
                 autoRefreshToken: useStorage,
-                detectSessionInUrl: useStorage, // Disabled in restricted iframes
+                detectSessionInUrl: false, // Always disable URL session detection in browser to prevent loops
                 // When navigator.locks is unavailable (cross-origin iframe),
                 // provide a no-op lock to prevent SecurityError crashes.
                 ...(!useLocks ? {
                     lock: async <R>(_name: string, _acquireTimeout: number, fn: (lock: unknown) => Promise<R>): Promise<R> => {
-                        return await fn('noop-lock')
+                        try {
+                            return await fn('noop-lock');
+                        } catch (e) {
+                            // If even the no-op fn throws, we are in a truly broken state
+                            console.warn('[Supabase] Lock failure in restricted iframe');
+                            throw e;
+                        }
                     }
                 } : {}),
+            },
+            // Reduce noise in restricted contexts
+            global: {
+                headers: { 'x-client-info': 'result-guru-hardened' },
             }
         }
     )
