@@ -192,6 +192,25 @@ export default function RootLayout({
                 <script
                     dangerouslySetInnerHTML={{
                         __html: `
+                        // 1. Force hard navigation in AdSense Preview / cross-origin iframes
+                        // Next.js SPA transitions can crash due to restricted sessionStorage or break AdSense Auto Ads DOM listeners.
+                        try {
+                            if (window.self !== window.top) {
+                                window.addEventListener('click', function(e) {
+                                    var t = e.target;
+                                    while (t && t.tagName !== 'A') {
+                                        t = t.parentNode;
+                                    }
+                                    if (t && t.href && t.host === window.location.host && !t.hasAttribute('download') && t.target !== '_blank') {
+                                        e.stopImmediatePropagation(); // Prevent Next.js from intercepting
+                                        e.preventDefault(); // Prevent default link behavior
+                                        window.location.href = t.href;
+                                    }
+                                }, true); // capture phase
+                            }
+                        } catch (e) {}
+
+                        // 2. Storage Polyfill for hydration/crash prevention
                         try {
                             window.sessionStorage.getItem('__test');
                         } catch (e) {
