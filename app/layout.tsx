@@ -30,20 +30,17 @@ export const metadata: Metadata = {
 
     keywords: [
         'sarkari result',
-        'sarkari result 2026',
         'sarkari naukri',
         'government jobs india',
-        'govt jobs 2026',
+        'govt recruitment',
         'admit card download',
         'answer key',
-        'exam result',
+        'competitive examination result',
         'upsc',
         'ssc',
         'railway jobs',
         'state government jobs',
         'government schemes',
-        'exam syllabus',
-        'latest govt job',
         'result guru',
     ],
 

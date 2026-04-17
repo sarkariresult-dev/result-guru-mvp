@@ -1,6 +1,5 @@
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
-import { OrganizationJsonLd } from '@/components/seo/OrganizationJsonLd'
 import { createServerClient } from '@/lib/supabase/server'
 import type { PublicUser } from '@/types/user.types'
 
@@ -24,8 +23,6 @@ export default async function PublicLayout({ children }: { children: React.React
 
     return (
         <>
-            <OrganizationJsonLd />
-
             {/* Skip-to-content link - hidden until focused (keyboard users) */}
             <a
                 href="#main-content"

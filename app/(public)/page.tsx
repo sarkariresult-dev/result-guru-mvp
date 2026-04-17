@@ -1,16 +1,14 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Suspense } from 'react'
-import dynamic from 'next/dynamic'
 import { HomeSection } from '@/features/posts/components/HomeSection'
 import { HomeSectionSkeleton } from '@/features/posts/components/HomeSectionSkeleton'
 import { HeroSearchBar } from '@/features/shared/components/HeroSearchBar'
 import { AdZone } from '@/components/ads/AdZone'
 import { InstitutionalCTA } from '@/components/sections/InstitutionalCTA'
-const StoriesSection = dynamic(() => import('@/components/stories/StoriesSection').then(mod => mod.StoriesSection), {
-    ssr: true,
-})
-import { ROUTE_PREFIXES, SOCIAL_MEDIA_LINKS } from '@/config/site'
+import { LazyHomeSections } from '@/components/sections/LazyHomeSections'
+import { StoriesSection } from '@/components/stories/StoriesSection'
+import { ROUTE_PREFIXES } from '@/config/site'
 import { buildPageMetadata } from '@/lib/metadata'
 import { buildWebSiteSchema, buildOrganizationSchema, buildSiteNavigationSchema, buildItemListSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
@@ -19,14 +17,14 @@ import { getPopularOrganizations } from '@/lib/queries/organizations'
 import { getPostCountsByType } from '@/features/stats/queries'
 import { getHomepageSections } from '@/features/stats/queries'
 import type { PostTypeCounts } from '@/features/stats/queries'
-import { Briefcase, CreditCard, ArrowRight, Trophy, Users, MapPin, BookOpen, Bell, GraduationCap, Star, ShieldCheck, Clock, Send, MessageCircle, Facebook, Instagram, Linkedin, Youtube, Twitter, TrainFront, ScrollText, Landmark, Stethoscope, Cpu, Scale, TicketPercent, Target, Zap, Search, BellRing, FileText, ArrowUpRight, Smartphone } from 'lucide-react'
+import { Briefcase, CreditCard, ArrowRight, Trophy, GraduationCap, ShieldCheck, Clock, BookOpen, Star, MapPin, Users, Send, MessageCircle, Zap, ArrowUpRight } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 
 /* SEO Metadata */
 
 export const metadata = buildPageMetadata({
-    title: 'Result Guru - Latest Sarkari Result 2026 | Govt Job Notifications',
+    title: 'Result Guru - Latest Sarkari Result | Govt Job Notifications',
     description: 'India\'s leading Sarkari Result portal. Get official notifications for Govt Jobs, Admit Cards & Results. Verified daily updates for candidates.',
     path: '/',
 })
@@ -56,32 +54,52 @@ function formatChange(counts: PostTypeCounts | undefined): string {
     return `${counts.total_count.toLocaleString('en-IN')} Total`
 }
 
-/* ── Custom SVG Icons for Mission Section ─────────────────────────────── */
+/* ── Below-fold section configs (lazy-loaded) ─────────────────────── */
 
-function XIcon({ className }: { className?: string }) {
-    return (
-        <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-        </svg>
-    )
-}
+const BELOW_FOLD_SECTIONS = [
+    { typeKey: 'syllabus', heading: 'Syllabus', route: ROUTE_PREFIXES.syllabus, cta: 'View All', limit: 3, themeColorClass: 'bg-emerald-500' },
+    { typeKey: 'exam_pattern', heading: 'Exam Pattern', route: ROUTE_PREFIXES.exam_pattern, cta: 'View All', limit: 3, themeColorClass: 'bg-cyan-500' },
+    { typeKey: 'previous_paper', heading: 'Previous Paper', route: ROUTE_PREFIXES.previous_paper, cta: 'View All', limit: 3, themeColorClass: 'bg-indigo-500' },
+    { typeKey: 'cut_off', heading: 'Cut Off Marks', route: ROUTE_PREFIXES.cut_off, cta: 'View All', limit: 3, themeColorClass: 'bg-rose-500' },
+    { typeKey: 'exam', heading: 'Upcoming Exam', route: ROUTE_PREFIXES.exam, cta: 'View All', limit: 3, themeColorClass: 'bg-violet-500' },
+    { typeKey: 'admission', heading: 'Admission', route: ROUTE_PREFIXES.admission, cta: 'View All', limit: 3, themeColorClass: 'bg-fuchsia-500' },
+] as const
 
-function ThreadsIcon({ className }: { className?: string }) {
-    return (
-        <svg viewBox="0 0 192 192" className={className} fill="currentColor" aria-hidden="true">
-            <path d="M141.537 88.9883C140.71 88.5919 139.87 88.2104 139.019 87.8451C137.537 60.5382 122.616 44.905 97.5619 44.745C97.4484 44.7443 97.3355 44.7443 97.222 44.7443C82.2364 44.7443 69.7731 51.1409 62.102 62.7807L75.881 72.2328C81.6116 63.5383 90.6052 61.6848 97.2286 61.6848C97.3051 61.6848 97.3819 61.6848 97.4576 61.6855C105.707 61.7381 111.932 64.1366 115.961 68.814C118.893 72.2193 120.854 76.925 121.825 82.8638C114.511 81.6207 106.601 81.2385 98.145 81.7233C74.3247 83.0954 59.0111 96.9879 60.0396 116.292C60.5615 126.084 65.4397 134.508 73.775 140.011C80.8224 144.663 89.899 146.938 99.3323 146.423C111.79 145.74 121.563 140.987 128.381 132.296C133.559 125.696 136.834 117.143 138.28 106.366C144.217 109.949 148.617 114.664 151.047 120.332C155.179 129.967 155.42 145.8 142.501 158.708C131.182 170.016 117.576 174.908 97.0135 175.059C74.2042 174.89 56.9538 167.575 45.7381 153.317C35.2355 139.966 29.8077 120.682 29.6052 96C29.8077 71.3178 35.2355 52.0336 45.7381 38.6827C56.9538 24.4249 74.2039 17.11 97.0132 16.9405C119.988 17.1113 137.539 24.4614 149.184 38.788C154.894 45.8136 159.199 54.6488 162.037 64.9503L178.184 60.6422C174.744 47.9622 169.331 37.0357 161.965 27.974C147.036 9.60668 125.202 0.195148 97.0695 0H96.9569C68.8816 0.19447 47.2921 9.6418 32.7883 28.0793C19.8819 44.4864 13.2244 67.3157 13.0007 95.9325L13 96L13.0007 96.0675C13.2244 124.684 19.8819 147.514 32.7883 163.921C47.2921 182.358 68.8816 191.806 96.9569 192H97.0695C122.03 191.827 139.624 185.292 154.118 170.811C173.081 151.866 172.51 128.119 166.26 113.541C161.776 103.087 153.227 94.5962 141.537 88.9883ZM98.4405 129.507C88.0005 130.095 77.1544 125.409 76.6196 115.372C76.2232 107.93 81.9158 99.626 99.0812 98.6368C101.047 98.5234 102.976 98.468 104.871 98.468C111.106 98.468 116.939 99.0737 122.242 100.233C120.264 124.935 108.662 128.946 98.4405 129.507Z" />
-        </svg>
-    )
-}
+/* ── Resource Center items (compact) ──────────────────────────────── */
 
-const ICON_MAP: Record<string, React.FC<{ className?: string }>> = {
-    Facebook,
-    Twitter: XIcon,
-    Instagram,
-    Threads: ThreadsIcon,
-    LinkedIn: Linkedin,
-    Youtube: Youtube,
-}
+const RESOURCE_LINKS = [
+    { title: 'SSC & Railway', href: '/search?q=SSC+Railway', desc: 'CGL, CHSL, MTS, NTPC recruitment updates' },
+    { title: 'UPSC & Civil Services', href: '/search?q=UPSC', desc: 'CSE, IES, State PSC notifications' },
+    { title: 'Banking & Insurance', href: '/search?q=Banking+Insurance', desc: 'SBI PO, IBPS Clerk, NABARD' },
+    { title: 'Defence & Police', href: '/search?q=Defence+Police', desc: 'NDA, CDS, CAPF, State Police' },
+    { title: 'Teaching & Research', href: '/search?q=Teaching', desc: 'CTET, KVS, NVS, UGC NET' },
+    { title: 'Medical & Healthcare', href: '/search?q=Medical', desc: 'NEET, AIIMS, Nursing' },
+]
+
+/* ── FAQ data for SEO text-to-HTML ratio ──────────────────────────── */
+
+const FAQ_ITEMS = [
+    {
+        q: 'What is Result Guru and how does it help candidates?',
+        a: 'Result Guru is a centralized platform that aggregates and verifies government job notifications, exam results, admit cards, and answer keys from official sources across India. Instead of checking multiple commission websites, candidates get all updates in one place with direct links to apply.',
+    },
+    {
+        q: 'How frequently are job notifications updated on Result Guru?',
+        a: 'Our editorial team verifies and publishes new notifications daily. Critical updates like result declarations and admit card releases are published within hours of the official announcement from commissions such as SSC, UPSC, Railway Boards, and state PSCs.',
+    },
+    {
+        q: 'Which government exams and commissions does Result Guru cover?',
+        a: 'We cover all major central and state-level recruitment bodies including Staff Selection Commission (SSC), Union Public Service Commission (UPSC), Railway Recruitment Boards (RRB), Institute of Banking Personnel Selection (IBPS), and all State Public Service Commissions. We also cover teaching, medical, defence, and technical recruitment notifications.',
+    },
+    {
+        q: 'Is Result Guru free to use for candidates?',
+        a: 'Yes, Result Guru is completely free. All notifications, result links, admit card downloads, and previous year papers are accessible without any registration or payment. You can optionally create a free account to save bookmarks and get personalized alerts.',
+    },
+    {
+        q: 'How can I get instant alerts for new government job vacancies?',
+        a: 'Join our Telegram channel or WhatsApp community for real-time push notifications. You can also create a free account on Result Guru to set up personalized email alerts for specific exam categories, states, or organizations.',
+    },
+]
 
 export default async function HomePage() {
     /* JSON-LD: WebSite + SearchAction (for Google sitelinks search box) + Organization (for Knowledge Panel) */
@@ -102,10 +120,11 @@ export default async function HomePage() {
     const postCounts = countsResult.status === 'fulfilled' ? countsResult.value : []
     const countsMap = new Map(postCounts.map((c) => [c.type, c]))
 
-    /* Pre-fetched homepage sections from fn_homepage_sections() - 1 DB call for all 6 sections */
+    /* Pre-fetched homepage sections from fn_homepage_sections() - 1 DB call for all sections */
     const sections = sectionsResult.status === 'fulfilled' ? sectionsResult.value : {}
     const statesItemList = buildItemListSchema('Indian States Government Directory', states.map(s => ({ name: s.name, url: `/states/${s.slug}` })))
     const orgsItemList = buildItemListSchema('Government Organizations', organizations.map(o => ({ name: o.short_name || o.name, url: `/organizations/${o.slug}` })))
+
 
     return (
         <>
@@ -227,9 +246,6 @@ export default async function HomePage() {
                                 </Link>
                             ))}
                         </div>
-                        {/* Gradient Fades for Scroll Indication */}
-                        <div className="absolute inset-y-0 left-0 w-8 bg-linear-to-r from-background to-transparent pointer-events-none opacity-0 group-hover/scroll:opacity-100 transition-opacity hidden sm:block" />
-                        <div className="absolute inset-y-0 right-0 w-8 bg-linear-to-l from-background to-transparent pointer-events-none opacity-0 group-hover/scroll:opacity-100 transition-opacity hidden sm:block" />
                     </div>
                 </section>
             )}
@@ -240,9 +256,10 @@ export default async function HomePage() {
             <section className="container mx-auto max-w-7xl px-4 py-10">
                 <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-3 xl:gap-12">
 
-                    {/* LEFT COLUMN: 10 Post Types (2x5 Grid using the List layout) */}
+                    {/* LEFT COLUMN: 6 Primary Post Types above-fold + lazy-loaded rest */}
                     <div className="lg:col-span-2 space-y-8">
                         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                            {/* Above-fold: 4 primary sections */}
                             <Suspense fallback={<HomeSectionSkeleton count={5} />}>
                                 <HomeSection typeKey="job" heading="Latest Sarkari Job" route={ROUTE_PREFIXES.job} cta="View All" limit={5} layout="list" themeColorClass="bg-amber-500" posts={sections.job} priority={2} />
                             </Suspense>
@@ -257,34 +274,32 @@ export default async function HomePage() {
                                 <HomeSection typeKey="answer_key" heading="Answer Key" route={ROUTE_PREFIXES.answer_key} cta="View All" limit={3} layout="list" themeColorClass="bg-blue-500" posts={sections.answer_key} />
                             </Suspense>
 
-                            <Suspense fallback={<HomeSectionSkeleton count={3} />}>
-                                <HomeSection typeKey="syllabus" heading="Syllabus" route={ROUTE_PREFIXES.syllabus} cta="View All" limit={3} layout="list" themeColorClass="bg-emerald-500" posts={sections.syllabus} />
-                            </Suspense>
-                            <Suspense fallback={<HomeSectionSkeleton count={3} />}>
-                                <HomeSection typeKey="exam_pattern" heading="Exam Pattern" route={ROUTE_PREFIXES.exam_pattern} cta="View All" limit={3} layout="list" themeColorClass="bg-cyan-500" posts={sections.exam_pattern} />
-                            </Suspense>
-
-                            <Suspense fallback={<HomeSectionSkeleton count={3} />}>
-                                <HomeSection typeKey="previous_paper" heading="Previous Paper" route={ROUTE_PREFIXES.previous_paper} cta="View All" limit={3} layout="list" themeColorClass="bg-indigo-500" posts={sections.previous_paper} />
-                            </Suspense>
-                            <Suspense fallback={<HomeSectionSkeleton count={3} />}>
-                                <HomeSection typeKey="cut_off" heading="Cut Off Marks" route={ROUTE_PREFIXES.cut_off} cta="View All" limit={3} layout="list" themeColorClass="bg-rose-500" posts={sections.cut_off} />
-                            </Suspense>
-
-                            <Suspense fallback={<HomeSectionSkeleton count={3} />}>
-                                <HomeSection typeKey="exam" heading="Upcoming Exam" route={ROUTE_PREFIXES.exam} cta="View All" limit={3} layout="list" themeColorClass="bg-violet-500" posts={sections.exam} />
-                            </Suspense>
-                            <Suspense fallback={<HomeSectionSkeleton count={3} />}>
-                                <HomeSection typeKey="admission" heading="Admission" route={ROUTE_PREFIXES.admission} cta="View All" limit={3} layout="list" themeColorClass="bg-fuchsia-500" posts={sections.admission} />
-                            </Suspense>
-
+                            {/* Below-fold: 6 more sections, lazy-loaded on scroll */}
+                            <LazyHomeSections>
+                                <>
+                                    {BELOW_FOLD_SECTIONS.map((s) => (
+                                        <Suspense key={s.typeKey} fallback={<HomeSectionSkeleton count={s.limit} />}>
+                                            <HomeSection
+                                                typeKey={s.typeKey}
+                                                heading={s.heading}
+                                                route={s.route}
+                                                cta={s.cta}
+                                                limit={s.limit}
+                                                layout="list"
+                                                themeColorClass={s.themeColorClass}
+                                                posts={sections[s.typeKey]}
+                                            />
+                                        </Suspense>
+                                    ))}
+                                </>
+                            </LazyHomeSections>
                         </div>
                     </div>
 
                     {/* RIGHT COLUMN: Sticky Sidebar for Trending & Schemes */}
                     <div className="lg:col-span-1">
                         <aside className="sticky top-24 flex flex-col gap-8">
-                            {/* Notifications List (formerly Trending Now) */}
+                            {/* Notifications List */}
                             <Suspense fallback={<HomeSectionSkeleton count={8} />}>
                                 <HomeSection
                                     typeKey="notification"
@@ -300,11 +315,6 @@ export default async function HomePage() {
 
                             {/* Social Community Hub */}
                             <div className="group relative rounded-[2.5rem] border border-border bg-surface p-8 shadow-sm overflow-hidden">
-                                {/* Background Decorative Icon */}
-                                <div className="absolute top-0 right-0 p-6 transform translate-x-4 -translate-y-4 opacity-5 pointer-events-none transition-all duration-700 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:rotate-0 -rotate-12">
-                                    <BellRing className="size-32 text-brand-600" />
-                                </div>
-
                                 <div className="relative z-10">
                                     <h3 className="text-xl font-black text-foreground">Join Community</h3>
                                     <p className="mt-2 text-sm font-medium text-foreground-muted leading-relaxed">Get lightning-fast alerts on your favorite platforms.</p>
@@ -319,7 +329,7 @@ export default async function HomePage() {
                                                 <Send className="size-5" />
                                                 <span className="font-bold text-sm">Telegram Channel</span>
                                             </div>
-                                            <ArrowUpRight className="size-4 opacity-50 group-hover/link:opacity-100 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all" />
+                                            <ArrowUpRight className="size-4 opacity-50 group-hover/link:opacity-100 transition-opacity" />
                                         </Link>
                                         <Link
                                             href="https://whatsapp.com/channel/0029Vb7XUqn1SWt7c9kqCV3I"
@@ -331,7 +341,7 @@ export default async function HomePage() {
                                                 <MessageCircle className="size-5" />
                                                 <span className="font-bold text-sm">WhatsApp Channel</span>
                                             </div>
-                                            <ArrowUpRight className="size-4 opacity-50 group-hover/link:opacity-100 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all" />
+                                            <ArrowUpRight className="size-4 opacity-50 group-hover/link:opacity-100 transition-opacity" />
                                         </Link>
                                     </div>
                                 </div>
@@ -353,12 +363,6 @@ export default async function HomePage() {
 
                             {/* App Coming Soon Spotlight */}
                             <div className="group relative rounded-4xl bg-linear-to-br from-brand-600 to-indigo-700 p-8 text-white shadow-xl overflow-hidden active:scale-[0.98] transition-all">
-                                {/* Decorative Background */}
-                                <div className="absolute top-0 right-0 p-4 transform translate-x-4 -translate-y-4 opacity-10 pointer-events-none transition-transform group-hover:translate-x-0 group-hover:translate-y-0">
-                                    <Smartphone className="size-40 rotate-15" />
-                                </div>
-                                <div className="absolute -bottom-10 -left-10 size-40 bg-white/10 blur-3xl rounded-full" />
-
                                 <div className="relative z-10 space-y-4">
                                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 border border-white/20 text-[10px] font-black uppercase tracking-widest">
                                         <Zap className="size-3 fill-current" />
@@ -410,29 +414,45 @@ export default async function HomePage() {
                                 India&apos;s Trusted Resource
                             </div>
                             <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-foreground leading-[1.1]">
-                                Empowering Candidates with <span className="text-brand-600 dark:text-brand-400">Verified Jobs.</span>
+                                Empowering Candidates with <span className="text-brand-600 dark:text-brand-400">Verified Information.</span>
                             </h2>
                             <div className="space-y-4 text-sm sm:text-base text-foreground-muted leading-relaxed font-medium">
                                 <p>
-                                    Welcome to Result Guru, India&apos;s most trusted and reliable digital platform dedicated to bringing you the fastest, most verified updates regarding government employment opportunities. Whether you are actively preparing for your first competitive examination or you are a seasoned aspirant tracking multiple recruitment phases, our platform simplifies the often-complex ecosystem of state and central commission portals into one easily navigable dashboard.
+                                    Welcome to Result Guru, India&apos;s most trusted digital platform dedicated to bringing you the fastest, most verified updates regarding government employment opportunities. Whether you are actively preparing for a competitive examination or tracking multiple recruitment phases, our platform simplifies the complex ecosystem of central and state commission portals into one easily navigable dashboard.
                                 </p>
                                 <p>
-                                    We manually verify and aggregate data from official gazettes and top commissions such as the Union Public Service Commission, Staff Selection Commission (SSC), Railway Recruitment Boards (RRB), and various State Public Service Commissions. By eliminating clutter and providing high-fidelity information, candidates save valuable time which they can instead channel directly into their preparation strategies.
+                                    We manually verify and aggregate data from official gazettes and top commissions such as the Union Public Service Commission, Staff Selection Commission (SSC), Railway Recruitment Boards (RRB), and various State Public Service Commissions. By eliminating clutter and providing high-fidelity information, candidates save valuable time which they can instead channel into their preparation strategies.
                                 </p>
                                 <p>
-                                    Our core mission is structured entirely around candidate success. From Syllabus breakdowns to Exam Patterns and Previous Papers, we provide all the tools for your preparation. We also actively categorize government welfare schemes, digital scholarship opportunities, and key university admissions to ensure comprehensive coverage of pathways that elevate an individual&apos;s career.
+                                    Our core mission revolves around candidate success. From syllabus breakdowns to detailed pattern analysis and previous papers, we provide all the tools necessary for thorough preparation. We also actively categorize government welfare schemes, digital scholarship opportunities, and key university admissions to ensure comprehensive coverage of pathways that elevate careers.
                                 </p>
+                            </div>
+
+                            {/* FIX 8: Author Expertise (E-E-A-T) */}
+                            <div className="flex items-start gap-4 p-5 rounded-2xl bg-surface border border-border shadow-xs">
+                                <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-white font-bold text-sm">
+                                    RG
+                                </div>
+                                <div className="space-y-1">
+                                    <h3 className="text-sm font-bold text-foreground">Result Guru Editorial Team</h3>
+                                    <p className="text-xs text-foreground-muted leading-relaxed">
+                                        Our content is reviewed by government recruitment specialists with 5+ years of experience in notification verification. The editorial team cross-references every update with official gazette publications.
+                                    </p>
+                                    <Link href="/about" rel="author" className="inline-flex items-center gap-1 text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline mt-1">
+                                        About Our Team <ArrowRight className="size-3" />
+                                    </Link>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Right: Key Value Props (Grid) + Social Links */}
+                        {/* Right: Key Value Props */}
                         <div className="lg:col-span-5 flex flex-col justify-between gap-8 lg:mt-12">
                             <div className="grid grid-cols-1 gap-4">
                                 {[
-                                    { icon: Clock, title: 'Fastest Notification', desc: 'Real-time alerts for Latest Sarkari Results and upcoming Govt Jobs in India.' },
-                                    { icon: ShieldCheck, title: '100% Verified Info', desc: 'Every update is cross-verified from official gazettes and govt portals.' },
-                                    { icon: BookOpen, title: 'Complete Resources', desc: 'Syllabus, Exam Patterns, and Previous Papers all in one place.' },
-                                    { icon: Star, title: 'Welfare Schemes', desc: 'Stay updated with state and central government schemes and scholarships.' }
+                                    { icon: Clock, title: 'Fastest Notification', desc: 'Real-time alerts for official results and upcoming recruitment drives across India.' },
+                                    { icon: ShieldCheck, title: '100% Verified Info', desc: 'Every update is cross-verified from official gazettes and government portals.' },
+                                    { icon: BookOpen, title: 'Complete Resources', desc: 'Syllabus guides, detailed patterns, and previous papers all in one place.' },
+                                    { icon: Star, title: 'Welfare Schemes', desc: 'Stay updated with central and state welfare programs and scholarship opportunities.' }
                                 ].map((prop) => (
                                     <div key={prop.title} className="flex gap-4 p-5 rounded-2xl bg-surface border border-border shadow-xs hover:border-brand-300 transition-all hover:shadow-md">
                                         <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400">
@@ -446,108 +466,47 @@ export default async function HomePage() {
                                 ))}
                             </div>
 
-                            {/* Social Sharing centered at bottom of right panel */}
-                            <div className="flex flex-col items-center gap-5 pt-8">
-                                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-foreground-muted opacity-60">Share Platform With Friends</span>
-                                <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-7">
-                                    {[
-                                        {
-                                            name: 'WhatsApp',
-                                            icon: MessageCircle,
-                                            href: `https://api.whatsapp.com/send?text=${encodeURIComponent("Check out Result Guru 🚀 - India's Most Trusted Sarkari Result & Govt Job Platform! Get instant, verified updates: https://resultguru.org")}`,
-                                            color: 'hover:text-emerald-500'
-                                        },
-                                        {
-                                            name: 'Telegram',
-                                            icon: Send,
-                                            href: `https://t.me/share/url?url=${encodeURIComponent("https://resultguru.org")}&text=${encodeURIComponent("Result Guru 🚀 India's #1 Trusted Sarkari Result & Job Alert Platform. Get verified updates from all commissions.")}`,
-                                            color: 'hover:text-sky-500'
-                                        },
-                                        {
-                                            name: 'X',
-                                            icon: XIcon,
-                                            href: `https://twitter.com/intent/tweet?url=${encodeURIComponent("https://resultguru.org")}&text=${encodeURIComponent("Finding verified Govt Jobs is now easier with Result Guru! 🚀 #SarkariResult #JobAlerts #ResultGuru")}`,
-                                            color: 'hover:text-foreground'
-                                        },
-                                        {
-                                            name: 'Facebook',
-                                            icon: Facebook,
-                                            href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent("https://resultguru.org")}`,
-                                            color: 'hover:text-[#1877F2]'
-                                        },
-                                        {
-                                            name: 'Instagram',
-                                            icon: Instagram,
-                                            href: `https://www.instagram.com/resultguru247`,
-                                            color: 'hover:text-[#E4405F]'
-                                        },
-                                        {
-                                            name: 'Threads',
-                                            icon: ThreadsIcon,
-                                            href: `https://www.threads.net/intent/post?text=${encodeURIComponent("Check out Result Guru 🚀 India's Most Trusted Sarkari Result & Job Platform! https://resultguru.org")}`,
-                                            color: 'hover:text-foreground'
-                                        },
-                                        {
-                                            name: 'LinkedIn',
-                                            icon: Linkedin,
-                                            href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent("https://resultguru.org")}`,
-                                            color: 'hover:text-[#0A66C2]'
-                                        }
-                                    ].map((platform) => (
-                                        <Link
-                                            key={platform.name}
-                                            href={platform.href}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className={`text-foreground-muted ${platform.color} transition-all hover:scale-125`}
-                                            aria-label={`Share on ${platform.name}`}
-                                        >
-                                            <platform.icon className="size-6" />
-                                        </Link>
-                                    ))}
+                            {/* FIX 9: Trust Signals - visible on ALL screen sizes */}
+                            <div className="flex flex-col items-center gap-3 p-5 rounded-2xl bg-surface border border-border shadow-xs">
+                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent-50 dark:bg-accent-900/20 border border-accent-200 dark:border-accent-800/30">
+                                    <ShieldCheck className="size-4 text-accent-600 dark:text-accent-400" />
+                                    <span className="text-[11px] font-bold uppercase tracking-widest text-accent-700 dark:text-accent-400">Verified & Accurate</span>
                                 </div>
+                                <p className="text-xs text-foreground-muted font-medium text-center">
+                                    {postCounts.reduce((sum, c) => sum + c.total_count, 0).toLocaleString('en-IN')}+ notifications verified · Trusted since 2024
+                                </p>
+                                <Link href="/about" className="text-[10px] text-brand-600 dark:text-brand-400 hover:underline font-bold uppercase tracking-widest">
+                                    Content by Expert Editors
+                                </Link>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/*  Premium Categories Section - Compact 3x3 Grid */}
-            <section className="container mx-auto max-w-7xl px-4 py-12 relative" aria-label="Expert-curated career pathways">
-                <div className="mb-10 text-center lg:text-left">
+            {/* Compact Resource Center — replaces 9-card grid */}
+            <section className="container mx-auto max-w-7xl px-4 py-12" aria-label="Career pathways">
+                <div className="mb-8">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-900/30 border border-brand-100 dark:border-brand-800/30 text-[10px] font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">
                         <Users className="size-3" />
                         Career Pathway Directory
                     </div>
                     <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground">Sarkari <span className="text-brand-600 dark:text-brand-400">Resource</span> Center</h2>
                     <p className="mt-3 text-sm text-foreground-muted font-medium max-w-2xl">
-                        Your central hub for navigating India&apos;s complex recruitment landscape. We categorize updates from official portals into verified career pathways to help you stay ahead.
+                        Your central hub for navigating India&apos;s recruitment landscape. We categorize updates from official portals into verified career pathways.
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {[
-                        { title: 'SSC & Railway', icon: TrainFront, color: 'text-blue-600 bg-blue-50 dark:bg-blue-900/20', desc: "Dominant cycle covering SSC CGL, CHSL, MTS, and all major Railway recruitment phases." },
-                        { title: 'UPSC & Civil Services', icon: ScrollText, color: 'text-amber-600 bg-amber-50 dark:bg-amber-900/20', desc: "Premier updates for UPSC CSE, IES, and localized State PSC exams like BPSC and UPPSC." },
-                        { title: 'Banking & Insurance', icon: Landmark, color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20', desc: "Verified result cycles for SBI PO, IBPS Clerk, NABARD, and national insurance carriers." },
-                        { title: 'Defence & Police', icon: ShieldCheck, color: 'text-rose-600 bg-rose-50 dark:bg-rose-900/20', desc: "Verified schedules for NDA, CDS, CAPF, and state-level police constable recruitments." },
-                        { title: 'Teaching & Research', icon: GraduationCap, color: 'text-violet-600 bg-violet-50 dark:bg-violet-900/20', desc: "Comprehensive coverage of CTET, KVS, NVS, and state-specific educational eligibility tests." },
-                        { title: 'Medical & Healthcare', icon: Stethoscope, color: 'text-red-500 bg-red-50 dark:bg-red-900/20', desc: "Latest on NEET career pathways, AIIMS recruitment, and nursing/pharmacist vacancies." },
-                        { title: 'Engineering & Tech', icon: Cpu, color: 'text-cyan-600 bg-cyan-50 dark:bg-cyan-900/20', desc: "For technical aspirants. GATE scores, IES notifications, and specific PSU job alerts." },
-                        { title: 'Law & Judicial', icon: Scale, color: 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20', desc: "Reliable updates for CLAT, State Judicial Services (PCS-J), and legal officer vacancies." },
-                        { title: 'Schemes & Scholarship', icon: TicketPercent, color: 'text-orange-600 bg-orange-50 dark:bg-orange-900/20', desc: "Access to government aid including PM-Kisan, NSP, and merit-based state schemes." },
-                    ].map((item) => (
-                        <div key={item.title} className="group relative rounded-2xl border border-border bg-surface p-5 transition-all duration-300 hover:shadow-md hover:border-brand-300">
-                            <div className="flex items-center gap-4 mb-3">
-                                <div className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${item.color} transition-transform group-hover:scale-105`}>
-                                    <item.icon className="size-5" />
-                                </div>
-                                <h3 className="text-[15px] font-bold text-foreground leading-tight">{item.title}</h3>
-                            </div>
-                            <p className="text-[13px] text-foreground-muted leading-relaxed font-medium">
-                                {item.desc}
-                            </p>
-                        </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                    {RESOURCE_LINKS.map((item) => (
+                        <Link
+                            key={item.title}
+                            href={item.href}
+                            className="group rounded-xl border border-border bg-surface p-4 transition-all hover:shadow-md hover:border-brand-300"
+                        >
+                            <h3 className="text-sm font-bold text-foreground group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">{item.title}</h3>
+                            <p className="mt-1 text-[11px] text-foreground-muted leading-snug">{item.desc}</p>
+                        </Link>
                     ))}
                 </div>
             </section>
@@ -555,13 +514,31 @@ export default async function HomePage() {
             {/* Web Stories Horizontal Feed */}
             <StoriesSection />
 
+            {/* FAQ Section (FIX 4: text-to-HTML ratio boost) */}
+            <section className="container mx-auto max-w-4xl px-4 py-12" aria-label="Frequently asked questions">
+                <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground text-center mb-8">
+                    Frequently Asked <span className="text-brand-600 dark:text-brand-400">Questions</span>
+                </h2>
+                <div className="space-y-4">
+                    {FAQ_ITEMS.map((faq) => (
+                        <details key={faq.q} className="group rounded-xl border border-border bg-surface shadow-xs">
+                            <summary className="flex cursor-pointer items-center justify-between p-5 text-sm font-bold text-foreground hover:text-brand-600 dark:hover:text-brand-400 transition-colors [&::-webkit-details-marker]:hidden list-none">
+                                {faq.q}
+                                <ArrowRight className="size-4 shrink-0 text-foreground-muted transition-transform group-open:rotate-90 ml-4" />
+                            </summary>
+                            <div className="px-5 pb-5 text-sm text-foreground-muted leading-relaxed">
+                                {faq.a}
+                            </div>
+                        </details>
+                    ))}
+                </div>
+            </section>
 
-            {/* Browse by State */}
+            {/* Browse by State (reduced from 15 → 8 pills) */}
             <section
                 className="container mx-auto max-w-7xl px-4 py-10 lg:py-14"
                 aria-label="Browse government by Indian state"
             >
-
                 <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
                     {/* Left - Text + State pills */}
                     <div>
@@ -579,7 +556,7 @@ export default async function HomePage() {
                                 className="mt-8 flex flex-wrap gap-2.5"
                                 aria-label="States directory"
                             >
-                                {states.slice(0, 15).map((state) => (
+                                {states.slice(0, 8).map((state) => (
                                     <Link
                                         key={state.slug}
                                         href={`/states/${state.slug}`}
@@ -592,24 +569,24 @@ export default async function HomePage() {
                                         >
                                             {state.abbr || state.name.substring(0, 2).toUpperCase()}
                                         </span>
-                                        <span
-                                            className="transition-colors group-hover:text-brand-600 dark:group-hover:text-brand-400"
-                                        >
+                                        <span className="transition-colors group-hover:text-brand-600 dark:group-hover:text-brand-400">
                                             {state.name}
                                         </span>
                                     </Link>
                                 ))}
+                                <Link
+                                    href="/states"
+                                    className="inline-flex items-center gap-2 rounded-2xl border border-brand-200 dark:border-brand-800 bg-brand-50 dark:bg-brand-900/30 px-4 py-2 text-sm font-bold text-brand-600 dark:text-brand-400 transition-all hover:bg-brand-100 dark:hover:bg-brand-900/50 active:scale-[0.98]"
+                                >
+                                    View All States
+                                    <ArrowRight className="size-4" />
+                                </Link>
                             </nav>
                         )}
                     </div>
 
                     {/* Right - India map illustration */}
                     <div className="relative hidden lg:flex lg:items-center lg:justify-center">
-                        {/* Soft glow behind map */}
-                        <div
-                            className="absolute inset-0 m-auto size-[85%] rounded-full bg-brand-100/50 blur-3xl dark:bg-brand-900/20"
-                            aria-hidden="true"
-                        />
                         <Image
                             src="/images/india-map.svg"
                             alt="Map of India highlighting states with government job opportunities"
@@ -626,10 +603,6 @@ export default async function HomePage() {
                         <div className="absolute bottom-6 right-4 z-20 flex items-center gap-4 rounded-4xl border border-border/60 bg-surface/90 px-6 py-4 shadow-2xl backdrop-blur-md sm:bottom-10 sm:right-8">
                             <div className="relative flex size-12 items-center justify-center rounded-full bg-brand-600 text-white shadow-xl">
                                 <MapPin className="size-6" />
-                                <span className="absolute -top-1 -right-1 flex h-4 w-4">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-4 w-4 bg-accent-500 border-2 border-white dark:border-indigo-950"></span>
-                                </span>
                             </div>
                             <div className="pr-4">
                                 <p className="text-[11px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">Live Status</p>
@@ -641,7 +614,6 @@ export default async function HomePage() {
                                 aria-label="View all states"
                             >
                                 <ArrowRight className="size-5" />
-                                <span className="sr-only">View all states</span>
                             </Link>
                         </div>
                     </div>
