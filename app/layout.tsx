@@ -268,6 +268,15 @@ export default function RootLayout({
                         `
                     }}
                 />
+                
+                {/* Google AdSense - Recommended to be in <head> for auto-ads detection */}
+                {SITE.adsenseId && (
+                    <script
+                        async
+                        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsenseId}`}
+                        crossOrigin="anonymous"
+                    />
+                )}
             </head>
             <body className="min-h-screen font-sans antialiased" suppressHydrationWarning>
                 {/* Skip-to-content link is in each route group layout (public/dashboard)
@@ -329,15 +338,6 @@ export default function RootLayout({
                 <LocalErrorBoundary name="VercelInsights" silent>
                     <SpeedInsights />
                 </LocalErrorBoundary>
-
-                {/* Google AdSense - Loaded last to prevent hydration mismatches */}
-                {SITE.adsenseId && (
-                    <script
-                        async
-                        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsenseId}`}
-                        crossOrigin="anonymous"
-                    />
-                )}
             </body>
         </html>
     )
