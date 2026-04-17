@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import type { ActiveAd } from '@/types/advertising.types'
+import { useEffect } from 'react'
 
 interface Props {
     ad: ActiveAd
@@ -15,9 +16,9 @@ export function AdDisplay({ ad, onClick }: Props) {
     useEffect(() => {
         if (ad.ad_type === 'display_html' || ad.html_code?.includes('adsbygoogle')) {
             try {
-                // @ts-ignore
-                ;(window.adsbygoogle = window.adsbygoogle || []).push({})
-            } catch (err) {
+                // @ts-expect-error - adsbygoogle is added by external AdSense script
+                ; (window.adsbygoogle = window.adsbygoogle || []).push({})
+            } catch {
                 // Silently handle if AdSense script is blocked or not loaded
             }
         }
@@ -25,9 +26,9 @@ export function AdDisplay({ ad, onClick }: Props) {
 
     if (ad.ad_type === 'display_html' && ad.html_code) {
         return (
-            <div 
-                className="ad-container-html w-full overflow-hidden" 
-                dangerouslySetInnerHTML={{ __html: ad.html_code }} 
+            <div
+                className="ad-container-html w-full overflow-hidden"
+                dangerouslySetInnerHTML={{ __html: ad.html_code }}
             />
         )
     }

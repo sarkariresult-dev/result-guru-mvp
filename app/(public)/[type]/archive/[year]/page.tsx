@@ -10,6 +10,7 @@ import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { PAGINATION } from '@/config/constants'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
 import { POST_TYPE_CONFIG } from '@/config/constants'
+import { PostType } from '@/types/enums'
 import type { PostTypeKey } from '@/config/site'
 import { Calendar, ChevronLeft, ChevronRight, ServerCrash, FileX2 } from 'lucide-react'
 import { slugToKey, humanise } from '@/lib/utils'
@@ -131,19 +132,17 @@ export default async function TypeByYearPage({ params, searchParams }: Props) {
     let fetchError = false
 
     try {
-        const [[p, c]] = await Promise.all([
-            Promise.all([
-                getPosts({
-                    type: typeKey as unknown as import('@/types/enums').PostType,
-                    published_after: yearStart,
-                    published_before: yearEnd,
-                }, page, limit),
-                getPostsCount({
-                    type: typeKey as unknown as import('@/types/enums').PostType,
-                    published_after: yearStart,
-                    published_before: yearEnd,
-                }),
-            ])
+        const [p, c] = await Promise.all([
+            getPosts({
+                type: typeKey as PostType,
+                published_after: yearStart,
+                published_before: yearEnd,
+            }, page, limit),
+            getPostsCount({
+                type: typeKey as PostType,
+                published_after: yearStart,
+                published_before: yearEnd,
+            }),
         ])
         posts = p
         totalCount = c

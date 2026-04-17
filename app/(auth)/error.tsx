@@ -1,7 +1,7 @@
 'use client'
 
+import { useCallback } from 'react'
 import Link from 'next/link'
-import { useEffect, useCallback } from 'react'
 import { SITE } from '@/config/site'
 import { RotateCcw, AlertTriangle } from 'lucide-react'
 

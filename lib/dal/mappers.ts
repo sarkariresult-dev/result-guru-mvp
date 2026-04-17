@@ -34,7 +34,7 @@ interface PostCardRow {
  */
 export function toPostCardDTO(row: Record<string, unknown> | null): PostCard | null {
     if (!row) return null
-    const r = row as any
+    const r = row as unknown as PostCardRow
     return {
         id: r.id as string,
         type: r.type as PostType,
@@ -84,7 +84,7 @@ interface AdminPostRow {
  */
 export function toAdminPostDTO(row: Record<string, unknown> | null): AdminPost | null {
     if (!row) return null
-    const r = row as any
+    const r = row as unknown as AdminPostRow
     return {
         id: r.id as string,
         type: r.type as PostType,

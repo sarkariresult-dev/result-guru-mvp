@@ -188,14 +188,7 @@ export default function RootLayout({
                 {/* Google AdSense moved to end of body for stability */}
                 
                 
-                {/* Google AdSense - Recommended to be in <head> for auto-ads detection */}
-                {SITE.adsenseId && (
-                    <script
-                        async
-                        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsenseId}`}
-                        crossOrigin="anonymous"
-                    />
-                )}
+                {/* Google AdSense moved after body for better performance */}
             </head>
             <body className="min-h-screen font-sans antialiased" suppressHydrationWarning>
                 {/* Skip-to-content link is in each route group layout (public/dashboard)
@@ -207,6 +200,16 @@ export default function RootLayout({
                     </div>
                     <CookieConsentWrapper />
                 </Providers>
+
+                {/* Google AdSense - Best practice: afterInteractive for performance, maintains auto-ads detection */}
+                {SITE.adsenseId && (
+                    <Script
+                        id="adsbygoogle-init"
+                        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsenseId}`}
+                        strategy="afterInteractive"
+                        crossOrigin="anonymous"
+                    />
+                )}
 
                 {/* Google Tag Manager - loaded after hydration for perf */}
                 {SITE.gtmId && (

@@ -10,7 +10,6 @@ import { processContentHtml, extractHowToSteps } from '@/lib/content-processing'
 import { sanitizeHtml } from '@/lib/sanitize'
 import { RelatedPosts } from '@/features/posts/components/RelatedPosts'
 import { SmartRelatedPosts } from '@/features/posts/components/SmartRelatedPosts'
-import { PostDetailSkeleton } from '@/features/posts/components/PostCardSkeleton'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { TableOfContents } from '@/features/posts/components/TableOfContents'
 import { OrgInfoBox } from '@/features/posts/components/OrgInfoBox'
@@ -141,7 +140,7 @@ export default async function PostDetailPage({ params }: Props) {
         )
     }
 
-    jsonLdEntries.push(buildNewsArticleSchema(publishedPost as any))
+    jsonLdEntries.push(buildNewsArticleSchema(publishedPost))
 
     /* ── Extract TOC items & Inject Internal Links ─────────────────── */
     const { tocItems } = publishedPost.content
@@ -152,7 +151,7 @@ export default async function PostDetailPage({ params }: Props) {
             orgName: publishedPost.org_name,
             orgShortName: publishedPost.org_short_name,
         })
-        : { tocItems: [] as any[] }
+        : { tocItems: [] as { id: string; text: string; level: number }[] }
 
     /* ── Fetch Dynamic Sidebar Silo Links ── */
     const { getPosts } = await import('@/features/posts/queries')

@@ -353,8 +353,7 @@ export function runSeoAnalysis(input: SeoAnalysisInput): SeoAnalysisResult {
     const { 
         title, focusKeyword, 
         secondaryKeywords, content, postType,
-        metaTitle, metaDescription, excerpt,
-        featuredImage, featuredImageAlt, faqCount,
+        metaDescription,
         authorId
     } = input
 

@@ -8,6 +8,7 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { POST_TYPE_CONFIG, PAGINATION } from '@/config/constants'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
+import { PostType } from '@/types/enums'
 import type { PostTypeKey } from '@/config/site'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { buildListingTitle, buildListingMeta } from '@/lib/metadata'
@@ -38,7 +39,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
     if (!typeKey || !(typeKey in POST_TYPE_CONFIG)) return {}
 
-    const totalCountRes = await getPostsCount({ type: typeKey as unknown as import('@/types/enums').PostType }).catch(() => 0)
+    const totalCountRes = await getPostsCount({ type: typeKey as PostType }).catch(() => 0)
     const totalPages = Math.ceil(totalCountRes / limit)
 
     const title = buildListingTitle(typeKey as PostTypeKey, { page })
@@ -141,8 +142,8 @@ export default async function PostListingPage({ params, searchParams }: Props) {
     try {
         const [[p, c]] = await Promise.all([
             Promise.all([
-                getPosts({ type: typeKey as unknown as import('@/types/enums').PostType }, page, limit),
-                getPostsCount({ type: typeKey as unknown as import('@/types/enums').PostType }),
+                getPosts({ type: typeKey as PostType }, page, limit),
+                getPostsCount({ type: typeKey as PostType }),
             ])
         ])
         posts = p

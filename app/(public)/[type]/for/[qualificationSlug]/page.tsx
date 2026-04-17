@@ -11,6 +11,7 @@ import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { PAGINATION } from '@/config/constants'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
 import { POST_TYPE_CONFIG } from '@/config/constants'
+import { PostType } from '@/types/enums'
 import type { PostTypeKey } from '@/config/site'
 import { Icons } from '@/lib/icons'
 import { buildListingTitle, buildListingMeta } from '@/lib/metadata'
@@ -86,8 +87,8 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     const canonical = page > 1 ? `${url}?page=${page}` : url
 
     const totalCount = await getPostsCount({ 
-        type: typeKey as unknown as import('@/types/enums').PostType, 
-        qualification: qualRecord.slug
+        type: typeKey as PostType, 
+        qualification: qualificationSlug
     }).catch(() => 0)
     
     const totalPages = Math.ceil(totalCount / PAGINATION.DEFAULT_LIMIT)
@@ -151,7 +152,7 @@ export default async function TypeForQualificationPage({ params, searchParams }:
     let fetchError = false
 
     try {
-        const pType = typeKey as unknown as import('@/types/enums').PostType
+    const pType = typeKey as PostType
         const [p, c] = await Promise.all([
             getPosts({ type: pType, qualification: qualRecord.slug }, page, limit),
             getPostsCount({ type: pType, qualification: qualRecord.slug }),
