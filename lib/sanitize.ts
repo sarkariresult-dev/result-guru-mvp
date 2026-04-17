@@ -16,7 +16,6 @@ import sanitizeHtmlLib from 'sanitize-html'
  */
 const ALLOWED_TAGS = [
     // Block elements
-    // Block elements
     'h2', 'h3', 'h4', 'h5', 'h6',
     'p', 'br', 'hr', 'div', 'blockquote', 'pre', 'code',
     // Lists

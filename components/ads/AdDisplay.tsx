@@ -11,6 +11,27 @@ interface Props {
 export function AdDisplay({ ad, onClick }: Props) {
     const handleClick = () => onClick?.()
 
+    // Handle Manual AdSense / HTML Ads
+    useEffect(() => {
+        if (ad.ad_type === 'display_html' || ad.html_code?.includes('adsbygoogle')) {
+            try {
+                // @ts-ignore
+                ;(window.adsbygoogle = window.adsbygoogle || []).push({})
+            } catch (err) {
+                // Silently handle if AdSense script is blocked or not loaded
+            }
+        }
+    }, [ad.ad_type, ad.html_code])
+
+    if (ad.ad_type === 'display_html' && ad.html_code) {
+        return (
+            <div 
+                className="ad-container-html w-full overflow-hidden" 
+                dangerouslySetInnerHTML={{ __html: ad.html_code }} 
+            />
+        )
+    }
+
     return (
         <div className="group relative overflow-hidden rounded-xl border border-border bg-surface transition-shadow hover:shadow-md">
             {ad.is_marked_ad !== false && (
