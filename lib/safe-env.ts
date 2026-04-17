@@ -14,7 +14,7 @@ export function isRestrictedIframe(): boolean {
         // it will throw a SecurityError, which we catch.
         const _test = window.top?.location.href
         return false
-    } catch (e) {
+    } catch {
         // If an error is thrown during access, it's almost certainly a cross-origin restricted iframe
         return true
     }

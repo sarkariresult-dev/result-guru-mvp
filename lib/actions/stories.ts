@@ -26,7 +26,7 @@ export async function createWebStory(data: {
         .single()
 
     if (userError || !dbUser) {
-        console.error('User mapping error:', userError)
+
         return { error: 'User profile not found' }
     }
 
@@ -44,7 +44,7 @@ export async function createWebStory(data: {
         .single()
 
     if (error) {
-        console.error('Create story error:', error)
+
         return { error: error.message }
     }
 
@@ -79,7 +79,7 @@ export async function saveStorySlides(storyId: string, slides: Partial<WebStoryS
         .eq('story_id', storyId)
 
     if (delError) {
-        console.error('Delete slides error:', delError)
+
         return { error: delError.message }
     }
 
@@ -101,7 +101,7 @@ export async function saveStorySlides(storyId: string, slides: Partial<WebStoryS
             )
 
         if (insError) {
-            console.error('Insert slides error:', insError)
+
             return { error: insError.message }
         }
     }

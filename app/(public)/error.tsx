@@ -35,10 +35,7 @@ export default function PublicError({ error, reset }: ErrorProps) {
     }, [reset])
 
     useEffect(() => {
-        console.error('[Public Error]', {
-            message: error.message,
-            digest: error.digest,
-        })
+        // Logging removed for production
     }, [error])
 
     useEffect(() => {

@@ -16,11 +16,7 @@ export default function GlobalError({
     reset: () => void
 }) {
     useEffect(() => {
-        console.error('[Global Error Boundary]', {
-            message: error.message,
-            digest: error.digest,
-            stack: error.stack,
-        })
+        // Logging removed for production
     }, [error])
 
     // IFRAME STABLE MODE: Prevent crash loops in AdSense preview

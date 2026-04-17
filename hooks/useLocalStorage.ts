@@ -15,7 +15,7 @@
  *     useLocalStorage<string[]>('rg_bookmarks', [])
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 
 interface Options<T> {
     serializer?: (value: T) => string
@@ -27,8 +27,8 @@ export function useLocalStorage<T>(
     initialValue: T,
     options?: Options<T>,
 ): [T, (value: T | ((prev: T) => T)) => void, () => void] {
-    const serialize = options?.serializer ?? JSON.stringify
-    const deserialize = options?.deserializer ?? ((raw) => JSON.parse(raw) as T)
+    const serialize = useMemo(() => options?.serializer ?? JSON.stringify, [options?.serializer])
+    const deserialize = useMemo(() => options?.deserializer ?? ((raw: string) => JSON.parse(raw) as T), [options?.deserializer])
 
     // Read once, lazily - avoids SSR / hydration mismatch
     const readValue = useCallback((): T => {

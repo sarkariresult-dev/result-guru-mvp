@@ -29,7 +29,7 @@ export function errorResponse(error: unknown, status = 500) {
 /**
  * Standardized API Route wrapper to catch exceptions and guarantee consistent JSON shape.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 export function withErrorHandling<TReq extends Request | NextRequest, TContext = unknown>(
     handler: (req: TReq, context: TContext) => Promise<NextResponse | Response>
 ) {
@@ -44,7 +44,7 @@ export function withErrorHandling<TReq extends Request | NextRequest, TContext =
                 return new NextResponse(null, { status: 499 }) // 499 Client Closed Request
             }
 
-            console.error(`[API Error] ${req.url}:`, error)
+
             return errorResponse(error)
         }
     }

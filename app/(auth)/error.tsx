@@ -11,10 +11,6 @@ interface ErrorProps {
 }
 
 export default function AuthError({ error, reset }: ErrorProps) {
-    useEffect(() => {
-        console.error('[Auth Error]', { message: error.message, digest: error.digest })
-    }, [error])
-
     const handleRetry = useCallback(() => reset(), [reset])
 
     return (

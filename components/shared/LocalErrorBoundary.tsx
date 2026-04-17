@@ -31,7 +31,7 @@ export class LocalErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     if (!this.props.silent) {
-      console.error(`LocalErrorBoundary (${this.props.name || 'unnamed'}):`, error, errorInfo)
+
     }
   }
 

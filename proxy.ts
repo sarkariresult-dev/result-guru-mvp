@@ -1,4 +1,4 @@
-import { createServerClient, parseCookieHeader, serializeCookieHeader } from '@supabase/ssr'
+import { createServerClient, parseCookieHeader } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
@@ -37,7 +37,7 @@ export async function proxy(request: NextRequest) {
                     }))
                 },
                 setAll(cookiesToSet) {
-                    cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
+                    cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
                     response = NextResponse.next({
                         request,
                     })

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import {
     Image as ImageIcon,
     Search,
@@ -166,13 +167,13 @@ export default async function AdminMediaPage({ searchParams }: PageProps) {
                             >
                                 {/* Preview */}
                                 {item.mime_type.startsWith('image/') ? (
-                                    <div className="relative">
-                                    {/* eslint-disable-next-line @next/next/no-img-element -- admin preview of dynamic Supabase storage assets */}
-                                    <img
+                                    <div className="relative aspect-square">
+                                        <Image
                                             src={item.webp_url ?? item.public_url}
                                             alt={item.alt_text ?? item.file_name}
-                                            className="aspect-square w-full object-cover"
-                                            loading="lazy"
+                                            fill
+                                            className="object-cover"
+                                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
                                         />
                                         {/* WebP badge */}
                                         {item.is_webp_ready && (

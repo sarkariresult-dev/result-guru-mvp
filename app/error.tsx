@@ -37,15 +37,6 @@ export default function Error({ error, reset }: ErrorProps) {
         reset()
     }, [reset])
 
-    /* Log error once */
-    useEffect(() => {
-        console.error('[Error Boundary]', {
-            message: error.message,
-            digest: error.digest,
-            stack: error.stack,
-        })
-    }, [error])
-
     /* Auto-retry countdown - only if under max retries */
     useEffect(() => {
         if (retryCount >= maxRetries) return

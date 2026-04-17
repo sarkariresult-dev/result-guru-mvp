@@ -55,7 +55,7 @@ export default async function SearchPage({ searchParams }: Props) {
             posts = await getPosts({}, 1, 12)
         }
     } catch (err) {
-        console.error('[SearchPage] Fetch error:', err)
+
         fetchError = true
     }
 

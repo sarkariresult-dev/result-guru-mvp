@@ -10,7 +10,7 @@
  *   const { bookmarks, toggle, isBookmarked, clear } = useBookmarks()
  */
 
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useLocalStorage } from './useLocalStorage'
 import { STORAGE_KEYS, MAX_BOOKMARKS } from '@/config/constants'
 
@@ -28,7 +28,7 @@ export function useBookmarks() {
     )
 
     // Ensure it's always an array in case of corruption or storage failure
-    const bookmarks = Array.isArray(storedBookmarks) ? storedBookmarks : []
+    const bookmarks = useMemo(() => Array.isArray(storedBookmarks) ? storedBookmarks : [], [storedBookmarks])
 
     const isBookmarked = useCallback(
         (slug: string) => bookmarks.some((b) => b.slug === slug),

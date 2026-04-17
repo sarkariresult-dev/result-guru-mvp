@@ -97,7 +97,7 @@ export async function getSeoAuditPosts(limit = 50) {
         .limit(limit)
 
     if (error) {
-        console.error('Failed to fetch v_seo_audit:', error)
+
         return []
     }
     return data ?? []
@@ -115,7 +115,7 @@ export async function getPostsNeedingAttention(limit = 30) {
         .limit(limit)
 
     if (error) {
-        console.error('Failed to fetch v_posts_attention:', error)
+
         return []
     }
     return data ?? []

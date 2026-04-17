@@ -1,6 +1,6 @@
 'use client'
 
-import { Search, MapPin, ChevronDown, X, Loader2 } from 'lucide-react'
+import { Search, MapPin, ChevronDown, X } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import Form from 'next/form'
 

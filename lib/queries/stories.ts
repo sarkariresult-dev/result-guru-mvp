@@ -32,7 +32,7 @@ export async function getStories(options?: {
         .range(from, to)
 
     if (error) {
-        console.error('Error fetching web stories:', error)
+
         return { data: [], count: 0 }
     }
     return { data: data as WebStory[], count: count || 0 }
@@ -50,7 +50,7 @@ export async function getStoryById(id: string): Promise<WebStory | null> {
         .single()
 
     if (error) {
-        console.error('Error fetching web story:', error)
+
         return null
     }
     return data as WebStory
@@ -66,7 +66,7 @@ export async function getStoryBySlug(slug: string): Promise<WebStory | null> {
 
     if (error) {
         if (error.code !== 'PGRST116') {
-            console.error('Error fetching web story by slug:', error)
+
         }
         return null
     }
@@ -82,7 +82,7 @@ export async function getStorySlides(storyId: string): Promise<WebStorySlide[]> 
         .order('position', { ascending: true })
 
     if (error) {
-        console.error('Error fetching story slides:', error)
+
         return []
     }
     return data as WebStorySlide[]
@@ -104,7 +104,7 @@ export async function getPublicStories(limit: number = 10, page: number = 1): Pr
         .range(from, to)
 
     if (error) {
-        console.error('Error fetching public stories:', error)
+
         return { data: [], count: 0 }
     }
     return { data: data as WebStory[], count: count || 0 }
@@ -122,7 +122,7 @@ export async function getPublicStoryBySlug(slug: string): Promise<WebStory | nul
 
     if (error) {
         if (error.code !== 'PGRST116') {
-            console.error('Error fetching public story by slug:', error)
+
         }
         return null
     }
@@ -139,7 +139,7 @@ export async function getPublicStorySlides(storyId: string): Promise<WebStorySli
         .order('position', { ascending: true })
 
     if (error) {
-        console.error('Error fetching public story slides:', error)
+
         return []
     }
     return data as WebStorySlide[]

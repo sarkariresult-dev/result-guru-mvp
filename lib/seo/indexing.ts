@@ -25,7 +25,6 @@ export type IndexingAction = 'URL_UPDATED' | 'URL_DELETED'
 export async function pushToGoogleIndexingApi(url: string, action: IndexingAction = 'URL_UPDATED') {
     // Prevent running during local dev unless specifically tested
     if (process.env.NODE_ENV !== 'production' && !process.env.TEST_INDEXING_API) {
-        console.log(`[SEO:IndexingApi] Skipped mock index request for ${url} (Action: ${action})`)
         return { success: true, mock: true }
     }
 
@@ -66,11 +65,10 @@ export async function pushToGoogleIndexingApi(url: string, action: IndexingActio
         }
 
         const data = await response.json()
-        console.log(`[SEO:IndexingApi] Successfully requested ${action} for ${url}`, data)
         return { success: true, data }
 
     } catch (error) {
-        console.error(`[SEO:IndexingApi] Failed to ping indexing API for ${url}:`, error)
+
         return { success: false, error: error instanceof Error ? error.message : String(error) }
     }
 }

@@ -77,7 +77,7 @@ function AdZoneContent({ zoneSlug, postType, postId, sticky, className }: Props)
 
     // Nothing to render on error or no data
     if (error) {
-        console.error(`AdZone (${zoneSlug}) error:`, error)
+
         return null
     }
 

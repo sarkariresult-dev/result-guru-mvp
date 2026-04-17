@@ -16,7 +16,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import type { Session, User, AuthError, AuthChangeEvent } from '@supabase/supabase-js'
+import type { Session, User, AuthError, AuthChangeEvent, Subscription } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/client'
 import { queryKeys } from '@/config/query-keys'
 import type { UserRole } from '@/types/enums'
@@ -104,13 +104,12 @@ export function useAuth(): UseAuthReturn {
                     try {
                         // Attempt a dummy read to see if storage is blocked
                         window.sessionStorage.getItem('__auth_test');
-                    } catch (e) {
-                        console.info('[useAuth] Restricted environment detected, skipping auth init');
+                    } catch {
                         setLoading(false);
                         return;
                     }
                 }
-            } catch (e) {}
+            } catch {}
 
             const { data: { session: s }, error: err } = await supabase.auth.getSession()
             if (!mounted) return
@@ -125,7 +124,7 @@ export function useAuth(): UseAuthReturn {
         init()
 
         // Only setup listener if we are in a top-level window or storage is working
-        let subscription: any = null;
+        let subscription: Subscription | null = null;
         try {
             const result = supabase.auth.onAuthStateChange(
                 async (event: AuthChangeEvent, newSession: Session | null) => {
@@ -143,8 +142,8 @@ export function useAuth(): UseAuthReturn {
                 },
             )
             subscription = result.data.subscription;
-        } catch (e) {
-            console.warn('[useAuth] Failed to setup auth listener (likely restricted iframe)')
+        } catch {
+            // SILENT FAIL - restricted iframe
         }
 
         return () => {

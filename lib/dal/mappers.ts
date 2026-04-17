@@ -1,60 +1,106 @@
 import { calculateApplicationStatus } from '@/lib/utils'
-import type { PostCard, PublishedPost } from '@/types/post.types'
+import type { PostCard } from '@/types/post.types'
 import type { AdminPost } from '@/features/posts/queries'
+import { PostType, PostStatus, ApplicationStatus } from '@/types/enums'
+
+interface PostCardRow {
+    id: string;
+    type: PostType;
+    application_status: ApplicationStatus | null;
+    application_start_date: string | null;
+    application_end_date: string | null;
+    title: string;
+    slug: string;
+    excerpt: string | null;
+    state_slug: string | null;
+    state_name: string | null;
+    org_name: string | null;
+    org_short_name: string | null;
+    org_logo_url: string | null;
+    category_slug: string | null;
+    category_name: string | null;
+    qualification: string[] | null;
+    featured_image: string | null;
+    featured_image_alt: string | null;
+    view_count: number | null;
+    reading_time_min: number | null;
+    published_at: string | null;
+    updated_at: string | null;
+}
 
 /**
  * Maps a raw database row from `v_published_posts` to a clean `PostCard` DTO.
  * Guarantees that internal database columns do not leak into the presentation layer.
  */
-export function toPostCardDTO(row: any): PostCard {
-    if (!row) return null as any
+export function toPostCardDTO(row: Record<string, unknown> | null): PostCard | null {
+    if (!row) return null
+    const r = row as any
     return {
-        id: row.id,
-        type: row.type,
-        application_status: (row as any).application_status ?? calculateApplicationStatus(row.application_start_date, row.application_end_date),
-        title: row.title,
-        slug: row.slug,
-        excerpt: row.excerpt,
-        state_slug: row.state_slug,
-        state_name: row.state_name,
-        org_name: row.org_name,
-        org_short_name: row.org_short_name,
-        org_logo_url: row.org_logo_url,
-        category_slug: row.category_slug,
-        category_name: row.category_name,
-        qualification: row.qualification,
-        featured_image: row.featured_image,
-        featured_image_alt: row.featured_image_alt,
-        view_count: row.view_count,
-        reading_time_min: row.reading_time_min,
-        application_start_date: row.application_start_date,
-        application_end_date: row.application_end_date,
-        published_at: row.published_at,
-        updated_at: row.updated_at,
+        id: r.id as string,
+        type: r.type as PostType,
+        application_status: (r.application_status as ApplicationStatus) ?? calculateApplicationStatus(r.application_start_date, r.application_end_date),
+        title: r.title as string,
+        slug: r.slug as string,
+        excerpt: (r.excerpt as string) ?? null,
+        state_slug: (r.state_slug as string) ?? null,
+        state_name: (r.state_name as string) ?? null,
+        org_name: (r.org_name as string) ?? null,
+        org_short_name: (r.org_short_name as string) ?? null,
+        org_logo_url: (r.org_logo_url as string) ?? null,
+        category_slug: (r.category_slug as string) ?? null,
+        category_name: (r.category_name as string) ?? null,
+        qualification: (r.qualification as string[]) ?? null,
+        featured_image: (r.featured_image as string) ?? null,
+        featured_image_alt: (r.featured_image_alt as string) ?? null,
+        view_count: (r.view_count as number) ?? 0,
+        reading_time_min: (r.reading_time_min as number) ?? 1,
+        application_start_date: (r.application_start_date as string) ?? null,
+        application_end_date: (r.application_end_date as string) ?? null,
+        published_at: (r.published_at as string) ?? null,
+        updated_at: (r.updated_at as string) ?? '',
     }
+}
+
+interface AdminPostRow {
+    id: string;
+    type: PostType;
+    status: PostStatus;
+    application_start_date: string | null;
+    application_end_date: string | null;
+    title: string;
+    slug: string;
+    state_slug: string | null;
+    organization_id: string | null;
+    org_name: string | null;
+    view_count: number | null;
+    seo_score: number | null;
+    published_at: string | null;
+    updated_at: string | null;
+    created_at: string;
 }
 
 /**
  * Maps a raw database row from `posts` table to a clean `AdminPost` DTO.
  */
-export function toAdminPostDTO(row: any): AdminPost {
-    if (!row) return null as any
+export function toAdminPostDTO(row: Record<string, unknown> | null): AdminPost | null {
+    if (!row) return null
+    const r = row as any
     return {
-        id: row.id,
-        type: row.type,
-        status: row.status,
-        application_status: calculateApplicationStatus(row.application_start_date, row.application_end_date),
-        title: row.title,
-        slug: row.slug,
-        state_slug: row.state_slug,
-        organization_id: row.organization_id,
-        org_name: row.org_name,
-        view_count: row.view_count,
-        seo_score: row.seo_score,
-        application_start_date: row.application_start_date,
-        application_end_date: row.application_end_date,
-        published_at: row.published_at,
-        updated_at: row.updated_at,
-        created_at: row.created_at,
+        id: r.id as string,
+        type: r.type as PostType,
+        status: r.status as PostStatus,
+        application_status: calculateApplicationStatus(r.application_start_date, r.application_end_date),
+        title: r.title as string,
+        slug: r.slug as string,
+        state_slug: (r.state_slug as string) ?? null,
+        organization_id: (r.organization_id as string) ?? null,
+        org_name: (r.org_name as string) ?? null,
+        view_count: (r.view_count as number) ?? 0,
+        seo_score: (r.seo_score as number) ?? 0,
+        application_start_date: (r.application_start_date as string) ?? null,
+        application_end_date: (r.application_end_date as string) ?? null,
+        published_at: (r.published_at as string) ?? null,
+        updated_at: (r.updated_at as string) ?? '',
+        created_at: (r.created_at as string) ?? '',
     }
 }

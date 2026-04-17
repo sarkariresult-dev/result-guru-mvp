@@ -11,7 +11,6 @@ interface ErrorProps {
 
 export default function DashboardError({ error, reset }: ErrorProps) {
     useEffect(() => {
-        console.error('[Dashboard Error]', { message: error.message, digest: error.digest })
     }, [error])
 
     const handleRetry = useCallback(() => reset(), [reset])

@@ -188,60 +188,24 @@ export default async function PostDetailPage({ params }: Props) {
 
     return (
         <>
-            <LocalErrorBoundary name="PageViewTracker" silent>
-                <PageViewTracker postId={publishedPost.id} />
-            </LocalErrorBoundary>
+            <PageViewTracker postId={publishedPost.id} />
             <JsonLd data={jsonLdEntries} />
 
             <div className="container mx-auto max-w-7xl px-4 py-8">
-                <LocalErrorBoundary name="Breadcrumb" silent>
-                    <Breadcrumb
-                        items={[
-                            { label: POST_TYPE_CONFIG[typeKey].heading, href: `/${type}` },
-                            ...(publishedPost.state_slug ? [{ label: publishedPost.state_name || humanise(publishedPost.state_slug), href: `/states/${publishedPost.state_slug}` }] : []),
-                            { label: publishedPost.title },
-                        ]}
-                    />
-                </LocalErrorBoundary>
+                <Breadcrumb
+                    items={[
+                        { label: POST_TYPE_CONFIG[typeKey].heading, href: `/${type}` },
+                        ...(publishedPost.state_slug ? [{ label: publishedPost.state_name || humanise(publishedPost.state_slug), href: `/states/${publishedPost.state_slug}` }] : []),
+                        { label: publishedPost.title },
+                    ]}
+                />
 
                 <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_340px]">
-
                     {/* ═══════════════════════════════════════════ MAIN CONTENT COLUMN ═══════════════════════════════════════════ */}
                     <article>
-                        {/* Below-content ad - streamed independently */}
-                        <LocalErrorBoundary name="AdHeader" silent>
+                        <LocalErrorBoundary name="MainContent" silent>
                             <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} className="mt-8" />
-                        </LocalErrorBoundary>
-
-                        <LocalErrorBoundary 
-                            name="PostDetailMain" 
-                            fallback={
-                                <div className="space-y-6">
-                                    <h1 className="text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl leading-tight">{publishedPost.title}</h1>
-                                    {publishedPost.excerpt && (
-                                        <p className="border-l-4 border-brand-500 pl-4 py-1 text-lg italic font-medium text-foreground-muted leading-relaxed">
-                                            {publishedPost.excerpt}
-                                        </p>
-                                    )}
-                                    {publishedPost.content && (
-                                        <div
-                                            className="prose prose-lg max-w-none dark:prose-invert"
-                                            dangerouslySetInnerHTML={{
-                                                __html: (() => {
-                                                    try { return sanitizeHtml(publishedPost.content) } catch { return '' }
-                                                })()
-                                            }}
-                                            suppressHydrationWarning
-                                        />
-                                    )}
-                                </div>
-                            }
-                        >
                             <PostDetail post={publishedPost} slug={slug} url={canonicalUrl} />
-                        </LocalErrorBoundary>
-
-                        <LocalErrorBoundary name="RelatedPosts" silent>
-                            {/* Smart Related posts via API logic */}
                             <SmartRelatedPosts postId={publishedPost.id} />
                             <RelatedPosts post={publishedPost} />
                         </LocalErrorBoundary>
@@ -251,19 +215,16 @@ export default async function PostDetailPage({ params }: Props) {
                          RIGHT SIDEBAR
                         ═══════════════════════════════════════════ */}
                     <aside className="hidden lg:block space-y-6" aria-label="Post sidebar">
-
-                        {/* ── Organization Info ─────────────────── */}
-                        <LocalErrorBoundary name="OrgInfo" silent>
+                        <LocalErrorBoundary name="SidebarContent" silent>
+                            {/* ── Organization Info ─────────────────── */}
                             <OrgInfoBox
                                 name={publishedPost.org_name}
                                 shortName={publishedPost.org_short_name}
                                 logoUrl={publishedPost.org_logo_url}
                                 officialUrl={publishedPost.org_official_url}
                             />
-                        </LocalErrorBoundary>
 
-                        {/* ── Quick Action Links ───────────────── */}
-                        <LocalErrorBoundary name="QuickLinks" silent>
+                            {/* ── Quick Action Links ───────────────── */}
                             {quickLinks.length > 0 && (
                                 <div className="py-2 space-y-4">
                                     <h3 className="text-sm font-bold uppercase tracking-[0.05em] text-foreground-muted flex items-center gap-2">
@@ -292,10 +253,8 @@ export default async function PostDetailPage({ params }: Props) {
                                     </div>
                                 </div>
                             )}
-                        </LocalErrorBoundary>
 
-                        {/* ── SEO Silo Links (Content Strategy) ── */}
-                        <LocalErrorBoundary name="SiloPosts" silent>
+                            {/* ── SEO Silo Links (Content Strategy) ── */}
                             {siloPosts.length > 0 && (
                                 <div className="py-2 space-y-4">
                                     <h3 className="text-sm font-bold uppercase tracking-[0.05em] text-foreground-muted flex items-center gap-2">
@@ -319,25 +278,18 @@ export default async function PostDetailPage({ params }: Props) {
                                     </div>
                                 </div>
                             )}
-                        </LocalErrorBoundary>
 
-                        {/* ── Sidebar Ad ────────────────────────── */}
-                        <LocalErrorBoundary name="AdSidebar" silent>
+                            {/* ── Sidebar Ad ────────────────────────── */}
                             <AdZone zoneSlug="sidebar_top" postType={typeKey} postId={publishedPost.id} />
-                        </LocalErrorBoundary>
 
-                        {/* ── Sticky Group (TOC & Sticky Ad) ────────────────── */}
-                        <div className="sticky top-24 space-y-6" suppressHydrationWarning>
-                            <LocalErrorBoundary name="TOC" silent>
+                            {/* ── Sticky Group (TOC & Sticky Ad) ────────────────── */}
+                            <div className="sticky top-24 space-y-6" suppressHydrationWarning>
                                 {tocItems.length >= 2 && (
                                     <TableOfContents items={tocItems} />
                                 )}
-                            </LocalErrorBoundary>
-                            
-                            <LocalErrorBoundary name="AdSticky" silent>
                                 <AdZone zoneSlug="sidebar_sticky" postType={typeKey} postId={publishedPost.id} sticky />
-                            </LocalErrorBoundary>
-                        </div>
+                            </div>
+                        </LocalErrorBoundary>
                     </aside>
                 </div>
             </div>

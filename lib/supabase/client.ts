@@ -14,7 +14,7 @@ function isLocalStorageAvailable() {
         window.localStorage.setItem(test, test);
         window.localStorage.removeItem(test);
         return true;
-    } catch (e) {
+    } catch {
         return false;
     }
 }
@@ -78,7 +78,7 @@ export function createClient() {
                             return await fn('noop-lock');
                         } catch (e) {
                             // If even the no-op fn throws, we are in a truly broken state
-                            console.warn('[Supabase] Lock failure in restricted iframe');
+
                             throw e;
                         }
                     }

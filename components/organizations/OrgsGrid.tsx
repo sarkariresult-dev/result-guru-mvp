@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Building2, Search, MapPin, ArrowRight } from 'lucide-react'
 
 interface Organization {
@@ -83,11 +84,12 @@ export function OrgsGrid({ organizations }: OrgsGridProps) {
                         >
                             <div className="flex items-start justify-between">
                                 {org.logo_url ? (
-                                    <img
+                                    <Image
                                         src={org.logo_url}
                                         alt={`${org.name} logo`}
+                                        width={64}
+                                        height={64}
                                         className="size-16 rounded-2xl bg-slate-50 object-contain p-2 shadow-sm border border-border dark:bg-white"
-                                        loading="lazy"
                                     />
                                 ) : (
                                     <div className="flex size-16 items-center justify-center rounded-2xl bg-linear-to-br from-brand-500 to-brand-600 font-black text-white text-xl shadow-lg shadow-brand-500/20">

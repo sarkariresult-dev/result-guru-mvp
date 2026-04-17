@@ -60,10 +60,7 @@ const POST_STATUSES = [
     'draft', 'review', 'scheduled', 'published', 'archived',
 ] as const
 
-/** All 7 application_status enum values from 017_views.sql / ApplicationStatus enum */
-const APPLICATION_STATUSES = [
-    'upcoming', 'open', 'closing_soon', 'closed', 'result_out', 'na', 'none',
-] as const
+
 
 export const postSchema = z.object({
     // Identity
@@ -229,7 +226,7 @@ export const organizationSchema = z.object({
         z.string().transform((str, ctx) => {
             if (!str || !str.trim()) return null;
             try { return JSON.parse(str); }
-            catch (e) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Invalid JSON format' }); return z.NEVER; }
+            catch { ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Invalid JSON format' }); return z.NEVER; }
         }),
         z.record(z.string(), z.unknown())
     ]).nullable().optional(),

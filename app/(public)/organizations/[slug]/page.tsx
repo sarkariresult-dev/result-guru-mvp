@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { getOrganizationBySlug } from '@/lib/queries/organizations'
 import { getPosts, getPostsCount } from '@/features/posts/queries'
 import { PostGrid } from '@/features/posts/components/PostGrid'
@@ -200,12 +201,13 @@ export default async function OrganizationProfilePage({ params, searchParams }: 
                                 {/* Branded Logo Container */}
                                 {org.logo_url ? (
                                     <div className="size-24 shrink-0 rounded-3xl bg-white p-3 shadow-2xl shadow-slate-200 dark:shadow-none border border-border flex items-center justify-center group hover:scale-105 transition-transform duration-500">
-                                        <img
+                                        <Image
                                             src={org.logo_url}
                                             alt={`${org.name} logo`}
                                             width={96}
                                             height={96}
                                             className="w-full h-full object-contain"
+                                            priority
                                         />
                                     </div>
                                 ) : (

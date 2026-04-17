@@ -222,7 +222,6 @@ function checkSchemaHealth(input: SeoAnalysisInput): { status: SeoCheckStatus; i
 function checkFreshness(input: SeoAnalysisInput): { status: SeoCheckStatus; recommendation?: string } {
     const currentYear = '2026'
     const titleHasYear = input.title.includes(currentYear)
-    const slugHasYear = input.slug.includes(currentYear)
 
     if (!titleHasYear) {
         return { status: 'warn', recommendation: `Include the current year (${currentYear}) in the title for freshness signals.` }
@@ -286,9 +285,7 @@ function extractExternalLinks(html: string): string[] {
     return links
 }
 
-function hasTable(html: string): boolean {
-    return /<table[^>]*>/i.test(html)
-}
+
 
 // Passive voice detection (simplified English + common patterns)
 const PASSIVE_PATTERNS = [
@@ -354,9 +351,11 @@ export function analyzeReadability(html: string): ReadabilityResult {
 
 export function runSeoAnalysis(input: SeoAnalysisInput): SeoAnalysisResult {
     const { 
-        title, slug, metaTitle, metaDescription, focusKeyword, 
-        secondaryKeywords, content, excerpt, featuredImage, 
-        featuredImageAlt, faqCount, authorId, postType, notificationPdf, primaryLink 
+        title, focusKeyword, 
+        secondaryKeywords, content, postType,
+        metaTitle, metaDescription, excerpt,
+        featuredImage, featuredImageAlt, faqCount,
+        authorId
     } = input
 
     const plainContent = stripHtml(content)
@@ -364,10 +363,10 @@ export function runSeoAnalysis(input: SeoAnalysisInput): SeoAnalysisResult {
     const contentLower = plainContent.toLowerCase()
     const fk = focusKeyword.toLowerCase().trim()
     const hasFk = fk.length > 0
-    const headings = extractHeadings(content)
     const internalLinks = countInternalLinks(content)
     const externalLinks = extractExternalLinks(content)
     const sk = secondaryKeywords.filter(k => k.trim().length > 0)
+    void sk // Acknowledge secondary keywords for future use
 
     // Advanced Analysis Modules (Guru SEO 2.0)
     const intentAnalysis = detectSearchIntent(title, postType)

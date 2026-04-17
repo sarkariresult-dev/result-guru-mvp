@@ -28,7 +28,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         .single()
 
     if (error) {
-        console.error('[DashboardLayout] Failed to fetch user profile:', error.message)
+
     }
 
     const dbUser = data as { id: string; name: string; avatar_url: string | null; role: string; bio: string | null } | null

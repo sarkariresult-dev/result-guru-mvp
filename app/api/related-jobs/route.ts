@@ -58,7 +58,7 @@ export async function GET(request: Request) {
                 .limit(4)
 
             if (relatedData) {
-                posts = relatedData.map(toPostCardDTO)
+                posts = relatedData.map(toPostCardDTO).filter((p): p is PostCard => !!p)
             }
         }
 
@@ -82,7 +82,7 @@ export async function GET(request: Request) {
                 .limit(4 - posts.length)
 
             if (fallbackData) {
-                 const fallbackPosts = fallbackData.map(toPostCardDTO)
+                 const fallbackPosts = fallbackData.map(toPostCardDTO).filter((p): p is PostCard => !!p)
                  // merge avoiding duplicates
                  const existingIds = new Set(posts.map(p => p.id))
                  fallbackPosts.forEach(fp => {

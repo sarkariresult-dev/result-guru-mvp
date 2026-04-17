@@ -1,6 +1,5 @@
 'use server'
 
-import { z } from 'zod'
 import { GoogleGenAI, Type } from '@google/genai'
 import fs from 'fs'
 import path from 'path'
@@ -31,8 +30,8 @@ function buildKeywordSeed(topic: string, postType: string, primaryKeywords: stri
             `${topicLower} salary pay scale 7th pay commission`,
             `${topicLower} apply online direct link`,
             `${topicLower} selection process exam pattern`,
-            `${topicLower} bharti ${year} apply online`,
-            `${topicLower} sarkari naukri ${year}`,
+            `${topicLower} bharti apply online`, // Removed year
+            `${topicLower} sarkari naukri`, // Removed year
             `${topicLower} vacancy kitni hai`,
             `${topicLower} last date kab hai`,
         ],
@@ -45,7 +44,7 @@ function buildKeywordSeed(topic: string, postType: string, primaryKeywords: stri
             `${topicLower} marks normalization formula`,
             `${topicLower} result kaise check kare`,
             `${topicLower} result link direct`,
-            `${topicLower} topper marks ${year}`,
+            `${topicLower} topper marks`, // Removed year
         ],
         admit: [
             `${topicLower} admit card ${year} download`,
@@ -67,7 +66,7 @@ function buildKeywordSeed(topic: string, postType: string, primaryKeywords: stri
             `${topicLower} qualifying marks general obc sc st`,
             `${topicLower} previous year cut off comparison`,
             `${topicLower} safe score to qualify`,
-            `${topicLower} cut off kitna jayega ${year}`,
+            `${topicLower} cut off kitna jayega`, // Removed year
         ],
         syllabus: [
             `${topicLower} syllabus ${year} subject wise`,
@@ -130,6 +129,7 @@ function buildKeywordSeed(topic: string, postType: string, primaryKeywords: stri
         '- Include Hinglish keyword variations (e.g., "kab aayega", "kaise kare").',
         '- Focus on voice search patterns (conversational queries).',
         '- Always include the organization full name AND abbreviation in content.',
+        '- Maintain focus keyword density below 1.2% to avoid over-optimization penalties.',
     ].join('\n')
 }
 
@@ -351,7 +351,7 @@ export async function generateContentWithGemini(data: GeneratePostInput) {
             config: {
                 systemInstruction: systemPrompt,
                 responseMimeType: 'application/json',
-                responseSchema: aiResponseSchema as any,
+                responseSchema: aiResponseSchema as any, // Typed as any due to Gemini SDK complexity
                 temperature: env.GOOGLE_GENAI_TEMPERATURE ?? 0.5,
             },
         })
@@ -362,9 +362,10 @@ export async function generateContentWithGemini(data: GeneratePostInput) {
 
         const jsonResult = JSON.parse(response.text)
         return { success: true, data: jsonResult }
-    } catch (e: any) {
-        console.error('AI generation error:', e)
-        return { error: e.message || 'An unexpected error occurred during AI generation' }
+    } catch (e: unknown) {
+        const error = e instanceof Error ? e.message : 'An unexpected error occurred during AI generation'
+
+        return { error }
     }
 }
 
@@ -431,8 +432,9 @@ export async function enhancePostSEO(postId: string, aiData: Record<string, unkn
         }
 
         return { success: true }
-    } catch (e: any) {
-        console.error('SEO enhancement error:', e)
-        return { error: e.message }
+    } catch (e: unknown) {
+        const error = e instanceof Error ? e.message : 'Unknown SEO enhancement error'
+
+        return { error }
     }
 }

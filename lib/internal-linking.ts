@@ -14,7 +14,7 @@
  * - Avoid linking inside headings, existing anchors, or tables
  */
 
-import { ROUTE_PREFIXES, type PostTypeKey } from '@/config/site'
+import { ROUTE_PREFIXES } from '@/config/site'
 
 interface LinkContext {
     stateSlug?: string | null

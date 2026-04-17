@@ -2,6 +2,17 @@ import type { Metadata } from 'next'
 import type { PostDetail } from '@/types/post.types'
 import type { HreflangEntry } from '@/types/post-content.types'
 import { SITE, postUrl, ogImageUrl, CTR_CONFIG, type PostTypeKey } from '@/config/site'
+import type { TwitterCardType } from '@/types/enums'
+
+/**
+ * Enhanced post type for metadata extraction.
+ * Includes AI-generated fields not yet in core database schema.
+ */
+interface PostMetadata extends PostDetail {
+    seo_title: string | null
+    long_tail_keywords: string[] | null
+    semantic_keywords: string[] | null
+}
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
@@ -254,9 +265,10 @@ export function buildListingMeta(
  * Now enhanced with CTR-optimized og:title and meta descriptions.
  */
 export function buildMetadata(post: PostDetail): Metadata {
+    const metaPost = post as PostMetadata
     const postType = post.type as PostTypeKey
     // Prefer seo_title → meta_title → title for SERP display
-    const seoTitle = (post as any).seo_title
+    const seoTitle = metaPost.seo_title
     const title = formatTitle(seoTitle || post.meta_title || post.title)
 
     // Build CTR-optimized description with CTA
@@ -298,8 +310,8 @@ export function buildMetadata(post: PostDetail): Metadata {
         ...(post.meta_keywords ?? []),
         ...(post.focus_keyword ? [post.focus_keyword] : []),
         ...(post.secondary_keywords ?? []),
-        ...((post as any).long_tail_keywords ?? []).slice(0, 3),
-        ...((post as any).semantic_keywords ?? []).slice(0, 3),
+        ...(metaPost.long_tail_keywords ?? []).slice(0, 3),
+        ...(metaPost.semantic_keywords ?? []).slice(0, 3),
     ].filter(Boolean)
 
     /* ── CTR-enhanced OG title with date-awareness ────────────── */
@@ -308,8 +320,8 @@ export function buildMetadata(post: PostDetail): Metadata {
         : postType && CTR_CONFIG[postType]
             ? buildCTRTitle(post.title, postType, {
                 publishedAt: post.published_at,
-                applicationEndDate: (post as any).application_end_date,
-                seoTitle: (post as any).seo_title,
+                applicationEndDate: metaPost.application_end_date,
+                seoTitle: metaPost.seo_title,
             })
             : title
 
@@ -319,12 +331,12 @@ export function buildMetadata(post: PostDetail): Metadata {
         keywords: [
             ...(post.meta_keywords ?? []),
             ...(post.focus_keyword ? [post.focus_keyword] : []),
-            ...((post as any).long_tail_keywords ?? []).slice(0, 5),
+            ...(metaPost.long_tail_keywords ?? []).slice(0, 5),
         ].filter(Boolean).length > 0
             ? [
                 ...(post.meta_keywords ?? []),
                 ...(post.focus_keyword ? [post.focus_keyword] : []),
-                ...((post as any).long_tail_keywords ?? []).slice(0, 5),
+                ...(metaPost.long_tail_keywords ?? []).slice(0, 5),
             ].filter(Boolean)
             : undefined,
         alternates: {
@@ -361,7 +373,7 @@ export function buildMetadata(post: PostDetail): Metadata {
             ],
         },
         twitter: {
-            card: (post.twitter_card_type as any) ?? SITE.twitter.cardType,
+            card: (post.twitter_card_type as TwitterCardType) ?? SITE.twitter.cardType,
             title: formatTitle(post.twitter_title || post.og_title || post.title),
             description: formatDescription(post.twitter_description || post.og_description || description),
             images: [ogImage],
@@ -402,7 +414,7 @@ export function buildPageMetadata(opts: {
             images: [{ url: SITE.defaultOgImage, width: SITE.defaultOgWidth, height: SITE.defaultOgHeight }],
         },
         twitter: {
-            card: SITE.twitter.cardType as any,
+            card: SITE.twitter.cardType as TwitterCardType,
             title,
             description,
             site: SITE.twitter.handle,

@@ -17,7 +17,7 @@ export default function TypeError({
 
     useEffect(() => {
         // Log the error to an error reporting service
-        console.error('Type Route Error:', error)
+
 
         // Silent recovery for iframes: 
         // If it's a hydration mismatch (no digest) in an iframe, attempt a one-time reset 

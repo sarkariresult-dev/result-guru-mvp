@@ -70,7 +70,7 @@ export const getPosts = cache(unstable_cache(
             .range((page - 1) * limit, page * limit - 1)
 
         if (error) throw new Error(`getPosts: ${error.message}`)
-        return (data ?? []).map(toPostCardDTO)
+        return (data ?? []).map(toPostCardDTO).filter((p): p is PostCard => !!p)
     },
     ['posts-list'], // Cache key segment
     {
@@ -141,7 +141,7 @@ export const getRecentPosts = cache(unstable_cache(
             .order('published_at', { ascending: false })
             .limit(limit)
 
-        return (data ?? []).map(toPostCardDTO)
+        return (data ?? []).map(toPostCardDTO).filter((p): p is PostCard => !!p)
     },
     ['recent-posts'],
     {
@@ -190,7 +190,7 @@ export const searchPosts = cache(unstable_cache(
         const idMap = new Map((data as any[] ?? []).map(p => [p.id, p]))
         const sorted = ids.map((id: string) => idMap.get(id)).filter(Boolean) as any[]
 
-        return sorted.map(p => toPostCardDTO(p))
+        return sorted.map(p => toPostCardDTO(p)).filter((p): p is PostCard => !!p)
     },
     ['search-posts'],
     {
@@ -222,11 +222,13 @@ export const getPostsCount = cache(unstable_cache(
 
 // ── Admin / Author queries (reads from `posts` table, all statuses) ────────
 
+import { PostType, PostStatus, ApplicationStatus } from '@/types/enums'
+
 export interface AdminPost {
     id: string
-    type: string
-    status: string
-    application_status: string
+    type: PostType
+    status: PostStatus
+    application_status: ApplicationStatus
     title: string
     slug: string
     state_slug: string | null
@@ -270,7 +272,7 @@ export async function getAdminPosts(opts: {
         .order('created_at', { ascending: false })
         .range((page - 1) * limit, page * limit - 1)
 
-    return { data: (data ?? []).map(toAdminPostDTO), count: count ?? 0 }
+    return { data: (data ?? []).map(toAdminPostDTO).filter((p): p is AdminPost => !!p), count: count ?? 0 }
 }
 
 export async function getAuthorPosts(
@@ -297,7 +299,7 @@ export async function getAuthorPosts(
         .order('created_at', { ascending: false })
         .range((page - 1) * limit, page * limit - 1)
 
-    return { data: (data ?? []).map(toAdminPostDTO), count: count ?? 0 }
+    return { data: (data ?? []).map(toAdminPostDTO).filter((p): p is AdminPost => !!p), count: count ?? 0 }
 }
 
 /** Full post row by ID (for edit page) - includes post_tags join */
@@ -334,7 +336,7 @@ export const getSmartRelatedPosts = cache(unstable_cache(
                 .select(POST_CARD_COLUMNS)
                 .in('id', relatedIds)
                 .limit(4)
-            if (data) posts = data.map(toPostCardDTO)
+            if (data) posts = data.map(toPostCardDTO).filter((p): p is PostCard => !!p)
         }
 
         if (posts.length < 4 && postRecord.content_cluster_id) {
@@ -346,7 +348,7 @@ export const getSmartRelatedPosts = cache(unstable_cache(
                 .limit(4 - posts.length)
 
             if (data) {
-                const fallback = data.map(toPostCardDTO)
+                const fallback = data.map(toPostCardDTO).filter((p): p is PostCard => !!p)
                 const existingIds = new Set(posts.map(p => p.id))
                 fallback.forEach(fp => {
                     if (!existingIds.has(fp.id)) posts.push(fp)

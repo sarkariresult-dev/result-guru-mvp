@@ -4,7 +4,7 @@
 // and Supabase client helpers.
 // =============================================================
 
-import type { PostType, PostStatus, ApplicationStatus } from './enums'
+import type { PostType } from './enums'
 import type { PostCard, PostDetail, PostFilters, PostSortOptions } from './post.types'
 import type { PublishedPost, SeoAuditRow, TrendingPostRow, PostAttentionRow } from './post.types'
 import type { AffiliateProductCard } from './affiliate.types'

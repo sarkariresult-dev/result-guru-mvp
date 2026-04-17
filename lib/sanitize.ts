@@ -59,6 +59,7 @@ const ALLOWED_ATTRS = [
 
 /**
  * Sanitize HTML string by removing dangerous tags and attributes.
+ * Also explicitly prevents meta tags from leaking into the body via CMS content.
  *
  * @param html - Raw HTML string (e.g. from TipTap editor)
  * @returns Sanitized HTML string safe for `dangerouslySetInnerHTML`
@@ -76,6 +77,10 @@ export function sanitizeHtml(html: string): string {
             allowedTags: ALLOWED_TAGS,
             allowedAttributes: {
                 '*': ALLOWED_ATTRS, // Allow these specific attributes on any allowed tag
+            },
+            // Explicitly ensure 'meta' is not allowed even as a self-closing catch-all
+            exclusiveFilter: (frame) => {
+                return frame.tag === 'meta' || frame.tag === 'script' || frame.tag === 'style'
             },
             transformTags: {
                 // Demote h1 to h2 to ensure only one h1 per page (the post title)

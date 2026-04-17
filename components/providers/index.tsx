@@ -45,7 +45,7 @@ class SafeThemeProvider extends Component<
     }
 
     componentDidCatch(error: Error, info: ErrorInfo) {
-        console.warn('ThemeProvider crashed (restricted env):', error.message)
+
     }
 
     render() {

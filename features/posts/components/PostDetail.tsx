@@ -66,7 +66,7 @@ interface Props {
 export function PostDetail({ post, slug, url }: Props) {
     const typeKey = post.type as PostTypeKey
     const typeMeta = POST_TYPE_CONFIG[typeKey]
-    console.debug('Type Meta:', typeMeta) // Use for potential future enhancement or remove if unnecessary
+
 
     const faq = post.faq as FaqItem[] | null
     const affiliates = (post as any).affiliates as PostAffiliateProductEntry[] | undefined
@@ -85,7 +85,7 @@ export function PostDetail({ post, slug, url }: Props) {
         }
         processedHtml = replacePlaceholders(rawHtml, mappings)
     } catch (err) {
-        console.error('PostDetail Content Processing Crash:', err)
+
         // Extreme fallback: Try basic sanitization if complex processing failed
         try {
             processedHtml = post.content ? sanitizeHtml(post.content) : ''
@@ -150,32 +150,17 @@ export function PostDetail({ post, slug, url }: Props) {
                         suppressHydrationWarning
                     />
                 )
-
-
-
             case 'affiliates':
                 if (!affiliates || affiliates.length === 0) return null
-                return (
-                    <LocalErrorBoundary key="affiliates-boundary" name="Affiliates">
-                        <AffiliateProductsBox key="affiliates" affiliates={affiliates} />
-                    </LocalErrorBoundary>
-                )
+                return <AffiliateProductsBox key="affiliates" affiliates={affiliates} />
 
             case 'author':
                 if (!post.author) return null
-                return (
-                    <LocalErrorBoundary key="author-boundary" name="AuthorBox">
-                        <AuthorBox key="author" author={post.author} />
-                    </LocalErrorBoundary>
-                )
+                return <AuthorBox key="author" author={post.author} />
 
             case 'faq':
                 if (!faq || faq.length === 0) return null
-                return (
-                    <LocalErrorBoundary key="faq-boundary" name="FAQ">
-                        <FAQAccordion key="faq" items={faq.map(f => ({ question: f.q, answer: f.a }))} />
-                    </LocalErrorBoundary>
-                )
+                return <FAQAccordion key="faq" items={faq.map(f => ({ question: f.q, answer: f.a }))} />
 
             case 'tags':
                 if (!tags || tags.length === 0) return null
@@ -212,15 +197,13 @@ export function PostDetail({ post, slug, url }: Props) {
             // Insert inline ad zone after every 3rd rendered section
             if (sectionCount % 3 === 0 && section !== 'tags') {
                 renderedSections.push(
-                    <LocalErrorBoundary key={`ad-inline-boundary-${sectionCount}`} name="AdInline">
-                        <AdZone
-                            key={`ad-inline-${sectionCount}`}
-                            zoneSlug={`inline_${sectionCount}`}
-                            postType={typeKey}
-                            postId={post.id}
-                            className="my-2"
-                        />
-                    </LocalErrorBoundary>
+                    <AdZone
+                        key={`ad-inline-${sectionCount}`}
+                        zoneSlug={`inline_${sectionCount}`}
+                        postType={typeKey}
+                        postId={post.id}
+                        className="my-2"
+                    />
                 )
             }
         }
@@ -228,7 +211,7 @@ export function PostDetail({ post, slug, url }: Props) {
 
     return (
         <div className="space-y-8" suppressHydrationWarning>
-            <LocalErrorBoundary name="ArticleHeader" silent>
+            <LocalErrorBoundary name="PostDetailMain" silent>
                 {/* ── Header: Title, Org, Dates ────────────────────────── */}
                 <header className="space-y-5 animate-fade-up" suppressHydrationWarning>
                     {/* Title */}
@@ -293,14 +276,12 @@ export function PostDetail({ post, slug, url }: Props) {
                         </div>
                     </div>
                     
-                    <LocalErrorBoundary name="PostImageOverlay">
-                        <PostImageOverlay 
-                            slug={slug} 
-                            title={post.title} 
-                            type={typeKey} 
-                            readingTime={post.reading_time_min} 
-                        />
-                    </LocalErrorBoundary>
+                    <PostImageOverlay 
+                        slug={slug} 
+                        title={post.title} 
+                        type={typeKey} 
+                        readingTime={post.reading_time_min} 
+                    />
                 </figure>
             </LocalErrorBoundary>
 
@@ -310,22 +291,16 @@ export function PostDetail({ post, slug, url }: Props) {
                     <p className="border-l-4 border-brand-500 pl-4 py-1 text-lg italic font-medium text-foreground-muted bg-linear-to-r from-brand-50/50 to-transparent dark:from-brand-900/10 rounded-r-lg leading-relaxed">
                         {post.excerpt}
                     </p>
-                    <LocalErrorBoundary name="TopShareBar">
-                        <ShareBar title={post.title} url={url} />
-                    </LocalErrorBoundary>
+                    <ShareBar title={post.title} url={url} />
                 </div>
             )}
 
-            <LocalErrorBoundary name="AdAboveContent">
-                <AdZone zoneSlug="above_content" postType={typeKey} postId={post.id} className="my-6" />
-            </LocalErrorBoundary>
+            <AdZone zoneSlug="above_content" postType={typeKey} postId={post.id} className="my-6" />
 
             {/* ── Type-aware content sections ────────────────────── */}
-            <LocalErrorBoundary name="PostContentBody">
-                <article suppressHydrationWarning>
-                    {renderedSections}
-                </article>
-            </LocalErrorBoundary>
+            <article suppressHydrationWarning>
+                {renderedSections}
+            </article>
 
             {/* ── Last reviewed notice ───────────────────────────── */}
             {(post as any).last_reviewed_at && (

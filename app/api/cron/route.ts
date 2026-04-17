@@ -94,7 +94,6 @@ export const GET = withErrorHandling(async (request: Request) => {
 
         if (!staleError) {
             staleFlaggedCount = staleIds.length
-            console.info(`Cron: flagged ${staleFlaggedCount} stale posts as noindex`)
         }
     }
 
