@@ -113,14 +113,14 @@ const nextConfig: NextConfig = {
             value: [
               "default-src 'self'",
               // AdSense requires 'unsafe-inline' 'unsafe-eval'; 'strict-dynamic' lets trusted scripts load their own sub-scripts
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com https://*.google-analytics.com https://*.googlesyndication.com https://*.google.com https://*.googleadservices.com https://*.doubleclick.net https://*.adservice.google.com https://*.adservice.google.co.in https://va.vercel-scripts.com",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com https://*.google-analytics.com https://*.googlesyndication.com https://*.google.com https://*.googleadservices.com https://*.doubleclick.net https://*.adservice.google.com https://*.adservice.google.co.in https://*.adtrafficquality.google https://va.vercel-scripts.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               // Google ad pixels come from many TLDs (google.co.in, google.de, etc) — use broad wildcard
               "img-src 'self' data: blob: https: http:",
               "font-src 'self' https://fonts.gstatic.com",
               // AdSense traffic quality checks use dynamic domains like ep1.adtrafficquality.google
               "connect-src 'self' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.google-analytics.com https://*.analytics.google.com https://*.doubleclick.net https://*.googlesyndication.com https://*.googleadservices.com https://*.adtrafficquality.google https://*.adservice.google.com https://*.adservice.google.co.in https://vitals.vercel-insights.com https://va.vercel-scripts.com",
-              "frame-src 'self' https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.googlesyndication.com https://*.adservice.google.com https://*.adservice.google.co.in",
+              "frame-src 'self' https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.googlesyndication.com https://*.adservice.google.com https://*.adservice.google.co.in https://*.adtrafficquality.google",
               "frame-ancestors 'self' https://*.google.com https://*.googlesyndication.com https://*.doubleclick.net https://*.googleadservices.com https://*.adservice.google.com https://*.adservice.google.co.in",
               "object-src 'none'",
               "base-uri 'self'",
