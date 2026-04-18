@@ -17,7 +17,7 @@ import { getPopularOrganizations } from '@/lib/queries/organizations'
 import { getPostCountsByType } from '@/features/stats/queries'
 import { getHomepageSections } from '@/features/stats/queries'
 import type { PostTypeCounts } from '@/features/stats/queries'
-import { Briefcase, CreditCard, ArrowRight, Trophy, GraduationCap, ShieldCheck, Clock, BookOpen, Star, MapPin, Users, Send, MessageCircle, Zap, ArrowUpRight } from 'lucide-react'
+import { Briefcase, CreditCard, ArrowRight, Trophy, GraduationCap, ShieldCheck, Clock, BookOpen, Star, MapPin, Users, Send, MessageCircle, Zap, ArrowUpRight, Building2, Landmark, HardHat, Train, Shield, ScrollText, HeartPulse } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 
@@ -57,23 +57,25 @@ function formatChange(counts: PostTypeCounts | undefined): string {
 /* ── Below-fold section configs (lazy-loaded) ─────────────────────── */
 
 const BELOW_FOLD_SECTIONS = [
-    { typeKey: 'syllabus', heading: 'Syllabus', route: ROUTE_PREFIXES.syllabus, cta: 'View All', limit: 3, themeColorClass: 'bg-emerald-500' },
-    { typeKey: 'exam_pattern', heading: 'Exam Pattern', route: ROUTE_PREFIXES.exam_pattern, cta: 'View All', limit: 3, themeColorClass: 'bg-cyan-500' },
-    { typeKey: 'previous_paper', heading: 'Previous Paper', route: ROUTE_PREFIXES.previous_paper, cta: 'View All', limit: 3, themeColorClass: 'bg-indigo-500' },
-    { typeKey: 'cut_off', heading: 'Cut Off Marks', route: ROUTE_PREFIXES.cut_off, cta: 'View All', limit: 3, themeColorClass: 'bg-rose-500' },
-    { typeKey: 'exam', heading: 'Upcoming Exam', route: ROUTE_PREFIXES.exam, cta: 'View All', limit: 3, themeColorClass: 'bg-violet-500' },
-    { typeKey: 'admission', heading: 'Admission', route: ROUTE_PREFIXES.admission, cta: 'View All', limit: 3, themeColorClass: 'bg-fuchsia-500' },
+    { typeKey: 'syllabus', heading: 'Syllabus', route: ROUTE_PREFIXES.syllabus, cta: 'View All', limit: 6, themeColorClass: 'bg-emerald-500' },
+    { typeKey: 'exam_pattern', heading: 'Exam Pattern', route: ROUTE_PREFIXES.exam_pattern, cta: 'View All', limit: 6, themeColorClass: 'bg-cyan-500' },
+    { typeKey: 'previous_paper', heading: 'Previous Paper', route: ROUTE_PREFIXES.previous_paper, cta: 'View All', limit: 6, themeColorClass: 'bg-indigo-500' },
+    { typeKey: 'cut_off', heading: 'Cut Off Marks', route: ROUTE_PREFIXES.cut_off, cta: 'View All', limit: 6, themeColorClass: 'bg-rose-500' },
+    { typeKey: 'exam', heading: 'Upcoming Exam', route: ROUTE_PREFIXES.exam, cta: 'View All', limit: 6, themeColorClass: 'bg-violet-500' },
+    { typeKey: 'admission', heading: 'Admission', route: ROUTE_PREFIXES.admission, cta: 'View All', limit: 6, themeColorClass: 'bg-fuchsia-500' },
 ] as const
 
 /* ── Resource Center items (compact) ──────────────────────────────── */
 
 const RESOURCE_LINKS = [
-    { title: 'SSC & Railway', href: '/search?q=SSC+Railway', desc: 'CGL, CHSL, MTS, NTPC recruitment updates' },
-    { title: 'UPSC & Civil Services', href: '/search?q=UPSC', desc: 'CSE, IES, State PSC notifications' },
-    { title: 'Banking & Insurance', href: '/search?q=Banking+Insurance', desc: 'SBI PO, IBPS Clerk, NABARD' },
-    { title: 'Defence & Police', href: '/search?q=Defence+Police', desc: 'NDA, CDS, CAPF, State Police' },
-    { title: 'Teaching & Research', href: '/search?q=Teaching', desc: 'CTET, KVS, NVS, UGC NET' },
-    { title: 'Medical & Healthcare', href: '/search?q=Medical', desc: 'NEET, AIIMS, Nursing' },
+    { title: 'SSC & Railway', href: '/search?q=SSC+Railway', desc: 'CGL, CHSL, NTPC, Group D. Complete updates on clerical, non-technical, and railway zone jobs.', icon: Train, colorClass: 'text-blue-600 dark:text-blue-400', bgClass: 'bg-blue-50 dark:bg-blue-950/40' },
+    { title: 'UPSC & Civil Services', href: '/search?q=UPSC', desc: 'CSE, IES, IFS. Official notifications for India\'s top administrative and diplomatic roles.', icon: Landmark, colorClass: 'text-rose-600 dark:text-rose-400', bgClass: 'bg-rose-50 dark:bg-rose-950/40' },
+    { title: 'Banking & Insurance', href: '/search?q=Banking+Insurance', desc: 'SBI PO, IBPS Clerk, LIC, NABARD. High-growth public sector finance and banking careers.', icon: Building2, colorClass: 'text-emerald-600 dark:text-emerald-400', bgClass: 'bg-emerald-50 dark:bg-emerald-950/40' },
+    { title: 'Defence & Police', href: '/search?q=Defence+Police', desc: 'Army, Navy, Air Force, CAPF, State Police. Serve the nation in frontline combat and support roles.', icon: Shield, colorClass: 'text-amber-600 dark:text-amber-400', bgClass: 'bg-amber-50 dark:bg-amber-950/40' },
+    { title: 'Teaching & Education', href: '/search?q=Teaching', desc: 'CTET, KVS, NVS, UGC NET. Verified opportunities for educators, professors, and academic researchers.', icon: BookOpen, colorClass: 'text-violet-600 dark:text-violet-400', bgClass: 'bg-violet-50 dark:bg-violet-950/40' },
+    { title: 'Medical & Healthcare', href: '/search?q=Medical', desc: 'NEET, AIIMS, Nursing Officer. Critical healthcare infrastructure recruitment and admission updates.', icon: HeartPulse, colorClass: 'text-red-600 dark:text-red-400', bgClass: 'bg-red-50 dark:bg-red-950/40' },
+    { title: 'Engineering & Tech', href: '/search?q=Engineering', desc: 'GATE, PSU, State AE/JE. Core engineering, technical supervisor, IT and architectural vacancies.', icon: HardHat, colorClass: 'text-orange-600 dark:text-orange-400', bgClass: 'bg-orange-50 dark:bg-orange-950/40' },
+    { title: 'Law & Judiciary', href: '/search?q=Law', desc: 'Civil Judge, APO, Supreme Court Assistants. Premium legal sector and constitutional bodies.', icon: ScrollText, colorClass: 'text-sky-600 dark:text-sky-400', bgClass: 'bg-sky-50 dark:bg-sky-950/40' },
 ]
 
 /* ── FAQ data for SEO text-to-HTML ratio ──────────────────────────── */
@@ -260,18 +262,18 @@ export default async function HomePage() {
                     <div className="lg:col-span-2 space-y-8">
                         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                             {/* Above-fold: 4 primary sections */}
-                            <Suspense fallback={<HomeSectionSkeleton count={5} />}>
-                                <HomeSection typeKey="job" heading="Latest Sarkari Job" route={ROUTE_PREFIXES.job} cta="View All" limit={5} layout="list" themeColorClass="bg-amber-500" posts={sections.job} priority={2} />
+                            <Suspense fallback={<HomeSectionSkeleton count={6} />}>
+                                <HomeSection typeKey="job" heading="Latest Sarkari Job" route={ROUTE_PREFIXES.job} cta="View All" limit={6} layout="list" themeColorClass="bg-amber-500" posts={sections.job} priority={2} />
                             </Suspense>
-                            <Suspense fallback={<HomeSectionSkeleton count={5} />}>
-                                <HomeSection typeKey="result" heading="Latest Result" route={ROUTE_PREFIXES.result} cta="View All" limit={5} layout="list" themeColorClass="bg-orange-500" posts={sections.result} priority={2} />
+                            <Suspense fallback={<HomeSectionSkeleton count={6} />}>
+                                <HomeSection typeKey="result" heading="Latest Result" route={ROUTE_PREFIXES.result} cta="View All" limit={6} layout="list" themeColorClass="bg-orange-500" posts={sections.result} priority={2} />
                             </Suspense>
 
-                            <Suspense fallback={<HomeSectionSkeleton count={3} />}>
-                                <HomeSection typeKey="admit" heading="Admit Card" route={ROUTE_PREFIXES.admit} cta="View All" limit={3} layout="list" themeColorClass="bg-green-600" posts={sections.admit} />
+                            <Suspense fallback={<HomeSectionSkeleton count={6} />}>
+                                <HomeSection typeKey="admit" heading="Admit Card" route={ROUTE_PREFIXES.admit} cta="View All" limit={6} layout="list" themeColorClass="bg-green-600" posts={sections.admit} />
                             </Suspense>
-                            <Suspense fallback={<HomeSectionSkeleton count={3} />}>
-                                <HomeSection typeKey="answer_key" heading="Answer Key" route={ROUTE_PREFIXES.answer_key} cta="View All" limit={3} layout="list" themeColorClass="bg-blue-500" posts={sections.answer_key} />
+                            <Suspense fallback={<HomeSectionSkeleton count={6} />}>
+                                <HomeSection typeKey="answer_key" heading="Answer Key" route={ROUTE_PREFIXES.answer_key} cta="View All" limit={6} layout="list" themeColorClass="bg-blue-500" posts={sections.answer_key} />
                             </Suspense>
 
                             {/* Below-fold: 6 more sections, lazy-loaded on scroll */}
@@ -306,7 +308,7 @@ export default async function HomePage() {
                                     heading="Notification"
                                     route={ROUTE_PREFIXES.notification}
                                     cta="All Updates"
-                                    limit={6}
+                                    limit={8}
                                     layout="numbered"
                                     themeColorClass="bg-brand-500"
                                     posts={sections.notification}
@@ -348,13 +350,13 @@ export default async function HomePage() {
                             </div>
 
                             {/* Govt Schemes List */}
-                            <Suspense fallback={<HomeSectionSkeleton count={8} />}>
+                            <Suspense fallback={<HomeSectionSkeleton count={6} />}>
                                 <HomeSection
                                     typeKey="scheme"
                                     heading="Govt Scheme"
                                     route={ROUTE_PREFIXES.scheme}
                                     cta="View All"
-                                    limit={5}
+                                    limit={6}
                                     layout="list"
                                     themeColorClass="bg-pink-500"
                                     posts={sections.scheme}
@@ -384,13 +386,13 @@ export default async function HomePage() {
                             </div>
 
                             {/* Scholarship List */}
-                            <Suspense fallback={<HomeSectionSkeleton count={8} />}>
+                            <Suspense fallback={<HomeSectionSkeleton count={6} />}>
                                 <HomeSection
                                     typeKey="scholarship"
                                     heading="Scholarship"
                                     route={ROUTE_PREFIXES.scholarship}
                                     cta="View All"
-                                    limit={5}
+                                    limit={6}
                                     layout="list"
                                     themeColorClass="bg-amber-500"
                                     posts={sections.scholarship}
@@ -428,21 +430,7 @@ export default async function HomePage() {
                                 </p>
                             </div>
 
-                            {/* FIX 8: Author Expertise (E-E-A-T) */}
-                            <div className="flex items-start gap-4 p-5 rounded-2xl bg-surface border border-border shadow-xs">
-                                <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-white font-bold text-sm">
-                                    RG
-                                </div>
-                                <div className="space-y-1">
-                                    <h3 className="text-sm font-bold text-foreground">Result Guru Editorial Team</h3>
-                                    <p className="text-xs text-foreground-muted leading-relaxed">
-                                        Our content is reviewed by government recruitment specialists with 5+ years of experience in notification verification. The editorial team cross-references every update with official gazette publications.
-                                    </p>
-                                    <Link href="/about" rel="author" className="inline-flex items-center gap-1 text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline mt-1">
-                                        About Our Team <ArrowRight className="size-3" />
-                                    </Link>
-                                </div>
-                            </div>
+
                         </div>
 
                         {/* Right: Key Value Props */}
@@ -465,48 +453,45 @@ export default async function HomePage() {
                                     </div>
                                 ))}
                             </div>
-
-                            {/* FIX 9: Trust Signals - visible on ALL screen sizes */}
-                            <div className="flex flex-col items-center gap-3 p-5 rounded-2xl bg-surface border border-border shadow-xs">
-                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent-50 dark:bg-accent-900/20 border border-accent-200 dark:border-accent-800/30">
-                                    <ShieldCheck className="size-4 text-accent-600 dark:text-accent-400" />
-                                    <span className="text-[11px] font-bold uppercase tracking-widest text-accent-700 dark:text-accent-400">Verified & Accurate</span>
-                                </div>
-                                <p className="text-xs text-foreground-muted font-medium text-center">
-                                    {postCounts.reduce((sum, c) => sum + c.total_count, 0).toLocaleString('en-IN')}+ notifications verified · Trusted since 2024
-                                </p>
-                                <Link href="/about" className="text-[10px] text-brand-600 dark:text-brand-400 hover:underline font-bold uppercase tracking-widest">
-                                    Content by Expert Editors
-                                </Link>
-                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Compact Resource Center — replaces 9-card grid */}
-            <section className="container mx-auto max-w-7xl px-4 py-12" aria-label="Career pathways">
-                <div className="mb-8">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-900/30 border border-brand-100 dark:border-brand-800/30 text-[10px] font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">
-                        <Users className="size-3" />
+            {/* Extended Resource Center — 8 cards, 2 rows of 4 on desktop */}
+            <section className="container mx-auto max-w-7xl px-4 py-16" aria-label="Career pathways">
+                <div className="mb-10 text-center">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-900/40 border border-brand-100 dark:border-brand-800/30 text-[11px] font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-4">
+                        <Users className="size-4" />
                         Career Pathway Directory
                     </div>
-                    <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground">Sarkari <span className="text-brand-600 dark:text-brand-400">Resource</span> Center</h2>
-                    <p className="mt-3 text-sm text-foreground-muted font-medium max-w-2xl">
-                        Your central hub for navigating India&apos;s recruitment landscape. We categorize updates from official portals into verified career pathways.
+                    <h2 className="text-3xl md:text-4xl font-black tracking-tight text-foreground">Sarkari <span className="text-brand-600 dark:text-brand-400">Resource</span> Center</h2>
+                    <p className="mx-auto mt-4 text-base text-foreground-muted font-medium max-w-3xl leading-relaxed">
+                        Your central hub for navigating India&apos;s vast recruitment landscape. We hand-categorize official notifications into definitive, high-growth career pathways.
                     </p>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
                     {RESOURCE_LINKS.map((item) => (
-                        <Link
+                        <div
                             key={item.title}
-                            href={item.href}
-                            className="group rounded-xl border border-border bg-surface p-4 transition-all hover:shadow-md hover:border-brand-300"
+                            className="group relative flex flex-col rounded-2xl border border-border bg-surface p-5 sm:p-6 transition-all hover:shadow-xl hover:border-brand-300 dark:hover:border-brand-700 hover:-translate-y-1 overflow-hidden"
                         >
-                            <h3 className="text-sm font-bold text-foreground group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">{item.title}</h3>
-                            <p className="mt-1 text-[11px] text-foreground-muted leading-snug">{item.desc}</p>
-                        </Link>
+                            {/* Subtle premium gradient background on hover */}
+                            <div className="absolute inset-0 bg-linear-to-br from-brand-50/0 to-brand-50/0 opacity-0 group-hover:from-brand-50/50 group-hover:to-brand-100/50 dark:group-hover:from-brand-900/10 dark:group-hover:to-brand-800/10 transition-all duration-500" />
+                            
+                            <div className="relative z-10 flex flex-col flex-1">
+                                <div className={`flex size-12 sm:size-14 items-center justify-center rounded-xl ${item.bgClass} mb-4 sm:mb-5 shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3`}>
+                                    <item.icon className={`size-6 sm:size-7 ${item.colorClass}`} />
+                                </div>
+                                <h3 className="text-base sm:text-lg font-bold text-foreground group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+                                    {item.title}
+                                </h3>
+                                <p className="mt-2 text-xs sm:text-sm text-foreground-muted leading-relaxed flex-1">
+                                    {item.desc}
+                                </p>
+                            </div>
+                        </div>
                     ))}
                 </div>
             </section>
