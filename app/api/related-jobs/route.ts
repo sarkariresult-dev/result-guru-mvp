@@ -32,8 +32,14 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: 'Post not found' }, { status: 404 })
         }
 
-        const postRecord = sourcePost as any
-        const relatedIds = postRecord.related_post_ids || []
+        interface SourcePostData {
+            related_post_ids: string[] | null;
+            content_cluster_id: string | null;
+            type: string;
+        }
+
+        const source = sourcePost as unknown as SourcePostData;
+        const relatedIds = source.related_post_ids || []
         
         let posts: PostCard[] = []
 
@@ -63,7 +69,7 @@ export async function GET(request: Request) {
         }
 
         // 3. Fallback: If no strict affinity, fallback to same cluster
-        if (posts.length < 4 && postRecord.content_cluster_id) {
+        if (posts.length < 4 && source.content_cluster_id) {
             const { data: fallbackData } = await supabase
                 .from('v_published_posts')
                 .select(`
@@ -77,7 +83,7 @@ export async function GET(request: Request) {
                   application_start_date, application_end_date,
                   published_at, updated_at
                 `.trim())
-                .eq('type', postRecord.type)
+                .eq('type', source.type)
                 .neq('id', postId)
                 .limit(4 - posts.length)
 
@@ -96,7 +102,8 @@ export async function GET(request: Request) {
                 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
             }
         })
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 })
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Unknown error'
+        return NextResponse.json({ error: message }, { status: 500 })
     }
 }

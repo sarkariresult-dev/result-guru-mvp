@@ -5,7 +5,6 @@ import { sanitizeHtml } from '@/lib/sanitize'
 import { FAQAccordion } from './FAQAccordion'
 import { ApplicationStatusBadge } from './ApplicationStatusBadge'
 
-import { AffiliateProductsBox } from './AffiliateProductsBox'
 import { PostImageOverlay } from './PostImageOverlay'
 import { AdZone } from '@/components/ads/AdZone'
 import { processContentHtml, replacePlaceholders } from '@/lib/content-processing'
@@ -15,8 +14,11 @@ import type { PostDetail as PostDetailType, PostAffiliateProductEntry } from '@/
 import type { FaqItem } from '@/types/post-content.types'
 import { AuthorBox } from './AuthorBox'
 import { ShareBar } from './ShareBar'
+import { ActionCenter } from './ActionCenter'
+import { ProductInjection } from '@/features/affiliate/components/ProductInjection'
 import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
-import { Award, Calendar, Clock, FileText, Tag, ShieldCheck } from 'lucide-react'
+import { Award, Calendar, Clock, FileText, Tag, ShieldCheck, ArrowRight } from 'lucide-react'
+import { getActionLinkPageLabel } from '@/lib/seo/seo-analyzer'
 import { cn } from '@/lib/utils'
 
 /* ── Section IDs ─────────────────────────────────────────────── */
@@ -34,26 +36,26 @@ type SectionId =
 /* Org info, TOC, quick links, newsletter are now in the sidebar (page.tsx) */
 
 const SECTION_ORDER: Record<string, SectionId[]> = {
-    job: ['summary', 'dates', 'content', 'affiliates', 'author', 'faq', 'tags'],
-    notification: ['dates', 'content', 'affiliates', 'author', 'faq', 'tags'],
-    exam: ['dates', 'content', 'affiliates', 'author', 'faq', 'tags'],
-    result: ['content', 'affiliates', 'author', 'faq', 'tags'],
-    admit: ['content', 'affiliates', 'author', 'faq', 'tags'],
-    'answer-key': ['content', 'affiliates', 'author', 'faq', 'tags'],
-    answer_key: ['content', 'affiliates', 'author', 'faq', 'tags'],
-    'cut-off': ['content', 'affiliates', 'author', 'faq', 'tags'],
-    cut_off: ['content', 'affiliates', 'author', 'faq', 'tags'],
-    syllabus: ['content', 'affiliates', 'author', 'faq', 'tags'],
-    'exam-pattern': ['content', 'affiliates', 'author', 'faq', 'tags'],
-    exam_pattern: ['content', 'affiliates', 'author', 'faq', 'tags'],
-    'previous-paper': ['content', 'affiliates', 'author', 'faq', 'tags'],
-    previous_paper: ['content', 'affiliates', 'author', 'faq', 'tags'],
-    scheme: ['content', 'affiliates', 'author', 'faq', 'tags'],
-    admission: ['dates', 'content', 'affiliates', 'author', 'faq', 'tags'],
-    scholarship: ['dates', 'content', 'affiliates', 'author', 'faq', 'tags'],
+    job: ['summary', 'dates', 'content', 'author', 'faq', 'tags'],
+    notification: ['dates', 'content', 'author', 'faq', 'tags'],
+    exam: ['dates', 'content', 'author', 'faq', 'tags'],
+    result: ['content', 'author', 'faq', 'tags'],
+    admit: ['content', 'author', 'faq', 'tags'],
+    'answer-key': ['content', 'author', 'faq', 'tags'],
+    answer_key: ['content', 'author', 'faq', 'tags'],
+    'cut-off': ['content', 'author', 'faq', 'tags'],
+    cut_off: ['content', 'author', 'faq', 'tags'],
+    syllabus: ['content', 'author', 'faq', 'tags'],
+    'exam-pattern': ['content', 'author', 'faq', 'tags'],
+    exam_pattern: ['content', 'author', 'faq', 'tags'],
+    'previous-paper': ['content', 'author', 'faq', 'tags'],
+    previous_paper: ['content', 'author', 'faq', 'tags'],
+    scheme: ['content', 'author', 'faq', 'tags'],
+    admission: ['dates', 'content', 'author', 'faq', 'tags'],
+    scholarship: ['dates', 'content', 'author', 'faq', 'tags'],
 }
 
-const DEFAULT_ORDER: SectionId[] = ['content', 'affiliates', 'author', 'faq', 'tags']
+const DEFAULT_ORDER: SectionId[] = ['content', 'author', 'faq', 'tags']
 
 /* ── Component ───────────────────────────────────────────────── */
 
@@ -108,34 +110,28 @@ export function PostDetail({ post, slug, url }: Props) {
             case 'dates':
                 if (!post.application_start_date && !post.application_end_date) return null
                 return (
-                    <div key="dates" className="flex flex-wrap items-center gap-x-8 gap-y-4 py-2 border-y border-border/50">
-                        <div className="flex items-center gap-3">
-                            <div className="flex size-9 items-center justify-center rounded-full bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400">
-                                <Calendar className="size-4.5" />
-                            </div>
-                            <div>
-                                <p className="text-[10px] font-bold uppercase tracking-wider text-foreground-subtle">Registration Start</p>
-                                <p className="text-sm font-bold text-foreground">{formatDate(post.application_start_date)}</p>
+                    <div key="dates" className="grid grid-cols-1 sm:grid-cols-2 gap-8 py-10 border-y border-border/50">
+                        <div className="space-y-1">
+                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-600 dark:text-brand-400 mb-2">Registration Window</p>
+                            <div className="flex items-baseline gap-2">
+                                <span className="text-2xl font-black text-foreground">{formatDate(post.application_start_date)}</span>
+                                <span className="text-xs font-bold text-foreground-subtle uppercase">Start</span>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <div className={cn(
-                                "flex size-9 items-center justify-center rounded-full",
-                                post.application_status === 'closing_soon'
-                                    ? "bg-orange-100 text-orange-600 dark:bg-orange-900/40 dark:text-orange-400 animate-pulse-subtle"
-                                    : "bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400"
-                            )}>
-                                <Clock className="size-4.5" />
-                            </div>
-                            <div>
-                                <p className="text-[10px] font-bold uppercase tracking-wider text-foreground-subtle">Registration End</p>
-                                <p className={cn(
-                                    "text-sm font-bold",
-                                    post.application_status === 'closing_soon' ? "text-orange-700 dark:text-orange-400" : "text-foreground"
+                        <div className="space-y-1">
+                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-600 dark:text-brand-400 mb-2">Closing Deadline</p>
+                            <div className="flex items-baseline gap-2">
+                                <span className={cn(
+                                    "text-2xl font-black",
+                                    post.application_status === 'closing_soon' ? "text-orange-600 dark:text-orange-400" : "text-foreground"
                                 )}>
                                     {formatDate(post.application_end_date)}
-                                </p>
+                                </span>
+                                <span className="text-xs font-bold text-foreground-subtle uppercase">End</span>
                             </div>
+                            {post.application_status === 'closing_soon' && (
+                                <p className="text-[10px] font-black uppercase text-orange-600 animate-pulse mt-1">Closing Soon — Hurry!</p>
+                            )}
                         </div>
                     </div>
                 )
@@ -145,14 +141,11 @@ export function PostDetail({ post, slug, url }: Props) {
                 return (
                     <div
                         key="content"
-                        className="prose prose-lg max-w-none dark:prose-invert prose-headings:tracking-tight prose-headings:scroll-mt-20 prose-a:text-brand-600 prose-a:no-underline hover:prose-a:underline prose-img:rounded-lg prose-img:shadow-md prose-table:overflow-hidden prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-code:before:content-none prose-code:after:content-none"
+                        className="prose-editorial prose dark:prose-invert prose-headings:font-black prose-headings:tracking-tighter prose-headings:scroll-mt-24 prose-a:text-brand-600 prose-a:font-black prose-a:no-underline hover:prose-a:underline prose-img:rounded-3xl prose-img:shadow-2xl prose-table:rounded-2xl prose-table:overflow-hidden prose-table:border prose-table:border-border prose-recruitment py-8"
                         dangerouslySetInnerHTML={{ __html: processedHtml }}
                         suppressHydrationWarning
                     />
                 )
-            case 'affiliates':
-                if (!affiliates || affiliates.length === 0) return null
-                return <AffiliateProductsBox key="affiliates" affiliates={affiliates} />
 
             case 'author':
                 if (!post.author) return null
@@ -194,6 +187,18 @@ export function PostDetail({ post, slug, url }: Props) {
             renderedSections.push(rendered)
             sectionCount++
 
+            // Insert contextual product injection after the first section (usually summary or dates)
+            if (sectionCount === 1 && post.type === 'job') {
+                renderedSections.push(
+                    <ProductInjection 
+                        key="contextual-books" 
+                        category="books" 
+                        label="Top Recommended Book"
+                        description="This guide is highly recommended for complete syllabus coverage."
+                    />
+                )
+            }
+
             // Insert inline ad zone after every 3rd rendered section
             if (sectionCount % 3 === 0 && section !== 'tags') {
                 renderedSections.push(
@@ -213,63 +218,65 @@ export function PostDetail({ post, slug, url }: Props) {
         <div className="space-y-8" suppressHydrationWarning>
             <LocalErrorBoundary name="PostDetailMain" silent>
                 {/* ── Header: Title, Org, Dates ────────────────────────── */}
-                <header className="space-y-5 animate-fade-up" suppressHydrationWarning>
+                <header className="space-y-8 animate-fade-up pt-4 pb-10 border-b border-border/50" suppressHydrationWarning>
+                    {/* Organization Tag */}
+                    <div className="flex items-center gap-3">
+                        <div className="h-px w-8 bg-brand-500" />
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-600 dark:text-brand-400">
+                            {post.org_name || 'Recruitment News'}
+                        </span>
+                    </div>
+
                     {/* Title */}
-                    <h1 className="text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl leading-tight">
+                    <h1 className="text-3xl font-black text-foreground sm:text-4xl lg:text-5xl leading-[1.1] tracking-tight">
                         {post.title}
                     </h1>
 
                     {/* Meta row */}
-                    <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-foreground-muted" suppressHydrationWarning>
-                        {post.org_name && (
-                            <span className="flex items-center gap-1.5">
-                                <Award className="size-4 text-brand-500" />
-                                {post.org_name}
-                            </span>
-                        )}
+                    <div className="flex flex-wrap items-center gap-x-8 gap-y-4 text-[10px] font-black uppercase tracking-widest text-foreground-subtle" suppressHydrationWarning>
                         {post.published_at && (
-                            <time dateTime={formatDate(post.published_at, 'ISO')} className="flex items-center gap-1.5 border-r border-border pr-4">
-                                <Calendar className="size-4 text-brand-500" />
-                                <span className="hidden sm:inline">Published </span>{formatDate(post.published_at)}
-                            </time>
+                            <div className="flex items-center gap-2.5">
+                                <Calendar className="size-3.5 text-brand-500" />
+                                <span>Published {formatDate(post.published_at)}</span>
+                            </div>
                         )}
                         {post.content_updated_at && post.content_updated_at !== post.published_at && (
-                            <time dateTime={formatDate(post.content_updated_at, 'ISO')} className="flex items-center gap-1.5 border-r border-border pr-4 text-emerald-600 dark:text-emerald-400">
-                                <Clock className="size-4" />
-                                <span className="hidden sm:inline">Updated </span>{formatDate(post.content_updated_at)}
-                            </time>
+                            <div className="flex items-center gap-2.5 text-emerald-600 dark:text-emerald-400">
+                                <Clock className="size-3.5" />
+                                <span>Updated {formatDate(post.content_updated_at)}</span>
+                            </div>
                         )}
-                        <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full border border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/30">
+                        <div className="flex items-center gap-2 bg-brand-50 text-brand-700 px-4 py-1.5 rounded-full border border-brand-200 dark:bg-brand-900/30 dark:text-brand-400 dark:border-brand-800/40 shadow-sm">
                             <ShieldCheck className="size-3.5" />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">Sarkari Verified</span>
+                            <span>Verified Authority</span>
                         </div>
                     </div>
                 </header>
 
                 {/* ── Featured Image with overlay badges + actions ─────── */}
-                <figure className="relative overflow-hidden rounded-2xl shadow-md border border-border group bg-background-muted flex flex-col items-center justify-center">
+                <figure className="relative overflow-hidden rounded-4xl shadow-xl border border-border group bg-background-muted flex flex-col items-center justify-center">
                     <Image
                         src={post.featured_image || '/images/placeholder-post.png'}
                         alt={post.featured_image_alt ?? post.title}
                         width={1200}
                         height={675}
-                        className="w-full h-auto transition-transform duration-slow group-hover:scale-[1.01]"
+                        className="w-full h-auto transition-transform duration-slow group-hover:scale-[1.02]"
                         sizes="(max-width: 768px) 100vw, 1200px"
                         priority
                         quality={75}
                     />
 
                     {/* Top-left: status badge (overlay) */}
-                    <div className="absolute top-3 left-3 flex flex-wrap gap-2">
+                    <div className="absolute top-4 left-4 flex flex-wrap gap-2">
                         <ApplicationStatusBadge status={post.application_status} />
                     </div>
 
                     {/* Bottom bar (overlay) */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between bg-linear-to-t from-black/60 via-black/20 to-transparent">
+                    <div className="absolute bottom-0 left-0 right-0 p-6 flex items-end justify-between bg-linear-to-t from-black/80 via-black/20 to-transparent">
                         {/* Bottom-left: info badges */}
                         <div className="flex flex-wrap items-center gap-2">
                             {post.state_name && (
-                                <span className="rounded-full bg-white/20 backdrop-blur-sm border border-white/20 px-2.5 py-0.5 text-[11px] font-semibold text-white uppercase tracking-wide">
+                                <span className="rounded-full bg-white/20 backdrop-blur-md border border-white/20 px-4 py-1 text-[11px] font-black text-white uppercase tracking-widest shadow-lg">
                                     {post.state_name}
                                 </span>
                             )}
@@ -287,13 +294,22 @@ export function PostDetail({ post, slug, url }: Props) {
 
             {/* Excerpt */}
             {post.excerpt && (
-                <div className="space-y-6">
-                    <p className="border-l-4 border-brand-500 pl-4 py-1 text-lg italic font-medium text-foreground-muted bg-linear-to-r from-brand-50/50 to-transparent dark:from-brand-900/10 rounded-r-lg leading-relaxed">
+                <div className="space-y-8">
+                    <p className="border-l-8 border-brand-500 pl-8 py-4 text-2xl font-black text-foreground leading-[1.4] bg-linear-to-r from-brand-50/50 to-transparent dark:from-brand-900/10 rounded-r-4xl">
                         {post.excerpt}
                     </p>
                     <ShareBar title={post.title} url={url} />
                 </div>
             )}
+
+            {/* ── Action Center: Consolidating Sidebar Links ─────── */}
+            <ActionCenter 
+                links={[
+                    ...(post.org_official_url ? [{ href: post.org_official_url, label: 'Official Website', icon: 'external' as const, primary: true }] : []),
+                    ...(post.primary_link ? [{ href: post.primary_link, label: getActionLinkPageLabel(typeKey), icon: 'check' as const, primary: true }] : []),
+                    ...(post.notification_pdf ? [{ href: post.notification_pdf, label: 'Notification PDF', icon: 'download' as const }] : []),
+                ]}
+            />
 
             <AdZone zoneSlug="above_content" postType={typeKey} postId={post.id} className="my-6" />
 

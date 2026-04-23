@@ -50,6 +50,7 @@ const STATIC_PAGES = [
     { path: '/organizations', changeFrequency: 'monthly', priority: 0.5 },
     { path: '/stories', changeFrequency: 'daily', priority: 0.6 },
     { path: '/site-map', changeFrequency: 'weekly', priority: 0.3 },
+    { path: '/shop', changeFrequency: 'daily', priority: 0.9 },
     { path: '/about', changeFrequency: 'monthly', priority: 0.4 },
     { path: '/contact', changeFrequency: 'monthly', priority: 0.4 },
     { path: '/privacy-policy', changeFrequency: 'yearly', priority: 0.2 },
@@ -104,7 +105,7 @@ export async function GET() {
         ])
 
         if (statesResult.status === 'fulfilled' && statesResult.value.data) {
-            for (const state of statesResult.value.data as any[]) {
+            for (const state of statesResult.value.data as { slug: string; created_at: string | null }[]) {
                 const mod = new Date(state.created_at ?? now).toISOString()
                 entries.push(urlEntry(`${baseUrl}/states/${state.slug}`, mod, 'weekly', 0.6))
 
@@ -115,7 +116,7 @@ export async function GET() {
         }
 
         if (orgsResult.status === 'fulfilled' && orgsResult.value.data) {
-            for (const org of orgsResult.value.data as any[]) {
+            for (const org of orgsResult.value.data as { slug: string; created_at: string | null }[]) {
                 const mod = new Date(org.created_at ?? now).toISOString()
                 entries.push(urlEntry(`${baseUrl}/organizations/${org.slug}`, mod, 'monthly', 0.5))
 
@@ -127,21 +128,21 @@ export async function GET() {
         }
 
         if (tagsResult.status === 'fulfilled' && tagsResult.value.data) {
-            for (const tag of tagsResult.value.data as any[]) {
+            for (const tag of tagsResult.value.data as { slug: string; created_at: string | null }[]) {
                 const mod = new Date(tag.created_at ?? now).toISOString()
                 entries.push(urlEntry(`${baseUrl}/tag/${tag.slug}`, mod, 'weekly', 0.4))
             }
         }
 
         if (catsResult.status === 'fulfilled' && catsResult.value.data) {
-            for (const cat of catsResult.value.data as any[]) {
+            for (const cat of catsResult.value.data as { slug: string; created_at: string | null }[]) {
                 const mod = new Date(cat.created_at ?? now).toISOString()
                 entries.push(urlEntry(`${baseUrl}/category/${cat.slug}`, mod, 'weekly', 0.6))
             }
         }
 
         if (qualsResult.status === 'fulfilled' && qualsResult.value.data) {
-            for (const qual of qualsResult.value.data as any[]) {
+            for (const qual of qualsResult.value.data as { slug: string }[]) {
                 // Phase 6 Programmatic SEO combinations: /[type]/for/[qualificationSlug]
                 Object.values(TYPE_SEGMENT).forEach((typeSegment) => {
                     entries.push(urlEntry(`${baseUrl}/${typeSegment}/for/${qual.slug}`, now, 'weekly', 0.8))
@@ -157,6 +158,26 @@ export async function GET() {
                  entries.push(urlEntry(`${baseUrl}/${typeSegment}/archive/${year}`, now, year === currentYear ? 'daily' : 'monthly', year === currentYear ? 0.9 : 0.6))
              })
         });
+
+        // ── Shop Categories & Products ──
+        const [shopProductsResult] = await Promise.allSettled([
+            supabase.from('affiliate').select('slug, updated_at, category').eq('is_active', true)
+        ])
+
+        // Individual Products
+        if (shopProductsResult.status === 'fulfilled' && shopProductsResult.value.data) {
+            const products = shopProductsResult.value.data as { slug: string; updated_at: string | null }[]
+            for (const product of products) {
+                const mod = new Date(product.updated_at ?? now).toISOString()
+                entries.push(urlEntry(`${baseUrl}/shop/${product.slug}`, mod, 'daily', 0.8))
+            }
+        }
+
+        // Shop Categories (from static metadata in features/affiliate/queries)
+        const shopCats = ['books', 'stationery', 'electronics', 'software', 'tools', 'other']
+        for (const cat of shopCats) {
+            entries.push(urlEntry(`${baseUrl}/shop/${cat}`, now, 'daily', 0.8))
+        }
 
     } catch (err) {
         console.error('[sitemap] Failed to fetch taxonomy data:', err)
@@ -182,7 +203,7 @@ export async function GET() {
             }
 
             if (posts?.length) {
-                for (const post of posts as any[]) {
+                for (const post of posts as { slug: string; type: string; updated_at: string | null; published_at: string | null; content_updated_at: string | null }[]) {
                     if (!post.slug || !post.type || !TYPE_SEGMENT[post.type]) continue
                     const mod = new Date(
                         post.content_updated_at ?? post.updated_at ?? post.published_at ?? now

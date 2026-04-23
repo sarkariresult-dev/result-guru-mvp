@@ -48,3 +48,20 @@ export async function createAdminClient() {
         },
     )
 }
+
+/**
+ * Static Supabase client for Build-Time (generateStaticParams).
+ * Bypasses cookies() API to avoid "outside a request scope" errors.
+ */
+export function createStaticClient() {
+    return _createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+            cookies: {
+                getAll: () => [],
+                setAll: () => { },
+            },
+        },
+    )
+}

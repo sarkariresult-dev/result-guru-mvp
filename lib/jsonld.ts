@@ -1,4 +1,5 @@
 import type { PostDetail } from '@/types/post.types'
+import { PostType } from '@/types/enums'
 import { SITE, postUrl } from '@/config/site'
 
 // ── JSON-LD Types ──────────────────────────────────────────
@@ -11,7 +12,7 @@ type JsonLdObject = Record<string, unknown>
  */
 export function buildJobPostingSchema(post: PostDetail): JsonLdObject {
     try {
-        const url = postUrl(post.type as any, post.slug)
+        const url = postUrl(post.type as PostType, post.slug)
 
         // Calculate expiry date (validThrough)
         // Preference: post.expires_at -> 30 days after today if not set
@@ -50,7 +51,7 @@ export function buildJobPostingSchema(post: PostDetail): JsonLdObject {
                 address: {
                     '@type': 'PostalAddress',
                     streetAddress: 'New Delhi, India',
-                    addressLocality: (post as any).city_name ?? 'New Delhi',
+                    addressLocality: 'New Delhi',
                     addressRegion: post.state_name ?? 'Delhi',
                     postalCode: '110001',
                     addressCountry: 'IN',
@@ -134,6 +135,7 @@ export function buildWebSiteSchema(): JsonLdObject {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
         name: SITE.name,
+        alternateName: ['Sarkari Result Guru', 'ResultGuru'],
         url: SITE.url,
         description: SITE.description,
         inLanguage: 'en-IN',
@@ -204,7 +206,7 @@ export function buildFAQPageSchema(
  */
 export function buildGovernmentServiceSchema(post: PostDetail): JsonLdObject {
     try {
-        const url = postUrl(post.type as any, post.slug)
+        const url = postUrl(post.type as PostType, post.slug)
         return {
             '@context': 'https://schema.org',
             '@type': 'GovernmentService',
@@ -265,7 +267,7 @@ export function buildHowToSchema(
  */
 export function buildNewsArticleSchema(post: PostDetail): JsonLdObject {
     try {
-        const url = postUrl(post.type as any, post.slug)
+        const url = postUrl(post.type as PostType, post.slug)
         const schema: JsonLdObject = {
             '@context': 'https://schema.org',
             '@type': 'NewsArticle',

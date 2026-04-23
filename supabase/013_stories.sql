@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- 013_web_stories.sql - Result Guru
+-- 013_stories.sql - Result Guru
 -- Google Web Stories (AMP) database schema
 -- ═══════════════════════════════════════════════════════════════
 

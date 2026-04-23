@@ -44,7 +44,7 @@ class SafeThemeProvider extends Component<
         return { hasError: true }
     }
 
-    componentDidCatch(error: Error, info: ErrorInfo) {
+    componentDidCatch(_error: Error, _info: ErrorInfo) {
 
     }
 

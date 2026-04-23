@@ -3,9 +3,10 @@ import { buildPageMetadata } from '@/lib/metadata'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
+import { LucideIcon } from 'lucide-react'
 import {
-    FileText, Building2, MapPin, Search, Scale,
-    ArrowRight, History, LayoutGrid, GraduationCap,
+    Building2, MapPin, Search, Scale,
+    History, LayoutGrid, GraduationCap,
     Compass, ShieldCheck, Zap, Newspaper, HelpCircle,
     LogIn, UserPlus, KeyRound, Rss, Code2, Tags, Hash,
     Info, ChevronRight,
@@ -28,9 +29,9 @@ export default function SitemapPage() {
     const SITEMAP_SECTIONS: {
         title: string;
         subtitle: string;
-        icon: any;
+        icon: LucideIcon;
         accent: string;
-        items: { label: string; href: string; icon?: any; badge?: string }[]
+        items: { label: string; href: string; icon?: LucideIcon; badge?: string }[]
     }[] = [
             {
                 title: 'Primary Updates',
@@ -146,7 +147,7 @@ export default function SitemapPage() {
                 <div className="space-y-0">
                     {SITEMAP_SECTIONS
                         .filter(section => !isIframe || section.title !== 'User Access')
-                        .map((section, idx) => (
+                        .map((section, _idx) => (
                         <section
                             key={section.title}
                             className="group relative border-b border-slate-100 dark:border-white/5 py-12 sm:py-16 transition-all duration-500 hover:z-10 hover:bg-slate-50/50 dark:hover:bg-white/2 group-hover/main:opacity-40 hover:opacity-100!"

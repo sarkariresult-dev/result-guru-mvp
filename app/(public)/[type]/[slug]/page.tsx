@@ -12,20 +12,16 @@ import { RelatedPosts } from '@/features/posts/components/RelatedPosts'
 import { SmartRelatedPosts } from '@/features/posts/components/SmartRelatedPosts'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { TableOfContents } from '@/features/posts/components/TableOfContents'
-import { OrgInfoBox } from '@/features/posts/components/OrgInfoBox'
 import { AdZone } from '@/components/ads/AdZone'
+import { SidebarProducts } from '@/features/affiliate/components/SidebarProducts'
 import { POST_TYPE_CONFIG } from '@/config/constants'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
 import type { PostTypeKey } from '@/config/site'
-import type { PublishedPost } from '@/types/post.types'
+import type { PublishedPost, PostDetail as PostDetailType } from '@/types/post.types'
 import type { FaqItem } from '@/types/post-content.types'
 import { slugToKey, humanise, keyToSlug } from '@/lib/utils'
-import { ExternalLink, Download, ListTree } from 'lucide-react'
 import { PageViewTracker } from '@/features/analytics/components/PageViewTracker'
-import { getActionLinkPageLabel } from '@/lib/seo/seo-analyzer'
 import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
-
-
 
 /* ── Types ───────────────────────────────────────────────────────── */
 
@@ -35,14 +31,7 @@ interface Props {
 
 /* ── Static params (SSG + ISR for all published posts) ──────────── */
 
-/**
- * Pre-render all published post pages at build time.
- * New posts published after build are rendered on-demand and cached.
- * Falls back to empty array if DB query fails (all pages on-demand).
- */
 export async function generateStaticParams() {
-    // In development mode, fetch a minimal set of paths to satisfy Next.js requirements
-    // while keeping database overhead low.
     const limit = process.env.NODE_ENV === 'development' ? 1 : 100
 
     try {
@@ -64,14 +53,12 @@ export async function generateStaticParams() {
                 slug: p.slug,
             }))
 
-        // Ensure at least one result for build-time validation in Next.js 16
         if (params.length === 0) {
             return [{ type: 'job', slug: 'latest-vacancy' }]
         }
 
         return params
     } catch {
-        // If DB is unreachable during build, return a fallback to avoid build error
         return [{ type: 'job', slug: 'latest-vacancy' }]
     }
 }
@@ -100,7 +87,8 @@ export default async function PostDetailPage({ params }: Props) {
     const post = await getPostBySlug(slug, typeKey)
     if (!post) notFound()
 
-    const publishedPost = post as PublishedPost
+    const publishedPost = post as PostDetailType
+    const canonicalUrl = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/${slug}`
 
     /* ── JSON-LD ────────────────────────────────────────────────── */
     const jsonLdEntries: Record<string, unknown>[] = []
@@ -117,7 +105,7 @@ export default async function PostDetailPage({ params }: Props) {
             { name: 'Home', url: SITE.url },
             { name: config.heading, url: `${SITE.url}/${type}` },
             ...(publishedPost.state_slug ? [{ name: publishedPost.state_name || humanise(publishedPost.state_slug), url: `${SITE.url}/states/${publishedPost.state_slug}` }] : []),
-            { name: publishedPost.title, url: `${SITE.url}${ROUTE_PREFIXES[typeKey]}/${slug}` },
+            { name: publishedPost.title, url: canonicalUrl },
         ])
     )
 
@@ -126,10 +114,7 @@ export default async function PostDetailPage({ params }: Props) {
         jsonLdEntries.push(buildFAQPageSchema(faq))
     }
 
-    /* ── HowTo Schema ────────────────────────────────────────── */
     const howToSteps = publishedPost.content ? extractHowToSteps(publishedPost.content) : []
-    const canonicalUrl = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/${slug}`
-
     if (howToSteps.length >= 3) {
         jsonLdEntries.push(
             buildHowToSchema(
@@ -142,16 +127,15 @@ export default async function PostDetailPage({ params }: Props) {
 
     jsonLdEntries.push(buildNewsArticleSchema(publishedPost))
 
-    /* ── Extract TOC items & Inject Internal Links ─────────────────── */
     const { tocItems } = publishedPost.content
         ? processContentHtml(sanitizeHtml(publishedPost.content), {
             stateSlug: publishedPost.state_slug,
             stateName: publishedPost.state_name,
-            orgSlug: publishedPost.org_short_name ? publishedPost.slug : null, // Assuming org slug would be related
+            orgSlug: publishedPost.org_short_name ? publishedPost.slug : null,
             orgName: publishedPost.org_name,
             orgShortName: publishedPost.org_short_name,
         })
-        : { tocItems: [] as { id: string; text: string; level: number }[] }
+        : { tocItems: [] }
 
     /* ── Fetch Dynamic Sidebar Silo Links ── */
     const { getPosts } = await import('@/features/posts/queries')
@@ -168,23 +152,6 @@ export default async function PostDetailPage({ params }: Props) {
         .filter(p => p.id !== publishedPost.id)
         .slice(0, 5)
 
-    /* ── Quick action links ──────────────────────────────────── */
-    const quickLinks: Array<{ href: string; label: string; icon: 'external' | 'download'; primary?: boolean }> = []
-    if (publishedPost.org_official_url) {
-        quickLinks.push({ href: publishedPost.org_official_url, label: 'Official Website', icon: 'external', primary: true })
-    }
-    if (publishedPost.notification_pdf) {
-        quickLinks.push({ href: publishedPost.notification_pdf, label: 'Notification PDF', icon: 'download' })
-    }
-    if (publishedPost.primary_link) {
-        quickLinks.push({ 
-            href: publishedPost.primary_link, 
-            label: getActionLinkPageLabel(typeKey), 
-            icon: 'external',
-            primary: true 
-        })
-    }
-
     return (
         <>
             <PageViewTracker postId={publishedPost.id} />
@@ -199,94 +166,76 @@ export default async function PostDetailPage({ params }: Props) {
                     ]}
                 />
 
-                <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_340px]">
-                    {/* ═══════════════════════════════════════════ MAIN CONTENT COLUMN ═══════════════════════════════════════════ */}
-                    <article>
-                        <LocalErrorBoundary name="MainContent" silent>
-                            <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} className="mt-8" />
-                            <PostDetail post={publishedPost} slug={slug} url={canonicalUrl} />
-                            <SmartRelatedPosts postId={publishedPost.id} />
-                            <RelatedPosts post={publishedPost} />
-                        </LocalErrorBoundary>
-                    </article>
+                <div className="mt-12 grid grid-cols-1 gap-16 lg:grid-cols-[240px_1fr_240px]">
+                    {/* LEFT WING */}
+                    <aside className="hidden lg:block space-y-8" aria-label="Quick Navigation">
+                        <LocalErrorBoundary name="LeftSidebar" silent>
+                            <div className="space-y-12">
+                                <AdZone zoneSlug="sidebar_left_top" postType={typeKey} postId={publishedPost.id} />
+                            </div>
 
-                    {/* ═══════════════════════════════════════════
-                         RIGHT SIDEBAR
-                        ═══════════════════════════════════════════ */}
-                    <aside className="hidden lg:block space-y-6" aria-label="Post sidebar">
-                        <LocalErrorBoundary name="SidebarContent" silent>
-                            {/* ── Organization Info ─────────────────── */}
-                            <OrgInfoBox
-                                name={publishedPost.org_name}
-                                shortName={publishedPost.org_short_name}
-                                logoUrl={publishedPost.org_logo_url}
-                                officialUrl={publishedPost.org_official_url}
-                            />
-
-                            {/* ── Quick Action Links ───────────────── */}
-                            {quickLinks.length > 0 && (
-                                <div className="py-2 space-y-4">
-                                    <h3 className="text-sm font-bold uppercase tracking-[0.05em] text-foreground-muted flex items-center gap-2">
-                                        <ExternalLink className="size-4 text-brand-500" /> Key Resources
-                                    </h3>
-                                    <div className="flex flex-col gap-2.5">
-                                        {quickLinks.map((link: { href: string; label: string; icon: 'external' | 'download'; primary?: boolean }, i: number) => (
-                                            <a
-                                                key={i}
-                                                href={link.href}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className={`flex items-center gap-2.5 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${link.primary
-                                                    ? 'bg-brand-600 text-white hover:bg-brand-700 shadow-sm hover:shadow-md'
-                                                    : 'border border-border text-foreground hover:bg-background-subtle'
-                                                    }`}
-                                            >
-                                                {link.icon === 'download' ? (
-                                                    <Download className="size-4 shrink-0" />
-                                                ) : (
-                                                    <ExternalLink className="size-4 shrink-0" />
-                                                )}
-                                                <span className="truncate">{link.label}</span>
-                                            </a>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* ── SEO Silo Links (Content Strategy) ── */}
-                            {siloPosts.length > 0 && (
-                                <div className="py-2 space-y-4">
-                                    <h3 className="text-sm font-bold uppercase tracking-[0.05em] text-foreground-muted flex items-center gap-2">
-                                        <ListTree className="size-4 text-brand-500" /> More Related
-                                    </h3>
-                                    <div className="flex flex-col gap-3">
-                                        {siloPosts.map((p) => (
-                                            <Link 
-                                                key={p.id} 
-                                                href={`${ROUTE_PREFIXES[p.type as PostTypeKey]}/${p.slug}`} 
-                                                className="group flex flex-col gap-0.5"
-                                            >
-                                                <span className="text-sm font-bold text-foreground group-hover:text-brand-600 transition-colors line-clamp-2">
-                                                    {p.title}
-                                                </span>
-                                                <span className="text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
-                                                    {humanise(p.type)}
-                                                </span>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* ── Sidebar Ad ────────────────────────── */}
-                            <AdZone zoneSlug="sidebar_top" postType={typeKey} postId={publishedPost.id} />
-
-                            {/* ── Sticky Group (TOC & Sticky Ad) ────────────────── */}
-                            <div className="sticky top-24 space-y-6" suppressHydrationWarning>
+                            <div className="sticky top-24 space-y-8">
                                 {tocItems.length >= 2 && (
                                     <TableOfContents items={tocItems} />
                                 )}
-                                <AdZone zoneSlug="sidebar_sticky" postType={typeKey} postId={publishedPost.id} sticky />
+                                <AdZone zoneSlug="sidebar_left_sticky" postType={typeKey} postId={publishedPost.id} sticky />
+                            </div>
+                        </LocalErrorBoundary>
+                    </aside>
+
+                    {/* CORE CONTENT */}
+                    <article className="min-w-0">
+                        <LocalErrorBoundary name="MainContent" silent>
+                            <div className="mx-auto max-w-3xl space-y-10">
+                                <AdZone zoneSlug="above_content" postType={typeKey} postId={publishedPost.id} />
+                                <PostDetail post={publishedPost} slug={slug} url={canonicalUrl} />
+                                <div className="space-y-12">
+                                    <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} />
+                                    <SmartRelatedPosts postId={publishedPost.id} />
+                                    <RelatedPosts post={publishedPost} />
+                                </div>
+                            </div>
+                        </LocalErrorBoundary>
+                    </article>
+
+                    {/* RIGHT WING */}
+                    <aside className="hidden lg:block space-y-8" aria-label="Curated Resources">
+                        <LocalErrorBoundary name="RightSidebar" silent>
+                            <AdZone zoneSlug="sidebar_right_top" postType={typeKey} postId={publishedPost.id} />
+
+                            <div className="space-y-8 sticky top-24">
+                                <SidebarProducts category="books" limit={3} />
+                                <AdZone zoneSlug="sidebar_right_middle" postType={typeKey} postId={publishedPost.id} />
+                                <SidebarProducts category="stationery" limit={2} />
+                                <AdZone zoneSlug="sidebar_right_bottom" postType={typeKey} postId={publishedPost.id} />
+                                <SidebarProducts category="electronics" limit={2} />
+
+                                {siloPosts.length > 0 && (
+                                    <>
+                                        <div className="flex items-center gap-3 mb-6">
+                                            <div className="h-px w-6 bg-brand-500" />
+                                            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground-subtle">
+                                                Intelligence Silo
+                                            </h3>
+                                        </div>
+                                        <div className="space-y-6">
+                                            {siloPosts.map((p) => (
+                                                <Link
+                                                    key={p.id}
+                                                    href={`${ROUTE_PREFIXES[p.type as PostTypeKey]}/${p.slug}`}
+                                                    className="group block transition-all"
+                                                >
+                                                    <div className="flex flex-col">
+                                                        <h4 className="text-[11px] font-black text-foreground leading-tight line-clamp-2 group-hover:text-brand-600 transition-colors uppercase tracking-tight">
+                                                            {p.title}
+                                                        </h4>
+                                                        <p className="text-[8px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400 mt-1.5 flex items-center gap-2">{humanise(p.type)}</p>
+                                                    </div>
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </LocalErrorBoundary>
                     </aside>

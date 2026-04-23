@@ -76,13 +76,12 @@ EXCEPTION WHEN duplicate_object THEN NULL; END$$;
 
 -- ── Affiliate & Redirect Enums ───────────────────────────────
 DO $$ BEGIN
-  CREATE TYPE affiliate_product_type AS ENUM (
-    'book',
-    'test_series',
-    'course',
+  CREATE TYPE affiliate_category AS ENUM (
+    'books',
     'stationery',
-    'tool',
+    'electronics',
     'software',
+    'tools',
     'other'
   );
 EXCEPTION WHEN duplicate_object THEN NULL; END$$;

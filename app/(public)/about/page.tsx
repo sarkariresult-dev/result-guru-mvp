@@ -2,9 +2,8 @@ import Link from 'next/link'
 import { buildPageMetadata } from '@/lib/metadata'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
-import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
-import { ShieldCheck, Target, Zap, Users, Search, BellRing, FileText } from 'lucide-react'
+import { ShieldCheck, Target, Zap, Users, Search, BellRing, FileText, type LucideIcon } from 'lucide-react'
 import * as Icons from 'lucide-react'
 import { InstitutionalCTA } from '@/components/sections/InstitutionalCTA'
 
@@ -288,7 +287,9 @@ export default function AboutPage() {
 
                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                             {ECOSYSTEM_ITEMS.map((nav, i) => {
-                                const IconComponent = nav.icon ? (Icons as any)[nav.icon] : FileText
+                                const IconComponent = (nav.icon && nav.icon in Icons 
+                                    ? (Icons as Record<string, any>)[nav.icon] 
+                                    : FileText) as LucideIcon
                                 return (
                                     <Link
                                         key={i}
@@ -307,7 +308,7 @@ export default function AboutPage() {
                 </section>
 
                 {/* Standardized Institutional CTA */}
-                <InstitutionalCTA 
+                <InstitutionalCTA
                     badge="Zero-Noise Guarantee"
                     title="India's Most Trusted Notification Pipeline."
                     description="No misleading thumbnails. No 'Download' loops. No hidden fees. Just direct, verified access to official government links and honest information on every device."

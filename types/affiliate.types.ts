@@ -1,14 +1,24 @@
 // =============================================================
 // affiliate.types.ts - Result Guru
-// Mirrors 012_affiliate.sql.
+// Mirrors 010_affiliate.sql.
 // =============================================================
 
 import type {
-    AffiliateProductType,
+    AffiliateType,
     StockStatus,
     AffiliateRuleSort,
     PostType,
 } from './enums'
+
+// ── Affiliate product type (lookup row) ────────────────────
+export interface AffiliateProductTypeRow {
+    slug: string
+    label: string
+    sort_order: number
+    is_active: boolean
+    created_at: string
+}
+
 
 // ── Affiliate network ──────────────────────────────────────
 export interface AffiliateNetwork {
@@ -25,62 +35,7 @@ export interface AffiliateNetwork {
     created_at: string
 }
 
-// ── Affiliate product ──────────────────────────────────────
-export interface AffiliateProduct {
-    id: string
-    network_id: string | null
-    product_type: AffiliateProductType
-    name: string
-    slug: string
-    description: string | null
-    short_description: string | null
-    author_publisher: string | null
-    edition: string | null
-    language: string
-    isbn: string | null
-    // Pricing
-    mrp: number | null
-    selling_price: number | null
-    discount_percent: number | null
-    // Media
-    image_url: string
-    image_alt: string | null
-    // URLs
-    product_url: string
-    affiliate_url: string | null
-    affiliate_product_id: string | null
-    // Targeting / matching signals
-    relevant_exams: string[] | null
-    relevant_subjects: string[] | null
-    relevant_post_types: PostType[] | null
-    relevant_states: string[] | null
-    relevant_qualifications: string[] | null
-    keywords: string[] | null
-    // Display
-    display_priority: number
-    badge_text: string | null    // "Bestseller", "New", etc.
-    badge_color: string | null
-    // State
-    is_active: boolean
-    is_featured: boolean
-    stock_status: StockStatus
-    // Analytics
-    click_count: number
-    // SEO
-    meta_title: string | null
-    meta_description: string | null
-    // Timestamps
-    created_at: string
-    updated_at: string
-}
 
-// ── Product with network info (from v_featured_affiliate_products) ─
-export interface AffiliateProductWithNetwork extends AffiliateProduct {
-    network_name: string | null
-    affiliate_id: string | null    // from network
-    tracking_param: string | null
-    network_base_url: string | null
-}
 
 // ── Post ↔ product association ─────────────────────────────
 export interface PostAffiliateProduct {
@@ -140,7 +95,8 @@ export interface AffiliateProductCard {
     badge_text: string | null
     badge_color: string | null
     stock_status: StockStatus
-    product_type: AffiliateProductType
+    product_type_slug: AffiliateType
+    type_label?: string | null
 }
 
 // ── Record click payload (RPC) ─────────────────────────────

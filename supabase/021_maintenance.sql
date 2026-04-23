@@ -6,6 +6,7 @@
 -- MAINTENANCE SCHEDULE
 -- ────────────────────
 -- Nightly  : SELECT fn_aggregate_ad_stats();
+-- Nightly  : SELECT fn_auto_expire_ads();
 -- Nightly  : SELECT fn_auto_close_applications();
 -- Weekly   : SELECT fn_purge_old_ad_events(90);
 -- Monthly  : SELECT fn_purge_old_post_views(365);
@@ -108,6 +109,39 @@ END;
 $$;
 COMMENT ON FUNCTION fn_purge_old_ad_events(INT) IS
   'Deletes raw ad_events older than N days. Run after fn_aggregate_ad_stats. Schedule: weekly.';
+
+-- ── Auto-expire ads and campaigns ─────────────────────────────
+-- ── 4. Ad Status Management ──────────────────────────────────
+CREATE OR REPLACE FUNCTION fn_auto_expire_ads()
+RETURNS VOID
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  -- 1. Expire ads that have passed their ends_at
+  UPDATE ads
+  SET    status = 'expired'
+  WHERE  status = 'active'
+    AND  ends_at < NOW();
+
+  -- 2. Expire campaigns that have passed their end_date
+  UPDATE ad_campaigns
+  SET    status = 'expired'
+  WHERE  status = 'active'
+    AND  end_date < CURRENT_DATE;
+
+  -- 3. Mark ads as active if they have reached their starts_at
+  --    (Only if currently in draft/paused and within valid window)
+  UPDATE ads
+  SET    status = 'active'
+  WHERE  status IN ('draft', 'paused')
+    AND  starts_at <= NOW()
+    AND  (ends_at IS NULL OR ends_at > NOW());
+END;
+$$;
+COMMENT ON FUNCTION fn_auto_expire_ads() IS
+  'Automatically updates ad and campaign statuses based on current date/time. Schedule: hourly or nightly.';
 
 -- ── Purge old page-view events ────────────────────────────────
 -- ── 4. Data Retention: Page Views ───────────────────────────

@@ -20,44 +20,32 @@ export function TableOfContents({ items }: TableOfContentsProps) {
     return (
         <nav
             aria-label="Table of Contents"
-            className="py-2 animate-fade-up"
+            className="animate-fade-up"
         >
-            <button
-                type="button"
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="flex w-full items-center justify-between text-left group"
-            >
-                <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.05em] text-foreground-muted group-hover:text-foreground transition-colors">
-                    <ListTree className="size-4 text-brand-500" />
+            <div className="flex items-center gap-3 mb-6">
+                <div className="h-px w-6 bg-brand-500" />
+                <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground-subtle">
                     On This Page
                 </h2>
-                {isExpanded ? (
-                    <ChevronDown className="size-4 text-foreground-muted" />
-                ) : (
-                    <ChevronRight className="size-4 text-foreground-muted" />
-                )}
-            </button>
+            </div>
 
-            {isExpanded && (
-                <ol className="mt-4 space-y-1.5 text-sm" role="list">
-                    {items.map((item, idx) => (
-                        <li
-                            key={item.id}
-                            style={{ paddingLeft: `${(item.level - 2) * 16}px` }}
+            <ol className="space-y-4" role="list">
+                {items.map((item, idx) => (
+                    <li
+                        key={item.id}
+                        className="group relative"
+                        style={{ paddingLeft: `${(item.level - 2) * 12}px` }}
+                    >
+                        <a
+                            href={`#${item.id}`}
+                            className="block text-xs font-bold text-foreground-muted transition-all hover:text-brand-600 leading-snug"
                         >
-                            <a
-                                href={`#${item.id}`}
-                                className="group flex items-start gap-2 rounded-md px-2 py-1 text-foreground-muted transition-colors hover:bg-background-subtle hover:text-brand-600"
-                            >
-                                <span className="mt-0.5 min-w-5 text-xs font-mono text-foreground-subtle group-hover:text-brand-500">
-                                    {idx + 1}.
-                                </span>
-                                <span className="leading-snug">{item.text}</span>
-                            </a>
-                        </li>
-                    ))}
-                </ol>
-            )}
+                            <span className="absolute -left-4 top-1/2 -translate-y-1/2 size-1 rounded-full bg-brand-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            {item.text}
+                        </a>
+                    </li>
+                ))}
+            </ol>
         </nav>
     )
 }

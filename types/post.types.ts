@@ -120,7 +120,7 @@ export interface PublishedPost extends Post {
     // From categories JOIN
     category_name: string | null
     category_slug: string | null
-    
+
     // Computed from application_start_date and application_end_date in v_published_posts
     application_status: ApplicationStatus
 
@@ -208,26 +208,37 @@ export interface PostTagEntry {
     tag: PostTag
 }
 
-// ── Post affiliate product (joined) ───────────────────────
+// ── Affiliate product (flat table) ────────────────────────
+export interface AffiliateProduct {
+    id: string
+    name: string
+    slug: string
+    category: 'books' | 'stationery' | 'electronics' | 'software' | 'tools' | 'other'
+    description: string | null
+    short_description: string | null
+    image_url: string
+    image_alt: string | null
+    product_url: string
+    mrp: number | null
+    selling_price: number | null
+    is_active: boolean
+    is_featured: boolean
+    display_priority: number
+    badge_text: string | null
+    badge_color: string | null
+    rating: number | null
+    rating_count: number
+    faq: Array<{ q: string; a: string }> | null
+    created_at: string
+    updated_at: string
+}
+
+/** @deprecated Legacy join type — use AffiliateProduct directly */
 export interface PostAffiliateProductEntry {
     post_id: string
     product_id: string
     sort_order: number
-    product: {
-        id: string
-        name: string
-        slug: string
-        image_url: string
-        image_alt: string | null
-        mrp: number | null
-        selling_price: number | null
-        discount_percent: number | null
-        affiliate_url: string | null
-        product_url: string
-        badge_text: string | null
-        badge_color: string | null
-        stock_status: string
-    }
+    product: AffiliateProduct
 }
 
 // ── Internal link ──────────────────────────────────────────
@@ -304,7 +315,6 @@ export interface SeoAuditRow {
     published_at: string | null
     content_updated_at: string | null
     last_reviewed_at: string | null
-    // Issue flags
     missing_meta_title: boolean
     missing_meta_desc: boolean
     missing_focus_keyword: boolean

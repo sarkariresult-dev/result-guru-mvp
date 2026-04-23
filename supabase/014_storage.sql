@@ -38,6 +38,13 @@ VALUES (
   ARRAY['image/jpeg', 'image/png', 'image/webp']
 ) ON CONFLICT (id) DO NOTHING;
 
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+  'affiliate', 'affiliate', TRUE,
+  5242880,
+  ARRAY['image/jpeg', 'image/png', 'image/webp']
+) ON CONFLICT (id) DO NOTHING;
+
 -- ── 2. Access Control Policies ──────────────────────────────
 -- Posts Bucket
 DROP POLICY IF EXISTS "posts_public_read" ON storage.objects;
@@ -48,6 +55,14 @@ DROP POLICY IF EXISTS "posts_auth_update" ON storage.objects;
 CREATE POLICY "posts_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'posts' AND auth.role() = 'authenticated' AND ((storage.foldername(name))[1] = auth.uid()::TEXT OR fn_is_admin()));
 DROP POLICY IF EXISTS "posts_auth_delete" ON storage.objects;
 CREATE POLICY "posts_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'posts' AND auth.role() = 'authenticated' AND ((storage.foldername(name))[1] = auth.uid()::TEXT OR fn_is_admin()));
+
+-- Affiliate Bucket
+DROP POLICY IF EXISTS "affiliate_public_read" ON storage.objects;
+CREATE POLICY "affiliate_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'affiliate');
+DROP POLICY IF EXISTS "affiliate_admin_write" ON storage.objects;
+CREATE POLICY "affiliate_admin_write" ON storage.objects FOR ALL USING (bucket_id = 'affiliate' AND fn_is_admin());
+DROP POLICY IF EXISTS "affiliate_author_write" ON storage.objects;
+CREATE POLICY "affiliate_author_write" ON storage.objects FOR ALL USING (bucket_id = 'affiliate' AND fn_is_author_or_admin());
 
 DROP POLICY IF EXISTS "avatars_public_read" ON storage.objects;
 CREATE POLICY "avatars_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'avatars');

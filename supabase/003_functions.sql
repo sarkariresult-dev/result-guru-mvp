@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- 003_helper_functions.sql - Result Guru
+-- 003_functions.sql - Result Guru
 -- Utility functions used globally across triggers and API.
 -- ═══════════════════════════════════════════════════════════════
 

@@ -19,31 +19,6 @@ function isLocalStorageAvailable() {
     }
 }
 
-/**
- * Check if navigator.locks (LockManager API) is safely usable.
- * In cross-origin iframes, navigator.locks exists but calling
- * .request() throws SecurityError. We proactively detect this.
- */
-function isLockManagerAvailable(): boolean {
-    try {
-        if (typeof navigator === 'undefined') return false;
-        if (!navigator.locks) return false;
-        // In cross-origin iframes, the object exists but is non-functional.
-        // We can't reliably test without calling .request(), so we check
-        // for iframe + storage restriction as a proxy.
-        if (typeof window !== 'undefined') {
-            try {
-                // If we can't even access storage, locks are almost certainly blocked too
-                window.localStorage.getItem('__lock_test__');
-            } catch {
-                return false;
-            }
-        }
-        return true;
-    } catch {
-        return false;
-    }
-}
 
 /**
  * Browser-side Supabase client.
@@ -60,7 +35,6 @@ export function createClient() {
     if (client) return client;
 
     const useStorage = isLocalStorageAvailable();
-    const useLocks = isLockManagerAvailable();
 
     client = createBrowserClient(
         env.NEXT_PUBLIC_SUPABASE_URL,
@@ -70,19 +44,15 @@ export function createClient() {
                 persistSession: useStorage,
                 autoRefreshToken: useStorage,
                 detectSessionInUrl: false, // Always disable URL session detection in browser to prevent loops
-                // When navigator.locks is unavailable (cross-origin iframe),
-                // provide a no-op lock to prevent SecurityError crashes.
-                ...(!useLocks ? {
-                    lock: async <R>(_name: string, _acquireTimeout: number, fn: (lock: unknown) => Promise<R>): Promise<R> => {
-                        try {
-                            return await fn('noop-lock');
-                        } catch (e) {
-                            // If even the no-op fn throws, we are in a truly broken state
-
-                            throw e;
-                        }
+                // Override the default LockManager to prevent 10s timeout errors 
+                // during development hot-reloads or when storage API triggers auth refreshes.
+                lock: async <R>(_name: string, _acquireTimeout: number, fn: (lock: unknown) => Promise<R>): Promise<R> => {
+                    try {
+                        return await fn('noop-lock');
+                    } catch (e) {
+                        throw e;
                     }
-                } : {}),
+                },
             },
             // Reduce noise in restricted contexts
             global: {

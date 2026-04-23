@@ -14,9 +14,7 @@ ALTER TABLE ads                     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ad_campaigns            ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ad_events               ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ad_stats_daily          ENABLE ROW LEVEL SECURITY;
-ALTER TABLE affiliate_products      ENABLE ROW LEVEL SECURITY;
-ALTER TABLE post_affiliate_products ENABLE ROW LEVEL SECURITY;
-ALTER TABLE affiliate_clicks        ENABLE ROW LEVEL SECURITY;
+ALTER TABLE affiliate              ENABLE ROW LEVEL SECURITY;
 ALTER TABLE subscribers             ENABLE ROW LEVEL SECURITY;
 ALTER TABLE broadcasts              ENABLE ROW LEVEL SECURITY;
 ALTER TABLE media                   ENABLE ROW LEVEL SECURITY;
@@ -28,8 +26,8 @@ ALTER TABLE organizations           ENABLE ROW LEVEL SECURITY;
 
 ALTER TABLE ad_zones                ENABLE ROW LEVEL SECURITY;
 ALTER TABLE advertisers             ENABLE ROW LEVEL SECURITY;
-ALTER TABLE affiliate_networks      ENABLE ROW LEVEL SECURITY;
-ALTER TABLE affiliate_rules         ENABLE ROW LEVEL SECURITY;
+-- affiliate_networks, affiliate_rules, affiliate_product_types REMOVED
+-- (tables no longer exist after affiliate simplification)
 ALTER TABLE search_queries          ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sitemap_config          ENABLE ROW LEVEL SECURITY;
 ALTER TABLE redirects               ENABLE ROW LEVEL SECURITY;
@@ -53,9 +51,6 @@ DROP POLICY IF EXISTS "ref_public_read" ON organizations;
 CREATE POLICY "ref_public_read" ON organizations  FOR SELECT USING (TRUE);
 DROP POLICY IF EXISTS "ref_public_read" ON ad_zones;
 CREATE POLICY "ref_public_read" ON ad_zones       FOR SELECT USING (TRUE);
-DROP POLICY IF EXISTS "ref_public_read" ON affiliate_networks;
-CREATE POLICY "ref_public_read" ON affiliate_networks FOR SELECT USING (TRUE);
-
 DROP POLICY IF EXISTS "ref_admin_write" ON tags;
 CREATE POLICY "ref_admin_write" ON tags           FOR ALL USING (fn_is_admin());
 DROP POLICY IF EXISTS "ref_admin_write" ON states;
@@ -68,8 +63,6 @@ DROP POLICY IF EXISTS "ref_admin_write" ON organizations;
 CREATE POLICY "ref_admin_write" ON organizations  FOR ALL USING (fn_is_admin());
 DROP POLICY IF EXISTS "ref_admin_write" ON ad_zones;
 CREATE POLICY "ref_admin_write" ON ad_zones       FOR ALL USING (fn_is_admin());
-DROP POLICY IF EXISTS "ref_admin_write" ON affiliate_networks;
-CREATE POLICY "ref_admin_write" ON affiliate_networks FOR ALL USING (fn_is_admin());
 
 -- ── 3. SEO & Redirects ──────────────────────────────────────
 DROP POLICY IF EXISTS "seo_settings_public_read" ON seo_settings;
@@ -89,8 +82,6 @@ CREATE POLICY "redirects_admin_write" ON redirects FOR ALL USING (fn_is_admin())
 
 DROP POLICY IF EXISTS "advertisers_admin" ON advertisers;
 CREATE POLICY "advertisers_admin" ON advertisers FOR ALL USING (fn_is_admin());
-DROP POLICY IF EXISTS "affiliate_rules_admin" ON affiliate_rules;
-CREATE POLICY "affiliate_rules_admin" ON affiliate_rules FOR ALL USING (fn_is_admin());
 DROP POLICY IF EXISTS "search_queries_anon_insert" ON search_queries;
 CREATE POLICY "search_queries_anon_insert"  ON search_queries FOR INSERT WITH CHECK (TRUE);
 DROP POLICY IF EXISTS "search_queries_service_read" ON search_queries;
@@ -167,7 +158,7 @@ CREATE POLICY "users_update_own"    ON users FOR UPDATE USING (auth.uid() = auth
 DROP POLICY IF EXISTS "users_admin_update" ON users;
 CREATE POLICY "users_admin_update"  ON users FOR UPDATE USING (fn_is_admin());
 DROP POLICY IF EXISTS "users_insert_any" ON users;
-CREATE POLICY "users_insert_any"    ON users FOR INSERT WITH CHECK (TRUE);
+CREATE POLICY "users_insert_service" ON users FOR INSERT WITH CHECK (auth.role() = 'service_role');
 DROP POLICY IF EXISTS "users_service" ON users;
 CREATE POLICY "users_service"       ON users FOR ALL   USING (auth.role() = 'service_role');
 
@@ -192,18 +183,12 @@ DROP POLICY IF EXISTS "ad_stats_service" ON ad_stats_daily;
 CREATE POLICY "ad_stats_service"       ON ad_stats_daily FOR ALL   USING (auth.role() = 'service_role');
 
 -- ── 8. Affiliate & Subscribers ──────────────────────────────
-DROP POLICY IF EXISTS "aff_products_public_read" ON affiliate_products;
-CREATE POLICY "aff_products_public_read" ON affiliate_products FOR SELECT USING (is_active = TRUE);
-DROP POLICY IF EXISTS "aff_products_service" ON affiliate_products;
-CREATE POLICY "aff_products_service" ON affiliate_products FOR ALL USING (auth.role() = 'service_role');
-DROP POLICY IF EXISTS "post_aff_public_read" ON post_affiliate_products;
-CREATE POLICY "post_aff_public_read" ON post_affiliate_products FOR SELECT USING (TRUE);
-DROP POLICY IF EXISTS "post_aff_service" ON post_affiliate_products;
-CREATE POLICY "post_aff_service" ON post_affiliate_products FOR ALL USING (auth.role() = 'service_role');
-DROP POLICY IF EXISTS "aff_clicks_anon_insert" ON affiliate_clicks;
-CREATE POLICY "aff_clicks_anon_insert" ON affiliate_clicks FOR INSERT WITH CHECK (TRUE);
-DROP POLICY IF EXISTS "aff_clicks_service_read" ON affiliate_clicks;
-CREATE POLICY "aff_clicks_service_read" ON affiliate_clicks FOR SELECT USING (auth.role() = 'service_role');
+DROP POLICY IF EXISTS "aff_public_read" ON affiliate;
+CREATE POLICY "aff_public_read" ON affiliate FOR SELECT USING (is_active = TRUE);
+DROP POLICY IF EXISTS "aff_staff_write" ON affiliate;
+CREATE POLICY "aff_staff_write" ON affiliate FOR ALL USING (fn_is_author_or_admin());
+DROP POLICY IF EXISTS "aff_service" ON affiliate;
+CREATE POLICY "aff_service" ON affiliate FOR ALL USING (auth.role() = 'service_role');
 
 -- Subscribers
 DROP POLICY IF EXISTS "subscribers_anon_insert" ON subscribers;

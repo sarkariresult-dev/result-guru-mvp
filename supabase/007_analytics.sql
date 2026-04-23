@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- 007_post_analytics.sql - Result Guru
+-- 007_analytics.sql - Result Guru
 -- Partitioned page-view event store.
 -- ═══════════════════════════════════════════════════════════════
 

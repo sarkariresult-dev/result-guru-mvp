@@ -111,7 +111,7 @@ export const adminNavGroups: NavGroup[] = [
         label: 'Monetization',
         items: [
             { title: 'Advertising', href: '/admin/ads', icon: 'Megaphone' },
-            { title: 'Affiliates', href: '/admin/affiliates', icon: 'ShoppingBag', disabled: true },
+            { title: 'Affiliates', href: '/admin/affiliate', icon: 'ShoppingBag' },
         ],
         defaultCollapsed: false,
     },

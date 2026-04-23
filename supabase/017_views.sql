@@ -79,14 +79,16 @@ JOIN      posts      p  ON p.id = pv.post_id
 WHERE pv.viewed_at > NOW() - INTERVAL '7 days' AND p.status = 'published'
 GROUP BY pv.post_id, p.title, p.slug, p.type, p.state_slug, p.org_name, p.featured_image, p.featured_image_alt, p.published_at;
 
--- ── 4. v_featured_affiliate_products ────────────────────────
-DROP VIEW IF EXISTS v_featured_affiliate_products CASCADE;
-CREATE VIEW v_featured_affiliate_products AS
-SELECT
-  ap.*, an.name AS network_name, an.affiliate_id, an.tracking_param, an.base_url AS network_base_url
-FROM      affiliate_products ap
-LEFT JOIN affiliate_networks  an ON an.id = ap.network_id
-WHERE ap.is_active = TRUE AND ap.is_featured = TRUE;
+-- ── 4. Affiliate Views ──────────────────────────────────────
+DROP VIEW IF EXISTS v_featured_affiliate CASCADE;
+CREATE VIEW v_featured_affiliate AS
+SELECT *
+FROM   affiliate
+WHERE  is_active = TRUE AND is_featured = TRUE;
+
+DROP VIEW IF EXISTS v_admin_affiliate CASCADE;
+CREATE VIEW v_admin_affiliate AS
+SELECT * FROM affiliate;
 
 -- ── 5. v_seo_audit ──────────────────────────────────────────
 DROP VIEW IF EXISTS v_seo_audit CASCADE;
@@ -129,7 +131,7 @@ SELECT
   v.id, v.type, v.slug, v.title, v.seo_score, v.application_status, v.expires_at,
   CASE
     WHEN v.expires_at IS NOT NULL AND v.expires_at < NOW() THEN 'expired'
-    WHEN v.application_status = 'open' THEN 'apply_closed'
+    WHEN v.application_status = 'closed' THEN 'apply_closed'
     WHEN v.seo_score < 40 THEN 'low_seo'
     WHEN v.last_reviewed_at < NOW() - INTERVAL '180 days' OR v.last_reviewed_at IS NULL THEN 'stale'
     ELSE 'other'

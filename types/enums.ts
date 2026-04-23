@@ -75,13 +75,13 @@ export enum AdZonePosition {
     FloatingBottom = 'floating_bottom',
 }
 
-// ── Affiliate product category ─────────────────────────────
-export enum AffiliateProductType {
-    Book = 'book',
-    TestSeries = 'test_series',
-    Course = 'course',
+// ── Affiliate product category ──────────────────────────────
+export enum AffiliateType {
+    Book = 'books',
     Stationery = 'stationery',
-    Tool = 'tool',
+    Electronics = 'electronics',
+    Merchandise = 'merchandise',
+    Tool = 'tools',
     Software = 'software',
     Other = 'other',
 }

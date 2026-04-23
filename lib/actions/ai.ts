@@ -351,7 +351,7 @@ export async function generateContentWithGemini(data: GeneratePostInput) {
             config: {
                 systemInstruction: systemPrompt,
                 responseMimeType: 'application/json',
-                responseSchema: aiResponseSchema as any, // Typed as any due to Gemini SDK complexity
+                responseSchema: aiResponseSchema as unknown, // Cast as unknown due to Gemini SDK complexity
                 temperature: env.GOOGLE_GENAI_TEMPERATURE ?? 0.5,
             },
         })
@@ -436,5 +436,107 @@ export async function enhancePostSEO(postId: string, aiData: Record<string, unkn
         const error = e instanceof Error ? e.message : 'Unknown SEO enhancement error'
 
         return { error }
+    }
+}
+
+/* ── Affiliate Product Generation ─────────────────────────────────── */
+
+const affiliateResponseSchema = {
+    type: Type.OBJECT,
+    properties: {
+        name: { type: Type.STRING, description: 'Short, clean product name (e.g. SSC Mathematics Guide)' },
+        short_description: { type: Type.STRING, description: 'Catchy 5-10 word tagline' },
+        description: { type: Type.STRING, description: 'Detailed 2-3 paragraph product description highlighting features/benefits' },
+        category: { type: Type.STRING, description: 'One of: books, stationery, electronics, software, tools, other' },
+        badge_text: { type: Type.STRING, description: 'One of: HOT, NEW, TRENDING, BEST SELLER' },
+        mrp: { type: Type.NUMBER, description: 'Estimated original price (MRP)' },
+        selling_price: { type: Type.NUMBER, description: 'Estimated discounted price' },
+        rating: { type: Type.NUMBER, description: 'Realistic rating out of 5.0 (e.g. 4.3, 4.7). Base on product quality and reviews if visible.' },
+        faq: {
+            type: Type.ARRAY,
+            items: {
+                type: Type.OBJECT,
+                properties: {
+                    q: { type: Type.STRING, description: 'A question a student would ask about this product' },
+                    a: { type: Type.STRING, description: 'A helpful, concise answer (1-2 sentences)' },
+                },
+                required: ['q', 'a'],
+            },
+            description: 'Generate 3-4 FAQ pairs that students commonly ask about this type of product.',
+        },
+    },
+    required: ['name', 'short_description', 'description', 'category'],
+}
+
+/**
+ * Generates product details from an affiliate URL.
+ * Now includes a lightweight scraper to get Title/Meta-Description for better accuracy.
+ */
+export async function generateAffiliateData(url: string) {
+    if (!url) return { error: 'URL is required' }
+
+    let metaTitle = ''
+    let metaDesc = ''
+
+    // 1. Attempt to fetch metadata to improve AI accuracy
+    try {
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 5000) // 5s timeout
+
+        const response = await fetch(url, {
+            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' },
+            signal: controller.signal
+        })
+
+        if (response.ok) {
+            const html = await response.text()
+            metaTitle = html.match(/<title>(.*?)<\/title>/i)?.[1] || ''
+            metaDesc = html.match(/<meta name="description" content="(.*?)"/i)?.[1] || ''
+        }
+        clearTimeout(timeoutId)
+    } catch {
+        // Fallback to URL-only analysis if fetch is blocked or fails
+    }
+
+    try {
+        const systemPrompt = `You are a precise data extraction specialist for Result Guru (Indian Education Portal). 
+        Your task is to deconstruct a store URL and its metadata to return structured JSON. 
+        If Metadata is provided, prioritize it for the product name.`
+        
+        const prompt = `URL TO ANALYZE: "${url}"
+        ${metaTitle ? `OFFICIAL PAGE TITLE: "${metaTitle}"` : ''}
+        ${metaDesc ? `OFFICIAL META DESCRIPTION: "${metaDesc}"` : ''}
+        
+        INSTRUCTIONS:
+        1. Extract the product name. Use the Page Title if available, otherwise deconstruct the URL slug.
+        2. Identify the category: [books, stationery, electronics, software, tools, other].
+        3. WRITING STYLE (HUMAN-LIKE):
+           - Write like a senior mentor (Bhaiya/Sir) talking to a student.
+           - AVOID AI CLICHÉS: Do not use "In today's world", "Unlock your potential", "Transformative", "Comprehensive", "Crucial", or "Vital".
+           - Use simple, direct Indian English. Keep sentences short and punchy.
+           - Mention real-life student context (e.g., "useful for revising during travel", "fits in your library bag", "best for late-night prep").
+           - Use 2-3 distinct paragraphs. Mix short and long sentences for a natural flow.
+        4. MRP/Price: Guess a REALISTIC price in INR based on product type.
+        5. RATING: Give a realistic rating (e.g. 4.2, 4.5, 4.8). Don't just say 5.0.
+        6. FAQ: Generate 3-4 questions that a student would realistically ask before buying this product. Keep answers short and helpful.
+        
+        CRITICAL: The goal is to look like it was hand-written by the Result Guru team.`
+
+        const response = await ai.models.generateContent({
+            model: env.GOOGLE_GENAI_MODEL || 'gemini-2.5-flash-preview-05-20',
+            contents: prompt,
+            config: {
+                systemInstruction: systemPrompt,
+                responseMimeType: 'application/json',
+                responseSchema: affiliateResponseSchema as unknown,
+                temperature: 0.3, // Lower temperature for more factual data
+            },
+        })
+
+        if (!response.text) throw new Error('No response from AI')
+        
+        return { success: true, data: JSON.parse(response.text) }
+    } catch (e: unknown) {
+        return { error: e instanceof Error ? e.message : 'AI Generation failed' }
     }
 }

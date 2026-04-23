@@ -119,9 +119,9 @@ export default async function Image({ params }: { params: Promise<{ type: string
                             {post.title}
                         </div>
                         
-                        {(post as any).org_name && (
+                        {post.org_name && (
                             <div style={{ fontSize: 36, color: '#93C5FD', fontWeight: 600 }}>
-                                {(post as any).org_name}
+                                {post.org_name}
                             </div>
                         )}
                     </div>

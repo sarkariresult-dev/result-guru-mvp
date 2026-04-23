@@ -1,9 +1,8 @@
 
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
-import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { SITE } from '@/config/site'
-import { Clock, MessageSquare, Shield, LifeBuoy, Megaphone, ArrowUpRight, Mail, CheckCircle2, Share2, Globe, Calendar, Users, ChevronRight, Inbox } from 'lucide-react'
+import { Clock, MessageSquare, Shield, LifeBuoy, Megaphone, ArrowUpRight, Mail, CheckCircle2, Share2, Globe, Calendar, Users, Inbox } from 'lucide-react'
 import { buildPageMetadata } from '@/lib/metadata'
 import { InstitutionalCTA } from '@/components/sections/InstitutionalCTA'
 
@@ -27,30 +26,6 @@ export default function ContactPage() {
         url: `${SITE.url}/contact`,
     }
 
-    const SOCIAL_CHANNELS = [
-        {
-            name: 'Telegram Community',
-            handle: '@resultguru247',
-            href: 'https://t.me/resultguru247',
-            icon: MessageSquare,
-            description: 'Join 50K+ students for lightning-fast result alerts & job notifications.',
-            color: 'text-[#0088cc]',
-            bg: 'bg-[#0088cc]/10',
-            borderColor: 'hover:border-[#0088cc]/50',
-            btnLabel: 'Join Telegram',
-        },
-        {
-            name: 'WhatsApp Channel',
-            handle: 'Result Guru Official',
-            href: 'https://whatsapp.com/channel/0029Vb7XUqn1SWt7c9kqCV3I',
-            icon: Share2,
-            description: 'Zero ads, pure updates. Get verified news directly on your WhatsApp Status.',
-            color: 'text-[#25D366]',
-            bg: 'bg-[#25D366]/10',
-            borderColor: 'hover:border-[#25D366]/50',
-            btnLabel: 'Follow Channel',
-        },
-    ]
 
     const SUPPORT_CHANNELS = [
         {

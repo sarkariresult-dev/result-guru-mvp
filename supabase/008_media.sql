@@ -24,6 +24,4 @@ CREATE TABLE IF NOT EXISTS media (
   created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_media_uploaded_by ON media(uploaded_by);
-CREATE INDEX IF NOT EXISTS idx_media_mime        ON media(mime_type);
-CREATE INDEX IF NOT EXISTS idx_media_bucket      ON media(bucket);
+-- Indexes defined centrally in 016_indexes.sql

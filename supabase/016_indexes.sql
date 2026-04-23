@@ -52,13 +52,9 @@ CREATE INDEX IF NOT EXISTS idx_ad_stats_ad_date ON ad_stats_daily(ad_id, stat_da
 CREATE INDEX IF NOT EXISTS idx_campaigns_dates ON ad_campaigns(status, start_date, end_date);
 
 -- ── Affiliate & Affiliate Analytics Indexes ─────────────────
-CREATE INDEX IF NOT EXISTS idx_aff_products_type ON affiliate_products(product_type);
-CREATE INDEX IF NOT EXISTS idx_aff_products_active ON affiliate_products(is_active, display_priority DESC);
-CREATE INDEX IF NOT EXISTS idx_aff_products_featured ON affiliate_products(is_featured, display_priority DESC) WHERE is_active = TRUE AND is_featured = TRUE;
-CREATE INDEX IF NOT EXISTS idx_aff_products_keywords ON affiliate_products USING gin(keywords);
-CREATE INDEX IF NOT EXISTS idx_aff_products_exams ON affiliate_products USING gin(relevant_exams);
-CREATE INDEX IF NOT EXISTS idx_aff_clicks_product ON affiliate_clicks(product_id, clicked_at DESC);
-CREATE INDEX IF NOT EXISTS idx_post_aff_post ON post_affiliate_products(post_id);
+CREATE INDEX IF NOT EXISTS idx_affiliate_category ON affiliate(category);
+CREATE INDEX IF NOT EXISTS idx_affiliate_active ON affiliate(is_active, display_priority DESC);
+CREATE INDEX IF NOT EXISTS idx_affiliate_featured ON affiliate(is_featured, display_priority DESC) WHERE is_active = TRUE AND is_featured = TRUE;
 
 CREATE INDEX IF NOT EXISTS idx_internal_links_source ON post_internal_links(source_id);
 CREATE INDEX IF NOT EXISTS idx_internal_links_target ON post_internal_links(target_id);
@@ -77,3 +73,4 @@ CREATE INDEX IF NOT EXISTS idx_subscribers_status ON subscribers(status);
 CREATE INDEX IF NOT EXISTS idx_subscribers_token  ON subscribers(unsubscribe_token);
 CREATE INDEX IF NOT EXISTS idx_media_bucket ON media(bucket);
 CREATE INDEX IF NOT EXISTS idx_media_mime   ON media(mime_type);
+CREATE INDEX IF NOT EXISTS idx_media_uploaded_by ON media(uploaded_by);

@@ -706,9 +706,12 @@
 }
 
 @keyframes pulse-subtle {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.7;
     }
@@ -796,6 +799,63 @@
 @utility focus-ring {
     outline: 2px solid var(--ring);
     outline-offset: 3px;
+}
+
+/* ── Premium Recruitment Table Utility ── */
+@utility prose-recruitment {
+    & table {
+        @apply w-full border-separate border-spacing-0 overflow-hidden rounded-2xl border border-border shadow-sm;
+    }
+
+    & thead {
+        @apply bg-brand-600 dark:bg-brand-700/50;
+    }
+
+    .prose-recruitment th {
+        @apply bg-brand-600 text-white font-black uppercase tracking-widest text-[10px] py-4 px-6 first:rounded-tl-2xl last:rounded-tr-2xl border-none;
+    }
+
+    /* ── Editorial Typography ───────────────────────── */
+    .prose-editorial {
+        @apply text-foreground/90 leading-[1.8] tracking-normal;
+    }
+
+    .prose-editorial h2 {
+        @apply text-2xl font-black tracking-tight mt-12 mb-6 border-l-4 border-brand-500 pl-6;
+    }
+
+    .prose-editorial h3 {
+        @apply text-xl font-black tracking-tight mt-8 mb-4;
+    }
+
+    /* ── Minimal Glass ─────────────────────────────── */
+    .glass-minimal {
+        @apply bg-white/50 backdrop-blur-md dark:bg-zinc-900/50 border border-white/20 dark:border-zinc-800/20 shadow-sm;
+    }
+
+    .text-glow-brand {
+        text-shadow: 0 0 20px rgba(var(--brand-600), 0.2);
+    }
+
+    & tr:nth-child(even) {
+        @apply bg-background-subtle/30;
+    }
+
+    & td {
+        @apply px-4 py-3.5 text-sm font-medium border-t border-border/50 text-foreground-muted;
+    }
+
+    & tr:first-child td {
+        @apply border-t-0;
+    }
+
+    & strong {
+        @apply text-foreground font-black;
+    }
+
+    & a {
+        @apply inline-flex items-center gap-1.5 font-black text-brand-600 hover:text-brand-700 underline underline-offset-4 decoration-brand-200 hover:decoration-brand-600 transition-all;
+    }
 }
 
 @utility gpu {

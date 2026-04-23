@@ -9,6 +9,7 @@ interface FileUploadProps {
     folder: string // e.g. user's ID
     value: string
     onChange: (url: string) => void
+    onLoading?: (isLoading: boolean) => void
     accept?: string
     maxSizeMB?: number
     label?: string
@@ -21,6 +22,7 @@ export function FileUpload({
     folder,
     value,
     onChange,
+    onLoading,
     accept = 'image/jpeg,image/png,image/webp',
     maxSizeMB = 5,
     label,
@@ -49,6 +51,7 @@ export function FileUpload({
         }
 
         setUploading(true)
+        onLoading?.(true)
         try {
             const supabase = createClient()
             const ext = file.name.split('.').pop() || 'jpg'
@@ -70,6 +73,7 @@ export function FileUpload({
             setError(err.message || 'Upload failed')
         } finally {
             setUploading(false)
+            onLoading?.(false)
         }
     }
 

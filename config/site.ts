@@ -239,10 +239,8 @@ export interface NavGroup {
 
 export const TOP_NAV_LINKS: NavItem[] = [
     { label: 'Home', href: '/' },
+    { label: 'Shop', href: '/shop' },
     { label: 'About', href: '/about' },
-    { label: 'Organizations', href: '/organizations' },
-    { label: 'Qualifications', href: '/qualifications' },
-    { label: 'States', href: '/states' },
     { label: 'Contact', href: '/contact' },
 ]
 

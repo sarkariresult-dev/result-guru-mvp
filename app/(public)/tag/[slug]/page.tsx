@@ -9,7 +9,7 @@ import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { SITE } from '@/config/site'
 import { formatTitle } from '@/lib/metadata'
 import { PAGINATION } from '@/config/constants'
-import { Tag, ChevronLeft, ChevronRight, ServerCrash, Hash, ShieldCheck, Sparkles } from 'lucide-react'
+import { Tag, ChevronLeft, ChevronRight, ServerCrash, Hash, ShieldCheck } from 'lucide-react'
 import type { PostCard } from '@/types/post.types'
 import { InstitutionalCTA } from '@/components/sections/InstitutionalCTA'
 
@@ -197,9 +197,9 @@ export default async function TagPage({ params, searchParams }: Props) {
                                     </Link>
                                 )}
                                 <div className="hidden sm:flex items-center gap-1.5">
-                                    {getPageNumbers(page, totalPages).map((p, idx) =>
+                                    {getPageNumbers(page, totalPages).map((p, _idx) =>
                                         p === '...' ? (
-                                            <span key={`ellipsis-${idx}`} className="px-2 text-foreground-subtle">
+                                            <span key={`ellipsis-${_idx}`} className="px-2 text-foreground-subtle">
                                                 &hellip;
                                             </span>
                                         ) : (

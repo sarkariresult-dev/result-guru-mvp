@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { getOrganizations } from '@/lib/queries/organizations'
 import { buildPageMetadata } from '@/lib/metadata'
-import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { SITE } from '@/config/site'

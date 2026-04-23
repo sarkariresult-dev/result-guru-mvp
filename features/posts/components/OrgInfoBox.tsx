@@ -15,10 +15,7 @@ export function OrgInfoBox({ name, shortName, logoUrl, officialUrl, description,
     if (!name) return null
 
     return (
-        <div className="py-2 space-y-4">
-            <h2 className="text-sm font-bold uppercase tracking-[0.05em] text-foreground-muted flex items-center gap-2">
-                <Building2 className="size-4 text-brand-500" /> Organization Info
-            </h2>
+        <div className="py-2 space-y-4 text-center border-b border-border">
             <div className="flex items-center gap-4">
                 {logoUrl && (
                     <div className="shrink-0 size-14 rounded-xl border border-border/40 bg-background flex items-center justify-center overflow-hidden p-1.5 shadow-sm">
@@ -38,7 +35,7 @@ export function OrgInfoBox({ name, shortName, logoUrl, officialUrl, description,
                     )}
                 </div>
             </div>
-            
+
             {description && (
                 <p className="text-xs text-foreground-muted leading-relaxed line-clamp-3">{description}</p>
             )}
@@ -48,9 +45,8 @@ export function OrgInfoBox({ name, shortName, logoUrl, officialUrl, description,
                     href={officialUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-xs font-bold text-brand-600 hover:text-brand-700 transition-colors py-1 group"
+                    className="flex items-center justify-center gap-1.5 text-xs font-bold text-brand-600 hover:text-brand-700 transition-colors py-1 group"
                 >
-                    <ExternalLink className="size-3 group-hover:translate-x-0.5 transition-transform" />
                     Visit Official Website
                 </a>
             )}

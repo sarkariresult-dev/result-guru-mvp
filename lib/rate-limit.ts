@@ -25,7 +25,7 @@ export const subscribeLimiter = redis ? new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(5, '1 m'),
     analytics: true,
-}) : { limit: async () => ({ success: true }) } as any
+}) : { limit: async () => ({ success: true }) } as unknown as Ratelimit
 
 
 /** View tracking: 30 requests per minute per IP */
@@ -33,7 +33,7 @@ export const viewLimiter = redis ? new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(30, '1 m'),
     analytics: true,
-}) : { limit: async () => ({ success: true }) } as any
+}) : { limit: async () => ({ success: true }) } as unknown as Ratelimit
 
 
 /** Revalidate: 10 requests per minute per IP */
@@ -41,7 +41,7 @@ export const revalidateLimiter = redis ? new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(10, '1 m'),
     analytics: true,
-}) : { limit: async () => ({ success: true }) } as any
+}) : { limit: async () => ({ success: true }) } as unknown as Ratelimit
 
 
 /** Search: 20 requests per minute per IP */
@@ -49,7 +49,7 @@ export const searchLimiter = redis ? new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(20, '1 m'),
     analytics: true,
-}) : { limit: async () => ({ success: true }) } as any
+}) : { limit: async () => ({ success: true }) } as unknown as Ratelimit
 
 
 /** General API: 60 requests per minute per IP */
@@ -57,7 +57,7 @@ export const generalLimiter = redis ? new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(60, '1 m'),
     analytics: true,
-}) : { limit: async () => ({ success: true }) } as any
+}) : { limit: async () => ({ success: true }) } as unknown as Ratelimit
 
 
 /* ── Helper to extract client IP from NextRequest ────────────────────────── */

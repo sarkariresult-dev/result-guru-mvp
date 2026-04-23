@@ -3,11 +3,12 @@
 -- All trigger functions and their attachments.
 -- ═══════════════════════════════════════════════════════════════
 
--- fn_update_timestamp has been moved to 003_helper_functions.sql
+-- fn_update_timestamp has been moved to 003_functions.sql
 DO $$ BEGIN CREATE TRIGGER trg_posts_updated_at BEFORE UPDATE ON posts FOR EACH ROW EXECUTE FUNCTION fn_update_timestamp(); EXCEPTION WHEN duplicate_object THEN NULL; END$$;
 DO $$ BEGIN CREATE TRIGGER trg_ads_updated_at BEFORE UPDATE ON ads FOR EACH ROW EXECUTE FUNCTION fn_update_timestamp(); EXCEPTION WHEN duplicate_object THEN NULL; END$$;
 DO $$ BEGIN CREATE TRIGGER trg_campaigns_updated_at BEFORE UPDATE ON ad_campaigns FOR EACH ROW EXECUTE FUNCTION fn_update_timestamp(); EXCEPTION WHEN duplicate_object THEN NULL; END$$;
-DO $$ BEGIN CREATE TRIGGER trg_affiliate_updated_at BEFORE UPDATE ON affiliate_products FOR EACH ROW EXECUTE FUNCTION fn_update_timestamp(); EXCEPTION WHEN duplicate_object THEN NULL; END$$;
+DO $$ BEGIN CREATE TRIGGER trg_affiliate_updated_at BEFORE UPDATE ON affiliate FOR EACH ROW EXECUTE FUNCTION fn_update_timestamp(); EXCEPTION WHEN duplicate_object THEN NULL; END$$;
+
 DO $$ BEGIN CREATE TRIGGER trg_users_updated_at BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION fn_update_timestamp(); EXCEPTION WHEN duplicate_object THEN NULL; END$$;
 DO $$ BEGIN CREATE TRIGGER trg_web_stories_updated_at BEFORE UPDATE ON web_stories FOR EACH ROW EXECUTE FUNCTION fn_update_timestamp(); EXCEPTION WHEN duplicate_object THEN NULL; END$$;
 DO $$ BEGIN CREATE TRIGGER trg_web_story_slides_updated_at BEFORE UPDATE ON web_story_slides FOR EACH ROW EXECUTE FUNCTION fn_update_timestamp(); EXCEPTION WHEN duplicate_object THEN NULL; END$$;
@@ -81,7 +82,7 @@ BEGIN
   IF NEW.faq IS NOT NULL AND jsonb_array_length(NEW.faq) > 0 THEN _s := _s + 5; END IF;
   IF NEW.og_image IS NOT NULL OR NEW.featured_image IS NOT NULL THEN _s := _s + 5; END IF;
   IF char_length(COALESCE(NEW.slug,'')) <= 75 THEN _s := _s + 5; END IF;
-  IF array_length(NEW.secondary_keywords, 1) > 0 THEN _s := _s + 5; END IF;
+  IF COALESCE(array_length(NEW.secondary_keywords, 1), 0) > 0 THEN _s := _s + 5; END IF;
   NEW.seo_score := LEAST(100, _s);
   RETURN NEW;
 END;

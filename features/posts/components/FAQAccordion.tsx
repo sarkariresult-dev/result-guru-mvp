@@ -32,50 +32,51 @@ function FAQAccordionContent({ items }: { items: FAQItem[] }) {
     if (!items || items.length === 0) return null
 
     return (
-        <section id="faq-section">
-            <div className="flex items-center gap-2.5 mb-5">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-brand-100 text-brand-600 dark:bg-brand-900/30 dark:text-brand-400">
-                    <HelpCircle className="size-4.5" />
-                </div>
-                <h2 className="font-display text-lg font-bold text-foreground">Frequently Asked Questions</h2>
+        <section id="faq-section" className="mt-20">
+            <div className="flex items-center gap-3 mb-10">
+                <div className="h-px w-6 bg-brand-500" />
+                <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground-subtle">
+                    Curated Insights & FAQ
+                </h2>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-0">
                 {items.map((item, i) => {
                     const isOpen = openIndex === i
                     return (
                         <div
                             key={i}
-                            className={cn(
-                                "rounded-xl border-0 border-l-[3px] bg-background-subtle transition-all duration-200",
-                                isOpen
-                                    ? "border-l-brand-600 dark:border-l-brand-400"
-                                    : "border-l-transparent hover:border-l-brand-300 dark:hover:border-l-brand-700"
-                            )}
+                            className="border-b border-border/60 last:border-0"
                         >
                             <button
                                 onClick={() => setOpenIndex(isOpen ? null : i)}
-                                className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left rounded-xl outline-none"
+                                className="flex w-full items-center justify-between gap-6 py-6 text-left outline-none group"
                                 aria-expanded={isOpen}
                             >
-                                <span className="text-sm font-semibold text-foreground leading-snug">
+                                <span className={cn(
+                                    "text-lg font-black tracking-tight transition-colors duration-slow leading-snug",
+                                    isOpen ? "text-brand-600 dark:text-brand-400" : "text-foreground group-hover:text-brand-600"
+                                )}>
                                     {item.question}
                                 </span>
-                                <ChevronDown
-                                    className={cn(
-                                        'size-5 shrink-0 text-foreground-subtle transition-transform duration-200',
-                                        isOpen && 'rotate-180'
-                                    )}
-                                />
+                                <div className={cn(
+                                    "relative size-6 shrink-0 transition-transform duration-slow",
+                                    isOpen && "rotate-45"
+                                )}>
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <div className="h-px w-4 bg-foreground-subtle group-hover:bg-brand-500 transition-colors" />
+                                        <div className="h-4 w-px bg-foreground-subtle group-hover:bg-brand-500 transition-colors" />
+                                    </div>
+                                </div>
                             </button>
                             <div
                                 className={cn(
-                                    "grid transition-all duration-200 ease-in-out",
-                                    isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                                    "grid transition-all duration-slow ease-in-out",
+                                    isOpen ? "grid-rows-[1fr] opacity-100 pb-8" : "grid-rows-[0fr] opacity-0"
                                 )}
                             >
                                 <div className="overflow-hidden">
-                                    <div className="px-5 pb-4 text-sm leading-relaxed text-foreground-muted">
+                                    <div className="text-base leading-relaxed text-foreground-muted font-medium max-w-2xl">
                                         {item.answer}
                                     </div>
                                 </div>

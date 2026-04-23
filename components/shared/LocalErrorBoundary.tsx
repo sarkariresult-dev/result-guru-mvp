@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Component, ErrorInfo, ReactNode } from 'react'
+import { Component, ErrorInfo, ReactNode } from 'react'
 
 interface Props {
   children: ReactNode
@@ -29,7 +29,7 @@ export class LocalErrorBoundary extends Component<Props, State> {
     return { hasError: true }
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  public componentDidCatch(_error: Error, _errorInfo: ErrorInfo) {
     if (!this.props.silent) {
 
     }

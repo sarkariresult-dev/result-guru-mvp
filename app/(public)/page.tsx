@@ -24,8 +24,8 @@ import type { LucideIcon } from 'lucide-react'
 /* SEO Metadata */
 
 export const metadata = buildPageMetadata({
-    title: 'Result Guru - Latest Sarkari Result | Govt Job Notifications',
-    description: 'India\'s leading Sarkari Result portal. Get official notifications for Govt Jobs, Admit Cards & Results. Verified daily updates for candidates.',
+    title: 'Result Guru - Latest Sarkari Result, Admit Card & Govt Jobs 2026',
+    description: 'India\'s most trusted Sarkari Result portal for 2026. Get instant, verified notifications for Govt Jobs, Admit Cards, Exam Results & Answer Keys. Direct official links updated daily.',
     path: '/',
 })
 

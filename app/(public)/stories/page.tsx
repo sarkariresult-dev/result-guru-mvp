@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Sparkles, Play, Search, ShieldCheck, Zap, PlayCircle } from 'lucide-react'
+import { Sparkles, Play, Search, Zap, PlayCircle } from 'lucide-react'
 import { getPublicStories } from '@/lib/queries/stories'
 import { buildPageMetadata } from '@/lib/metadata'
 import { AdZone } from '@/components/ads/AdZone'
@@ -95,24 +95,24 @@ export default async function StoriesArchivePage() {
                                         {story.title}
                                     </h3>
                                     
-                                    {(story as any).author && (
+                                    {story.author && (
                                         <div className="mt-4 flex items-center gap-2.5 opacity-90 border-t border-white/10 pt-4">
-                                            {(story as any).author.avatar_url ? (
+                                            {story.author.avatar_url ? (
                                                 <Image
-                                                    src={(story as any).author.avatar_url}
-                                                    alt={(story as any).author.name || 'Author'}
+                                                    src={story.author.avatar_url}
+                                                    alt={story.author.name || 'Author'}
                                                     width={24}
                                                     height={24}
                                                     className="rounded-full ring-2 ring-white/20"
                                                 />
                                             ) : (
                                                 <div className="flex size-6 items-center justify-center rounded-full bg-brand-500 text-[10px] font-black text-white ring-2 ring-white/20 uppercase">
-                                                    {((story as any).author.name || 'A').substring(0, 1)}
+                                                    {(story.author.name || 'A').substring(0, 1)}
                                                 </div>
                                             )}
                                             <div className="flex flex-col min-w-0">
                                                 <span className="text-[10px] text-white font-black truncate tracking-tight">
-                                                    {(story as any).author.name || 'Admin'}
+                                                    {story.author.name || 'Admin'}
                                                 </span>
                                                 <div className="flex items-center gap-1">
                                                     <Zap className="size-2 text-brand-400 fill-current" />

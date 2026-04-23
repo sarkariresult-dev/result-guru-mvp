@@ -98,7 +98,7 @@ export function Header({ initialUser }: HeaderProps) {
 
                 {/* Desktop Nav */}
                 <nav className="hidden items-center gap-1 lg:flex">
-                    {TOP_NAV_LINKS.slice(0, 2).map((item) => (
+                    {TOP_NAV_LINKS.slice(0, 1).map((item) => (
                         <Link
                             key={item.href}
                             href={item.href}
@@ -151,7 +151,7 @@ export function Header({ initialUser }: HeaderProps) {
                         )}
                     </div>
 
-                    {TOP_NAV_LINKS.slice(2).map((item) => (
+                    {TOP_NAV_LINKS.slice(1).map((item) => (
                         <Link
                             key={item.href}
                             href={item.href}

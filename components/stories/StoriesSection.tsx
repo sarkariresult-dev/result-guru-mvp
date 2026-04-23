@@ -60,23 +60,23 @@ export async function StoriesSection() {
                             </h3>
 
                             {/* Author/Date minimal footer */}
-                            {(story as any).author && (
+                            {story.author && (
                                 <div className="mt-2 flex items-center gap-1.5 opacity-80">
-                                    {(story as any).author.avatar_url ? (
+                                    {story.author.avatar_url ? (
                                         <Image
-                                            src={(story as any).author.avatar_url}
-                                            alt={(story as any).author.name || 'Author'}
+                                            src={story.author.avatar_url}
+                                            alt={story.author.name || 'Author'}
                                             width={14}
                                             height={14}
                                             className="rounded-full ring-1 ring-white/50"
                                         />
                                     ) : (
                                         <div className="flex size-3.5 items-center justify-center rounded-full bg-brand-500 text-[6px] font-bold text-white ring-1 ring-white/50">
-                                            {((story as any).author.name || 'A').substring(0, 1).toUpperCase()}
+                                            {(story.author.name || 'A').substring(0, 1).toUpperCase()}
                                         </div>
                                     )}
                                     <span className="text-[9px] text-white font-medium truncate">
-                                        {(story as any).author.name || 'Admin'}
+                                        {story.author.name || 'Admin'}
                                     </span>
                                 </div>
                             )}

@@ -148,7 +148,7 @@ export default async function PostListingPage({ params, searchParams }: Props) {
         ])
         posts = p
         totalCount = c
-    } catch (error) {
+    } catch (_error) {
 
         fetchError = true
     }
@@ -182,8 +182,7 @@ export default async function PostListingPage({ params, searchParams }: Props) {
         }),
     }
 
-    const prevUrl = page > 1 ? (page === 2 ? basePath : `${basePath}?page=${page - 1}`) : null
-    const nextUrl = page < totalPages ? `${basePath}?page=${page + 1}` : null
+    // Pagination visibility checks handled in JSX
 
     return (
         <>
@@ -269,9 +268,9 @@ export default async function PostListingPage({ params, searchParams }: Props) {
                                     </span>
                                 )}
 
-                                {getPageNumbers(page, totalPages).map((p, i) =>
+                                {getPageNumbers(page, totalPages).map((p, _i) =>
                                     p === '...' ? (
-                                        <span key={`ellipsis-${i}`} className="px-2 py-2 text-sm text-foreground-subtle">&hellip;</span>
+                                        <span key={`ellipsis-${_i}`} className="px-2 py-2 text-sm text-foreground-subtle">&hellip;</span>
                                     ) : (
                                         <Link key={p} href={p === 1 ? basePath : `${basePath}?page=${p}`} className={`inline-flex size-10 items-center justify-center rounded-lg border text-sm font-medium transition-colors ${p === page ? 'border-brand-600 bg-brand-600 text-white' : 'border-border text-foreground hover:bg-background-subtle'}`} aria-current={p === page ? 'page' : undefined}>
                                             {p}

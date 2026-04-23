@@ -21,8 +21,19 @@ export function ApplicationStatusBadge({ status }: { status: string }) {
     }
 
     const config = APPLICATION_STATUS_CONFIG[key]
+    const isLive = key === ApplicationStatus.Open || key === ApplicationStatus.ClosingSoon
+
     return (
-        <Badge variant={colorMap[key] ?? 'gray'}>
+        <Badge 
+            variant={colorMap[key] ?? 'gray'}
+            className={isLive ? 'relative pl-6 overflow-hidden' : ''}
+        >
+            {isLive && (
+                <span className="absolute left-2 flex size-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75"></span>
+                    <span className="relative inline-flex size-1.5 rounded-full bg-current"></span>
+                </span>
+            )}
             {config?.label ?? status}
         </Badge>
     )

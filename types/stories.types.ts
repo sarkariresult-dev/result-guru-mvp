@@ -10,6 +10,10 @@ export interface WebStory {
     meta_title: string | null
     meta_desc: string | null
     author_id: string | null
+    author?: {
+        name: string | null
+        avatar_url: string | null
+    } | null
     published_at: string | null
     created_at: string
     updated_at: string

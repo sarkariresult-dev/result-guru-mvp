@@ -1,11 +1,10 @@
 import Link from 'next/link'
 import { getStates } from '@/lib/queries/states'
 import { buildPageMetadata } from '@/lib/metadata'
-import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { SITE } from '@/config/site'
-import { MapPin, Search, ServerCrash, ArrowRight, ShieldCheck, Zap, Globe, FileCheck } from 'lucide-react'
+import { MapPin, ArrowRight, ShieldCheck, Zap, Globe, FileCheck } from 'lucide-react'
 import { StatesGrid } from '@/components/states/StatesGrid'
 
 export const metadata = buildPageMetadata({

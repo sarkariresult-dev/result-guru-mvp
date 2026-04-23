@@ -1,9 +1,9 @@
 'use client'
 
-import { useCallback } from 'react'
 import Link from 'next/link'
 import { SITE } from '@/config/site'
 import { RotateCcw, AlertTriangle } from 'lucide-react'
+import { useCallback } from 'react'
 
 interface ErrorProps {
     error: Error & { digest?: string }

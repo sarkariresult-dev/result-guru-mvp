@@ -61,7 +61,7 @@ export async function getPostsByTag(
     const supabase = createStaticClient()
     const offset = (page - 1) * limit
 
-    const { data, error } = await (supabase.rpc as any)('fn_posts_by_tag', {
+    const { data, error } = await (supabase.rpc as unknown as (fn: string, args: Record<string, unknown>) => Promise<{ data: PostCard[] | null; error: { message: string } | null }>)('fn_posts_by_tag', {
         p_tag_id: tagId,
         p_limit: limit,
         p_offset: offset,

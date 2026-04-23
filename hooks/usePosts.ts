@@ -153,8 +153,8 @@ export function usePost(slug: string) {
                     .select('post_id, tag_id, tags(id, slug, name, tag_type)')
                     .eq('post_id', post.id),
                 supabase
-                    .from('post_affiliate_products')
-                    .select('post_id, product_id, sort_order, affiliate_products(*)')
+                    .from('post_affiliate')
+                    .select('post_id, product_id, sort_order, affiliate(*)')
                     .eq('post_id', post.id)
                     .order('sort_order'),
             ])
@@ -162,7 +162,7 @@ export function usePost(slug: string) {
             return {
                 ...post,
                 tags: tagsRes.data?.flatMap((r: any) => r.tags ?? []) ?? [],
-                affiliates: affiliatesRes.data?.map((r: any) => r.affiliate_products) ?? [],
+                affiliates: affiliatesRes.data?.map((r: any) => r.affiliate) ?? [],
             } as PostDetail
         },
     })

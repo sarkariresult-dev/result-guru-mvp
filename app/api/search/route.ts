@@ -2,7 +2,9 @@ import { NextRequest } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
 import { searchLimiter, getClientIp, rateLimitResponse } from '@/lib/rate-limit'
 import { withErrorHandling, successResponse, errorResponse } from '@/lib/api-response'
+import { toPostCardDTO } from '@/lib/dal/mappers'
 import type { SearchResult } from '@/types/api.types'
+import type { PostCard } from '@/types/post.types'
 
 /**
  * GET /api/search?q=...&type=...&state=...&page=...&limit=...
@@ -43,8 +45,9 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
     if (error) throw error
 
     const total = count ?? 0
+    const posts = (data ?? []).map(toPostCardDTO).filter((p): p is PostCard => !!p)
     const result: SearchResult = {
-        posts: (data ?? []) as any,
+        posts,
         total,
         page,
         limit,
