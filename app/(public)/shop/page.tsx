@@ -79,7 +79,7 @@ export default async function ShopPage({ searchParams }: Props) {
                             </div>
                             <div className="h-px flex-1 bg-border/60 mx-8 hidden lg:block"></div>
                         </div>
-                        
+
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                             {featured.map((product) => (
                                 <AffiliateCard key={product.id} product={product} />
@@ -133,7 +133,7 @@ export default async function ShopPage({ searchParams }: Props) {
                     </h2>
                     <div className="prose prose-zinc dark:prose-invert max-w-none text-sm">
                         <p className="text-foreground-muted leading-relaxed">
-                            Result Guru Student Shop is your one-stop destination for hand-picked study materials, exam preparation books, premium stationery, and productivity-boosting electronics. Every product in our store is carefully verified and recommended by our team of exam preparation experts. Whether you&apos;re preparing for SSC, UPSC, Railway, Banking, or State-level exams, we help you find the best resources at the best prices — so you can focus on what matters most: your preparation.
+                            Result Guru Student Shop is your one-stop destination for hand-picked study materials, exam preparation books, premium stationery, and productivity-boosting electronics. Every product in our store is carefully verified and recommended by our team of exam preparation experts. Whether you&apos;re preparing for SSC, UPSC, Railway, Banking, or State-level exams, we help you find the best resources at the best prices - so you can focus on what matters most: your preparation.
                         </p>
                     </div>
                 </section>

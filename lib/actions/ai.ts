@@ -6,10 +6,60 @@ import path from 'path'
 import { env } from '@/config/env'
 import { generatePostSchema, type GeneratePostInput } from '@/lib/validations/post'
 import { createServerClient } from '@/lib/supabase/server'
+import { humanizeContent } from '@/lib/humanize'
 
 /* ── Gemini Client ────────────────────────────────────────────────── */
 
 const ai = new GoogleGenAI({ apiKey: env.GOOGLE_GENAI_API_KEY })
+
+/* ── Writing Style Seeds ─────────────────────────────────────────── */
+
+/**
+ * Randomly selected writing directives injected into each generation
+ * to break template fatigue and ensure creative variance.
+ */
+const STYLE_SEEDS = [
+    'Start the article with a bold, factual statement about the opportunity or event. Jump straight into the value without a long introduction.',
+    'Open the article by addressing a common problem or question students face regarding this specific topic.',
+    'Begin the article with a direct question to the reader to build engagement.',
+    'Start the article by highlighting the most important date, deadline, or timeline to create urgency.',
+    'Open the article with a myth-busting approach, clarifying a common misconception about the exam or recruitment.',
+    'Start the article with a concise data point (e.g., number of vacancies, expected competition level).',
+    'Begin the article with a mentor-like hook, acknowledging that this is a frequently asked topic.',
+    'Open the article by briefly comparing this year\'s update to previous years (e.g., changes in vacancies or pattern).',
+    'Start with an inverted pyramid style: give the direct answer immediately, then dive into details.',
+    'Begin the article with an enthusiastic tone announcing that the long-awaited update is finally here.',
+    'Open the article by empathizing with the confusion students often face on official portals, promising a simplified guide.',
+    'Start the article with a mini-checklist of the 3 most important things the reader needs to know right now.',
+    'Begin the article by focusing on the timeline and the immediate next steps the candidate must take.',
+    'Open the article by highlighting that this update is relevant for candidates across different regions.',
+    'Start the article conversationally, getting straight to the point about what the post covers.',
+]
+
+/* ── Tone Mapper ─────────────────────────────────────────────────── */
+
+/**
+ * Maps post types to specific tone directives for more natural,
+ * context-appropriate writing.
+ */
+function getToneForType(type: string): string {
+    const tones: Record<string, string> = {
+        job: 'Excited career counselor — guide the student through every step of the opportunity.',
+        result: 'Urgent and celebratory — fast, direct information delivery. Empathize with student anxiety.',
+        admit: 'Reassuring and helpful — calm anxious candidates and provide step-by-step instructions.',
+        answer_key: 'Analytical and strategic — act as an exam coach explaining how to verify marks and file objections.',
+        cut_off: 'Data-driven analyst — provide trend insights and practical advice based on numbers.',
+        syllabus: 'Study mentor — organized, structured, and motivating. Focus on preparation strategy.',
+        exam_pattern: 'Strategic coach — emphasize how understanding the pattern leads to better marks.',
+        previous_paper: 'Resource-sharing mentor — emphasize the value of practicing past papers to understand trends.',
+        scheme: 'Empathetic welfare advisor — help beneficiaries navigate bureaucracy clearly and simply.',
+        scholarship: 'Encouraging opportunity finder — motivate students to apply for financial aid.',
+        admission: 'Guiding counselor — provide clear steps to avoid mistakes in the admission process.',
+        notification: 'Breaking news energy — deliver official details quickly and accurately.',
+        exam: 'Motivating prep partner — focus on preparation strategy and career growth.',
+    }
+    return tones[type] || 'Informative, helpful, and professional mentor-like authority.'
+}
 
 /* ── Keyword Seed Builder ─────────────────────────────────────────── */
 
@@ -30,8 +80,8 @@ function buildKeywordSeed(topic: string, postType: string, primaryKeywords: stri
             `${topicLower} salary pay scale 7th pay commission`,
             `${topicLower} apply online direct link`,
             `${topicLower} selection process exam pattern`,
-            `${topicLower} bharti apply online`, // Removed year
-            `${topicLower} sarkari naukri`, // Removed year
+            `${topicLower} bharti apply online`,
+            `${topicLower} sarkari naukri`,
             `${topicLower} vacancy kitni hai`,
             `${topicLower} last date kab hai`,
         ],
@@ -44,7 +94,7 @@ function buildKeywordSeed(topic: string, postType: string, primaryKeywords: stri
             `${topicLower} marks normalization formula`,
             `${topicLower} result kaise check kare`,
             `${topicLower} result link direct`,
-            `${topicLower} topper marks`, // Removed year
+            `${topicLower} topper marks`,
         ],
         admit: [
             `${topicLower} admit card ${year} download`,
@@ -66,7 +116,7 @@ function buildKeywordSeed(topic: string, postType: string, primaryKeywords: stri
             `${topicLower} qualifying marks general obc sc st`,
             `${topicLower} previous year cut off comparison`,
             `${topicLower} safe score to qualify`,
-            `${topicLower} cut off kitna jayega`, // Removed year
+            `${topicLower} cut off kitna jayega`,
         ],
         syllabus: [
             `${topicLower} syllabus ${year} subject wise`,
@@ -124,12 +174,12 @@ function buildKeywordSeed(topic: string, postType: string, primaryKeywords: stri
         ...(pkw ? [`Primary keyword context: ${pkw}`] : []),
         `Current year: ${year}`,
         '',
-        'IMPORTANT SEO CONTEXT:',
+        'SEO CONTEXT:',
         '- Target "People Also Ask" questions in Google India.',
         '- Include Hinglish keyword variations (e.g., "kab aayega", "kaise kare").',
         '- Focus on voice search patterns (conversational queries).',
         '- Always include the organization full name AND abbreviation in content.',
-        '- Maintain focus keyword density below 1.2% to avoid over-optimization penalties.',
+        '- Maintain focus keyword density 0.5-1.2% to avoid over-optimization penalties.',
     ].join('\n')
 }
 
@@ -140,27 +190,23 @@ const aiResponseSchema = {
     properties: {
         title: {
             type: Type.STRING,
-            description: 'SEO title (30-65 chars). MUST contain focus keyword + year 2026.',
+            description: `SEO title (30-65 chars). MUST contain focus keyword + year ${new Date().getFullYear()}.`,
         },
         ctrTitle: {
             type: Type.STRING,
-            description: 'High-CTR alternative title with urgency triggers (≤65 chars). NO emojis, symbols, or icons allowed. Use clean text only.',
-        },
-        seoTitle: {
-            type: Type.STRING,
-            description: 'SERP-optimized title, different from display title. Includes the most searched variation of the keyword. MAX 60 chars.',
+            description: 'High-CTR alternative title with urgency triggers (≤65 chars). NO emojis, symbols, or icons allowed.',
         },
         metaTitle: {
             type: Type.STRING,
-            description: 'SERP meta title (MAX 60 chars). Truncation-safe.',
+            description: 'SERP meta title (MAX 60 chars). Truncation-safe. Uses most-searched keyword variation.',
         },
         metaDescription: {
             type: Type.STRING,
-            description: 'Meta description (120-155 chars). MUST contain focus keyword and end with CTA.',
+            description: 'Meta description (120-155 chars). MUST contain focus keyword. End with CTA.',
         },
         slug: {
             type: Type.STRING,
-            description: 'Clean URL slug (≤60 chars). No stop words. Contains focus keyword.',
+            description: 'Clean URL slug (≤75 chars). No stop words. Contains focus keyword. Hyphens only.',
         },
         focusKeyword: {
             type: Type.STRING,
@@ -168,17 +214,7 @@ const aiResponseSchema = {
         },
         secondaryKeywords: {
             type: Type.ARRAY,
-            description: 'Minimum 3 secondary keywords including semantic variations.',
-            items: { type: Type.STRING },
-        },
-        longTailKeywords: {
-            type: Type.ARRAY,
-            description: '5-8 highly specific long-tail keyword phrases targeting PAA, voice search, and featured snippets.',
-            items: { type: Type.STRING },
-        },
-        semanticKeywords: {
-            type: Type.ARRAY,
-            description: '5-10 NLP entity terms (full-form expansions, related bodies, processes) Google associates with topic.',
+            description: 'Minimum 3 secondary keywords including semantic variations and Hinglish forms.',
             items: { type: Type.STRING },
         },
         suggestedTags: {
@@ -193,15 +229,15 @@ const aiResponseSchema = {
         },
         excerpt: {
             type: Type.STRING,
-            description: 'Rich snippet excerpt (50-200 chars).',
+            description: 'Rich snippet excerpt (50-200 chars). Direct answer to the user query.',
         },
         content: {
             type: Type.STRING,
-            description: 'Full HTML content (1200+ words). Uses [officialWebsiteUrl], [primaryLink], [notificationPdfUrl] placeholders. MUST start with a Quick Summary Box.',
+            description: 'Full HTML content (1200+ words). Uses [officialWebsiteUrl], [primaryLink], [notificationPdfUrl] placeholders. DO NOT include a Quick Summary box at the beginning.',
         },
         officialWebsiteUrl: {
             type: Type.STRING,
-            description: 'Official domain URL. REQUIRED.',
+            description: 'Official .gov.in / .nic.in domain URL. REQUIRED.',
         },
         primaryLink: {
             type: Type.STRING,
@@ -213,7 +249,7 @@ const aiResponseSchema = {
         },
         faq: {
             type: Type.ARRAY,
-            description: '5-8 frequently asked questions with concise answers. Target PAA questions.',
+            description: '5-8 FAQs targeting "People Also Ask" in Google India. Mix English and Hinglish questions.',
             items: {
                 type: Type.OBJECT,
                 properties: {
@@ -223,22 +259,14 @@ const aiResponseSchema = {
                 required: ['question', 'answer'],
             },
         },
-        readabilityScore: {
-            type: Type.OBJECT,
-            properties: {
-                score: { type: Type.NUMBER },
-                level: { type: Type.STRING },
-            },
-            required: ['score', 'level'],
-        },
     },
     required: [
-        'title', 'ctrTitle', 'seoTitle', 'metaTitle', 'metaDescription', 'slug',
-        'focusKeyword', 'secondaryKeywords', 'longTailKeywords', 'semanticKeywords',
+        'title', 'ctrTitle', 'metaTitle', 'metaDescription', 'slug',
+        'focusKeyword', 'secondaryKeywords',
         'suggestedTags', 'suggestedQualifications',
         'excerpt', 'content',
         'officialWebsiteUrl', 'primaryLink', 'notificationPdfUrl',
-        'faq', 'readabilityScore',
+        'faq',
     ],
 }
 
@@ -260,53 +288,49 @@ function readPromptFile(filename: string): string {
     }
 }
 
-/* ── Auto-assign Content Cluster ──────────────────────────────────── */
+/* ── Factual Context Builder ─────────────────────────────────────── */
 
 /**
- * Find the matching content_cluster for a post based on organization.
- * Returns the cluster ID if found.
+ * Builds a structured factual context block from available form data.
+ * This is the key to grounding the AI in real-world data instead of hallucination.
  */
-async function findContentCluster(organizationId: string | null | undefined): Promise<string | null> {
-    if (!organizationId) return null
-    try {
-        const supabase = await createServerClient()
-        // Find the org slug first
-        const { data: org } = await supabase
-            .from('organizations')
-            .select('slug')
-            .eq('id', organizationId)
-            .single()
-        if (!org) return null
+function buildFactualContext(data: GeneratePostInput): string {
+    const lines: string[] = []
 
-        // Find matching cluster
-        const { data: cluster } = await supabase
-            .from('content_clusters')
-            .select('id')
-            .eq('slug', org.slug)
-            .eq('cluster_type', 'org')
-            .single()
+    lines.push('═══ FACTUAL CONTEXT (Use these REAL values - do NOT guess or hallucinate) ═══')
 
-        return cluster?.id ?? null
-    } catch {
-        return null
+    if (data.organizationName) {
+        lines.push(`Organization Name: ${data.organizationName}`)
     }
-}
-
-/* ── Auto-compute Related Posts ───────────────────────────────────── */
-
-/**
- * Uses the database function to compute related posts after creation.
- */
-async function computeRelatedPosts(postId: string): Promise<string[]> {
-    try {
-        const supabase = await createServerClient()
-        const { data } = await supabase.rpc('fn_compute_related_posts', {
-            target_post_id: postId,
-        })
-        return (data as string[]) ?? []
-    } catch {
-        return []
+    if (data.organizationShortName) {
+        lines.push(`Organization Short Name / Abbreviation: ${data.organizationShortName}`)
     }
+    if (data.officialWebsite) {
+        lines.push(`Official Website URL: ${data.officialWebsite}`)
+        lines.push(`→ Use this for [officialWebsiteUrl] placeholder`)
+    }
+    if (data.stateOrRegion) {
+        lines.push(`State / Region: ${data.stateOrRegion}`)
+    }
+    if (data.existingPrimaryLink) {
+        lines.push(`Primary Action Link: ${data.existingPrimaryLink}`)
+        lines.push(`→ Use this for [primaryLink] placeholder`)
+    }
+    if (data.existingNotificationPdf) {
+        lines.push(`Notification PDF URL: ${data.existingNotificationPdf}`)
+        lines.push(`→ Use this for [notificationPdfUrl] placeholder`)
+    }
+
+    lines.push(`Current Year: ${new Date().getFullYear()}`)
+    lines.push(`Current Date: ${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}`)
+
+    if (lines.length <= 3) {
+        lines.push('NOTE: No specific context provided. Use placeholders [officialWebsiteUrl], [primaryLink], [notificationPdfUrl] where needed.')
+    }
+
+    lines.push('═══════════════════════════════════════════════════════════════════════════')
+
+    return lines.join('\n')
 }
 
 /* ── Main Generation Function ─────────────────────────────────────── */
@@ -317,7 +341,8 @@ export async function generateContentWithGemini(data: GeneratePostInput) {
         return { error: parsed.error.issues.map(i => i.message).join(', ') }
     }
 
-    const { topic, postType, tone, targetAudience, primaryKeywords } = parsed.data
+    const input = parsed.data
+    const { topic, postType, primaryKeywords } = input
 
     try {
         // 1. Load system prompt
@@ -329,30 +354,45 @@ export async function generateContentWithGemini(data: GeneratePostInput) {
         // 3. Build keyword seed for enrichment
         const keywordSeed = buildKeywordSeed(topic, postType, primaryKeywords || '')
 
-        // 4. Construct the full prompt
+        // 4. Build factual context from available form data
+        const factualContext = buildFactualContext(input)
+
+        // 5. Select random writing style seed for creative variance
+        const styleSeed = STYLE_SEEDS[Math.floor(Math.random() * STYLE_SEEDS.length)]
+
+        // 6. Get tone for this post type
+        const tone = getToneForType(postType)
+
+        // 7. Construct the full prompt with structured sections
         const fullPrompt = [
-            `Topic: ${topic}`,
-            `Post Type: ${postType}`,
-            `Tone: ${tone}`,
-            `Target Audience: ${targetAudience}`,
-            primaryKeywords ? `Primary Keywords: ${primaryKeywords}` : '',
+            `═══ TOPIC ═══`,
+            topic,
             '',
-            '--- Keyword Research Context ---',
+            `═══ POST TYPE: ${postType.toUpperCase()} ═══`,
+            '',
+            factualContext,
+            '',
+            `═══ TONE & STYLE ═══`,
+            `Tone: ${tone}`,
+            `Writing Style Directive: ${styleSeed}`,
+            `Target Audience: Government Job Seekers in India (primarily Hindi-belt, 18-35 age group)`,
+            '',
+            `═══ KEYWORD RESEARCH ═══`,
             keywordSeed,
             '',
-            '--- Post Type Instructions ---',
+            `═══ TYPE-SPECIFIC INSTRUCTIONS ═══`,
             typePrompt,
-        ].filter(Boolean).join('\n')
+        ].join('\n')
 
-        // 5. Execute Gemini generation
+        // 8. Execute Gemini generation with higher temperature for natural variance
         const response = await ai.models.generateContent({
             model: env.GOOGLE_GENAI_MODEL || 'gemini-2.5-flash-preview-05-20',
             contents: fullPrompt,
             config: {
                 systemInstruction: systemPrompt,
                 responseMimeType: 'application/json',
-                responseSchema: aiResponseSchema as unknown, // Cast as unknown due to Gemini SDK complexity
-                temperature: env.GOOGLE_GENAI_TEMPERATURE ?? 0.5,
+                responseSchema: aiResponseSchema as unknown,
+                temperature: 0.7, // Higher for natural, creative writing (was 0.5)
             },
         })
 
@@ -361,10 +401,15 @@ export async function generateContentWithGemini(data: GeneratePostInput) {
         }
 
         const jsonResult = JSON.parse(response.text)
+
+        // 9. Run humanization post-processor on content
+        if (jsonResult.content && typeof jsonResult.content === 'string') {
+            jsonResult.content = humanizeContent(jsonResult.content)
+        }
+
         return { success: true, data: jsonResult }
     } catch (e: unknown) {
         const error = e instanceof Error ? e.message : 'An unexpected error occurred during AI generation'
-
         return { error }
     }
 }
@@ -372,69 +417,43 @@ export async function generateContentWithGemini(data: GeneratePostInput) {
 /* ── Post-Creation SEO Enhancement ────────────────────────────────── */
 
 /**
- * Call this AFTER creating a post to enhance it with SEO intelligence.
- * Stores long-tail keywords, computes related posts, and assigns content clusters.
+ * Call this AFTER creating a post to compute and store related posts.
+ * Cleaned of ghost column writes and non-existent RPC calls.
  */
-export async function enhancePostSEO(postId: string, aiData: Record<string, unknown>, organizationId?: string | null) {
+export async function enhancePostSEO(postId: string) {
     try {
         const supabase = await createServerClient()
 
-        const updates: Record<string, unknown> = {}
+        // Compute related posts using full-text search similarity
+        const { data: currentPost } = await supabase
+            .from('posts')
+            .select('type, organization_id, state_slug, title')
+            .eq('id', postId)
+            .single()
 
-        // 1. Store long-tail and semantic keywords
-        if (aiData.longTailKeywords && Array.isArray(aiData.longTailKeywords)) {
-            updates.long_tail_keywords = aiData.longTailKeywords
-        }
-        if (aiData.semanticKeywords && Array.isArray(aiData.semanticKeywords)) {
-            updates.semantic_keywords = aiData.semanticKeywords
-        }
+        if (!currentPost) return { success: true }
 
-        // 2. Store SEO title
-        if (aiData.seoTitle && typeof aiData.seoTitle === 'string') {
-            updates.seo_title = aiData.seoTitle
-        }
+        // Find related posts by type + organization match
+        const { data: related } = await supabase
+            .from('posts')
+            .select('id')
+            .eq('status', 'published')
+            .neq('id', postId)
+            .or(`type.eq.${currentPost.type},organization_id.eq.${currentPost.organization_id}`)
+            .order('published_at', { ascending: false })
+            .limit(6)
 
-        // 3. Auto-assign content cluster
-        const clusterId = await findContentCluster(organizationId)
-        if (clusterId) {
-            updates.content_cluster_id = clusterId
-        }
-
-        // 4. Compute and store related posts
-        const relatedIds = await computeRelatedPosts(postId)
-        if (relatedIds.length > 0) {
-            updates.related_post_ids = relatedIds
-        }
-
-        // 5. Apply updates
-        if (Object.keys(updates).length > 0) {
-            await supabase.from('posts').update(updates).eq('id', postId)
-        }
-
-        // 6. Update cluster post count (non-critical)
-        if (clusterId) {
-            try {
-                const { count: clusterPostCount } = await supabase
-                    .from('posts')
-                    .select('id', { count: 'exact', head: true })
-                    .eq('content_cluster_id', clusterId)
-                    .eq('status', 'published')
-
-                if (clusterPostCount !== null) {
-                    await supabase
-                        .from('content_clusters')
-                        .update({ post_count: clusterPostCount })
-                        .eq('id', clusterId)
-                }
-            } catch {
-                // Non-critical - cluster count will eventually correct itself
-            }
+        if (related && related.length > 0) {
+            const relatedIds = related.map(r => r.id)
+            await supabase
+                .from('posts')
+                .update({ related_post_ids: relatedIds })
+                .eq('id', postId)
         }
 
         return { success: true }
     } catch (e: unknown) {
         const error = e instanceof Error ? e.message : 'Unknown SEO enhancement error'
-
         return { error }
     }
 }
@@ -470,7 +489,7 @@ const affiliateResponseSchema = {
 
 /**
  * Generates product details from an affiliate URL.
- * Now includes a lightweight scraper to get Title/Meta-Description for better accuracy.
+ * Includes a lightweight scraper to get Title/Meta-Description for better accuracy.
  */
 export async function generateAffiliateData(url: string) {
     if (!url) return { error: 'URL is required' }
@@ -502,7 +521,7 @@ export async function generateAffiliateData(url: string) {
         const systemPrompt = `You are a precise data extraction specialist for Result Guru (Indian Education Portal). 
         Your task is to deconstruct a store URL and its metadata to return structured JSON. 
         If Metadata is provided, prioritize it for the product name.`
-        
+
         const prompt = `URL TO ANALYZE: "${url}"
         ${metaTitle ? `OFFICIAL PAGE TITLE: "${metaTitle}"` : ''}
         ${metaDesc ? `OFFICIAL META DESCRIPTION: "${metaDesc}"` : ''}
@@ -534,7 +553,7 @@ export async function generateAffiliateData(url: string) {
         })
 
         if (!response.text) throw new Error('No response from AI')
-        
+
         return { success: true, data: JSON.parse(response.text) }
     } catch (e: unknown) {
         return { error: e instanceof Error ? e.message : 'AI Generation failed' }

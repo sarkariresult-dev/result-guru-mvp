@@ -10,14 +10,14 @@ interface Props {
 }
 
 export function AffiliateSidebarProducts({ title, products, excludeId }: Props) {
-    const filteredProducts = excludeId 
+    const filteredProducts = excludeId
         ? products.filter(p => p.id !== excludeId).slice(0, 4)
         : products.slice(0, 4)
 
     if (filteredProducts.length === 0) return null
 
     return (
-        <section className="rounded-[2rem] border border-border bg-surface p-6 space-y-6 shadow-sm">
+        <section className="rounded-4xl border border-border bg-surface p-6 space-y-6 shadow-sm">
             <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground-muted border-b border-border/50 pb-3">
                 {title}
             </h3>
@@ -28,14 +28,16 @@ export function AffiliateSidebarProducts({ title, products, excludeId }: Props) 
                         href={`/shop/${product.category}/${product.slug}`}
                         className="group flex gap-4 items-center"
                     >
-                        <div className="relative size-14 shrink-0 overflow-hidden rounded-xl border border-border bg-white p-2 transition-all duration-300 group-hover:scale-110 group-hover:shadow-md dark:bg-zinc-800">
-                            <Image
-                                src={product.image_url}
-                                alt={product.name}
-                                fill
-                                className="object-contain p-1"
-                                sizes="56px"
-                            />
+                        <div className="relative size-14 shrink-0 overflow-hidden rounded-xl border border-border bg-white p-3 transition-all duration-300 group-hover:scale-110 group-hover:shadow-md dark:bg-zinc-800">
+                            <div className="relative w-full h-full">
+                                <Image
+                                    src={product.image_url}
+                                    alt={product.name}
+                                    fill
+                                    className="object-contain"
+                                    sizes="56px"
+                                />
+                            </div>
                         </div>
                         <div className="flex flex-col gap-0.5 min-w-0">
                             <h4 className="text-[13px] font-bold text-foreground leading-snug line-clamp-2 group-hover:text-brand-600 transition-colors">
@@ -56,8 +58,8 @@ export function AffiliateSidebarProducts({ title, products, excludeId }: Props) 
                     </Link>
                 ))}
             </div>
-            <Link 
-                href="/shop" 
+            <Link
+                href="/shop"
                 className="block text-center text-[10px] font-black uppercase tracking-widest text-brand-600 hover:text-brand-700 transition-colors pt-4 border-t border-border/50"
             >
                 View Marketplace →

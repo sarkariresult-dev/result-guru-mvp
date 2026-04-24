@@ -56,14 +56,16 @@ function SidebarProductCard({ product }: { product: AffiliateProduct }) {
             className="group flex gap-4 transition-all"
         >
             {/* Thumbnail */}
-            <div className="relative size-20 shrink-0 overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 border border-border/40 shadow-xs ring-4 ring-brand-50/30 dark:ring-brand-900/10">
-                <Image
-                    src={product.image_url}
-                    alt={product.image_alt || product.name}
-                    fill
-                    className="object-contain p-1.5 transition-transform duration-slow group-hover:scale-110"
-                    sizes="80px"
-                />
+            <div className="relative size-20 shrink-0 overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 border border-border/40 shadow-xs ring-4 ring-brand-50/30 dark:ring-brand-900/10 p-1.5">
+                <div className="relative w-full h-full">
+                    <Image
+                        src={product.image_url}
+                        alt={product.image_alt || product.name}
+                        fill
+                        className="object-contain transition-transform duration-slow group-hover:scale-110"
+                        sizes="80px"
+                    />
+                </div>
             </div>
 
             {/* Info */}

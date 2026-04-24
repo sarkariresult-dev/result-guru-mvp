@@ -10,7 +10,7 @@ import { LazyHomeSections } from '@/components/sections/LazyHomeSections'
 import { StoriesSection } from '@/components/stories/StoriesSection'
 import { ROUTE_PREFIXES } from '@/config/site'
 import { buildPageMetadata } from '@/lib/metadata'
-import { buildWebSiteSchema, buildOrganizationSchema, buildSiteNavigationSchema, buildItemListSchema } from '@/lib/jsonld'
+import { buildWebSiteSchema, buildOrganizationSchema, buildSiteNavigationSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { getStates } from '@/lib/queries/states'
 import { getPopularOrganizations } from '@/lib/queries/organizations'
@@ -124,13 +124,11 @@ export default async function HomePage() {
 
     /* Pre-fetched homepage sections from fn_homepage_sections() - 1 DB call for all sections */
     const sections = sectionsResult.status === 'fulfilled' ? sectionsResult.value : {}
-    const statesItemList = buildItemListSchema('Indian States Government Directory', states.map(s => ({ name: s.name, url: `/states/${s.slug}` })))
-    const orgsItemList = buildItemListSchema('Government Organizations', organizations.map(o => ({ name: o.short_name || o.name, url: `/organizations/${o.slug}` })))
 
 
     return (
         <>
-            <JsonLd data={[websiteJsonLd, organizationJsonLd, navigationJsonLd, statesItemList, orgsItemList]} />
+            <JsonLd data={[websiteJsonLd, organizationJsonLd, navigationJsonLd]} />
 
             {/*  Hero */}
             <section className="relative bg-hero">
@@ -458,7 +456,7 @@ export default async function HomePage() {
                 </div>
             </section>
 
-            {/* Extended Resource Center — 8 cards, 2 rows of 4 on desktop */}
+            {/* Extended Resource Center - 8 cards, 2 rows of 4 on desktop */}
             <section className="container mx-auto max-w-7xl px-4 py-16" aria-label="Career pathways">
                 <div className="mb-10 text-center">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-900/40 border border-brand-100 dark:border-brand-800/30 text-[11px] font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-4">
@@ -479,7 +477,7 @@ export default async function HomePage() {
                         >
                             {/* Subtle premium gradient background on hover */}
                             <div className="absolute inset-0 bg-linear-to-br from-brand-50/0 to-brand-50/0 opacity-0 group-hover:from-brand-50/50 group-hover:to-brand-100/50 dark:group-hover:from-brand-900/10 dark:group-hover:to-brand-800/10 transition-all duration-500" />
-                            
+
                             <div className="relative z-10 flex flex-col flex-1">
                                 <div className={`flex size-12 sm:size-14 items-center justify-center rounded-xl ${item.bgClass} mb-4 sm:mb-5 shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3`}>
                                     <item.icon className={`size-6 sm:size-7 ${item.colorClass}`} />

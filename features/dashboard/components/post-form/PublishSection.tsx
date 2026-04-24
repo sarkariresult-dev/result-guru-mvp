@@ -22,7 +22,7 @@ interface PublishSectionProps {
 }
 
 export function PublishSection({ qualifications, tags }: PublishSectionProps) {
-    const { state, dispatch, mode } = usePostForm()
+    const { state, dispatch, mode, initialData } = usePostForm()
     const cfg = TYPE_CONFIG[state.type] ?? TYPE_CONFIG.job!
     const [isGenerating, setIsGenerating] = useState(false)
     const [aiGenerated, setAiGenerated] = useState(false)
@@ -41,9 +41,15 @@ export function PublishSection({ qualifications, tags }: PublishSectionProps) {
             const result = await generateContentWithGemini({
                 topic: state.title,
                 postType: state.type,
-                tone: 'Informative and Urgent',
                 targetAudience: 'Government Job Seekers in India',
                 primaryKeywords: state.focusKeyword || '',
+                // Pass available context from form state - no new UI needed
+                organizationName: (initialData?.org_name as string) || '',
+                organizationShortName: (initialData?.org_short_name as string) || '',
+                officialWebsite: (initialData?.org_official_url as string) || '',
+                stateOrRegion: (initialData?.state_name as string) || '',
+                existingPrimaryLink: state.primaryLink || '',
+                existingNotificationPdf: state.notificationPdf || '',
             })
 
             if (result.error) {
@@ -67,18 +73,16 @@ export function PublishSection({ qualifications, tags }: PublishSectionProps) {
                 if (d.metaDescription) update.metaDescription = d.metaDescription
                 if (d.focusKeyword) update.focusKeyword = d.focusKeyword
 
-                // Merge secondary + long-tail + semantic keywords (deduplicated)
-                const allKeywords = new Set<string>()
-                for (const kw of d.secondaryKeywords ?? []) allKeywords.add(kw)
-                for (const kw of d.longTailKeywords ?? []) allKeywords.add(kw)
-                for (const kw of d.semanticKeywords ?? []) allKeywords.add(kw)
-                if (allKeywords.size > 0) update.secondaryKeywords = [...allKeywords]
+                // Secondary keywords (cleaned - no more longTailKeywords/semanticKeywords)
+                if (d.secondaryKeywords?.length) {
+                    update.secondaryKeywords = [...new Set(d.secondaryKeywords)]
+                }
 
                 // Process content placeholders
                 if (d.content) {
                     update.content = replacePlaceholders(d.content, {
                         officialWebsiteUrl: d.officialWebsiteUrl,
-                        applyOnlineUrl: d.applyOnlineUrl,
+                        primaryLink: d.primaryLink,
                         notificationPdfUrl: d.notificationPdfUrl,
                     })
                 }
@@ -91,9 +95,9 @@ export function PublishSection({ qualifications, tags }: PublishSectionProps) {
                     }))
                 }
 
-                // Links
-                if (d.notificationPdfUrl) update.notificationPdf = d.notificationPdfUrl
-                if (d.applyOnlineUrl) update.primaryLink = d.applyOnlineUrl
+                // Links - only update if user hasn't already filled them
+                if (d.notificationPdfUrl && !state.notificationPdf) update.notificationPdf = d.notificationPdfUrl
+                if (d.primaryLink && !state.primaryLink) update.primaryLink = d.primaryLink
 
                 // Validate suggested qualifications against available options
                 if (d.suggestedQualifications?.length) {

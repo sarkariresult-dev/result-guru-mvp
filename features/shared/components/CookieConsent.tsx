@@ -38,7 +38,7 @@ export function CookieConsent() {
             const timer = setTimeout(() => setVisible(true), 1500)
             return () => clearTimeout(timer)
         } catch {
-            // Storage blocked (restricted iframe) — show banner with in-memory state
+            // Storage blocked (restricted iframe) - show banner with in-memory state
             const timer = setTimeout(() => setVisible(true), 1500)
             return () => clearTimeout(timer)
         }

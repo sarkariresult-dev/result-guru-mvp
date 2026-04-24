@@ -26,14 +26,16 @@ export async function ProductInjection({
         <div className="not-prose my-12 overflow-hidden rounded-4xl border-2 border-brand-100 bg-brand-50/30 dark:border-brand-900/20 dark:bg-brand-950/20 shadow-xl shadow-brand-500/5">
             <div className="flex flex-col md:flex-row items-center gap-6 p-6 sm:p-8">
                 {/* Product Image */}
-                <div className="relative size-32 sm:size-40 shrink-0 overflow-hidden rounded-3xl border border-white/50 bg-white shadow-inner dark:border-zinc-800 dark:bg-zinc-900">
-                    <Image
-                        src={product.image_url}
-                        alt={product.image_alt || product.name}
-                        fill
-                        className="object-contain p-4"
-                        sizes="(max-width: 768px) 128px, 160px"
-                    />
+                <div className="relative size-32 sm:size-40 shrink-0 overflow-hidden rounded-3xl border border-white/50 bg-white shadow-inner dark:border-zinc-800 dark:bg-zinc-900 p-4">
+                    <div className="relative w-full h-full">
+                        <Image
+                            src={product.image_url}
+                            alt={product.image_alt || product.name}
+                            fill
+                            className="object-contain transition-transform duration-300 hover:scale-105"
+                            sizes="(max-width: 768px) 128px, 160px"
+                        />
+                    </div>
                 </div>
 
                 {/* Product Details */}

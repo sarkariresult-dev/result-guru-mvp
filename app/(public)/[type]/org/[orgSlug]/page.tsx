@@ -212,7 +212,7 @@ export default async function TypeByOrgPage({ params, searchParams }: Props) {
         }),
     }
 
-    /* Cross-type navigation — show other types for this org */
+    /* Cross-type navigation - show other types for this org */
     const otherTypes = (Object.keys(POST_TYPE_CONFIG) as PostTypeKey[])
         .filter(k => k !== typeKey)
         .slice(0, 6)
@@ -264,7 +264,7 @@ export default async function TypeByOrgPage({ params, searchParams }: Props) {
 
                 {/* ── Main content grid ── */}
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr]">
-                    
+
                     {/* ── Left Sidebar (Filter Discovery) ── */}
                     <aside className="hidden lg:block">
                         <div className="sticky top-24 space-y-8">
@@ -289,7 +289,7 @@ export default async function TypeByOrgPage({ params, searchParams }: Props) {
                             <Suspense fallback={<div className="h-96 w-full animate-pulse rounded-2xl bg-background-muted" />}>
                                 <TaxonomyRibbon typeSlug={type} layout="sidebar" />
                             </Suspense>
-                            
+
                             <AdZone zoneSlug="sidebar_top" postType={typeKey} />
                         </div>
                     </aside>

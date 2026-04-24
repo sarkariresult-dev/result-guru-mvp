@@ -189,7 +189,11 @@ export function extractHowToSteps(html: string): string[] {
  * Used to transform AI-generated templates into final published HTML.
  */
 export function replacePlaceholders(html: string, mappings: Record<string, string | null | undefined>): string {
+    // Normalize legacy placeholder names to canonical forms
     let processed = html
+        .replace(/\[officialWebsiteLink\]/g, '[officialWebsiteUrl]')
+        .replace(/\[applyOnlineUrl\]/g, '[primaryLink]')
+
     Object.entries(mappings).forEach(([placeholder, value]) => {
         // Find both literal [placeholder] and escaped forms
         const regex = new RegExp(`\\[${placeholder}\\]`, 'g')

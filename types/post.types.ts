@@ -233,7 +233,7 @@ export interface AffiliateProduct {
     updated_at: string
 }
 
-/** @deprecated Legacy join type — use AffiliateProduct directly */
+/** @deprecated Legacy join type - use AffiliateProduct directly */
 export interface PostAffiliateProductEntry {
     post_id: string
     product_id: string

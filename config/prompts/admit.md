@@ -25,7 +25,7 @@ HTML `<table>`: Application Date, City Slip Download, Admit Card Download Date, 
 <h2>Admit Card Kaise Download Karein - Step by Step</h2>
 <h3>Method 1: Official Portal Se</h3>
 10+ step detailed guide with screenshots description. Include:
-- <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Official Website Home Page</a>
+- <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Official Website Home Page</a>
 - <a target="_blank" rel="noopener noreferrer" href="/syllabus">Exam Syllabus</a>
 - <a target="_blank" rel="noopener noreferrer" href="/exam-pattern">Exam Pattern</a>
 
@@ -59,7 +59,7 @@ Travel tips, what to eat, stress management. Link to <a target="_blank" rel="noo
 Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
 - Row 1: **Download Admit Card** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Click Here to Download</a>
 - Row 2: **Download Official Notification** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download PDF</a>
-- Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Portal</a>
+- Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Official Portal</a>
 - Row 4: **Find Exam Center / City Slip** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Link Activated</a>
 - Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
 - Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>

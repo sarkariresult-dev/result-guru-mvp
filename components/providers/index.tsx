@@ -50,7 +50,7 @@ class SafeThemeProvider extends Component<
 
     render() {
         if (this.state.hasError) {
-            // Render children without theming — better than a dead page
+            // Render children without theming - better than a dead page
             return this.props.children
         }
         return (

@@ -36,7 +36,7 @@ Link to <a target="_blank" rel="noopener noreferrer" href="/syllabus">Detailed S
 Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
 - Row 1: **Download Official Exam Pattern PDF** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download</a>
 - Row 2: **Check Detailed Syllabus** | <a target="_blank" rel="noopener noreferrer" href="/syllabus">Visit Syllabus Page</a>
-- Row 3: **Official Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Site</a>
+- Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Official Site</a>
 - Row 4: **Previous Year Paper Analysis** | <a target="_blank" rel="noopener noreferrer" href="/previous-paper">Download PDFs</a>
 - Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
 - Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>

@@ -43,7 +43,7 @@ Repeat H3 for ALL subjects (General Studies, Quantitative, Reasoning, English, T
 Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
 - Row 1: **Download Official Syllabus PDF** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download</a>
 - Row 2: **Apply Online Now** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Visit Portal</a>
-- Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Site</a>
+- Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Official Site</a>
 - Row 4: **Previous Year Papers** | <a target="_blank" rel="noopener noreferrer" href="/previous-paper">Download Here</a>
 - Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
 - Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>

@@ -13,7 +13,7 @@ interface LazyHomeSectionsProps {
  * until the user scrolls near them or clicks "Show More".
  *
  * The children are already SSR'd by Next.js, so this just controls
- * visibility — no client-side data fetching needed.
+ * visibility - no client-side data fetching needed.
  *
  * SEO Impact: The HTML is still in the document for crawlers (rendered
  * server-side), but the initial paint is deferred via CSS display:none

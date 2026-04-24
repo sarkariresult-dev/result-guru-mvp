@@ -37,7 +37,7 @@ HTML `<table>` with `<thead>`:
 - Row 1: **Download Answer Key** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Click Here to Download</a>
 - Row 2: **Raise Objection Link** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Click Here to Raise Objection</a>
 - Row 3: **Official Portal** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Official Site</a>
-- Row 4: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Portal</a>
+- Row 4: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Official Portal</a>
 - Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
 - Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
 

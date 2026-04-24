@@ -93,16 +93,18 @@ function AffiliateProductsBoxContent({ affiliates, layout, title, description }:
                             )}
 
                             {/* Product image */}
-                            <div className={`relative bg-background-muted overflow-hidden shrink-0 ${
+                            <div className={`relative bg-background-muted overflow-hidden shrink-0 p-2 ${
                                 isSidebar ? 'size-24 border-r border-border' : 'aspect-4/3'
                             }`}>
-                                <Image
-                                    src={p.image_url}
-                                    alt={p.image_alt || p.name}
-                                    fill
-                                    className="object-contain p-2 transition-transform duration-300 group-hover:scale-105"
-                                    sizes={isSidebar ? '96px' : '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'}
-                                />
+                                <div className="relative w-full h-full">
+                                    <Image
+                                        src={p.image_url}
+                                        alt={p.image_alt || p.name}
+                                        fill
+                                        className="object-contain transition-transform duration-300 group-hover:scale-105"
+                                        sizes={isSidebar ? '96px' : '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'}
+                                    />
+                                </div>
                             </div>
 
                             {/* Product info */}

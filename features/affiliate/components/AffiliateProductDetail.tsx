@@ -111,22 +111,24 @@ export function AffiliateProductDetail({ product }: Props) {
                     <span className="text-foreground font-black truncate max-w-[200px]">{product.name}</span>
                 </nav>
 
-                {/* Product Hero — 2 Column */}
+                {/* Product Hero - 2 Column */}
                 <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
                     {/* Left: Image */}
                     <div className="lg:col-span-5">
                         <div className="sticky top-24">
-                            <div className="group relative aspect-square overflow-hidden rounded-[2rem] border border-border bg-white p-12 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-brand-500/5 dark:bg-zinc-900/50">
+                            <div className="group relative aspect-square overflow-hidden rounded-4xl border border-border bg-white p-12 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-brand-500/5 dark:bg-zinc-900/50">
                                 {/* Decorative background */}
                                 <div className="absolute inset-0 bg-linear-to-br from-brand-50/50 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 dark:from-brand-900/10" />
-                                
-                                <Image
-                                    src={product.image_url}
-                                    alt={product.image_alt || product.name}
-                                    fill
-                                    className="object-contain p-8 transition-transform duration-700 group-hover:scale-105"
-                                    priority
-                                />
+
+                                <div className="relative w-full h-full">
+                                    <Image
+                                        src={product.image_url}
+                                        alt={product.image_alt || product.name}
+                                        fill
+                                        className="object-contain transition-transform duration-700 group-hover:scale-105"
+                                        priority
+                                    />
+                                </div>
                                 {product.badge_text && (
                                     <div
                                         className="absolute left-6 top-6 rounded-xl px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-white shadow-lg"
@@ -136,11 +138,11 @@ export function AffiliateProductDetail({ product }: Props) {
                                     </div>
                                 )}
 
-                                <button 
+                                <button
                                     onClick={handleShare}
                                     className="absolute right-6 top-6 size-10 flex items-center justify-center rounded-xl bg-surface/80 backdrop-blur-md border border-border text-foreground-muted hover:text-brand-600 hover:scale-110 transition-all"
                                 >
-                                    <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                                    <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
                                 </button>
                             </div>
                         </div>
@@ -190,7 +192,7 @@ export function AffiliateProductDetail({ product }: Props) {
                                 <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
                                     <ShoppingCart className="size-24 -rotate-12" />
                                 </div>
-                                
+
                                 <div className="relative z-10 space-y-4">
                                     <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground-subtle">Limited Time Offer</span>
                                     <div className="flex flex-wrap items-center gap-4">
@@ -248,7 +250,7 @@ export function AffiliateProductDetail({ product }: Props) {
                                     <div className="h-px flex-1 bg-border/60"></div>
                                 </div>
                                 <div className="prose prose-zinc dark:prose-invert max-w-none">
-                                    <div className="rounded-[2rem] border border-border bg-surface p-8 md:p-10">
+                                    <div className="rounded-4xl border border-border bg-surface p-8 md:p-10">
                                         <p className="whitespace-pre-wrap text-foreground-muted leading-relaxed text-base font-medium">
                                             {product.description || product.short_description || 'No detailed description available for this product.'}
                                         </p>
@@ -275,7 +277,7 @@ export function AffiliateProductDetail({ product }: Props) {
                                 ].map((item, i) => (
                                     <li key={i} className="flex gap-3">
                                         <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600 dark:bg-brand-900/30">
-                                            <svg className="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/></svg>
+                                            <svg className="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
                                         </div>
                                         <div>
                                             <h4 className="text-[13px] font-bold text-foreground">{item.title}</h4>

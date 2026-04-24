@@ -79,7 +79,7 @@ export function PostDetail({ post, slug, url }: Props) {
         const { processedHtml: rawHtml } = post.content
             ? processContentHtml(sanitizeHtml(post.content))
             : { processedHtml: '' }
-        
+
         const mappings = {
             officialWebsiteUrl: post.org_official_url,
             applyOnlineUrl: post.primary_link || post.org_official_url,
@@ -130,7 +130,7 @@ export function PostDetail({ post, slug, url }: Props) {
                                 <span className="text-xs font-bold text-foreground-subtle uppercase">End</span>
                             </div>
                             {post.application_status === 'closing_soon' && (
-                                <p className="text-[10px] font-black uppercase text-orange-600 animate-pulse mt-1">Closing Soon — Hurry!</p>
+                                <p className="text-[10px] font-black uppercase text-orange-600 animate-pulse mt-1">Closing Soon - Hurry!</p>
                             )}
                         </div>
                     </div>
@@ -141,7 +141,7 @@ export function PostDetail({ post, slug, url }: Props) {
                 return (
                     <div
                         key="content"
-                        className="prose-editorial prose dark:prose-invert prose-headings:font-black prose-headings:tracking-tighter prose-headings:scroll-mt-24 prose-a:text-brand-600 prose-a:font-black prose-a:no-underline hover:prose-a:underline prose-img:rounded-3xl prose-img:shadow-2xl prose-table:rounded-2xl prose-table:overflow-hidden prose-table:border prose-table:border-border prose-recruitment py-8"
+                        className="prose-editorial prose dark:prose-invert prose-headings:font-black prose-headings:tracking-tighter prose-headings:scroll-mt-24 prose-a:text-brand-600 prose-a:font-black prose-a:no-underline hover:prose-a:underline prose-img:rounded-3xl prose-img:shadow-2xl prose-recruitment py-8"
                         dangerouslySetInnerHTML={{ __html: processedHtml }}
                         suppressHydrationWarning
                     />
@@ -190,9 +190,9 @@ export function PostDetail({ post, slug, url }: Props) {
             // Insert contextual product injection after the first section (usually summary or dates)
             if (sectionCount === 1 && post.type === 'job') {
                 renderedSections.push(
-                    <ProductInjection 
-                        key="contextual-books" 
-                        category="books" 
+                    <ProductInjection
+                        key="contextual-books"
+                        category="books"
                         label="Top Recommended Book"
                         description="This guide is highly recommended for complete syllabus coverage."
                     />
@@ -282,12 +282,12 @@ export function PostDetail({ post, slug, url }: Props) {
                             )}
                         </div>
                     </div>
-                    
-                    <PostImageOverlay 
-                        slug={slug} 
-                        title={post.title} 
-                        type={typeKey} 
-                        readingTime={post.reading_time_min} 
+
+                    <PostImageOverlay
+                        slug={slug}
+                        title={post.title}
+                        type={typeKey}
+                        readingTime={post.reading_time_min}
                     />
                 </figure>
             </LocalErrorBoundary>
@@ -303,7 +303,7 @@ export function PostDetail({ post, slug, url }: Props) {
             )}
 
             {/* ── Action Center: Consolidating Sidebar Links ─────── */}
-            <ActionCenter 
+            <ActionCenter
                 links={[
                     ...(post.org_official_url ? [{ href: post.org_official_url, label: 'Official Website', icon: 'external' as const, primary: true }] : []),
                     ...(post.primary_link ? [{ href: post.primary_link, label: getActionLinkPageLabel(typeKey), icon: 'check' as const, primary: true }] : []),

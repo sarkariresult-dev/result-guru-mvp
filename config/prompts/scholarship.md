@@ -45,7 +45,7 @@ Numbered `<ol>`: Aadhar, Income Certificate, Caste Certificate, Previous Markshe
 <h3>Registration on [NSP/State Portal]</h3>
 10+ steps with portal-specific details. Include:
 - <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Apply Online Now</a>
-- <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Official Website</a>
+- <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Official Website</a>
 - <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download Official Notification</a>
 
 <h3>Form Fill Karte Waqt Dhyan Rakhein</h3>
@@ -81,7 +81,7 @@ Brief list with links to <a target="_blank" rel="noopener noreferrer" href="/sch
     </tr>
     <tr>
       <td>Official Scholarship Portal</td>
-      <td><a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official site</a></td>
+      <td><a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Official site</a></td>
     </tr>
     <tr>
       <td>Check Selection List</td>

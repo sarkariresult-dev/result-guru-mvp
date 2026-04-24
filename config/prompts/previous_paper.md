@@ -35,7 +35,7 @@ Books and online platforms that provide detailed solutions
 Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
 - Row 1: **Download Previous Year Papers PDF** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Click Here to Download</a>
 - Row 2: **Download Official Notification** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Check Details</a>
-- Row 3: **Official Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteLink]">Visit Official Site</a>
+- Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Official Site</a>
 - Row 4: **Check Detailed Syllabus** | <a target="_blank" rel="noopener noreferrer" href="/syllabus">Get Syllabus</a>
 - Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
 - Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>

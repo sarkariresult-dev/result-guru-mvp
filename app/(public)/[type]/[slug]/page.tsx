@@ -14,6 +14,7 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { TableOfContents } from '@/features/posts/components/TableOfContents'
 import { AdZone } from '@/components/ads/AdZone'
 import { SidebarProducts } from '@/features/affiliate/components/SidebarProducts'
+import { MobileResourceHub } from '@/features/affiliate/components/MobileResourceHub'
 import { POST_TYPE_CONFIG } from '@/config/constants'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
 import type { PostTypeKey } from '@/config/site'
@@ -191,6 +192,10 @@ export default async function PostDetailPage({ params }: Props) {
                                 <PostDetail post={publishedPost} slug={slug} url={canonicalUrl} />
                                 <div className="space-y-12">
                                     <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} />
+                                    
+                                    {/* Mobile Only: Monetization & Silo Hub */}
+                                    <MobileResourceHub />
+                                    
                                     <SmartRelatedPosts postId={publishedPost.id} />
                                     <RelatedPosts post={publishedPost} />
                                 </div>

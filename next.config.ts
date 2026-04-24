@@ -119,7 +119,7 @@ const nextConfig: NextConfig = {
               // AdSense requires 'unsafe-inline' 'unsafe-eval'; 'strict-dynamic' lets trusted scripts load their own sub-scripts
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com https://*.google-analytics.com https://*.googlesyndication.com https://*.google.com https://*.googleadservices.com https://*.doubleclick.net https://*.adservice.google.com https://*.adservice.google.co.in https://*.adtrafficquality.google https://va.vercel-scripts.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              // Google ad pixels come from many TLDs (google.co.in, google.de, etc) — use broad wildcard
+              // Google ad pixels come from many TLDs (google.co.in, google.de, etc) - use broad wildcard
               "img-src 'self' data: blob: https: http:",
               "font-src 'self' https://fonts.gstatic.com",
               // AdSense traffic quality checks use dynamic domains like ep1.adtrafficquality.google

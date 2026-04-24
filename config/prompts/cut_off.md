@@ -33,10 +33,10 @@ Next stages, link to <a target="_blank" rel="noopener noreferrer" href="/admit-c
 
 <h2>Direct Important Links for [Exam Name] [Year]</h2>
 HTML `<table>` with `<thead>` and `<tbody>`:
-- Row 1: **Download Official Cut Off Marks** | <a target="_blank" rel="noopener noreferrer" href="/result">Click Here to Download</a>
-- Row 2: **Check Final Result Score** | <a target="_blank" rel="noopener noreferrer" href="/result">Link Activated</a>
-- Row 3: **Official Notification PDF** | <a target="_blank" rel="noopener noreferrer" href="/syllabus">Download PDF</a>
-- Row 4: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="/answer-key">Visit Official Portal</a>
+- Row 1: **Download Official Cut Off PDF** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download</a>
+- Row 2: **Check Final Result** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Check Result</a>
+- Row 3: **Download Official Notification** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download PDF</a>
+- Row 4: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Official Portal</a>
 - Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
 - Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
 
