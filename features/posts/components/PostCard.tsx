@@ -39,7 +39,7 @@ export function PostCard({ post, priority = false }: Props) {
                 <h3 className="line-clamp-2 text-base font-semibold leading-snug text-foreground group-hover:text-brand-600 dark:group-hover:text-brand-400">
                     <Link href={href} className="after:absolute after:inset-0">{post.title}</Link>
                 </h3>
-                {(post.application_start_date || post.application_end_date) && (
+                {(post.application_start_date || post.application_end_date) && post.type !== 'notification' && (
                     <div className="flex items-center gap-1 text-[11px] font-medium transition-colors">
                         {post.application_status === 'upcoming' && post.application_start_date ? (
                             <span className="text-blue-600 dark:text-blue-400">Starts {formatDate(post.application_start_date)}</span>

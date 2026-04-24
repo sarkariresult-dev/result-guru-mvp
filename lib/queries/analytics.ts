@@ -30,22 +30,24 @@ export interface TopPost {
 
 // ── Admin dashboard stats ──────────────────────────────────────────────────
 
-export async function getDashboardStats(): Promise<DashboardStats> {
+export async function getDashboardStats(forceFresh = false): Promise<DashboardStats> {
     const supabase = await createServerClient()
 
     // D1/D5: Use fn_site_stats() - single RPC reads from mv_site_stats
-    // Falls back to individual queries if MV doesn't exist yet
-    const { data: mvStats, error: mvError } = await supabase.rpc('fn_site_stats')
+    // Skip MV and use live queries if forceFresh is true (e.g., for admin dashboard)
+    if (!forceFresh) {
+        const { data: mvStats, error: mvError } = await supabase.rpc('fn_site_stats')
 
-    if (!mvError && mvStats && Array.isArray(mvStats) && mvStats.length > 0) {
-        const s = mvStats[0]
-        return {
-            totalPosts: Number(s.total_posts) ?? 0,
-            publishedPosts: Number(s.published_posts) ?? 0,
-            totalViews: Number(s.total_views) ?? 0,
-            totalUsers: Number(s.total_users) ?? 0,
-            totalSubscribers: Number(s.total_subscribers) ?? 0,
-            recentPostsCount: Number(s.recent_posts_7d) ?? 0,
+        if (!mvError && mvStats && Array.isArray(mvStats) && mvStats.length > 0) {
+            const s = mvStats[0]
+            return {
+                totalPosts: Number(s.total_posts) ?? 0,
+                publishedPosts: Number(s.published_posts) ?? 0,
+                totalViews: Number(s.total_views) ?? 0,
+                totalUsers: Number(s.total_users) ?? 0,
+                totalSubscribers: Number(s.total_subscribers) ?? 0,
+                recentPostsCount: Number(s.recent_posts_7d) ?? 0,
+            }
         }
     }
 

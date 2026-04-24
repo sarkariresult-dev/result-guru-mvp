@@ -9,9 +9,9 @@ import type { PostStatus } from '@/types/enums'
 
 export default async function AdminDashboardPage() {
     const [stats, topPosts, { data: recentPosts }] = await Promise.all([
-        getDashboardStats(),
+        getDashboardStats(true),
         getTopPosts(5),
-        getAdminPosts({ limit: 7, status: undefined }),
+        getAdminPosts({ limit: 7, status: 'published' }),
     ])
 
     const publishRate = stats.totalPosts > 0

@@ -1,8 +1,6 @@
 import Link from 'next/link'
-import { Clock } from 'lucide-react'
 import type { PostCard as PostCardType } from '@/types/post.types'
 import { ROUTE_PREFIXES } from '@/config/site'
-import { cn, formatDate } from '@/lib/utils'
 
 interface Props {
     posts: PostCardType[]
@@ -22,9 +20,6 @@ export function NumberedList({ posts, now = Date.now() }: Props) {
     return (
         <div className="flex flex-col gap-5 w-full">
             {posts.map((post, index) => {
-                const hasEndDate = !!post.application_end_date
-                const isClosingSoon = post.application_status === 'closing_soon'
-                
                 // Show 'NEW' badge if published in last 48 hours
                 const isNew = post.published_at && (now - new Date(post.published_at).getTime() < 48 * 60 * 60 * 1000)
 
@@ -44,26 +39,19 @@ export function NumberedList({ posts, now = Date.now() }: Props) {
                                 <h3 className="text-sm font-bold leading-snug text-foreground group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors line-clamp-2">
                                     {post.title}
                                 </h3>
-                                {isNew && (
-                                    <span className="shrink-0 inline-flex items-center rounded-sm bg-blue-100 px-1 py-0.5 text-[8px] font-black uppercase tracking-tighter text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                                        New
-                                    </span>
-                                )}
+                                <div className="flex shrink-0 items-center gap-1 mt-0.5">
+                                    {isNew && (
+                                        <span className="inline-flex items-center rounded-full bg-amber-100 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-tighter text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 ring-1 ring-inset ring-amber-200/50 dark:ring-amber-800/20">
+                                            New
+                                        </span>
+                                    )}
+                                </div>
                             </div>
-                            
-                            <div className="flex flex-col gap-1.5">
+
+                            <div className="flex flex-col gap-1.5 mt-1">
                                 <p className="text-[10px] text-foreground-subtle leading-tight line-clamp-1 font-medium uppercase tracking-widest opacity-80">
                                     {post.excerpt || `Latest update from ${post.org_name || 'department'}`}
                                 </p>
-                                {hasEndDate && (
-                                    <div className={cn(
-                                        "flex items-center gap-1 text-[10px] font-bold",
-                                        isClosingSoon ? "text-orange-600 dark:text-orange-400" : "text-brand-600/60 dark:text-brand-400/60"
-                                    )}>
-                                        <Clock className={cn("size-3", isClosingSoon && "animate-pulse-subtle")} />
-                                        <span className="uppercase tracking-tighter">Ends: {formatDate(post.application_end_date)}</span>
-                                    </div>
-                                )}
                             </div>
                         </div>
                     </Link>

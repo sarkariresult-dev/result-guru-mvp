@@ -119,8 +119,8 @@ export default async function HomePage() {
 
     const states = statesResult.status === 'fulfilled' ? statesResult.value.map((s) => ({ slug: s.slug, name: s.name, abbr: s.abbr })) : []
     const organizations = orgsResult.status === 'fulfilled' ? orgsResult.value : []
-    const postCounts = countsResult.status === 'fulfilled' ? countsResult.value : []
-    const countsMap = new Map(postCounts.map((c) => [c.type, c]))
+    const stats = (countsResult.status === 'fulfilled' ? countsResult.value : [])
+    const countsMap = new Map(stats.map((c) => [c.type, c]))
 
     /* Pre-fetched homepage sections from fn_homepage_sections() - 1 DB call for all sections */
     const sections = sectionsResult.status === 'fulfilled' ? sectionsResult.value : {}
