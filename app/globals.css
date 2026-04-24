@@ -343,6 +343,46 @@
         border-collapse: collapse;
     }
 
+    /* 
+       TABLE UI HARDENING: Definitive Single-Border Fix
+       We use a real border with separate collapse to enable radius.
+       The table background is set to var(--surface-raised) so that any WebKit 
+       clipping gaps at the top match the header color perfectly, removing the 
+       "double border" / "white gap" illusion.
+    */
+    .prose table {
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        border: 1px solid var(--border) !important;
+        border-radius: var(--radius-2xl) !important;
+        overflow: hidden !important;
+        background-color: var(--surface-raised); /* Matches header color to hide gaps at top */
+        box-shadow: none !important;
+        width: 100%;
+        margin: 1.5em 0;
+    }
+
+    /* Keep data cells on the standard background */
+    .prose td {
+        background-color: var(--bg);
+    }
+
+    /* Sync inner cell corners exactly to parent to remove WebKit gaps */
+    .prose table thead tr:first-child th:first-child,
+    .prose table tbody tr:first-child td:first-child {
+        border-top-left-radius: calc(var(--radius-2xl) - 1px) !important;
+    }
+    .prose table thead tr:first-child th:last-child,
+    .prose table tbody tr:first-child td:last-child {
+        border-top-right-radius: calc(var(--radius-2xl) - 1px) !important;
+    }
+    .prose table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: calc(var(--radius-2xl) - 1px) !important;
+    }
+    .prose table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: calc(var(--radius-2xl) - 1px) !important;
+    }
+
     /* ── Content table cell padding (post body / prose) ── */
     .prose th,
     .prose td {

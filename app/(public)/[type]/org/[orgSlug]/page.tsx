@@ -222,6 +222,8 @@ export default async function TypeByOrgPage({ params, searchParams }: Props) {
 
     return (
         <>
+            {prevUrl && <link rel="prev" href={`${SITE.url}${prevUrl}`} />}
+            {nextUrl && <link rel="next" href={`${SITE.url}${nextUrl}`} />}
             <JsonLd data={[breadcrumbJsonLd, collectionJsonLd]} />
 
             <div className="container mx-auto max-w-7xl px-4 py-8">

@@ -2,7 +2,7 @@ import { buildPageMetadata } from '@/lib/metadata'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { SITE } from '@/config/site'
-import { ShieldAlert, Lock, Eye, Server, MessageSquare, ChevronRight, CheckCircle2, Database, Search, Mail, ShieldCheck } from 'lucide-react'
+import { ShieldAlert, Lock, Eye, Server, CheckCircle2, Search, Mail, ShieldCheck } from 'lucide-react'
 import { InstitutionalCTA } from '@/components/sections/InstitutionalCTA'
 
 export const metadata = buildPageMetadata({

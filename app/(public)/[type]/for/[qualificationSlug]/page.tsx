@@ -5,7 +5,6 @@ import { getQualifications, getQualificationBySlug } from '@/lib/queries/taxonom
 import { getPosts, getPostsCount } from '@/features/posts/queries'
 import { PostGrid } from '@/features/posts/components/PostGrid'
 import { AdZone } from '@/components/ads/AdZone'
-import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { PAGINATION } from '@/config/constants'
@@ -15,10 +14,8 @@ import { PostType } from '@/types/enums'
 import type { PostTypeKey } from '@/config/site'
 import { Icons } from '@/lib/icons'
 import { buildListingTitle, buildListingMeta } from '@/lib/metadata'
-import { slugToKey, humanise } from '@/lib/utils'
+import { slugToKey } from '@/lib/utils'
 import type { PostCard } from '@/types/post.types'
-import { TaxonomyRibbon } from '@/features/taxonomy/components/TaxonomyRibbon'
-import { Suspense } from 'react'
 import { GraduationCap, Verified, ShieldCheck, Zap, Info, ArrowLeft, Building2 } from 'lucide-react'
 
 // ── Types ─────────────────────────────────────────────────────────
@@ -168,6 +165,9 @@ export default async function TypeForQualificationPage({ params, searchParams }:
     const config = POST_TYPE_CONFIG[typeKey]
     const qualName = qualRecord.short_name || qualRecord.name
 
+    const prevUrl = page > 1 ? (page === 2 ? basePath : `${basePath}?page=${page - 1}`) : null
+    const nextUrl = page < totalPages ? `${basePath}?page=${page + 1}` : null
+
     const breadcrumbJsonLd = buildBreadcrumbSchema([
         { name: 'Home', url: SITE.url },
         { name: 'Qualifications', url: `${SITE.url}/qualifications` },
@@ -197,9 +197,12 @@ export default async function TypeForQualificationPage({ params, searchParams }:
     }
 
     return (
-        <div className="flex flex-col min-h-screen">
+        <>
+            {prevUrl && <link rel="prev" href={`${SITE.url}${prevUrl}`} />}
+            {nextUrl && <link rel="next" href={`${SITE.url}${nextUrl}`} />}
             <JsonLd data={[breadcrumbJsonLd, collectionJsonLd]} />
 
+            <div className="flex flex-col min-h-screen">
             {/* Premium Hub Hero */}
             <header className="relative overflow-hidden bg-slate-950 px-4 py-20 text-white">
                 <div className="absolute inset-0 z-0 opacity-20" 
@@ -402,5 +405,6 @@ export default async function TypeForQualificationPage({ params, searchParams }:
                 </div>
             </div>
         </div>
+    </>
     )
 }

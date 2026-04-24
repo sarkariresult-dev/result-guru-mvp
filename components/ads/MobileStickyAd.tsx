@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { AdZone } from '@/components/ads/AdZone';
+import type { PostTypeKey } from '@/config/site';
 
 interface Props {
-    postType: string;
+    postType: PostTypeKey;
     postId: string;
 }
 
