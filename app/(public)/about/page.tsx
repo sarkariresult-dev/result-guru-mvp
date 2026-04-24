@@ -287,9 +287,19 @@ export default function AboutPage() {
 
                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                             {ECOSYSTEM_ITEMS.map((nav, i) => {
-                                const IconComponent = (nav.icon && nav.icon in Icons 
-                                    ? (Icons as Record<string, any>)[nav.icon] 
-                                    : FileText) as LucideIcon
+                                const IconComponent = (nav.icon === 'Briefcase' ? Icons.Briefcase :
+                                                     nav.icon === 'Trophy' ? Icons.Trophy :
+                                                     nav.icon === 'CreditCard' ? Icons.CreditCard :
+                                                     nav.icon === 'Key' ? Icons.Key :
+                                                     nav.icon === 'BookOpen' ? Icons.BookOpen :
+                                                     nav.icon === 'ClipboardList' ? Icons.ClipboardList :
+                                                     nav.icon === 'History' ? Icons.History :
+                                                     nav.icon === 'Hash' ? Icons.Hash :
+                                                     nav.icon === 'ClipboardCheck' ? Icons.ClipboardCheck :
+                                                     nav.icon === 'GraduationCap' ? Icons.GraduationCap :
+                                                     nav.icon === 'Award' ? Icons.Award :
+                                                     nav.icon === 'Star' ? Icons.Star :
+                                                     FileText) as LucideIcon
                                 return (
                                     <Link
                                         key={i}

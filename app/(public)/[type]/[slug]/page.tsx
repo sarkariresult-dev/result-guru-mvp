@@ -23,6 +23,8 @@ import type { FaqItem } from '@/types/post-content.types'
 import { slugToKey, humanise, keyToSlug } from '@/lib/utils'
 import { PageViewTracker } from '@/features/analytics/components/PageViewTracker'
 import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
+import { getActiveAds } from '@/features/advertising/queries'
+import { headers } from 'next/headers'
 
 /* ── Types ───────────────────────────────────────────────────────── */
 
@@ -153,6 +155,18 @@ export default async function PostDetailPage({ params }: Props) {
         .filter(p => p.id !== publishedPost.id)
         .slice(0, 5)
 
+    /* ── Pre-fetch Ads (Server Side) ── */
+    const headersList = await headers()
+    const userAgent = headersList.get('user-agent') || ''
+    const isMobile = /mobile/i.test(userAgent)
+    const device = isMobile ? 'mobile' : 'desktop'
+
+    const [aboveContentAds, belowContentAds, sidebarLeftTopAds] = await Promise.all([
+        getActiveAds('above_content', { post_type: typeKey, post_id: publishedPost.id, device }),
+        getActiveAds('below_content', { post_type: typeKey, post_id: publishedPost.id, device }),
+        getActiveAds('sidebar_left_top', { post_type: typeKey, post_id: publishedPost.id, device }),
+    ])
+
     return (
         <>
             <PageViewTracker postId={publishedPost.id} />
@@ -172,7 +186,7 @@ export default async function PostDetailPage({ params }: Props) {
                     <aside className="hidden lg:block space-y-8" aria-label="Quick Navigation">
                         <LocalErrorBoundary name="LeftSidebar" silent>
                             <div className="space-y-12">
-                                <AdZone zoneSlug="sidebar_left_top" postType={typeKey} postId={publishedPost.id} />
+                                <AdZone zoneSlug="sidebar_left_top" postType={typeKey} postId={publishedPost.id} initialAds={sidebarLeftTopAds} />
                             </div>
 
                             <div className="sticky top-24 space-y-8">
@@ -188,10 +202,10 @@ export default async function PostDetailPage({ params }: Props) {
                     <article className="min-w-0">
                         <LocalErrorBoundary name="MainContent" silent>
                             <div className="mx-auto max-w-3xl space-y-10">
-                                <AdZone zoneSlug="above_content" postType={typeKey} postId={publishedPost.id} />
+                                <AdZone zoneSlug="above_content" postType={typeKey} postId={publishedPost.id} initialAds={aboveContentAds} />
                                 <PostDetail post={publishedPost} slug={slug} url={canonicalUrl} />
                                 <div className="space-y-12">
-                                    <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} />
+                                    <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} initialAds={belowContentAds} />
                                     
                                     {/* Mobile Only: Monetization & Silo Hub */}
                                     <MobileResourceHub />

@@ -18,22 +18,44 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
     if (!rl.success) return rateLimitResponse(rl.reset)
 
     const body = await request.json()
-    const { ad_id, event_type, zone_id, post_id, device } = body
-
-    if (!ad_id || !event_type || !zone_id) {
-        return errorResponse('ad_id, event_type, and zone_id are required', 400)
-    }
-
     const supabase = await createServerClient()
 
-    // ad_events columns: ad_id, zone_id (UUID FK), event_type, post_id, device, country
-    const { error } = await supabase.from('ad_events').insert({
-        ad_id,
-        zone_id,
-        event_type,
-        post_id: post_id ?? null,
-        device: device ?? null,
-    })
+    // Support both single event (legacy) and batched events
+    const events = body.events || [body]
+
+    if (!Array.isArray(events) || events.length === 0) {
+        return errorResponse('Valid events array or single event object is required', 400)
+    }
+
+    // Validate and prepare events
+    const rows = events
+        .filter((ev: { adId?: string; ad_id?: string }) => ev.adId || ev.ad_id)
+        .map((ev: { 
+            adId?: string; 
+            ad_id?: string; 
+            zoneId?: string; 
+            zone_id?: string; 
+            eventType?: string; 
+            event_type?: string; 
+            postId?: string; 
+            post_id?: string; 
+            device?: string; 
+            occurredAt?: string; 
+            occurred_at?: string; 
+        }) => ({
+            ad_id: ev.adId || ev.ad_id,
+            zone_id: ev.zoneId || ev.zone_id,
+            event_type: ev.eventType || ev.event_type,
+            post_id: ev.postId || ev.post_id || null,
+            device: ev.device || null,
+            occurred_at: ev.occurredAt || ev.occurred_at || new Date().toISOString()
+        }))
+
+    if (rows.length === 0) {
+        return errorResponse('No valid events provided', 400)
+    }
+
+    const { error } = await supabase.from('ad_events').insert(rows)
 
     if (error) throw error
     return successResponse(null)

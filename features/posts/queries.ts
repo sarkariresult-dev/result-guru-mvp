@@ -80,52 +80,34 @@ export const getPosts = cache(unstable_cache(
 ))
 
 /** Single post by slug (full row from v_published_posts) */
-export const getPostBySlug = cache(unstable_cache(
-    async (
-        slug: string,
-        type?: string,
-    ): Promise<PostDetail | null> => {
-        const supabase = createStaticClient()
-        let query = supabase
-            .from('v_published_posts')
-            .select('*')
-            .eq('slug', slug)
-        if (type) query = query.eq('type', type)
+export async function getPostBySlug(slug: string, type?: string): Promise<PostDetail | null> {
+    'use cache'
+    const supabase = createStaticClient()
+    let query = supabase
+        .from('v_published_posts')
+        .select('*')
+        .eq('slug', slug)
+    
+    if (type) query = query.eq('type', type)
 
-        const { data, error } = await query.returns<PostDetail[]>().single()
-        if (error || !data) return null
+    const { data, error } = await query.single()
+    if (error || !data) return null
 
-        // Map flattened author fields back to the nested object structure expected by components
-        const post = data as any
-        if (post.author_id) {
-            post.author = {
-                id: post.author_id,
-                name: post.author_name,
-                avatar_url: post.author_avatar_url,
-                bio: post.author_bio
-            }
+    const post = data as any
+
+    // Map flattened author fields back to the nested object structure
+    if (post.author_id) {
+        post.author = {
+            id: post.author_id,
+            name: post.author_name,
+            avatar_url: post.author_avatar_url,
+            bio: post.author_bio
         }
-
-        // Fetch tags separately to keep the main view performance high
-        const { data: tagData } = await supabase
-            .from('post_tags')
-            .select('tag:tags(id, name, slug, tag_type)')
-            .eq('post_id', post.id)
-
-        if (tagData) {
-            post.tags = tagData
-                .map((t: any) => t.tag)
-                .filter(Boolean) as PostTag[]
-        }
-
-        return post as PostDetail
-    },
-    ['post-by-slug'],
-    {
-        revalidate: 1800, // 30 min - tighter for faster content updates
-        tags: ['posts'],
     }
-))
+
+    // tags are now pre-joined in the view as JSONB
+    return post as PostDetail
+}
 
 /** Recent posts by type (for homepage sections, footer, etc.) */
 export const getRecentPosts = cache(unstable_cache(

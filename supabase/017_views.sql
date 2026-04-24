@@ -42,7 +42,20 @@ SELECT
   u.name AS author_name,
   u.avatar_url AS author_avatar_url,
   u.bio AS author_bio,
-  p.published_at, p.updated_at, p.content_updated_at, p.last_reviewed_at, p.expires_at
+  p.published_at, p.updated_at, p.content_updated_at, p.last_reviewed_at, p.expires_at,
+
+  -- Optimization: Inline tags to avoid N+1 queries in application code
+  (
+    SELECT COALESCE(jsonb_agg(t), '[]'::jsonb)
+    FROM (
+      SELECT tag.id, tag.name, tag.slug, tag.tag_type
+      FROM post_tags pt
+      JOIN tags tag ON tag.id = pt.tag_id
+      WHERE pt.post_id = p.id
+      ORDER BY tag.name ASC
+    ) t
+  ) AS tags
+
 FROM      posts         p
 LEFT JOIN states        s ON s.slug = p.state_slug
 LEFT JOIN organizations o ON o.id   = p.organization_id

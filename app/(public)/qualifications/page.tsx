@@ -5,7 +5,7 @@ import { JsonLd } from '@/components/seo/JsonLd'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { SITE } from '@/config/site'
 import { QualsGrid } from '@/components/qualifications/QualsGrid'
-import { Building2, Search, MapPin, ArrowRight, GraduationCap } from 'lucide-react'
+import { Search, MapPin, ArrowRight, GraduationCap } from 'lucide-react'
 import { RetryButton } from '@/components/shared/RetryButton'
 
 

@@ -28,11 +28,12 @@ export interface AdRenderContext {
     post_id?: string
 }
 
-export function useAds(zoneSlug: string, ctx: AdRenderContext = {}) {
+export function useAds(zoneSlug: string, ctx: AdRenderContext = {}, initialData?: ActiveAd[]) {
     return useQuery<ActiveAd[]>({
         queryKey: queryKeys.ads.zone(zoneSlug, ctx),
         staleTime: STALE_TIME.ADS,
         enabled: Boolean(zoneSlug),
+        initialData,
         queryFn: async () => {
             const supabase = createClient()
 
@@ -58,35 +59,23 @@ export function useAds(zoneSlug: string, ctx: AdRenderContext = {}) {
     })
 }
 
+import { adTracker } from '@/lib/ads/ad-tracker'
+
 // ─── Record ad impression / click ────────────────────────────────────────────
 
 /**
- * Fire-and-forget ad event recording.
+ * Fire-and-forget ad event recording using batched tracker.
  * @param adId   - The ad UUID
  * @param zoneId - The ad_zones UUID (available in ad data from v_active_ads)
  * @param eventType - 'impression' | 'click'
  * @param ctx    - Optional context (post_id, device)
  */
-export async function recordAdEvent(
+export function recordAdEvent(
     adId: string,
     zoneId: string,
     eventType: 'impression' | 'click',
     ctx: { post_id?: string; device?: string } = {},
 ) {
-    try {
-        await fetch('/api/ads/event', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                ad_id: adId,
-                zone_id: zoneId,
-                event_type: eventType,
-                post_id: ctx.post_id ?? null,
-                device: ctx.device ?? null,
-            }),
-            keepalive: true,
-        })
-    } catch {
-        // Analytics must never crash the page
-    }
+    if (!adTracker) return
+    adTracker.recordEvent(adId, eventType, zoneId, ctx.post_id)
 }

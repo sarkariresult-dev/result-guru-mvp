@@ -7,6 +7,8 @@ import { AdDisplay } from './AdDisplay'
 import { isRestrictedIframe } from '@/lib/safe-env'
 import type { PostTypeKey } from '@/config/site'
 
+import type { ActiveAd } from '@/types/advertising.types'
+
 interface Props {
     /** Zone slug matching ad_zones.slug in DB */
     zoneSlug: string
@@ -14,6 +16,7 @@ interface Props {
     postId?: string
     sticky?: boolean
     className?: string
+    initialAds?: ActiveAd[]
 }
 
 export function AdZone({ zoneSlug, postType, postId, sticky, className }: Props) {
@@ -38,7 +41,7 @@ export function AdZone({ zoneSlug, postType, postId, sticky, className }: Props)
     )
 }
 
-function AdZoneContent({ zoneSlug, postType, postId, sticky, className }: Props) {
+function AdZoneContent({ zoneSlug, postType, postId, sticky, className, initialAds }: Props) {
     let device: 'mobile' | 'tablet' | 'desktop' = 'desktop'
     try {
         if (typeof window !== 'undefined') {
@@ -55,7 +58,7 @@ function AdZoneContent({ zoneSlug, postType, postId, sticky, className }: Props)
         post_type: postType,
         device,
         post_id: postId,
-    })
+    }, initialAds)
 
     const impressionSent = useRef<Set<string>>(new Set())
 

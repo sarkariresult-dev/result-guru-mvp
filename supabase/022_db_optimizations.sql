@@ -84,11 +84,25 @@ CREATE OR REPLACE FUNCTION fn_homepage_sections(
 )
 RETURNS JSONB LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public AS $$
 DECLARE
-  _result JSONB := '{}'::JSONB; _type TEXT; _types TEXT[] := ARRAY['job', 'result', 'admit', 'answer_key', 'cut_off', 'syllabus', 'exam_pattern', 'previous_paper', 'scheme', 'exam', 'admission', 'notification'];
+  _result JSONB;
 BEGIN
-  FOREACH _type IN ARRAY _types LOOP
-    _result := _result || jsonb_build_object(_type, (SELECT COALESCE(jsonb_agg(row_to_json(t)), '[]'::JSONB) FROM (SELECT id, type, application_status, title, slug, excerpt, state_slug, state_name, org_name, org_short_name, category_slug, category_name, qualification, featured_image, featured_image_alt, view_count, reading_time_min, published_at, updated_at FROM v_published_posts WHERE type = _type::post_type ORDER BY published_at DESC LIMIT p_limit) t));
-  END LOOP; RETURN _result;
+  SELECT jsonb_object_agg(type, posts)
+  INTO _result
+  FROM (
+    SELECT 
+      type, 
+      COALESCE(jsonb_agg(t ORDER BY published_at DESC), '[]'::JSONB) AS posts
+    FROM (
+      SELECT 
+        *,
+        row_number() OVER (PARTITION BY type ORDER BY published_at DESC) as rn
+      FROM v_published_posts
+    ) t
+    WHERE rn <= p_limit
+    GROUP BY type
+  ) res;
+
+  RETURN COALESCE(_result, '{}'::JSONB);
 END;
 $$;
 

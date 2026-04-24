@@ -148,7 +148,7 @@ export default async function PostListingPage({ params, searchParams }: Props) {
         ])
         posts = p
         totalCount = c
-    } catch (_error) {
+    } catch {
 
         fetchError = true
     }

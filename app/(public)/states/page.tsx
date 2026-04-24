@@ -4,6 +4,7 @@ import { buildPageMetadata } from '@/lib/metadata'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { SITE } from '@/config/site'
+
 import { MapPin, ArrowRight, ShieldCheck, Zap, Globe, FileCheck } from 'lucide-react'
 import { StatesGrid } from '@/components/states/StatesGrid'
 
@@ -15,12 +16,11 @@ export const metadata = buildPageMetadata({
 
 export default async function StatesDirectoryPage() {
     let states: Awaited<ReturnType<typeof getStates>> = []
-    let fetchError = false
 
     try {
         states = await getStates()
     } catch {
-        fetchError = true
+        // Error handling
     }
 
     /* Breadcrumb JSON-LD */

@@ -2,7 +2,7 @@ import { buildPageMetadata } from '@/lib/metadata'
 import { buildBreadcrumbSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { SITE } from '@/config/site'
-import { AlertTriangle, ShieldCheck, Scale, ExternalLink, HelpCircle, ChevronRight, Info, Search, Mail } from 'lucide-react'
+import { AlertTriangle, ShieldCheck, Scale, ExternalLink, Info, Search, Mail } from 'lucide-react'
 import { InstitutionalCTA } from '@/components/sections/InstitutionalCTA'
 
 export const metadata = buildPageMetadata({

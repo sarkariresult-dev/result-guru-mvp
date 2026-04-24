@@ -1,4 +1,4 @@
-import { Search, MapPin } from 'lucide-react'
+
 
 export default function StatesLoading() {
     return (

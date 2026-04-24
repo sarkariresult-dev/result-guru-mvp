@@ -54,7 +54,7 @@ export default async function SearchPage({ searchParams }: Props) {
         } else {
             posts = await getPosts({}, 1, 12)
         }
-    } catch (err) {
+    } catch {
 
         fetchError = true
     }

@@ -9,7 +9,7 @@ import { AffiliateProductDetail } from '@/features/affiliate/components/Affiliat
 import { RelatedProducts } from '@/features/affiliate/components/RelatedProducts'
 import { AffiliateSidebarProducts } from '@/features/affiliate/components/AffiliateSidebarProducts'
 import { AdZone } from '@/components/ads/AdZone'
-import { SITE } from '@/config/site'
+
 
 interface Props {
     params: Promise<{ category: string; slug: string }>

@@ -1,4 +1,4 @@
-import { google } from 'googleapis'
+import { JWT } from 'google-auth-library'
 
 /**
  * ─────────────────────────────────────────────────────────────────
@@ -36,7 +36,7 @@ export async function pushToGoogleIndexingApi(url: string, action: IndexingActio
             throw new Error('Missing Google Service Account credentials (GOOGLE_CLIENT_EMAIL / GOOGLE_PRIVATE_KEY) in env.')
         }
 
-        const jwtClient = new google.auth.JWT({
+        const jwtClient = new JWT({
             email: clientEmail,
             key: privateKey,
             scopes: ['https://www.googleapis.com/auth/indexing'],

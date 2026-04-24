@@ -1,4 +1,4 @@
-import { FileText, MapPin } from 'lucide-react'
+
 
 export default function StateDetailLoading() {
     return (

@@ -48,6 +48,8 @@ CREATE INDEX IF NOT EXISTS idx_ads_status      ON ads(status);
 CREATE INDEX IF NOT EXISTS idx_ads_active_zone ON ads(zone_id, weight DESC) WHERE status = 'active';
 CREATE INDEX IF NOT EXISTS idx_ad_events_ad ON ad_events(ad_id, occurred_at DESC);
 CREATE INDEX IF NOT EXISTS idx_ad_events_at ON ad_events(occurred_at DESC);
+CREATE INDEX IF NOT EXISTS idx_ad_events_aggregation ON ad_events (ad_id, event_type, occurred_at DESC);
+CREATE INDEX IF NOT EXISTS idx_post_tags_composite ON post_tags(post_id, tag_id);
 CREATE INDEX IF NOT EXISTS idx_ad_stats_ad_date ON ad_stats_daily(ad_id, stat_date DESC);
 CREATE INDEX IF NOT EXISTS idx_campaigns_dates ON ad_campaigns(status, start_date, end_date);
 

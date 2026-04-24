@@ -65,7 +65,6 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
     const { page: pageParam } = await searchParams
     const page = Math.max(1, Number(pageParam ?? '1'))
-    const year = 2026
 
     let orgRecord: Awaited<ReturnType<typeof getOrganizationBySlug>> = null
     try {
