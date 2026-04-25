@@ -1,52 +1,59 @@
-You are writing a **Previous Year Question Papers** resource post. Study-focused Hinglish tone. Target: **1000+ words**.
+You are writing a **Previous Year Question Papers** resource post. Professional, study-focused tone. Target: **1200+ words of substantive content**.
 
 ## Content Structure (use raw HTML)
 
-<h2>[Exam Name] Previous Year Papers [Year]: Download PDF & Solutions</h2>
-Provide a **Direct Answer (SGE Optimized)** in the first 50-100 words. State exactly which years are covered, how candidates can download the PDFs, and the availability of solutions. Include focus keyword. Naturally link to the official `.gov.in` portal.
+<h2>[Exam Name] Previous Year Papers [Year]: Download PDF and Solutions</h2>
+Open with a **Direct Answer** in the first 50-100 words. State exactly which years are covered, how candidates can download the PDFs, and the availability of official or expert solutions. Include focus keyword. Link to the official `.gov.in` portal.
 
-<h2>Previous Papers Kyun Important Hain?</h2>
-<h3>Strategic Importance</h3> "Bina previous papers solve kiye exam crack karna mushkil hai. Ye 3 cheezein milti hain: pattern familiarity, topic weightage, aur time management practice."
-<h3>How to Use Them Effectively</h3> Timed practice vs analysis approach
+<h2>Importance of Previous Papers</h2>
+<h3>Strategic Value</h3>
+Explain why previous papers are essential: pattern familiarity, identifying high-weightage topics, and practicing time management under exam conditions.
+<h3>How to Use Them Effectively</h3>
+Actionable advice on balancing timed mock practice versus deep error analysis.
 
 <h2>Available Papers - Year-Wise</h2>
 HTML `<table>`: Year | Paper/Stage | Language | Solutions | PDF Status
 For each year with download links where applicable: <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Download PDF</a>
 
-<h2>Paper Analysis - Topic Distribution</h2>
-<h3>Subject-Wise Question Frequency</h3> HTML `<table>`: Topic | 2024 | 2023 | 2022 | Trend
-<h3>Recurring Topics</h3> "Ye topics har saal aate hain - inko chhodna MANA hai: [list]"
-<h3>Surprise Topics</h3> Topics that appeared unexpectedly
+<h2>Topic Distribution Analysis</h2>
+<h3>Subject-Wise Question Frequency</h3>
+HTML `<table>`: Topic | 2024 | 2023 | 2022 | Trend (Increasing/Decreasing)
+<h3>Recurring Core Topics</h3>
+List topics that consistently appear across multiple years based on data analysis.
+<h3>Recent Shift in Trends</h3>
+Identify any topics that have gained sudden importance in recent exam cycles.
 
 <h2>Difficulty Level Comparison</h2>
 HTML `<table>`: Year | Overall | [Section 1] | [Section 2] | [Section 3]
-Analysis paragraph comparing trends
+Factual paragraph analyzing whether the exam is trending harder or easier.
 
-<h2>How to Solve Previous Papers - Pro Tips</h2>
-<h3>Phase 1: Subject-Wise Practice</h3> Topic-by-topic approach
-<h3>Phase 2: Full Mock Mode</h3> Timed full paper, strict exam conditions
-<h3>Phase 3: Error Analysis</h3> Tracking mistakes, weak area identification
-Link to <a target="_blank" rel="noopener noreferrer" href="/syllabus">Syllabus</a> and <a target="_blank" rel="noopener noreferrer" href="/exam-pattern">Exam Pattern</a>
+<h2>Preparation Strategy - Solving Papers</h2>
+<h3>Phase 1: Subject-Wise Practice</h3>
+How to use papers during initial preparation by extracting topic-specific questions.
+<h3>Phase 2: Full Mock Mode</h3>
+Instructions for attempting full papers under strict time conditions.
+<h3>Phase 3: Error Analysis</h3>
+Methods for tracking mistakes and identifying weak areas. Link to <a href="/syllabus">Syllabus</a> and <a href="/exam-pattern">Exam Pattern</a>.
 
-<h2>Best Resources for Solutions</h2>
-Books and online platforms that provide detailed solutions
+<h2>Recommended Resources</h2>
+Books and official online platforms that provide detailed solutions and answer keys.
 
-<h2>Direct Important Links for [Exam Name] [Year]</h2>
-Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
-- Row 1: **Download Previous Year Papers PDF** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Click Here to Download</a>
-- Row 2: **Download Official Notification** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Check Details</a>
-- Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Official Site</a>
-- Row 4: **Check Detailed Syllabus** | <a target="_blank" rel="noopener noreferrer" href="/syllabus">Get Syllabus</a>
-- Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
-- Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
+<h2>Direct Links for [Exam Name] [Year]</h2>
+Structured HTML `<table>` with `<thead>` and `<tbody>`:
+- Download Papers PDF | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Download Here</a>
+- Download Notification | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Check Details</a>
+- Official Website | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Portal</a>
+- Detailed Syllabus | <a href="/syllabus">Get Syllabus</a>
+- Join Telegram | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
+- Result Guru | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
 
-**CRITICAL SEO RULES:**
-1. H3 within every H2
+---
+
+**RULES:**
+1. All headings in English — no Hinglish
 2. Internal links: `/syllabus`, `/exam-pattern`, `/cut-off`, `/admit-card`, `/result`
 3. Tables with `<thead>`, `<th scope="col">`
-4. Include at least 2 `<div class="rg-tip">` expert callout boxes (e.g., which years to prioritize, smart analysis technique)
-5. Topic frequency table across years is the unique value-add
-6. Include difficulty comparison table for EEAT depth
-7. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
-8. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.
-
+4. Topic frequency table across years is the unique value-add
+5. Include difficulty comparison table for analytical depth
+6. **PROHIBITED**: No "FAQ" headings in HTML — populate `faq` JSON instead
+7. **REQUIRED**: "Direct Links" table as the final section

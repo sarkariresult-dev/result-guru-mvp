@@ -24,8 +24,8 @@ import type { LucideIcon } from 'lucide-react'
 /* SEO Metadata */
 
 export const metadata = buildPageMetadata({
-    title: 'Result Guru - Latest Sarkari Result, Admit Card & Govt Jobs 2026',
-    description: 'India\'s most trusted Sarkari Result portal for 2026. Get instant, verified notifications for Govt Jobs, Admit Cards, Exam Results & Answer Keys. Direct official links updated daily.',
+    title: 'Sarkari Result 2026 | Free Job Alert, Admit Card & Latest Govt Jobs - Result Guru',
+    description: 'India\'s fastest Sarkari Result portal for 2026. Get instant, verified Free Job Alerts, Admit Cards, Exam Results & Answer Keys from SSC, UPSC, Railway, IBPS. Updated every hour.',
     path: '/',
 })
 

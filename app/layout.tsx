@@ -2,7 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import { Providers } from '@/components/providers'
-import CookieConsentWrapper from '@/components/CookieConsentWrapper'
+import { CookieConsentWrapper } from '@/components/shared/CookieConsentWrapper'
+
 import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
@@ -23,25 +24,32 @@ export const metadata: Metadata = {
     metadataBase: new URL(SITE.url),
 
     title: {
-        default: `${SITE.name} - Sarkari Result | Govt Jobs & Admit Cards`,
+        default: `Sarkari Result 2026 | Free Job Alert, Admit Card & Govt Jobs - ${SITE.name}`,
         template: '%s',
     },
     description: SITE.description,
 
     keywords: [
         'sarkari result',
+        'sarkari result 2026',
+        'free job alert',
         'sarkari naukri',
         'government jobs india',
-        'govt recruitment',
+        'govt recruitment 2026',
         'admit card download',
         'answer key',
-        'competitive examination result',
+        'sarkari exam',
+        'rojgar result',
         'upsc',
         'ssc',
         'railway jobs',
+        'ibps',
         'state government jobs',
         'government schemes',
         'result guru',
+        'free job alert 2026',
+        'latest govt jobs',
+        'naukri result',
     ],
 
     authors: [{ name: SITE.name, url: SITE.url }],

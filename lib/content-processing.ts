@@ -136,10 +136,11 @@ export function processContentHtml(
     processed = wrapTablesForResponsive(withToc)
     processed = optimizeContentImages(processed)
     
-    // Final cleanup: Remove double spaces and trailing newlines to improve Text-to-HTML ratio
+    // Final cleanup: Collapse excessive whitespace to improve Text-to-HTML ratio
+    // Note: preserve single spaces between inline tags (e.g. <strong>text</strong> more)
     processed = processed
         .replace(/\s{2,}/g, ' ')
-        .replace(/>\s+</g, '><')
+        .replace(/>\s{2,}</g, '> <')
         .trim()
     
     return { tocItems, processedHtml: processed }

@@ -101,7 +101,10 @@ export async function getPostBySlug(slug: string, type?: string): Promise<PostDe
             id: post.author_id,
             name: post.author_name,
             avatar_url: post.author_avatar_url,
-            bio: post.author_bio
+            bio: post.author_bio,
+            credentials: post.author_credentials,
+            years_of_experience: post.author_years_of_experience,
+            social_links: post.author_social_links
         }
     }
 

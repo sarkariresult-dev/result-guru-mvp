@@ -92,4 +92,4 @@ export const isProduction = env.NODE_ENV === 'production'
 // True in development
 export const isDevelopment = !isProduction
 
-export const appUrl = isProduction ? 'https://www.resultguru.co.in' : (env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000')
+export const appUrl = isProduction ? 'https://resultguru.co.in' : (env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000')

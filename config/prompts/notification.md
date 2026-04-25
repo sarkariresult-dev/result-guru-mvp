@@ -1,36 +1,65 @@
-You are writing a **Government Notification / Official Circular** post. Same structure as job post but focused on the official notification release. Use Hinglish tone. Target: **1500+ words**.
+You are writing a **Government Notification / Official Circular** post. Target: **1200+ words of substantive content**.
 
-Follow the same structure as the `job.md` prompt - this post type is functionally identical to job but emphasizes the notification/circular aspect. Include:
+---
 
-<h2>[Organization] [Notification Name] [Year]: [X] Posts - Apply Online</h2>
-Provide a **Direct Answer (SGE Optimized)** in the first 50-100 words. State exactly what the notification is for, the key eligibility, the number of posts, and the official portal. Include focus keyword. Naturally link to the official `.gov.in` domain.
-<h2>Notification Overview - Kya Hai Is Bharti Mein?</h2> with H3 sub-sections
-<h2>Key Highlights</h2> as HTML `<table>`
-<h2>Important Dates</h2> as HTML `<table>`
-<h2>Application Fee Details</h2> with H3 for category-wise
-<h2>Eligibility Criteria</h2> with H3 for education, age, nationality
-<h2>Vacancy Details</h2> with H3 for category/state distribution
-<h2>Pay Scale & Benefits</h2>
+## Content Structure (use raw HTML)
+
+<h2>[Organization] [Notification Name] [Year]: [X] Posts — Apply Online</h2>
+Open with a **Direct Answer** in the first 50-100 words. State what the notification covers, key eligibility, number of posts, and the official portal. Include focus keyword.
+
+<h2>Notification Overview</h2>
+<h3>What This Notification Covers</h3>
+2-3 paragraphs explaining the scope, departments involved, and key facts from the official circular.
+<h3>Changes from Previous Year</h3>
+Specific changes compared to the last cycle — new posts added, eligibility relaxed, fee changes, etc.
+
+<h2>Key Highlights</h2>
+HTML `<table>` with `<thead>`, `<th scope="col">` — use columns relevant to the notification type.
+
+<h2>Important Dates</h2>
+HTML `<table>` with notification release date, application window, exam dates.
+
+<h2>Application Fee</h2>
+Category-wise fee structure as HTML table.
+
+<h2>Eligibility Criteria</h2>
+<h3>Educational Qualification</h3>
+<h3>Age Limit</h3>
+<h3>Other Requirements</h3>
+
+<h2>Vacancy Details</h2>
+Category-wise and post-wise distribution tables.
+
+<h2>Pay Scale and Benefits</h2>
+Official pay band and in-hand salary estimates.
+
 <h2>Selection Process</h2>
-<h2>How to Apply Online</h2> 10+ steps with placeholder links
-<h2>Notification PDF Analysis</h2> - UNIQUE to this type: analyze key points from the PDF
-<h2>Expert Opinion & Career Advice</h2>
-<h2>Direct Important Links for [Organization] [Year]</h2>
-Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
-- Row 1: **Download Official Notification PDF** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download</a>
-- Row 2: **Apply Online Now** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Check Short Info & Link</a>
-- Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Official Portal Link</a>
-- Row 4: **Latest Admit Card** | <a target="_blank" rel="noopener noreferrer" href="/admit-card">Check Here</a>
-- Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
-- Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
+Ordered list with stages and expected timeline.
 
-**CRITICAL SEO RULES:**
-1. H3/H4 within every H2 section
+<h2>How to Apply Online</h2>
+Step-by-step guide with placeholder links:
+- <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Apply Online</a>
+- <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download Notification PDF</a>
+- <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Official Website</a>
+
+<h2>Notification PDF Analysis</h2>
+Analyze 3-4 key points from the official PDF that candidates might miss — eligibility nuances, document requirements, or deadline clarifications.
+
+<h2>Direct Links for [Organization] [Year]</h2>
+Structured HTML `<table>` with `<thead>` and `<tbody>`:
+- Download Notification PDF | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download</a>
+- Apply Online | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Apply Here</a>
+- Official Website | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Portal</a>
+- Latest Admit Cards | <a href="/admit-card">Check Here</a>
+- Join Telegram | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
+- Result Guru | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
+
+---
+
+**RULES:**
+1. All headings in English — no Hinglish
 2. 3-5 internal links: `/syllabus`, `/admit-card`, `/previous-paper`, `/result`, `/exam-pattern`
-3. Tables MUST use `<thead>`, `<th scope="col">`
-4. Include at least 2 `<div class="rg-tip">` expert callout boxes with notification-specific advice
-5. Include "Notification PDF Analysis" section - unique differentiator
-6. Career advice section adds EEAT depth
-7. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
-8. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.
-
+3. Tables with `<thead>`, `<th scope="col">`
+4. "Notification PDF Analysis" section is unique to this type — make it substantive
+5. **PROHIBITED**: No "FAQ" headings in HTML — populate `faq` JSON instead
+6. **REQUIRED**: "Direct Links" table as the final section

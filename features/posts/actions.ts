@@ -406,7 +406,7 @@ export async function publishPost(id: string) {
     // DANIEL: Fetch post first for URL building + pre-publish validation
     const { data: existingPost } = await supabase
         .from('posts')
-        .select('slug, type, word_count, featured_image, seo_score')
+        .select('slug, type, word_count, featured_image, seo_score, content')
         .eq('id', id)
         .single()
 
@@ -414,12 +414,21 @@ export async function publishPost(id: string) {
         return { error: 'Post not found' }
     }
 
+    // Editorial Pipeline Validation (AdSense Compliance)
+    const content = existingPost.content || ''
+    const hasPlaceholders = /\[officialWebsiteUrl\]|\[primaryLink\]|\[notificationPdfUrl\]|href="#"/i.test(content)
+    
+    if (hasPlaceholders) {
+        return { error: 'Publishing blocked: Post contains unresolved placeholder links (e.g., [primaryLink] or href="#"). Please replace them with actual URLs or remove them.' }
+    }
+
+    if ((existingPost.word_count ?? 0) < 1000) {
+        return { error: `Publishing blocked: Thin content detected. Post has only ${existingPost.word_count} words. Minimum 1000 substantive words required for AdSense compliance.` }
+    }
+
     // COUNCIL P1 (Area 10): Pre-publish quality warnings
     // MARCUS: Don't block - return warnings so CMS can display them
     const warnings: string[] = []
-    if ((existingPost.word_count ?? 0) < 300) {
-        warnings.push('Thin content: word count below 300')
-    }
     if (!existingPost.featured_image) {
         warnings.push('Missing featured image - reduces Discover visibility')
     }

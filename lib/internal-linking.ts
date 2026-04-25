@@ -25,10 +25,10 @@ interface LinkContext {
 }
 
 /** Maximum internal links per post to avoid over-optimization */
-const MAX_LINKS_PER_POST = 8
+const MAX_LINKS_PER_POST = 15
 
 /** Minimum words between injected links */
-const MIN_WORDS_BETWEEN_LINKS = 100
+const MIN_WORDS_BETWEEN_LINKS = 75
 
 // ── Type keyword matchers ──────────────────────────────────────────
 

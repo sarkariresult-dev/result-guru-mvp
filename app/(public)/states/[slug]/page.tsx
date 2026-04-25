@@ -212,26 +212,10 @@ export default async function StateProfilePage({ params, searchParams }: Props) 
                                 Get instant notifications for {stateRecord.name} Government Jobs, BPSC/UPPSC Exam Results, Admit Cards, and official notifications. Verified and updated daily.
                             </p>
 
-                            {/* Quick Category Pills */}
-                            <div className="flex flex-wrap gap-2.5">
-                                {[
-                                    { label: 'Latest Jobs', href: `/job/in/${slug}`, active: true },
-                                    { label: 'Results', href: `/result/in/${slug}` },
-                                    { label: 'Admit Card', href: `/admit-card/in/${slug}` },
-                                    { label: 'Syllabus', href: `/syllabus/in/${slug}` },
-                                    { label: 'Answer Key', href: `/answer-key/in/${slug}` }
-                                ].map((tab) => (
-                                    <Link
-                                        key={tab.label}
-                                        href={tab.href}
-                                        className={`px-4 py-2 rounded-xl text-sm font-bold transition-all border shadow-sm ${tab.active
-                                            ? 'bg-brand-600 border-brand-500 text-white hover:bg-brand-700 shadow-brand-600/20'
-                                            : 'bg-white dark:bg-slate-900 border-border text-foreground-muted hover:border-brand-500/50 hover:text-brand-600'
-                                            }`}
-                                    >
-                                        {tab.label}
-                                    </Link>
-                                ))}
+                            {/* Active Monitoring Badge */}
+                            <div className="flex items-center gap-2.5 text-sm font-bold text-foreground-muted">
+                                <ShieldCheck className="size-4 text-accent-500" />
+                                <span>All government notifications for {stateRecord.name} — verified daily from official sources</span>
                             </div>
                         </div>
 

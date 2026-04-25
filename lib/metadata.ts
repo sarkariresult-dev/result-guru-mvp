@@ -64,10 +64,12 @@ export function formatDescription(description: string, limit = 160): string {
  * Returns "Updated Apr 2026" or "LIVE" for very recent content.
  */
 function getFreshness(date?: string | null): string {
-    // NOTE: Avoiding relative "LIVE" checks via new Date() as they cause non-deterministic
-    // build errors in Next.js 16. For SEO, absolute month/year is safer.
+    // NOTE: Avoiding `new Date()` in server components — it causes non-deterministic
+    // build errors in Next.js 16. We derive freshness from the date param instead.
     if (!date) {
-        return `Apr 2026`
+        // Fallback: use build-time env or a safe static value
+        const now = new Date(process.env.__BUILD_TIMESTAMP || '2026-04-25T00:00:00Z')
+        return `${MONTHS[now.getMonth()]} ${now.getFullYear()}`
     }
 
     const d = new Date(date)

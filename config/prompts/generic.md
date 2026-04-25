@@ -1,38 +1,36 @@
-You are writing a **generic government/education** post that doesn't fit a specific category. Use informative Hinglish tone. Target: **1200+ words**.
+You are writing a **general government/education** post that doesn't fit a specific category. Target: **1200+ words of substantive content**.
 
 ## Content Structure (use raw HTML)
 
-<h2>[Topic Title] [Year]: Complete Guide in Hindi</h2>
-Provide a **Direct Answer (SGE Optimized)** in the first 50-100 words. State exactly what the topic is, who it benefits, and the primary action or information available. Include focus keyword. Naturally link to an official `.gov` or `.nic` portal if applicable.
+<h2>[Topic Title] [Year]: Complete Information</h2>
+Open with a **Direct Answer** in the first 50-100 words. State what the topic is, who benefits, and the primary action or information available. Include focus keyword. Link to official portal if applicable.
 
-<h2>Ye Topic Kya Hai? - Puri Jaankari</h2>
-<h3>Overview</h3> 2-3 paragraphs explaining the topic in simple Hinglish
-<h3>Kyun Important Hai?</h3> Why students/job seekers should care. Include year-over-year context if available.
-<h3>Pichle Saal Se Kya Badla?</h3> Changes compared to previous year - this differentiates from competitors.
-
-<div class="rg-tip"><strong>💡 Expert Tip:</strong> [Insert a genuine expert insight that most generic articles miss]</div>
+<h2>Overview</h2>
+<h3>What This Is About</h3>
+2-3 paragraphs explaining the topic clearly and factually.
+<h3>Why It Matters</h3>
+Why candidates or citizens should pay attention. Include year-over-year context if available.
+<h3>Changes from Previous Year</h3>
+Specific changes compared to last year — policy updates, eligibility changes, new provisions.
 
 <h2>Key Highlights</h2>
-HTML `<table>` with `<thead>`, `<th scope="col">` - use columns relevant to the topic.
+HTML `<table>` with `<thead>`, `<th scope="col">` — use columns relevant to the topic.
 
 <h2>Important Details</h2>
-Use H3 sub-sections to break down the main aspects of the topic. Create at least 3 H3s.
-Include HTML tables where data comparison is useful.
-
-<!-- AdSense Placeholder -->
+Use H3 sub-sections to break down the main aspects. Create at least 3 H3s.
+Include HTML tables where data comparison adds value.
 
 <h2>Step-by-Step Guide</h2>
-If applicable, provide a numbered process guide.
-Include placeholder links:
+If applicable, numbered process guide with placeholder links:
 - <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Apply Online / Take Action</a>
 - <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Official Website</a>
 - <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download Notification</a>
 
-<h2>Expert Tips & Analysis</h2>
-<h3>What Most People Miss</h3> Unique insight or common mistakes
-<h3>Our Recommendation</h3> Career counselor-style advice
-
-<div class="rg-tip"><strong>💡 Expert Tip:</strong> [Insert a practical, actionable tip specific to this topic]</div>
+<h2>Analysis and Observations</h2>
+<h3>Common Mistakes to Avoid</h3>
+Specific mistakes candidates or applicants make.
+<h3>Practical Recommendations</h3>
+Factual, actionable advice based on the data.
 
 <h2>Related Resources</h2>
 Link to 3-4 related content types:
@@ -41,24 +39,22 @@ Link to 3-4 related content types:
 - <a href="/scheme">Government Schemes</a>
 - <a href="/scholarship">Scholarships</a>
 
-<h2>Direct Important Links for [Topic Name] [Year]</h2>
-Create a structured HTML `<table>` with `<thead>` and `<tbody>`:
-- Row 1: **Main Application Link** | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Link Activated</a>
-- Row 2: **Download Official PDF / Notification** | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Click Here to Download</a>
-- Row 3: **Official Website** | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Official Site</a>
-- Row 4: **Latest Update Link** | <a href="/job">Check Here</a>
-- Row 5: **Join Telegram Channel** | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
-- Row 6: **Result Guru Official Website** | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
+<h2>Direct Links for [Topic Name] [Year]</h2>
+Structured HTML `<table>` with `<thead>` and `<tbody>`:
+- Main Link | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Visit Link</a>
+- Download PDF | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download</a>
+- Official Website | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Portal</a>
+- Latest Jobs | <a href="/job">Check Here</a>
+- Join Telegram | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
+- Result Guru | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
 
 ---
 
-**CRITICAL SEO RULES:**
-1. H3/H4 within every H2 - no flat structure
+**RULES:**
+1. All headings in English — no Hinglish
 2. 3-5 internal links to related sections
 3. All tables with `<thead>`, `<th scope="col">`
-4. Include at least 2 `<div class="rg-tip">` expert callout boxes
-5. Include year-over-year comparison where data is available
-6. Expert analysis section for EEAT depth
-7. Year (2026) must appear in title and content at least once
-8. **PROHIBITED**: DO NOT include "Frequently Asked Questions" or "FAQ" headings in the HTML content. Populate the `faq` JSON property instead.
-9. **REQUIRED**: Include the "Direct Important Links" table as the final major section of the content.
+4. Include year-over-year comparison where data is available
+5. Year (2026) must appear in title and content
+6. **PROHIBITED**: No "FAQ" headings in HTML — populate `faq` JSON instead
+7. **REQUIRED**: "Direct Links" table as the final section

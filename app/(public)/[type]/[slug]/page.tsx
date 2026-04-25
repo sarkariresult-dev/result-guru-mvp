@@ -14,7 +14,7 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { TableOfContents } from '@/features/posts/components/TableOfContents'
 import { AdZone } from '@/components/ads/AdZone'
 import { SidebarProducts } from '@/features/affiliate/components/SidebarProducts'
-import { MobileResourceHub } from '@/features/affiliate/components/MobileResourceHub'
+
 import { POST_TYPE_CONFIG } from '@/config/constants'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
 import type { PostTypeKey } from '@/config/site'
@@ -35,7 +35,7 @@ interface Props {
 /* ── Static params (SSG + ISR for all published posts) ──────────── */
 
 export async function generateStaticParams() {
-    const limit = process.env.NODE_ENV === 'development' ? 1 : 100
+    const limit = process.env.NODE_ENV === 'development' ? 1 : 500
 
     try {
         const { createClient } = await import('@supabase/supabase-js')
@@ -161,10 +161,9 @@ export default async function PostDetailPage({ params }: Props) {
     const isMobile = /mobile/i.test(userAgent)
     const device = isMobile ? 'mobile' : 'desktop'
 
-    const [aboveContentAds, belowContentAds, sidebarLeftTopAds] = await Promise.all([
+    const [aboveContentAds, belowContentAds] = await Promise.all([
         getActiveAds('above_content', { post_type: typeKey, post_id: publishedPost.id, device }),
         getActiveAds('below_content', { post_type: typeKey, post_id: publishedPost.id, device }),
-        getActiveAds('sidebar_left_top', { post_type: typeKey, post_id: publishedPost.id, device }),
     ])
 
     return (
@@ -182,18 +181,13 @@ export default async function PostDetailPage({ params }: Props) {
                 />
 
                 <div className="mt-12 grid grid-cols-1 gap-16 lg:grid-cols-[240px_1fr_240px]">
-                    {/* LEFT WING */}
+                    {/* LEFT WING — Navigation only, no ads */}
                     <aside className="hidden lg:block space-y-8" aria-label="Quick Navigation">
                         <LocalErrorBoundary name="LeftSidebar" silent>
-                            <div className="space-y-12">
-                                <AdZone zoneSlug="sidebar_left_top" postType={typeKey} postId={publishedPost.id} initialAds={sidebarLeftTopAds} />
-                            </div>
-
                             <div className="sticky top-24 space-y-8">
                                 {tocItems.length >= 2 && (
                                     <TableOfContents items={tocItems} />
                                 )}
-                                <AdZone zoneSlug="sidebar_left_sticky" postType={typeKey} postId={publishedPost.id} sticky />
                             </div>
                         </LocalErrorBoundary>
                     </aside>
@@ -206,10 +200,6 @@ export default async function PostDetailPage({ params }: Props) {
                                 <PostDetail post={publishedPost} slug={slug} url={canonicalUrl} />
                                 <div className="space-y-12">
                                     <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} initialAds={belowContentAds} />
-                                    
-                                    {/* Mobile Only: Monetization & Silo Hub */}
-                                    <MobileResourceHub />
-                                    
                                     <SmartRelatedPosts postId={publishedPost.id} />
                                     <RelatedPosts post={publishedPost} />
                                 </div>
@@ -224,9 +214,7 @@ export default async function PostDetailPage({ params }: Props) {
 
                             <div className="space-y-8 sticky top-24">
                                 <SidebarProducts category="books" limit={3} />
-                                <AdZone zoneSlug="sidebar_right_middle" postType={typeKey} postId={publishedPost.id} />
                                 <SidebarProducts category="stationery" limit={2} />
-                                <AdZone zoneSlug="sidebar_right_bottom" postType={typeKey} postId={publishedPost.id} />
                                 <SidebarProducts category="electronics" limit={2} />
 
                                 {siloPosts.length > 0 && (

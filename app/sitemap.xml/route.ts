@@ -93,25 +93,20 @@ export async function GET() {
         entries.push(urlEntry(`${baseUrl}${page.path}`, now, page.changeFrequency, page.priority))
     }
 
-    /* ── Taxonomy (States, Orgs, Tags, Categories, Qualifications) ── */
+    /* ── Taxonomy (States, Orgs, Tags, Categories) ── */
     try {
         const supabase = createStaticClient()
-        const [statesResult, orgsResult, tagsResult, catsResult, qualsResult] = await Promise.allSettled([
+        const [statesResult, orgsResult, tagsResult, catsResult] = await Promise.allSettled([
             supabase.from('states').select('slug, created_at').eq('is_active', true).order('name'),
             supabase.from('organizations').select('slug, created_at').eq('is_active', true).order('name'),
             supabase.from('tags').select('slug, created_at').eq('is_active', true).order('name'),
             supabase.from('categories').select('slug, created_at').eq('is_active', true).order('name'),
-            supabase.from('qualifications').select('slug').eq('is_active', true).order('sort_order'),
         ])
 
         if (statesResult.status === 'fulfilled' && statesResult.value.data) {
             for (const state of statesResult.value.data as { slug: string; created_at: string | null }[]) {
                 const mod = new Date(state.created_at ?? now).toISOString()
                 entries.push(urlEntry(`${baseUrl}/states/${state.slug}`, mod, 'weekly', 0.6))
-
-                Object.values(TYPE_SEGMENT).forEach((typeSegment) => {
-                    entries.push(urlEntry(`${baseUrl}/${typeSegment}/in/${state.slug}`, mod, 'weekly', 0.8))
-                })
             }
         }
 
@@ -119,11 +114,6 @@ export async function GET() {
             for (const org of orgsResult.value.data as { slug: string; created_at: string | null }[]) {
                 const mod = new Date(org.created_at ?? now).toISOString()
                 entries.push(urlEntry(`${baseUrl}/organizations/${org.slug}`, mod, 'monthly', 0.5))
-
-                // Phase 3 Programmatic SEO combinations: /[type]/org/[orgSlug]
-                Object.values(TYPE_SEGMENT).forEach((typeSegment) => {
-                    entries.push(urlEntry(`${baseUrl}/${typeSegment}/org/${org.slug}`, mod, 'weekly', 0.8))
-                })
             }
         }
 
@@ -140,24 +130,6 @@ export async function GET() {
                 entries.push(urlEntry(`${baseUrl}/category/${cat.slug}`, mod, 'weekly', 0.6))
             }
         }
-
-        if (qualsResult.status === 'fulfilled' && qualsResult.value.data) {
-            for (const qual of qualsResult.value.data as { slug: string }[]) {
-                // Phase 6 Programmatic SEO combinations: /[type]/for/[qualificationSlug]
-                Object.values(TYPE_SEGMENT).forEach((typeSegment) => {
-                    entries.push(urlEntry(`${baseUrl}/${typeSegment}/for/${qual.slug}`, now, 'weekly', 0.8))
-                })
-            }
-        }
-
-        // Phase 3 Programmatic SEO combinations: /[type]/archive/[year]
-        const currentYear = new Date().getFullYear();
-        const pastYears = [currentYear, currentYear - 1];
-        pastYears.forEach(year => {
-             Object.values(TYPE_SEGMENT).forEach((typeSegment) => {
-                 entries.push(urlEntry(`${baseUrl}/${typeSegment}/archive/${year}`, now, year === currentYear ? 'daily' : 'monthly', year === currentYear ? 0.9 : 0.6))
-             })
-        });
 
         // ── Shop Categories & Products ──
         const [shopProductsResult] = await Promise.allSettled([

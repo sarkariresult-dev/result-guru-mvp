@@ -58,7 +58,6 @@ export default function robots(): MetadataRoute.Robots {
         sitemap: [
             `${baseUrl}/sitemap.xml`,
             `${baseUrl}/stories-sitemap.xml`,
-            `${baseUrl}/llms.txt`
         ],
         host: baseUrl,
     }

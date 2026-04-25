@@ -80,10 +80,14 @@ function AuthorBoxContent({ author }: Props) {
                     )}
 
                     <div className="mt-6 flex flex-wrap items-center gap-4">
-                        {author.credentials && (
+                        <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">
+                            <Award className="size-3.5" />
+                            {author.credentials || 'Senior Recruitment Analyst'}
+                        </div>
+                        {author.years_of_experience && (
                             <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">
-                                <Award className="size-3.5" />
-                                {author.credentials}
+                                <Briefcase className="size-3.5" />
+                                {author.years_of_experience}+ Years Experience
                             </div>
                         )}
                         {author.social_links && Object.keys(author.social_links).length > 0 && (

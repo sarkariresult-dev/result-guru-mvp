@@ -50,10 +50,8 @@ export function buildJobPostingSchema(post: PostDetail): JsonLdObject {
                 '@type': 'Place',
                 address: {
                     '@type': 'PostalAddress',
-                    streetAddress: 'New Delhi, India',
-                    addressLocality: 'New Delhi',
+                    addressLocality: post.state_name ?? 'New Delhi',
                     addressRegion: post.state_name ?? 'Delhi',
-                    postalCode: '110001',
                     addressCountry: 'IN',
                 },
             },
@@ -62,7 +60,8 @@ export function buildJobPostingSchema(post: PostDetail): JsonLdObject {
                 currency: 'INR',
                 value: {
                     '@type': 'QuantitativeValue',
-                    value: 'As per Government rules',
+                    minValue: 18000,
+                    maxValue: 56900,
                     unitText: 'MONTH'
                 }
             },
@@ -115,7 +114,7 @@ export function buildOrganizationSchema(): JsonLdObject {
         },
         sameAs: SITE.publisher.sameAs,
         description: SITE.description,
-        foundingDate: '2024',
+        foundingDate: '2025',
         areaServed: {
             '@type': 'Country',
             name: 'India',
@@ -135,7 +134,7 @@ export function buildWebSiteSchema(): JsonLdObject {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
         name: SITE.name,
-        alternateName: ['Sarkari Result Guru', 'ResultGuru'],
+        alternateName: ['Result Guru', 'ResultGuru247', 'Sarkari Result Guru', 'RG Sarkari Result'],
         url: SITE.url,
         description: SITE.description,
         inLanguage: 'en-IN',

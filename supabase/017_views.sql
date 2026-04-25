@@ -42,6 +42,9 @@ SELECT
   u.name AS author_name,
   u.avatar_url AS author_avatar_url,
   u.bio AS author_bio,
+  u.credentials AS author_credentials,
+  u.years_of_experience AS author_years_of_experience,
+  u.social_links AS author_social_links,
   p.published_at, p.updated_at, p.content_updated_at, p.last_reviewed_at, p.expires_at,
 
   -- Optimization: Inline tags to avoid N+1 queries in application code

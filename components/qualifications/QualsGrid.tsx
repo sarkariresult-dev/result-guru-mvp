@@ -94,14 +94,14 @@ export function QualsGrid({ qualifications }: QualsGridProps) {
 
                                 <div className="grid grid-cols-2 gap-2 pt-4">
                                     <Link
-                                        href={`/job/for/${qual.slug}`}
+                                        href="/job"
                                         className="flex items-center justify-center gap-2 rounded-xl bg-slate-50 dark:bg-slate-800 px-4 py-3 text-xs font-bold text-foreground hover:bg-brand-600 hover:text-white transition-all group/btn"
                                     >
                                         Jobs
                                         <ArrowRight className="size-3 opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all" />
                                     </Link>
                                     <Link
-                                        href={`/result/for/${qual.slug}`}
+                                        href="/result"
                                         className="flex items-center justify-center gap-2 rounded-xl bg-slate-50 dark:bg-slate-800 px-4 py-3 text-xs font-bold text-foreground hover:bg-brand-600 hover:text-white transition-all group/btn"
                                     >
                                         Results
