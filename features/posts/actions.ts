@@ -390,6 +390,25 @@ export async function updatePost(id: string, data: Partial<PostPayload>) {
     if (dbFields.status === 'published' || updateRow.status === undefined) {
         revalidateTag('sitemap')
     }
+
+    // Notify Google Indexing API on published post updates (fire-and-forget)
+    // Fetches the post type + slug to build URL, only if the post is published
+    const { data: updatedPost } = await supabase
+        .from('posts')
+        .select('slug, type, status')
+        .eq('id', id)
+        .single()
+
+    if (updatedPost?.status === 'published' && updatedPost.type && updatedPost.slug) {
+        const typeKey = updatedPost.type as PostTypeKey
+        if (ROUTE_PREFIXES[typeKey]) {
+            const postUrl = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/${updatedPost.slug}`
+            pushToGoogleIndexingApi(postUrl, 'URL_UPDATED').catch(() => {
+                // Silently swallow - IndexingApi logs its own errors
+            })
+        }
+    }
+
     return { success: true }
 }
 
