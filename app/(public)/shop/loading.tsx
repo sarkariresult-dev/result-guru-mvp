@@ -59,7 +59,7 @@ export default function ShopLoading() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {[...Array(8)].map((_, i) => (
                             <div key={i} className="flex flex-col overflow-hidden">
-                                <Skeleton className="aspect-[4/3] w-full rounded-3xl mb-4" />
+                                <Skeleton className="aspect-4/3 w-full rounded-3xl mb-4" />
                                 <div className="px-1 space-y-4">
                                     <div className="flex justify-between items-start">
                                         <Skeleton className="h-5 w-2/3" />
