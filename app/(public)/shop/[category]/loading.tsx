@@ -12,7 +12,7 @@ export default function ShopCategoryLoading() {
 
             <div className="container mx-auto max-w-7xl px-4 py-8 space-y-12">
                 {/* Category Header Hero Skeleton */}
-                <section className="relative overflow-hidden bg-surface p-8 md:p-12 lg:p-16 border border-border rounded-[2.5rem]">
+                <section className="relative py-8 md:py-12 lg:py-16">
                     <div className="max-w-3xl space-y-8">
                         <Skeleton className="h-6 w-32 rounded-full" />
                         <div className="space-y-4">
@@ -49,9 +49,9 @@ export default function ShopCategoryLoading() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                         {[...Array(8)].map((_, i) => (
-                            <div key={i} className="flex flex-col rounded-[2.5rem] border border-border bg-surface overflow-hidden p-2">
-                                <Skeleton className="aspect-square w-full rounded-4xl" />
-                                <div className="p-6 space-y-4">
+                            <div key={i} className="flex flex-col overflow-hidden">
+                                <Skeleton className="aspect-[4/3] w-full rounded-3xl mb-4" />
+                                <div className="px-1 space-y-4">
                                     <div className="flex justify-between items-start">
                                         <Skeleton className="h-5 w-2/3" />
                                         <Skeleton className="h-5 w-12" />
@@ -61,7 +61,7 @@ export default function ShopCategoryLoading() {
                                         <Skeleton className="h-3 w-4/5 opacity-60" />
                                     </div>
                                     <div className="pt-4">
-                                        <Skeleton className="h-14 w-full rounded-2xl" />
+                                        <Skeleton className="h-10 w-24 rounded-lg" />
                                     </div>
                                 </div>
                             </div>

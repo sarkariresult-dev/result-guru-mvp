@@ -4,6 +4,7 @@ import { ShopHero } from '@/features/affiliate/components/ShopHero'
 import { CategoryGrid } from '@/features/affiliate/components/CategoryGrid'
 import { AffiliateCard } from '@/components/ads/AffiliateCard'
 import { AdZone } from '@/components/ads/AdZone'
+import { InstitutionalCTA } from '@/components/sections/InstitutionalCTA'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { SITE } from '@/config/site'
 import { Star, ShoppingBag } from 'lucide-react'
@@ -58,7 +59,7 @@ export default async function ShopPage({ searchParams }: Props) {
             <JsonLd data={jsonLd} />
 
             {/* Hero Section */}
-            <ShopHero productCount={totalProducts} featuredCount={featuredCount} />
+            <ShopHero productCount={totalProducts} featuredCount={featuredCount} featuredProducts={featured} />
 
             <div className="container mx-auto max-w-7xl px-4 mt-12 space-y-20">
 
@@ -127,18 +128,28 @@ export default async function ShopPage({ searchParams }: Props) {
                 </section>
 
                 {/* SEO Content Section */}
-                <section className="rounded-2xl border border-border bg-surface p-6 md:p-8">
-                    <h2 className="font-display text-lg font-bold text-foreground mb-3">
+                <section className="border-l-2 border-brand-500/50 pl-6 py-2">
+                    <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground-muted mb-4">
                         About Result Guru Student Shop
                     </h2>
-                    <div className="prose prose-zinc dark:prose-invert max-w-none text-sm">
-                        <p className="text-foreground-muted leading-relaxed">
+                    <div className="prose prose-zinc dark:prose-invert max-w-3xl text-sm">
+                        <p className="text-foreground-subtle leading-relaxed font-medium">
                             Result Guru Student Shop is your one-stop destination for hand-picked study materials, exam preparation books, premium stationery, and productivity-boosting electronics. Every product in our store is carefully verified and recommended by our team of exam preparation experts. Whether you&apos;re preparing for SSC, UPSC, Railway, Banking, or State-level exams, we help you find the best resources at the best prices - so you can focus on what matters most: your preparation.
                         </p>
                     </div>
                 </section>
 
                 <AdZone zoneSlug="below_content" className="mt-8" />
+                
+                {/* Standardized Institutional CTA */}
+                <InstitutionalCTA
+                    badge="Expert Vetted"
+                    title="Stop Overpaying for Standard Preparation Material."
+                    description="Every book, test series, and gadget in our shop is hand-picked by exam experts. We only recommend high-yield resources that directly impact your rank. Get instant alerts when essential study materials drop in price."
+                    primaryCTA={{ label: "Get Deal Alerts on Telegram", href: "https://t.me/resultguru247" }}
+                    secondaryCTA={{ text: "Prefer WhatsApp?", actionLabel: "Join Channel", href: "https://whatsapp.com/channel/0029Vb7XUqn1SWt7c9kqCV3I" }}
+                    className="mt-16 mb-8"
+                />
             </div>
         </div>
     )

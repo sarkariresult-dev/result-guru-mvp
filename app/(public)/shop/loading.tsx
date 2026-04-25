@@ -30,11 +30,14 @@ export default function ShopLoading() {
 
             <div className="container mx-auto max-w-7xl px-4 -mt-8 relative z-20 space-y-20">
                 {/* Category Directory Skeletons */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                     {[...Array(6)].map((_, i) => (
-                        <div key={i} className="group relative rounded-4xl border border-border bg-surface p-6 flex flex-col items-center gap-4 shadow-sm">
-                            <Skeleton className="size-16 rounded-2xl" />
-                            <Skeleton className="h-4 w-20" />
+                        <div key={i} className="group relative flex flex-col items-center gap-4">
+                            <Skeleton className="size-16 rounded-full" />
+                            <div className="space-y-1 flex flex-col items-center">
+                                <Skeleton className="h-4 w-20" />
+                                <Skeleton className="h-2 w-12" />
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -53,11 +56,11 @@ export default function ShopLoading() {
                     </div>
 
                     {/* Product Grid Placeholder */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {[...Array(8)].map((_, i) => (
-                            <div key={i} className="flex flex-col rounded-4xl border border-border bg-surface overflow-hidden p-2">
-                                <Skeleton className="aspect-square w-full rounded-3xl" />
-                                <div className="p-5 space-y-4">
+                            <div key={i} className="flex flex-col overflow-hidden">
+                                <Skeleton className="aspect-[4/3] w-full rounded-3xl mb-4" />
+                                <div className="px-1 space-y-4">
                                     <div className="flex justify-between items-start">
                                         <Skeleton className="h-5 w-2/3" />
                                         <Skeleton className="h-5 w-12" />
@@ -66,9 +69,8 @@ export default function ShopLoading() {
                                         <Skeleton className="h-3 w-full opacity-60" />
                                         <Skeleton className="h-3 w-4/5 opacity-60" />
                                     </div>
-                                    <div className="pt-4 flex gap-2">
-                                        <Skeleton className="h-12 flex-1 rounded-xl" />
-                                        <Skeleton className="h-12 w-12 rounded-xl" />
+                                    <div className="pt-4">
+                                        <Skeleton className="h-10 w-24 rounded-lg" />
                                     </div>
                                 </div>
                             </div>

@@ -93,13 +93,9 @@ export default async function ShopCategoryPage({ params }: Props) {
 
             <div className="container mx-auto max-w-7xl px-4 py-8 space-y-12">
                 {/* Category Header */}
-                <section className="relative overflow-hidden bg-surface p-8 md:p-12 lg:p-16">
-                    {/* Background Accents */}
-                    <div className="absolute top-0 right-0 size-64 bg-brand-500/5 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none" />
-                    <div className="absolute bottom-0 left-0 size-64 bg-indigo-500/5 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/4 pointer-events-none" />
-
+                <section className="relative py-8 md:py-12 lg:py-16">
                     <div className="relative z-10 max-w-3xl">
-                        <span className="inline-flex items-center gap-2 rounded-full bg-brand-50 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-brand-600 dark:bg-brand-900/30 dark:text-brand-400 mb-6 border border-brand-100 dark:border-brand-800/50">
+                        <span className="inline-flex items-center gap-2 rounded-full bg-brand-50 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-brand-600 dark:bg-brand-900/30 dark:text-brand-400 mb-6">
                             <span className="size-1.5 rounded-full bg-brand-500 animate-pulse" />
                             Official Category
                         </span>
@@ -108,18 +104,17 @@ export default async function ShopCategoryPage({ params }: Props) {
                             {cat.label} <span className="text-brand-600">Resources</span>
                         </h1>
 
-                        <p className="text-lg text-foreground-muted leading-relaxed mb-8">
+                        <p className="text-lg text-foreground-muted leading-relaxed mb-8 font-medium">
                             {cat.description}. Hand-picked study materials and essential gear verified by exam experts to accelerate your success.
                         </p>
 
-                        <div className="flex items-center gap-6 pt-2 border-t border-border/50">
+                        <div className="flex items-center gap-8 pt-6">
                             <div className="flex flex-col">
-                                <span className="text-2xl font-black text-foreground">{products.length}</span>
+                                <span className="text-3xl font-black tracking-tight text-foreground">{products.length}</span>
                                 <span className="text-[10px] font-bold uppercase tracking-widest text-foreground-subtle">Available items</span>
                             </div>
-                            <div className="w-px h-10 bg-border/60" />
                             <div className="flex flex-col">
-                                <span className="text-2xl font-black text-foreground">100%</span>
+                                <span className="text-3xl font-black tracking-tight text-foreground">100%</span>
                                 <span className="text-[10px] font-bold uppercase tracking-widest text-foreground-subtle">Verified Quality</span>
                             </div>
                         </div>
@@ -150,7 +145,7 @@ export default async function ShopCategoryPage({ params }: Props) {
                             ))}
                         </div>
                     ) : (
-                        <div className="flex min-h-[300px] flex-col items-center justify-center rounded-3xl border border-dashed border-border bg-surface p-12 text-center">
+                        <div className="flex min-h-[300px] flex-col items-center justify-center p-12 text-center">
                             <h3 className="mb-2 text-xl font-bold text-foreground">No {cat.label.toLowerCase()} yet</h3>
                             <p className="max-w-xs text-sm text-foreground-subtle">
                                 Products will appear here once added. Check back soon!

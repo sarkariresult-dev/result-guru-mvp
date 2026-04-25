@@ -63,6 +63,7 @@ function SidebarProductCard({ product }: { product: AffiliateProduct }) {
                         alt={product.image_alt || product.name}
                         fill
                         className="object-contain transition-transform duration-slow group-hover:scale-110"
+                        style={{ objectFit: 'contain' }}
                         sizes="80px"
                     />
                 </div>

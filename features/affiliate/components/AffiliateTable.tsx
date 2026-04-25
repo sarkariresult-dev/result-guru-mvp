@@ -15,7 +15,7 @@ export function AffiliateTable({ products }: { products: AffiliateProduct[] }) {
             render: (p: AffiliateProduct) => (
                 <div className="flex items-center gap-3">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={p.image_url} alt={p.name} className="size-10 rounded object-contain bg-white border border-border" />
+                    <img src={p.image_url} alt={p.name} className="size-10 rounded object-contain bg-white border border-border" style={{ objectFit: 'contain' }} />
                     <div>
                         <p className="font-medium text-sm">{p.name}</p>
                         <div className="flex gap-1.5 items-center mt-1">

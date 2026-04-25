@@ -1,12 +1,31 @@
-import { ShoppingBag, TrendingUp, Star, CheckCircle, ShieldCheck } from 'lucide-react'
+'use client'
+
+import { useState, useEffect } from 'react'
+import { ShoppingBag, TrendingUp, Star, CheckCircle, ShieldCheck, ChevronRight, ExternalLink } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
+import type { AffiliateProduct } from '@/types/post.types'
 
 interface Props {
     productCount: number
     featuredCount: number
+    featuredProducts?: AffiliateProduct[]
 }
 
-export function ShopHero({ productCount, featuredCount }: Props) {
+export function ShopHero({ productCount, featuredCount, featuredProducts = [] }: Props) {
+    const [currentIndex, setCurrentIndex] = useState(0)
+
+    useEffect(() => {
+        if (!featuredProducts || featuredProducts.length <= 1) return
+        
+        const interval = setInterval(() => {
+            setCurrentIndex((prev) => (prev + 1) % featuredProducts.length)
+        }, 5000)
+        
+        return () => clearInterval(interval)
+    }, [featuredProducts])
+
+    const currentProduct = featuredProducts[currentIndex]
     return (
         <section className="relative min-h-[500px] overflow-hidden bg-zinc-950 border-b border-white/5">
             {/* Lifestyle Background Image with Overlay */}
@@ -66,23 +85,83 @@ export function ShopHero({ productCount, featuredCount }: Props) {
 
                 {/* Right Side: Editorial Card */}
                 <div className="relative hidden lg:block">
-                    <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/5 p-1 backdrop-blur-2xl shadow-2xl">
-                        <div className="rounded-[2.2rem] bg-zinc-900/80 p-8 space-y-6 border border-white/5">
-                            <div className="flex items-center justify-between">
-                                <div className="flex size-12 items-center justify-center rounded-2xl bg-brand-500/10 text-brand-400">
-                                    <Star className="size-6 fill-current" />
+                    <div className="relative overflow-hidden rounded-4xl bg-white/5 backdrop-blur-xl border border-white/10 p-10 min-h-[380px] flex flex-col justify-between shadow-2xl transition-all duration-500 hover:bg-white/[0.07]">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3 text-brand-400">
+                                <Star className="size-5 fill-current" />
+                                <span className="text-[10px] font-black uppercase tracking-widest">
+                                    {currentProduct ? 'Featured Pick' : 'Recommendation'}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        {currentProduct ? (
+                            <div key={currentProduct.id} className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <div className="flex items-center gap-6">
+                                    <div className="relative size-24 rounded-3xl bg-white/10 p-3 shrink-0 border border-white/5 shadow-inner backdrop-blur-md">
+                                        <div className="relative w-full h-full">
+                                            <Image
+                                                src={currentProduct.image_url}
+                                                alt={currentProduct.name}
+                                                fill
+                                                style={{ objectFit: 'contain' }}
+                                                className="object-contain drop-shadow-xl"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <h3 className="text-2xl font-black text-white leading-tight line-clamp-2 drop-shadow-sm">
+                                            {currentProduct.name}
+                                        </h3>
+                                        {currentProduct.selling_price && (
+                                            <p className="text-lg text-brand-400 font-black tracking-tight">
+                                                ₹{currentProduct.selling_price.toLocaleString()}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
-                                <span className="text-[10px] font-black uppercase tracking-widest text-brand-400">Recommendation of the Week</span>
+                                <p className="text-base text-zinc-400 font-medium line-clamp-2 leading-relaxed">
+                                    {currentProduct.short_description || currentProduct.description || 'Premium curated study material for your preparation.'}
+                                </p>
                             </div>
-                            
-                            <div className="space-y-2">
-                                <h3 className="text-2xl font-black text-white leading-tight">Cracking the UPSC: <br />Essential Kit 2026</h3>
-                                <p className="text-sm text-zinc-500 font-medium">Everything you need to stay organized and focused during your preparation journey.</p>
+                        ) : (
+                            <div className="space-y-3">
+                                <h3 className="text-3xl font-black text-white leading-tight drop-shadow-sm">Cracking the UPSC: <br />Essential Kit 2026</h3>
+                                <p className="text-base text-zinc-400 font-medium leading-relaxed">Everything you need to stay organized and focused during your preparation journey.</p>
                             </div>
+                        )}
 
-                            <button className="w-full h-14 rounded-2xl bg-brand-600 text-white font-black uppercase tracking-widest hover:bg-brand-500 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-brand-500/20">
-                                Explore The Guide
-                            </button>
+                        <div className="flex items-center justify-between mt-4">
+                            {currentProduct ? (
+                                <Link 
+                                    href={`/shop/${currentProduct.category}/${currentProduct.slug}`}
+                                    className="group flex items-center gap-2 text-xs font-black uppercase tracking-widest text-white hover:text-brand-400 transition-colors"
+                                >
+                                    Check Best Deal 
+                                    <ChevronRight className="size-4 transition-transform group-hover:translate-x-1" />
+                                </Link>
+                            ) : (
+                                <button className="group flex items-center gap-2 text-xs font-black uppercase tracking-widest text-white hover:text-brand-400 transition-colors">
+                                    Explore The Guide
+                                    <ChevronRight className="size-4 transition-transform group-hover:translate-x-1" />
+                                </button>
+                            )}
+                            
+                            {/* Dots for carousel */}
+                            {featuredProducts.length > 1 && (
+                                <div className="flex items-center gap-2">
+                                    {featuredProducts.map((_, idx) => (
+                                        <button 
+                                            key={idx}
+                                            onClick={() => setCurrentIndex(idx)}
+                                            className={`h-1.5 rounded-full transition-all duration-500 ${
+                                                idx === currentIndex ? 'w-6 bg-brand-400' : 'w-1.5 bg-white/20 hover:bg-white/40'
+                                            }`}
+                                            aria-label={`Go to slide ${idx + 1}`}
+                                        />
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
 

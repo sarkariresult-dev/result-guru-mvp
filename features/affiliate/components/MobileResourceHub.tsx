@@ -58,6 +58,7 @@ export async function MobileResourceHub() {
                                         alt={product.image_alt || product.name}
                                         fill
                                         className="object-contain transition-transform duration-700 group-hover:scale-110 drop-shadow-xl"
+                                        style={{ objectFit: 'contain' }}
                                         sizes="220px"
                                     />
                                 </div>

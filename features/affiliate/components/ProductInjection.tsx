@@ -33,6 +33,7 @@ export async function ProductInjection({
                             alt={product.image_alt || product.name}
                             fill
                             className="object-contain transition-transform duration-300 hover:scale-105"
+                            style={{ objectFit: 'contain' }}
                             sizes="(max-width: 768px) 128px, 160px"
                         />
                     </div>

@@ -17,7 +17,7 @@ export function AffiliateSidebarProducts({ title, products, excludeId }: Props) 
     if (filteredProducts.length === 0) return null
 
     return (
-        <section className="rounded-4xl border border-border bg-surface p-6 space-y-6 shadow-sm">
+        <section className="space-y-6">
             <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground-muted border-b border-border/50 pb-3">
                 {title}
             </h3>
@@ -28,13 +28,14 @@ export function AffiliateSidebarProducts({ title, products, excludeId }: Props) 
                         href={`/shop/${product.category}/${product.slug}`}
                         className="group flex gap-4 items-center"
                     >
-                        <div className="relative size-14 shrink-0 overflow-hidden rounded-xl border border-border bg-white p-3 transition-all duration-300 group-hover:scale-110 group-hover:shadow-md dark:bg-zinc-800">
+                        <div className="relative size-14 shrink-0 overflow-hidden rounded-xl bg-zinc-50 p-2 transition-all duration-300 group-hover:scale-105 dark:bg-zinc-900/50 mix-blend-darken dark:mix-blend-normal">
                             <div className="relative w-full h-full">
                                 <Image
                                     src={product.image_url}
                                     alt={product.name}
                                     fill
                                     className="object-contain"
+                                    style={{ objectFit: 'contain' }}
                                     sizes="56px"
                                 />
                             </div>

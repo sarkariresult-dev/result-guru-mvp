@@ -102,6 +102,7 @@ function AffiliateProductsBoxContent({ affiliates, layout, title, description }:
                                         alt={p.image_alt || p.name}
                                         fill
                                         className="object-contain transition-transform duration-300 group-hover:scale-105"
+                                        style={{ objectFit: 'contain' }}
                                         sizes={isSidebar ? '96px' : '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'}
                                     />
                                 </div>

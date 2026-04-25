@@ -116,7 +116,7 @@ export function AffiliateProductDetail({ product }: Props) {
                     {/* Left: Image */}
                     <div className="lg:col-span-5">
                         <div className="sticky top-24">
-                            <div className="group relative aspect-square overflow-hidden rounded-4xl border border-border bg-white p-12 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-brand-500/5 dark:bg-zinc-900/50">
+                            <div className="group relative aspect-square overflow-hidden rounded-4xl bg-zinc-50 p-12 transition-all duration-500 dark:bg-zinc-900/50">
                                 {/* Decorative background */}
                                 <div className="absolute inset-0 bg-linear-to-br from-brand-50/50 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 dark:from-brand-900/10" />
 
@@ -126,6 +126,7 @@ export function AffiliateProductDetail({ product }: Props) {
                                         alt={product.image_alt || product.name}
                                         fill
                                         className="object-contain transition-transform duration-700 group-hover:scale-105"
+                                        style={{ objectFit: 'contain' }}
                                         priority
                                     />
                                 </div>
@@ -188,13 +189,8 @@ export function AffiliateProductDetail({ product }: Props) {
                             )}
 
                             {/* Price Block */}
-                            <div className="relative overflow-hidden rounded-3xl border border-border bg-surface-raised p-6 md:p-8">
-                                <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-                                    <ShoppingCart className="size-24 -rotate-12" />
-                                </div>
-
+                            <div className="relative pt-4 pb-2">
                                 <div className="relative z-10 space-y-4">
-                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground-subtle">Limited Time Offer</span>
                                     <div className="flex flex-wrap items-center gap-4">
                                         <span className="text-5xl font-black tracking-tight text-foreground">
                                             ₹{(product.selling_price || product.mrp || 0).toLocaleString()}
