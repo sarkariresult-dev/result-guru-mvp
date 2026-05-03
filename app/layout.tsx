@@ -24,7 +24,9 @@ export const metadata: Metadata = {
     metadataBase: new URL(SITE.url),
 
     title: {
-        default: `Sarkari Result 2026 | Free Job Alert, Admit Card & Govt Jobs - ${SITE.name}`,
+        /* Fallback title shown only when a page exports no explicit metadata.
+         * 56 chars \u2014 brand-first, Google pixel-safe. */
+        default: 'Result Guru \u2013 Sarkari Results, Govt Jobs & Exam Updates',
         template: '%s',
     },
     description: SITE.description,

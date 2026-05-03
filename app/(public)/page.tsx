@@ -10,7 +10,7 @@ import { LazyHomeSections } from '@/components/sections/LazyHomeSections'
 import { StoriesSection } from '@/components/stories/StoriesSection'
 import { ROUTE_PREFIXES } from '@/config/site'
 import { buildPageMetadata } from '@/lib/metadata'
-import { buildWebSiteSchema, buildOrganizationSchema, buildSiteNavigationSchema } from '@/lib/jsonld'
+import { buildWebSiteSchema, buildOrganizationSchema, buildSiteNavigationSchema, buildFAQPageSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { getStates } from '@/lib/queries/states'
 import { getPopularOrganizations } from '@/lib/queries/organizations'
@@ -21,11 +21,13 @@ import { Briefcase, CreditCard, ArrowRight, Trophy, GraduationCap, ShieldCheck, 
 import type { LucideIcon } from 'lucide-react'
 
 
-/* SEO Metadata */
-
+/* SEO Metadata
+ * Title: 59 chars — brand-first per Google Search Central best practice (2025).
+ * Description: 116 chars — natural summary, no CTA suffix per Google's latest snippet guidance.
+ */
 export const metadata = buildPageMetadata({
-    title: 'Sarkari Result 2026 | Free Job Alert, Admit Card & Latest Govt Jobs - Result Guru',
-    description: 'India\'s fastest Sarkari Result portal for 2026. Get instant, verified Free Job Alerts, Admit Cards, Exam Results & Answer Keys from SSC, UPSC, Railway, IBPS. Updated every hour.',
+    title: 'Result Guru – Sarkari Results, Govt Jobs & Admit Cards 2026',
+    description: 'Get latest Sarkari Results, Govt Jobs, Admit Cards, Answer Keys & Exam Updates 2026. Fast, accurate & daily updated.',
     path: '/',
 })
 
@@ -108,6 +110,8 @@ export default async function HomePage() {
     const websiteJsonLd = buildWebSiteSchema()
     const organizationJsonLd = buildOrganizationSchema()
     const navigationJsonLd = buildSiteNavigationSchema()
+    /* FAQPage schema — makes the FAQ accordion eligible for Google rich result FAQ snippets */
+    const faqJsonLd = buildFAQPageSchema(FAQ_ITEMS)
 
     /* Fetch all homepage data in parallel for fastest TTFB */
     const [statesResult, orgsResult, countsResult, sectionsResult] = await Promise.allSettled([
@@ -128,7 +132,7 @@ export default async function HomePage() {
 
     return (
         <>
-            <JsonLd data={[websiteJsonLd, organizationJsonLd, navigationJsonLd]} />
+            <JsonLd data={[websiteJsonLd, organizationJsonLd, navigationJsonLd, faqJsonLd]} />
 
             {/*  Hero */}
             <section className="relative bg-hero">

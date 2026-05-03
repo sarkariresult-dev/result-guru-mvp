@@ -99,11 +99,14 @@ export function buildBreadcrumbSchema(
 // ── Organization Schema ────────────────────────────────────
 /**
  * Build schema.org/Organization from site config.
+ * @id makes this entity referenceable from WebSite, NewsArticle, etc.
+ * address enables E-E-A-T physical presence signals for Google Knowledge Panel.
  */
 export function buildOrganizationSchema(): JsonLdObject {
     return {
         '@context': 'https://schema.org',
         '@type': 'Organization',
+        '@id': `${SITE.url}/#organization`,
         name: SITE.publisher.name,
         url: SITE.publisher.url,
         logo: {
@@ -115,6 +118,14 @@ export function buildOrganizationSchema(): JsonLdObject {
         sameAs: SITE.publisher.sameAs,
         description: SITE.description,
         foundingDate: '2025',
+        address: {
+            '@type': 'PostalAddress',
+            streetAddress: SITE.address.street,
+            addressLocality: SITE.address.city,
+            addressRegion: SITE.address.region,
+            postalCode: SITE.address.postalCode,
+            addressCountry: SITE.address.country,
+        },
         areaServed: {
             '@type': 'Country',
             name: 'India',
@@ -129,10 +140,12 @@ export function buildOrganizationSchema(): JsonLdObject {
 }
 
 // ── WebSite Schema (for homepage) ──────────────────────────
+// @id makes this entity linkable across all pages in Google's Knowledge Graph.
 export function buildWebSiteSchema(): JsonLdObject {
     return {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
+        '@id': `${SITE.url}/#website`,
         name: SITE.name,
         alternateName: ['Result Guru', 'ResultGuru247', 'Sarkari Result Guru', 'RG Sarkari Result'],
         url: SITE.url,
@@ -140,6 +153,7 @@ export function buildWebSiteSchema(): JsonLdObject {
         inLanguage: 'en-IN',
         publisher: {
             '@type': 'Organization',
+            '@id': `${SITE.url}/#organization`,
             name: SITE.publisher.name,
             url: SITE.publisher.url,
             logo: { '@type': 'ImageObject', url: SITE.publisher.logo },
