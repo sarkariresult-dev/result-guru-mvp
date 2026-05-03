@@ -197,11 +197,13 @@ export function buildSiteNavigationSchema(): JsonLdObject {
  * Google uses this for rich FAQ snippets in search results.
  */
 export function buildFAQPageSchema(
-    items: Array<{ q: string; a: string }>
+    items: Array<{ q: string; a: string }>,
+    name = 'Frequently Asked Questions'
 ): JsonLdObject {
     return {
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
+        name,
         mainEntity: items.map((item) => ({
             '@type': 'Question',
             name: item.q,

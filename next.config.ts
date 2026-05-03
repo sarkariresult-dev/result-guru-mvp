@@ -190,6 +190,14 @@ const nextConfig: NextConfig = {
   /* ── Redirects (plural to singular + legacy) ────────────────── */
   async redirects() {
     return [
+      /* ── Google Sitelink 404 fixes ──────────────────────────────────── */
+      /* Google's auto-generated sitelinks point to /posts and /news which   */
+      /* don't exist. These 301s fix the 404s and retrain Google's sitelinks. */
+      { source: '/posts', destination: '/job', permanent: true },
+      { source: '/posts/:path*', destination: '/job/:path*', permanent: true },
+      { source: '/news', destination: '/stories', permanent: true },
+      { source: '/news/:path*', destination: '/stories/:path*', permanent: true },
+
       /* Permanent redirect for /index.php to / (Google Search Console fix) */
       { source: '/index.php', destination: '/', permanent: true },
 
