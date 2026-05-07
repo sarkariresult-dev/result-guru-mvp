@@ -15,6 +15,8 @@ import { AuthorBox } from './AuthorBox'
 import { ShareBar } from './ShareBar'
 import { ActionCenter } from './ActionCenter'
 import { ProductInjection } from '@/features/affiliate/components/ProductInjection'
+import { InlineNewsletterCTA } from './InlineNewsletterCTA'
+import { PostAnalyticsBeacon } from './PostAnalyticsBeacon'
 import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
 import { Calendar, Clock, Tag, ShieldCheck } from 'lucide-react'
 import { getActionLinkPageLabel } from '@/lib/seo/seo-analyzer'
@@ -138,12 +140,14 @@ export function PostDetail({ post, slug, url }: Props) {
             case 'content':
                 if (!processedHtml) return null
                 return (
-                    <div
-                        key="content"
-                        className="prose-editorial prose dark:prose-invert prose-headings:font-black prose-headings:tracking-tighter prose-headings:scroll-mt-24 prose-a:text-brand-600 prose-a:font-black prose-a:no-underline hover:prose-a:underline prose-img:rounded-3xl prose-img:shadow-2xl prose-recruitment py-8"
-                        dangerouslySetInnerHTML={{ __html: processedHtml }}
-                        suppressHydrationWarning
-                    />
+                    <div key="content" className="flex flex-col">
+                        <div
+                            className="prose-editorial prose dark:prose-invert prose-headings:font-black prose-headings:tracking-tighter prose-headings:scroll-mt-24 prose-a:text-brand-600 prose-a:font-black prose-a:no-underline hover:prose-a:underline prose-img:rounded-3xl prose-img:shadow-2xl prose-recruitment py-8"
+                            dangerouslySetInnerHTML={{ __html: processedHtml }}
+                            suppressHydrationWarning
+                        />
+                        <InlineNewsletterCTA />
+                    </div>
                 )
 
             case 'author':
@@ -215,6 +219,7 @@ export function PostDetail({ post, slug, url }: Props) {
 
     return (
         <div className="space-y-8" suppressHydrationWarning>
+            <PostAnalyticsBeacon postId={post.id} />
             <LocalErrorBoundary name="PostDetailMain" silent>
                 {/* ── Header: Title, Org, Dates ────────────────────────── */}
                 <header className="space-y-8 animate-fade-up pt-4 pb-10 border-b border-border/50" suppressHydrationWarning>

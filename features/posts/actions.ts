@@ -4,15 +4,14 @@ import { createServerClient } from '@/lib/supabase/server'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { postSchema } from '@/lib/validations'
 import { z } from 'zod'
-import type { PostType, PostStatus, ApplicationStatus } from '@/types/enums'
+import type { PostType, PostStatus } from '@/types/enums'
 import { pushToGoogleIndexingApi } from '@/lib/seo/indexing'
 import { SITE, ROUTE_PREFIXES, type PostTypeKey } from '@/config/site'
 import { runSeoAnalysis } from '@/lib/seo/seo-analyzer'
+import { analyzeAiHeuristics } from '@/lib/humanize'
 
 /**
  * Columns marked NOT NULL in 007_posts.sql with their DB DEFAULT values.
- * When inserting/updating, we MUST NOT send `null` for these columns -
- * either send a real value or omit the key so the DB default applies.
  */
 const NOT_NULL_DEFAULTS: Record<string, unknown> = {
     faq: [],
@@ -30,9 +29,9 @@ const NOT_NULL_DEFAULTS: Record<string, unknown> = {
     internal_links_count: 0,
     view_count: 0,
     share_count: 0,
+    needs_human_review: false,
 }
 
-// ── Types - mirrors 007_posts.sql columns exactly ──────────
 interface PostPayload {
     // Identity
     type: PostType
@@ -49,8 +48,7 @@ interface PostPayload {
     // Taxonomy
     state_slug?: string | null
     organization_id?: string | null
-    // org_name / org_short_name are auto-filled by fn_denorm_org_fields trigger
-    qualification?: string[] | null          // TEXT[] of qualification slugs
+    qualification?: string[] | null
     category_id?: string | null
 
     // Media
@@ -60,11 +58,10 @@ interface PostPayload {
     featured_image_height?: number | null
     notification_pdf?: string | null
 
-    // Key links (external URLs)
+    // Key links
     primary_link?: string | null
 
-    // Structured content (JSONB)
-
+    // Structured content
     faq?: Array<{ q: string; a: string }> | null
     related_post_ids?: string[] | null
 
@@ -94,12 +91,12 @@ interface PostPayload {
     author_id?: string | null
     published_at?: string | null
     last_reviewed_at?: string | null
+    needs_human_review?: boolean
 
-    // Junction table helpers (not DB columns - handled separately)
+    // Helpers
     tag_ids?: string[]
 }
 
-// Extend postSchema with tag_ids for the full payload
 const createPostSchema = postSchema.extend({
     tag_ids: z.array(z.string().uuid()).optional(),
 })
@@ -108,19 +105,23 @@ const updatePostSchema = postSchema.partial().extend({
     tag_ids: z.array(z.string().uuid()).optional(),
 })
 
-/** Helper to format YYYY-MM-DD to IST ISO string */
 function toIST(dateStr: string | null | undefined, isEnd = false) {
     if (!dateStr || dateStr.includes('T')) return dateStr ?? null
     return `${dateStr}T${isEnd ? '23:59:59' : '00:00:00'}+05:30`
 }
 
+function countInternalLinks(content: string | null | undefined): number {
+    if (!content) return 0
+    const relativeLinks = content.match(/href=["'](\/[^"']+)["']/g) || []
+    const absoluteLinks = content.match(/href=["']https?:\/\/(www\.)?resultguru\.co\.in[^"']*["']/gi) || []
+    return relativeLinks.length + absoluteLinks.length
+}
+
 // ── Create Post ────────────────────────────────────────────
 export async function createPost(data: PostPayload) {
-    // 1. Transform dates to IST before validation so Zod doesn't complain about pure YYYY-MM-DD
     if (data.application_start_date) data.application_start_date = toIST(data.application_start_date)
     if (data.application_end_date) data.application_end_date = toIST(data.application_end_date, true)
 
-    // 2. Validate input with Zod
     const parsed = createPostSchema.safeParse(data)
     if (!parsed.success) {
         return { error: parsed.error.issues.map(i => i.message).join(', ') }
@@ -128,40 +129,27 @@ export async function createPost(data: PostPayload) {
 
     const supabase = await createServerClient()
 
-    // Build row with only valid DB columns (triggers handle org_name, seo_score, etc.)
     const row: Record<string, unknown> = {
         type: data.type,
         status: data.status,
         application_start_date: data.application_start_date ?? null,
         application_end_date: data.application_end_date ?? null,
-
-        // Content
         title: data.title,
         slug: data.slug,
         excerpt: data.excerpt ?? null,
         content: data.content ?? null,
-
-        // Taxonomy
         state_slug: data.state_slug ?? null,
         organization_id: data.organization_id ?? null,
         qualification: data.qualification ?? null,
         category_id: data.category_id ?? null,
-
-        // Media
         featured_image: data.featured_image ?? null,
         featured_image_alt: data.featured_image_alt ?? null,
         featured_image_width: data.featured_image_width ?? null,
         featured_image_height: data.featured_image_height ?? null,
         notification_pdf: data.notification_pdf ?? null,
-
-        // Key links
         primary_link: data.primary_link ?? null,
-
-
         faq: data.faq ?? [],
         related_post_ids: data.related_post_ids ?? null,
-
-        // SEO - NOT NULL columns use DB defaults
         meta_title: data.meta_title ?? null,
         meta_description: data.meta_description ?? null,
         meta_keywords: data.meta_keywords ?? null,
@@ -172,8 +160,6 @@ export async function createPost(data: PostPayload) {
         noindex: data.noindex ?? false,
         structured_data_type: data.structured_data_type ?? 'auto',
         schema_json: data.schema_json ?? null,
-
-        // Open Graph / Twitter - NOT NULL columns use DB defaults
         og_title: data.og_title ?? null,
         og_description: data.og_description ?? null,
         og_image: data.og_image ?? null,
@@ -182,54 +168,22 @@ export async function createPost(data: PostPayload) {
         twitter_title: data.twitter_title ?? null,
         twitter_description: data.twitter_description ?? null,
         twitter_card_type: data.twitter_card_type ?? 'summary_large_image',
-
-        // Publishing
         author_id: data.author_id ?? null,
         published_at: data.published_at ?? null,
+        needs_human_review: data.needs_human_review ?? false,
     }
 
-    // 3. Unified SEO Analysis & Metrics
-    // Fetch denormalized metadata if available for high-fidelity analysis
-    let orgName = null, orgShortName = null, stateName = null;
-    if (data.organization_id) {
-        const { data: org } = await supabase.from('organizations').select('name, short_name').eq('id', data.organization_id).single();
-        if (org) { orgName = org.name; orgShortName = org.short_name; }
-    }
-    if (data.state_slug) {
-        const { data: st } = await supabase.from('states').select('name').eq('slug', data.state_slug).single();
-        if (st) { stateName = st.name; }
-    }
-
-    const seoResult = runSeoAnalysis({
-        title: data.title,
-        slug: data.slug,
-        metaTitle: data.meta_title ?? '',
-        metaDescription: data.meta_description ?? '',
-        focusKeyword: data.focus_keyword ?? '',
-        secondaryKeywords: data.secondary_keywords ?? [],
-        content: data.content ?? '',
-        excerpt: data.excerpt ?? '',
-        featuredImage: data.featured_image ?? '',
-        featuredImageAlt: data.featured_image_alt ?? '',
-        faqCount: data.faq?.length ?? 0,
-        postType: data.type,
-        authorId: data.author_id ?? undefined,
-        // Guru SEO 2.0 Contextual Fields
-        orgName,
-        orgShortName,
-        stateName,
-        updatedAt: new Date().toISOString(),
-        notificationPdf: data.notification_pdf,
-        primaryLink: data.primary_link,
-    })
-
-    row.seo_score = seoResult.score
-    row.word_count = seoResult.readability.totalSentences * 15 // Roughly estimate or use exact word count from analyzer if added
-    // Let's update seo-analyzer to return wordCount properly if not already there.
-    // Actually, I'll use the stripHtml + filter logic here to match the analyzer's word count.
-    const wordCount = (data.content ?? '').replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length
+    // Heuristics & Metrics
+    const content = data.content || ''
+    const wordCount = content.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length
     row.word_count = wordCount
     row.reading_time_min = Math.max(1, Math.round(wordCount / 200))
+    row.internal_links_count = countInternalLinks(content)
+
+    const heuristics = analyzeAiHeuristics(content)
+    if (heuristics.isFlagged) {
+        row.needs_human_review = true
+    }
 
     const { data: inserted, error } = await supabase
         .from('posts')
@@ -237,22 +191,11 @@ export async function createPost(data: PostPayload) {
         .select('id, slug')
         .single()
 
-    if (error) {
-        return { error: error.message }
-    }
+    if (error) return { error: error.message }
 
-    // Handle tag associations if provided - with error checking
     if (data.tag_ids?.length && inserted?.id) {
-        const tagRows = data.tag_ids.map((tag_id) => ({
-            post_id: inserted.id,
-            tag_id,
-        }))
-        const { error: tagError } = await supabase.from('post_tags').insert(tagRows)
-        if (tagError) {
-            // Rollback: delete the post since tag association failed
-            await supabase.from('posts').delete().eq('id', inserted.id)
-            return { error: `Post created but tag association failed: ${tagError.message}` }
-        }
+        const tagRows = data.tag_ids.map((tag_id) => ({ post_id: inserted.id, tag_id }))
+        await supabase.from('post_tags').insert(tagRows)
     }
 
     revalidatePath('/author/posts')
@@ -263,263 +206,127 @@ export async function createPost(data: PostPayload) {
 
 // ── Update Post ────────────────────────────────────────────
 export async function updatePost(id: string, data: Partial<PostPayload>) {
-    // Validate the id
-    if (!z.string().uuid().safeParse(id).success) {
-        return { error: 'Invalid post ID' }
-    }
-
-    // 1. Transform dates to IST before validation
     if (data.application_start_date) data.application_start_date = toIST(data.application_start_date)
     if (data.application_end_date) data.application_end_date = toIST(data.application_end_date, true)
 
-    // 2. Validate input with Zod before touching the DB
     const parsed = updatePostSchema.safeParse(data)
     if (!parsed.success) {
         return { error: parsed.error.issues.map(i => i.message).join(', ') }
     }
 
     const supabase = await createServerClient()
-
-    // Strip non-DB fields before sending to Supabase
     const { tag_ids, ...dbFields } = data
     const updateRow: Record<string, unknown> = {}
 
-    // Only include fields that were actually provided.
-    // CRITICAL: For NOT NULL columns, use the DB default instead of null.
     for (const [key, value] of Object.entries(dbFields)) {
-        const finalValue = value
-
-        if (finalValue === null || finalValue === undefined) {
-            // If this column is NOT NULL in the DB, use its default instead of null
-            if (key in NOT_NULL_DEFAULTS) {
-                updateRow[key] = NOT_NULL_DEFAULTS[key]
-            } else {
-                updateRow[key] = null
-            }
+        if (value === null || value === undefined) {
+            updateRow[key] = key in NOT_NULL_DEFAULTS ? NOT_NULL_DEFAULTS[key] : null
         } else {
-            updateRow[key] = finalValue
+            updateRow[key] = value
         }
     }
 
-    // 3. Unified SEO Analysis & Metrics (for updates)
-    // We only recalculate if the relevant fields are present in the update
-    const needsRecalc = ['title', 'content', 'focus_keyword', 'meta_title', 'meta_description', 'excerpt', 'featured_image'].some(k => k in dbFields)
-    
-    if (needsRecalc) {
-        // We need the full state to run a proper analysis. 
-        // For updates, we'll fetch existing data if any critical field is missing.
-        const { data: existing } = await supabase.from('posts').select('*').eq('id', id).single()
-        
-        if (existing) {
-            // Fetch denormalized metadata for high-fidelity analysis
-            let orgName = existing.org_name, orgShortName = existing.org_short_name, stateName = existing.state_name;
-            const targetOrgId = (dbFields.organization_id as string) || existing.organization_id;
-            const targetStateSlug = (dbFields.state_slug as string) || existing.state_slug;
+    if (dbFields.content !== undefined) {
+        const content = dbFields.content || ''
+        const wordCount = content.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length
+        updateRow.word_count = wordCount
+        updateRow.reading_time_min = Math.max(1, Math.round(wordCount / 200))
+        updateRow.internal_links_count = countInternalLinks(content)
 
-            if (dbFields.organization_id && dbFields.organization_id !== existing.organization_id) {
-                const { data: org } = await supabase.from('organizations').select('name, short_name').eq('id', dbFields.organization_id).single();
-                if (org) { orgName = org.name; orgShortName = org.short_name; }
-            }
-            if (dbFields.state_slug && dbFields.state_slug !== existing.state_slug) {
-                const { data: st } = await supabase.from('states').select('name').eq('slug', dbFields.state_slug).single();
-                if (st) { stateName = st.name; }
-            }
-
-            const analysisInput = {
-                title: (dbFields.title as string) ?? existing.title,
-                slug: (dbFields.slug as string) ?? existing.slug,
-                metaTitle: (dbFields.meta_title as string) ?? existing.meta_title ?? '',
-                metaDescription: (dbFields.meta_description as string) ?? existing.meta_description ?? '',
-                focusKeyword: (dbFields.focus_keyword as string) ?? existing.focus_keyword ?? '',
-                secondaryKeywords: (dbFields.secondary_keywords as string[]) ?? existing.secondary_keywords ?? [],
-                content: (dbFields.content as string) ?? existing.content ?? '',
-                excerpt: (dbFields.excerpt as string) ?? existing.excerpt ?? '',
-                featuredImage: (dbFields.featured_image as string) ?? existing.featured_image ?? '',
-                featuredImageAlt: (dbFields.featured_image_alt as string) ?? existing.featured_image_alt ?? '',
-                faqCount: (dbFields.faq as any[])?.length ?? existing.faq?.length ?? 0,
-                postType: (dbFields.type as string) ?? existing.type,
-                authorId: (dbFields.author_id as string) ?? existing.author_id ?? undefined,
-                // Guru SEO 2.0 Contextual Fields
-                orgName,
-                orgShortName,
-                stateName,
-                updatedAt: existing.updated_at,
-                notificationPdf: (dbFields.notification_pdf as string) ?? existing.notification_pdf,
-                primaryLink: (dbFields.primary_link as string) ?? existing.primary_link,
-            }
-
-            const seoResult = runSeoAnalysis(analysisInput)
-            updateRow.seo_score = seoResult.score
-            
-            const wordCount = analysisInput.content.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length
-            updateRow.word_count = wordCount
-            updateRow.reading_time_min = Math.max(1, Math.round(wordCount / 200))
+        const heuristics = analyzeAiHeuristics(content)
+        if (heuristics.isFlagged) {
+            updateRow.needs_human_review = true
         }
     }
 
-    const { error } = await supabase
-        .from('posts')
-        .update(updateRow)
-        .eq('id', id)
+    const { error } = await supabase.from('posts').update(updateRow).eq('id', id)
+    if (error) return { error: error.message }
 
-    if (error) {
-        return { error: error.message }
-    }
-
-    // Handle tag associations if provided - atomic delete + insert with error handling
     if (tag_ids !== undefined) {
-        // Delete existing tags first
-        const { error: deleteError } = await supabase.from('post_tags').delete().eq('post_id', id)
-        if (deleteError) {
-            return { error: `Failed to update tags (delete): ${deleteError.message}` }
-        }
-        // Insert new tags
+        await supabase.from('post_tags').delete().eq('post_id', id)
         if (tag_ids.length > 0) {
             const tagRows = tag_ids.map((tag_id) => ({ post_id: id, tag_id }))
-            const { error: insertError } = await supabase.from('post_tags').insert(tagRows)
-            if (insertError) {
-                return { error: `Failed to update tags (insert): ${insertError.message}` }
-            }
+            await supabase.from('post_tags').insert(tagRows)
         }
     }
 
     revalidatePath('/author/posts')
     revalidatePath('/')
     revalidateTag('posts')
-    // COUNCIL P0 (Area 9): Revalidate sitemap on published post updates
-    if (dbFields.status === 'published' || updateRow.status === undefined) {
-        revalidateTag('sitemap')
-    }
+    return { success: true }
+}
 
-    // Notify Google Indexing API on published post updates (fire-and-forget)
-    // Fetches the post type + slug to build URL, only if the post is published
-    const { data: updatedPost } = await supabase
+// ── Publish Post ───────────────────────────────────────────
+export async function publishPost(id: string) {
+    const supabase = await createServerClient()
+    const { data: post } = await supabase
         .from('posts')
-        .select('slug, type, status')
+        .select('slug, type, word_count, content, featured_image')
         .eq('id', id)
         .single()
 
-    if (updatedPost?.status === 'published' && updatedPost.type && updatedPost.slug) {
-        const typeKey = updatedPost.type as PostTypeKey
+    if (!post) return { error: 'Post not found' }
+
+    const content = post.content || ''
+    const hasPlaceholders = /\[officialWebsiteUrl\]|\[primaryLink\]|\[notificationPdfUrl\]|href="#"/i.test(content)
+    if (hasPlaceholders) {
+        return { error: 'Publishing blocked: Post contains unresolved placeholder links.' }
+    }
+
+    if ((post.word_count ?? 0) < 1000) {
+        return { error: `Publishing blocked: Thin content detected (${post.word_count} words). Min 1000 required.` }
+    }
+
+    const { error } = await supabase
+        .from('posts')
+        .update({ status: 'published', published_at: new Date().toISOString() })
+        .eq('id', id)
+
+    if (error) return { error: error.message }
+
+    revalidatePath('/author/posts')
+    revalidatePath('/')
+    revalidateTag('posts')
+    revalidateTag('sitemap')
+
+    const typeKey = post.type as PostTypeKey
+    if (ROUTE_PREFIXES[typeKey] && post.slug) {
+        const postUrl = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/${post.slug}`
+        pushToGoogleIndexingApi(postUrl, 'URL_UPDATED').catch(() => { })
+    }
+
+    return { success: true }
+}
+
+// ── Delete Post ────────────────────────────────────────────
+export async function deletePost(id: string) {
+    const supabase = await createServerClient()
+    const { data: post } = await supabase.from('posts').select('slug, type, status').eq('id', id).single()
+
+    const { error } = await supabase.from('posts').delete().eq('id', id)
+    if (error) return { error: error.message }
+
+    revalidatePath('/author/posts')
+    revalidatePath('/')
+    revalidateTag('posts')
+    revalidateTag('sitemap')
+
+    if (post?.status === 'published' && post.slug && post.type) {
+        const typeKey = post.type as PostTypeKey
         if (ROUTE_PREFIXES[typeKey]) {
-            const postUrl = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/${updatedPost.slug}`
-            pushToGoogleIndexingApi(postUrl, 'URL_UPDATED').catch(() => {
-                // Silently swallow - IndexingApi logs its own errors
-            })
+            const postUrl = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/${post.slug}`
+            pushToGoogleIndexingApi(postUrl, 'URL_DELETED').catch(() => { })
         }
     }
 
     return { success: true }
 }
 
-// ── Publish Post ───────────────────────────────────────────
-// COUNCIL P0: publishPost now triggers Indexing API + sitemap revalidation
-// COUNCIL P1 (Area 10): Pre-publish validation for content quality
-export async function publishPost(id: string) {
-    if (!z.string().uuid().safeParse(id).success) {
-        return { error: 'Invalid post ID' }
-    }
-
+// ── Editorial Review ──────────────────────────────────────────
+export async function markAsReviewed(id: string) {
     const supabase = await createServerClient()
-
-    // DANIEL: Fetch post first for URL building + pre-publish validation
-    const { data: existingPost } = await supabase
-        .from('posts')
-        .select('slug, type, word_count, featured_image, seo_score, content')
-        .eq('id', id)
-        .single()
-
-    if (!existingPost) {
-        return { error: 'Post not found' }
-    }
-
-    // Editorial Pipeline Validation (AdSense Compliance)
-    const content = existingPost.content || ''
-    const hasPlaceholders = /\[officialWebsiteUrl\]|\[primaryLink\]|\[notificationPdfUrl\]|href="#"/i.test(content)
-    
-    if (hasPlaceholders) {
-        return { error: 'Publishing blocked: Post contains unresolved placeholder links (e.g., [primaryLink] or href="#"). Please replace them with actual URLs or remove them.' }
-    }
-
-    if ((existingPost.word_count ?? 0) < 1000) {
-        return { error: `Publishing blocked: Thin content detected. Post has only ${existingPost.word_count} words. Minimum 1000 substantive words required for AdSense compliance.` }
-    }
-
-    // COUNCIL P1 (Area 10): Pre-publish quality warnings
-    // MARCUS: Don't block - return warnings so CMS can display them
-    const warnings: string[] = []
-    if (!existingPost.featured_image) {
-        warnings.push('Missing featured image - reduces Discover visibility')
-    }
-
-    const { error } = await supabase
-        .from('posts')
-        .update({ status: 'published' as PostStatus, published_at: new Date().toISOString() })
-        .eq('id', id)
-
-    if (error) {
-        return { error: error.message }
-    }
-
+    const { error } = await supabase.from('posts').update({ needs_human_review: false }).eq('id', id)
+    if (error) return { error: error.message }
     revalidatePath('/author/posts')
-    revalidatePath('/admin/posts')
-    revalidatePath('/')
-    revalidateTag('posts')
-    // COUNCIL P0 (Area 9): Revalidate sitemap immediately after publish
-    revalidateTag('sitemap')
-
-    // COUNCIL P0 (Area 9): Fire-and-forget Indexing API call
-    // PRIYA: Non-blocking - don't await, don't fail the publish on API error
-    const typeKey = existingPost.type as PostTypeKey
-    if (typeKey && ROUTE_PREFIXES[typeKey] && existingPost.slug) {
-        const postUrl = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/${existingPost.slug}`
-        pushToGoogleIndexingApi(postUrl, 'URL_UPDATED').catch(() => {
-            // Silently swallow - IndexingApi logs its own errors
-        })
-    }
-
-    return { success: true, warnings: warnings.length > 0 ? warnings : undefined }
-}
-
-// ── Delete Post ────────────────────────────────────────────
-export async function deletePost(id: string) {
-    if (!z.string().uuid().safeParse(id).success) {
-        return { error: 'Invalid post ID' }
-    }
-
-    const supabase = await createServerClient()
-
-    // DANIEL: Fetch post before deletion for URL_DELETED notification
-    const { data: existingPost } = await supabase
-        .from('posts')
-        .select('slug, type, status')
-        .eq('id', id)
-        .single()
-
-    const { error } = await supabase
-        .from('posts')
-        .delete()
-        .eq('id', id)
-
-    if (error) {
-        return { error: error.message }
-    }
-
-    revalidatePath('/author/posts')
-    revalidatePath('/admin/posts')
-    revalidatePath('/')
-    revalidateTag('posts')
-    // COUNCIL P0 (Area 9): Revalidate sitemap on deletion
-    revalidateTag('sitemap')
-
-    // COUNCIL P0 (Area 9): Notify Google to deindex deleted published posts
-    if (existingPost?.status === 'published' && existingPost.slug && existingPost.type) {
-        const typeKey = existingPost.type as PostTypeKey
-        if (ROUTE_PREFIXES[typeKey]) {
-            const postUrl = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/${existingPost.slug}`
-            pushToGoogleIndexingApi(postUrl, 'URL_DELETED').catch(() => { })
-        }
-    }
-
     return { success: true }
 }

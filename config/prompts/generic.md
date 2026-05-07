@@ -1,60 +1,50 @@
-You are writing a **general government/education** post that doesn't fit a specific category. Target: **1200+ words of substantive content**.
+You are writing a **general government exam / recruitment** post that doesn't fit a specific type. Target: **1800+ words**.
 
-## Content Structure (use raw HTML)
+---
 
-<h2>[Topic Title] [Year]: Complete Information</h2>
-Open with a **Direct Answer** in the first 50-100 words. State what the topic is, who benefits, and the primary action or information available. Include focus keyword. Link to official portal if applicable.
+## Flexible Content Framework
 
-<h2>Overview</h2>
-<h3>What This Is About</h3>
-2-3 paragraphs explaining the topic clearly and factually.
-<h3>Why It Matters</h3>
-Why candidates or citizens should pay attention. Include year-over-year context if available.
-<h3>Changes from Previous Year</h3>
-Specific changes compared to last year — policy updates, eligibility changes, new provisions.
+Since this is a general-purpose post, adapt the structure to match the content. Here's your toolkit:
 
-<h2>Key Highlights</h2>
-HTML `<table>` with `<thead>`, `<th scope="col">` — use columns relevant to the topic.
+### If it's a recruitment/job-related topic:
+- Lead with vacancies, eligibility, how to apply
+- Include key dates, fee, and selection process tables
+- End with direct links
 
-<h2>Important Details</h2>
-Use H3 sub-sections to break down the main aspects. Create at least 3 H3s.
-Include HTML tables where data comparison adds value.
+### If it's an exam/academic topic:
+- Lead with pattern, syllabus snapshot, preparation tips
+- Include cut-off trends, book recommendations
+- End with direct links
 
-<h2>Step-by-Step Guide</h2>
-If applicable, numbered process guide with placeholder links:
-- <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Apply Online / Take Action</a>
-- <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Official Website</a>
-- <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download Notification</a>
+### If it's an informational/news topic:
+- Lead with the news, who's affected, what changed
+- Include context, before vs after comparison
+- End with direct links
 
-<h2>Analysis and Observations</h2>
-<h3>Common Mistakes to Avoid</h3>
-Specific mistakes candidates or applicants make.
-<h3>Practical Recommendations</h3>
-Factual, actionable advice based on the data.
+## For ALL post types, include:
+1. **Key Highlights Table** — HTML `<table>` with `<thead>`, `<th scope="col">` summarizing the essential details
+2. **Important Dates Table** — Relevant timeline
+3. **Action Steps** — With placeholder links:
+   - <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Take Action</a>
+   - <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Official Website</a>
+4. **Direct Links Table** — REQUIRED as the final section
 
-<h2>Related Resources</h2>
-Link to 3-4 related content types:
-- <a href="/job">Latest Government Jobs</a>
-- <a href="/result">Recent Results</a>
-- <a href="/scheme">Government Schemes</a>
-- <a href="/scholarship">Scholarships</a>
+## Opening Examples
+- "Here's the thing nobody's telling you about [Topic] — and it could save you weeks of confusion."
+- "I've been tracking this for months. Today's update changes the game for thousands of candidates."
+- "If you searched for [Topic], you're probably frustrated with outdated info. Here's what's actually current."
 
-<h2>Direct Links for [Topic Name] [Year]</h2>
-Structured HTML `<table>` with `<thead>` and `<tbody>`:
-- Main Link | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Visit Link</a>
-- Download PDF | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download</a>
-- Official Website | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Portal</a>
-- Latest Jobs | <a href="/job">Check Here</a>
-- Join Telegram | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
-- Result Guru | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
+## Voice Notes
+- Match the urgency of the topic — breaking news gets urgency, guides get depth.
+- Include a Key Takeaways box and a Pro Tip callout.
+- Your "but wait" moment should be a genuinely surprising or lesser-known fact.
+- Add at least one year-over-year comparison or data insight for analytical depth.
 
 ---
 
 **RULES:**
 1. All headings in English — no Hinglish
-2. 3-5 internal links to related sections
-3. All tables with `<thead>`, `<th scope="col">`
-4. Include year-over-year comparison where data is available
-5. Year (2026) must appear in title and content
-6. **PROHIBITED**: No "FAQ" headings in HTML — populate `faq` JSON instead
-7. **REQUIRED**: "Direct Links" table as the final section
+2. 3-5 internal links to relevant content areas
+3. Tables with `<thead>`, `<th scope="col">`
+4. **PROHIBITED**: No "FAQ" headings in HTML — populate `faq` JSON instead
+5. **REQUIRED**: "Direct Links" table as the final section

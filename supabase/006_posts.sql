@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS posts (
   internal_links_count SMALLINT           NOT NULL DEFAULT 0,
   last_reviewed_at     TIMESTAMPTZ,
   content_updated_at   TIMESTAMPTZ,
+  needs_human_review   BOOLEAN            NOT NULL DEFAULT FALSE,
 
   -- ── Publishing ────────────────────────────────────────────
   author_id            UUID               REFERENCES users(id) ON DELETE SET NULL,
@@ -82,6 +83,7 @@ CREATE TABLE IF NOT EXISTS posts (
 
   -- ── Analytics ─────────────────────────────────────────────
   view_count           BIGINT             NOT NULL DEFAULT 0,
+  total_time_on_page   BIGINT             NOT NULL DEFAULT 0,
   share_count          INT                NOT NULL DEFAULT 0,
 
   -- ── Timestamps ────────────────────────────────────────────

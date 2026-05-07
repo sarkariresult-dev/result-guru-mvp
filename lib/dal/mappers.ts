@@ -73,6 +73,7 @@ interface AdminPostRow {
     organization_id: string | null;
     org_name: string | null;
     view_count: number | null;
+    total_time_on_page: number | null;
     seo_score: number | null;
     published_at: string | null;
     updated_at: string | null;
@@ -96,6 +97,7 @@ export function toAdminPostDTO(row: Record<string, unknown> | null): AdminPost |
         organization_id: (r.organization_id as string) ?? null,
         org_name: (r.org_name as string) ?? null,
         view_count: (r.view_count as number) ?? 0,
+        total_time_on_page: (r.total_time_on_page as number) ?? 0,
         seo_score: (r.seo_score as number) ?? 0,
         application_start_date: (r.application_start_date as string) ?? null,
         application_end_date: (r.application_end_date as string) ?? null,

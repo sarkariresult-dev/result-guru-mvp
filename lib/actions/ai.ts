@@ -19,21 +19,21 @@ const ai = new GoogleGenAI({ apiKey: env.GOOGLE_GENAI_API_KEY })
  * to break template fatigue and ensure creative variance.
  */
 const STYLE_SEEDS = [
-    'Start the article with a bold, factual statement about the opportunity or event. Jump straight into the value without a long introduction.',
-    'Open the article by addressing a common problem or question students face regarding this specific topic.',
-    'Begin the article with a direct question to the reader to build engagement.',
-    'Start the article by highlighting the most important date, deadline, or timeline to create urgency.',
-    'Open the article with a myth-busting approach, clarifying a common misconception about the exam or recruitment.',
-    'Start the article with a concise data point (e.g., number of vacancies, expected competition level).',
-    'Begin the article with a mentor-like hook, acknowledging that this is a frequently asked topic.',
-    'Open the article by briefly comparing this year\'s update to previous years (e.g., changes in vacancies or pattern).',
-    'Start with an inverted pyramid style: give the direct answer immediately, then dive into details.',
-    'Begin the article with an enthusiastic tone announcing that the long-awaited update is finally here.',
-    'Open the article by empathizing with the confusion students often face on official portals, promising a simplified guide.',
-    'Start the article with a mini-checklist of the 3 most important things the reader needs to know right now.',
-    'Begin the article by focusing on the timeline and the immediate next steps the candidate must take.',
-    'Open the article by highlighting that this update is relevant for candidates across different regions.',
-    'Start the article conversationally, getting straight to the point about what the post covers.',
+    'Start with a bold factual claim that drops the reader right into the story. No warm-up paragraph.',
+    'Open by addressing a common frustration or myth — then promise to set the record straight.',
+    'Begin with a direct question that mirrors what the reader is actually searching for.',
+    'Start with the most urgent date or deadline — create a "this matters right now" energy.',
+    'Open with a surprising data point or year-over-year comparison that hooks attention.',
+    'Begin with a personal observation: "I\'ve tracked this exam for years, and here\'s what changed..."',
+    'Start by acknowledging what everyone gets wrong about this topic, then correct it.',
+    'Open with an inverted pyramid: give the direct answer in the first sentence, then explain why.',
+    'Begin with a "but wait" moment — a counterintuitive fact most people don\'t know.',
+    'Start conversationally: "Right, so — here\'s what you actually need to know about this."',
+    'Open with a mini-checklist of the 3 things that matter most. Then go deep on each.',
+    'Begin with empathy: "I know the portal is a mess. Here\'s the no-BS walkthrough."',
+    'Start with a strong opinion: "This is the most underrated opportunity this year. Here\'s why."',
+    'Open with a comparison to a more popular exam to frame the opportunity correctly.',
+    'Begin with the consequence of NOT taking action: "If you miss this deadline, you wait another year."',
 ]
 
 /* ── Tone Mapper ─────────────────────────────────────────────────── */
@@ -44,21 +44,21 @@ const STYLE_SEEDS = [
  */
 function getToneForType(type: string): string {
     const tones: Record<string, string> = {
-        job: 'Excited career counselor — guide the student through every step of the opportunity.',
-        result: 'Urgent and celebratory — fast, direct information delivery. Empathize with student anxiety.',
-        admit: 'Reassuring and helpful — calm anxious candidates and provide step-by-step instructions.',
-        answer_key: 'Analytical and strategic — act as an exam coach explaining how to verify marks and file objections.',
-        cut_off: 'Data-driven analyst — provide trend insights and practical advice based on numbers.',
-        syllabus: 'Study mentor — organized, structured, and motivating. Focus on preparation strategy.',
-        exam_pattern: 'Strategic coach — emphasize how understanding the pattern leads to better marks.',
-        previous_paper: 'Resource-sharing mentor — emphasize the value of practicing past papers to understand trends.',
-        scheme: 'Empathetic welfare advisor — help beneficiaries navigate bureaucracy clearly and simply.',
-        scholarship: 'Encouraging opportunity finder — motivate students to apply for financial aid.',
-        admission: 'Guiding counselor — provide clear steps to avoid mistakes in the admission process.',
-        notification: 'Breaking news energy — deliver official details quickly and accurately.',
-        exam: 'Motivating prep partner — focus on preparation strategy and career growth.',
+        job: 'Write like a friend who just found an amazing opportunity and is texting you about it. Excited but factual — every sentence has real info.',
+        result: 'Urgent energy — you know they\'re refreshing the page anxiously. Get to the point fast. Empathize, then deliver.',
+        admit: 'Calm and reassuring — like a senior who\'s been through this before. Step-by-step, no panic.',
+        answer_key: 'Think exam coach mode — analytical, strategic. Show them exactly how to verify marks and whether to file objections.',
+        cut_off: 'Data nerd energy — you love comparing numbers across years. Share the trends like you\'re breaking down a cricket scorecard.',
+        syllabus: 'Study buddy who\'s already cracked this — share what to prioritize and what to skip.',
+        exam_pattern: 'Strategic friend — "here\'s the hack" energy. Show how understanding the pattern directly improves marks.',
+        previous_paper: 'Resource-sharing mode — you\'ve done the analysis so they don\'t have to. Highlight patterns.',
+        scheme: 'Helpful neighbor — explain the bureaucracy simply so a first-time applicant can follow along.',
+        scholarship: 'Encouraging tone — "you qualify for free money, here\'s how to grab it."',
+        admission: 'Guiding senior — clear steps, common mistakes to avoid, insider tips.',
+        notification: 'Breaking news energy — deliver the facts fast, then add context that official portals miss.',
+        exam: 'Motivating prep partner — focus on strategy and career growth, not generic motivation.',
     }
-    return tones[type] || 'Informative, helpful, and professional mentor-like authority.'
+    return tones[type] || 'Write like a knowledgeable friend explaining this over chai — helpful, direct, real.'
 }
 
 /* ── Keyword Seed Builder ─────────────────────────────────────────── */
@@ -233,7 +233,16 @@ const aiResponseSchema = {
         },
         content: {
             type: Type.STRING,
-            description: 'Full HTML content (1200+ words). Uses [officialWebsiteUrl], [primaryLink], [notificationPdfUrl] placeholders. DO NOT include a Quick Summary box at the beginning.',
+            description: 'Full HTML content (1800+ words). Human-like tone with contractions, em dashes, varied sentence lengths. Uses [officialWebsiteUrl], [primaryLink], [notificationPdfUrl] placeholders. Include a Key Takeaways box and one Pro Tip callout. DO NOT include a Quick Summary box at the beginning.',
+        },
+        keyTakeaways: {
+            type: Type.ARRAY,
+            description: '3-5 bullet points summarizing the most essential facts and action items from the article.',
+            items: { type: Type.STRING },
+        },
+        proTip: {
+            type: Type.STRING,
+            description: 'One practical insider tip that adds unique value — something a first-time reader wouldn\'t know.',
         },
         officialWebsiteUrl: {
             type: Type.STRING,
@@ -392,7 +401,7 @@ export async function generateContentWithGemini(data: GeneratePostInput) {
                 systemInstruction: systemPrompt,
                 responseMimeType: 'application/json',
                 responseSchema: aiResponseSchema as unknown,
-                temperature: 0.7, // Higher for natural, creative writing (was 0.5)
+                temperature: 0.8, // Higher for human-like creative variance (was 0.7)
             },
         })
 
@@ -557,5 +566,60 @@ export async function generateAffiliateData(url: string) {
         return { success: true, data: JSON.parse(response.text) }
     } catch (e: unknown) {
         return { error: e instanceof Error ? e.message : 'AI Generation failed' }
+    }
+}
+
+/* ── Social Media Generation ────────────────────────────────────────── */
+
+export async function generateTwitterThread(postId: string) {
+    try {
+        const supabase = await createServerClient()
+        const { data: post } = await supabase
+            .from('posts')
+            .select('title, excerpt, content, slug, type')
+            .eq('id', postId)
+            .single()
+
+        if (!post) throw new Error('Post not found')
+
+        const prompt = `
+        Create an engaging Twitter/X thread for this article.
+        
+        Title: ${post.title}
+        Excerpt: ${post.excerpt || ''}
+        Content (raw HTML/text): ${(post.content || '').substring(0, 3000)} // Truncated to avoid huge payloads
+        
+        RULES:
+        1. Create 3-5 tweets for the thread.
+        2. First tweet should be a hook that makes them stop scrolling. Don't use words like "Unlock", "Delve", "Transform".
+        3. Break down the core value in the middle tweets (dates, facts, or key insights). Use emojis appropriately but sparingly.
+        4. The final tweet MUST include a strong call-to-action asking them to read the full guide on Result Guru.
+        5. Return the thread as a JSON array of strings (one string per tweet).
+        `
+
+        const responseSchema = {
+            type: Type.ARRAY,
+            items: { type: Type.STRING },
+            description: "An array of tweets forming a cohesive thread.",
+        }
+
+        const response = await ai.models.generateContent({
+            model: env.GOOGLE_GENAI_MODEL || 'gemini-2.5-flash-preview-05-20',
+            contents: prompt,
+            config: {
+                systemInstruction: "You are a viral Twitter ghostwriter for an Indian education platform. You write punchy, relatable, and high-engagement threads.",
+                responseMimeType: 'application/json',
+                responseSchema: responseSchema as unknown,
+                temperature: 0.7,
+            },
+        })
+
+        if (!response.text) throw new Error('No response from AI')
+        
+        const tweets: string[] = JSON.parse(response.text)
+        return { success: true, data: tweets }
+    } catch (error) {
+        console.error('Failed to generate Twitter thread:', error)
+        return { error: error instanceof Error ? error.message : 'Failed to generate Twitter thread' }
     }
 }

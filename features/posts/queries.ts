@@ -220,6 +220,7 @@ export interface AdminPost {
     organization_id: string | null
     org_name: string | null
     view_count: number
+    total_time_on_page: number
     seo_score: number
     application_start_date: string | null
     application_end_date: string | null
@@ -229,7 +230,7 @@ export interface AdminPost {
 }
 
 const ADMIN_POST_COLUMNS =
-    'id, type, status, title, slug, state_slug, organization_id, org_name, view_count, seo_score, application_start_date, application_end_date, published_at, updated_at, created_at'
+    'id, type, status, title, slug, state_slug, organization_id, org_name, view_count, total_time_on_page, seo_score, application_start_date, application_end_date, published_at, updated_at, created_at'
 
 export async function getAdminPosts(opts: {
     page?: number

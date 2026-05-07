@@ -37,7 +37,7 @@ SELECT
   p.og_title, p.og_description, p.og_image, p.og_image_width, p.og_image_height,
   p.twitter_title, p.twitter_description, p.twitter_card_type,
   
-  p.seo_score, p.word_count, p.reading_time_min, p.view_count, p.share_count,
+  p.seo_score, p.word_count, p.reading_time_min, p.view_count, p.total_time_on_page, p.share_count,
   p.author_id,
   u.name AS author_name,
   u.avatar_url AS author_avatar_url,
@@ -45,7 +45,7 @@ SELECT
   u.credentials AS author_credentials,
   u.years_of_experience AS author_years_of_experience,
   u.social_links AS author_social_links,
-  p.published_at, p.updated_at, p.content_updated_at, p.last_reviewed_at, p.expires_at,
+  p.published_at, p.updated_at, p.content_updated_at, p.last_reviewed_at, p.expires_at, p.needs_human_review,
 
   -- Optimization: Inline tags to avoid N+1 queries in application code
   (
@@ -112,7 +112,7 @@ CREATE VIEW v_seo_audit AS
 SELECT
   p.id, p.type, p.slug, p.title, p.status,
   p.seo_score, p.word_count, p.reading_time_min,
-  p.published_at, p.content_updated_at, p.last_reviewed_at,
+  p.published_at, p.content_updated_at, p.last_reviewed_at, p.needs_human_review,
   (p.meta_title IS NULL) AS missing_meta_title,
   (p.meta_description IS NULL) AS missing_meta_desc,
   (p.focus_keyword IS NULL) AS missing_focus_keyword,

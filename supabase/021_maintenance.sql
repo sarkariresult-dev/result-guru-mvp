@@ -43,6 +43,25 @@ COMMENT ON FUNCTION fn_increment_post_view(UUID, TEXT, TEXT) IS
   'SECURITY DEFINER: atomically records a page view and increments view_count.
    Safe to call from the Supabase anon role via RPC.';
 
+-- ── Record Duration RPC ──────────────────────────────────────
+CREATE OR REPLACE FUNCTION fn_record_post_duration(
+  p_post_id          UUID,
+  p_duration_seconds INT
+)
+RETURNS VOID
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  UPDATE posts
+  SET total_time_on_page = COALESCE(total_time_on_page, 0) + p_duration_seconds
+  WHERE id = p_post_id;
+END;
+$$;
+COMMENT ON FUNCTION fn_record_post_duration(UUID, INT) IS
+  'SECURITY DEFINER: records reading duration for a post. Increments total_time_on_page.';
+
 -- ── Nightly ad stats rollup ───────────────────────────────────
 -- Idempotent: safe to re-run for the same date without double-counting.
 -- Running totals are recomputed from ad_stats_daily (not incremented).

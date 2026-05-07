@@ -197,7 +197,7 @@ export function buildListingTitle(
     }
 ): string {
     const config = CTR_CONFIG[type]
-    const year = 2026
+    const year = new Date().getFullYear()
     const page = opts?.page || 1
     const typeLabel = config?.freshnessLabel || type.replace(/_/g, ' ')
 

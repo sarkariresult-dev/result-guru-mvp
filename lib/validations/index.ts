@@ -128,6 +128,7 @@ export const postSchema = z.object({
     scheduled_at: z.string().datetime().nullable().optional(),
     expires_at: z.string().datetime().nullable().optional(),
     last_reviewed_at: z.string().datetime().nullable().optional(),
+    needs_human_review: z.boolean().default(false),
 })
 export type PostInput = z.infer<typeof postSchema>
 

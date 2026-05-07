@@ -1,66 +1,32 @@
-You are writing a **Government Exam Admit Card / Hall Ticket** download post. Target: **1200+ words of substantive content**.
+You are writing a **Government Exam Admit Card / Hall Ticket** download post. Target: **1800+ words**.
 
 ---
 
-## Content Structure (use raw HTML)
+## What This Post Must Cover (in ANY order — lead with download status)
 
-<h2>[Board Name] [Exam Name] Admit Card [Year]: Download Link and Exam Day Guidelines</h2>
-Open with a **Direct Answer** in the first 50-100 words. State exactly when the admit card is available, the scheduled exam dates, and the official download portal. Include focus keyword. Link to the official portal.
+1. **Download Status** — Is it live? Expected date? Get to this in sentence one.
+2. **Key Highlights Table** — HTML `<table>` with `<thead>`, `<th scope="col">`: Exam Body, Post/Exam Name, Exam Date(s), Admit Card Status, City Slip Date
+3. **Important Dates Table** — Application date, city slip, admit card download, exam dates, result expected
+4. **How to Download** — Step-by-step with:
+   - <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Download Admit Card</a>
+   - <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Official Website</a>
+   - Alternative methods (DigiLocker, app) if available
+   - Troubleshooting: forgot registration ID, wrong DOB format, server timeout, browser cache
+5. **Details to Verify** — Personal info checklist (name, photo, roll number, center). How to correct errors — helpline, email format, correction window.
+6. **Exam Day Guidelines** — Mandatory items (admit card, ID, photos, stationery), prohibited items, reporting time, gate closure rules, dress code
+7. **Last-Minute Prep Tips** — Visit center location day before, prepare kit. Time management strategy for the exam. Link to <a href="/syllabus">Syllabus</a> and <a href="/exam-pattern">Exam Pattern</a>.
+8. **Direct Links Table** — REQUIRED as the final section
 
-<h2>Admit Card Status and Updates</h2>
-<h3>Current Release Status</h3>
-2 paragraphs: "[Board] officially released the admit card on [Date]." OR if pending: "The admit card is expected to be released by [Date]."
-<h3>Communication from the Board</h3>
-Explain if the board sends SMS or email alerts before the admit card release.
+## Opening Examples
+- "The admit card is live — downloaded mine 10 minutes ago. Here's the step-by-step before the server crashes."
+- "Gate closes at 9:30 AM sharp. If your admit card has an error, you've got exactly 3 days to fix it. Here's how."
+- "Every cycle, thousands of candidates show up without a valid ID. Don't be one of them."
 
-<h2>Key Highlights</h2>
-HTML `<table>` with `<thead>`, `<th scope="col">`:
-- Exam Conducting Body, Post/Exam Name, Exam Date(s), Admit Card Status, City Slip Date
-
-<h2>Important Dates</h2>
-HTML `<table>`: Application Date, City Slip Download, Admit Card Download Date, Exam Dates, Result Expected.
-
-<h2>How to Download the Admit Card</h2>
-<h3>Method 1: Official Portal</h3>
-Detailed step-by-step guide. Include:
-- <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Official Website</a>
-- <a href="/syllabus">Exam Syllabus</a>
-- <a href="/exam-pattern">Exam Pattern</a>
-
-<h3>Method 2: DigiLocker / Alternate App</h3>
-If applicable, explain the alternative download process.
-
-<h3>Troubleshooting Download Issues</h3>
-Practical solutions for common issues: forgot Registration ID, wrong DOB format, server timeout, browser cache.
-
-<h2>Details to Verify on Your Admit Card</h2>
-<h3>Personal Information Checklist</h3>
-List: Name spelling, Photo clarity, Signature, Roll Number, Exam Center, Reporting Time.
-<h3>How to Correct Errors</h3>
-Steps to follow if there's an error: contact helpline, email format, correction window deadline. Note the consequences of mismatched details during Document Verification.
-
-<h2>Exam Day Guidelines and Dress Code [Year]</h2>
-<h3>Mandatory Items to Carry</h3>
-Numbered `<ol>` list: Printed admit card (color recommended), Valid photo ID (acceptable IDs listed), passport photos, specific stationery.
-<h3>Prohibited Items</h3>
-Bullet `<ul>` list: Mobile phones, smartwatches, electronic devices, specific clothing or jewelry items.
-<h3>Reporting Time and Gate Closure</h3>
-Factual reporting time and gate closure rules based on the official notification.
-
-<h2>Exam Preparation and Strategy</h2>
-<h3>One Day Before the Exam</h3>
-Practical advice: visit center location, prepare admit card kit.
-<h3>Exam Day Strategy</h3>
-Time management and section strategy. Link to <a href="/syllabus">Syllabus Revision</a> and <a href="/exam-pattern">Exam Pattern</a>.
-
-<h2>Direct Links for [Board Name] [Year]</h2>
-Structured HTML `<table>` with `<thead>` and `<tbody>`:
-- Download Admit Card | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Download Here</a>
-- Download Notification | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download PDF</a>
-- Official Website | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Portal</a>
-- Exam City Slip | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Check Here</a>
-- Join Telegram | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
-- Result Guru | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
+## Voice Notes for This Type
+- The reader is stressed about logistics, not content. Be the calm senior who's been through this.
+- Your "but wait" moment: a reporting time quirk, a commonly missed mandatory item, or an error correction deadline most people don't know about.
+- Troubleshooting section is high user intent — make it genuinely useful, not generic.
+- Exam day section should feel like a personal checklist, not a government notification.
 
 ---
 
@@ -69,6 +35,5 @@ Structured HTML `<table>` with `<thead>` and `<tbody>`:
 2. 3-5 internal links: `/syllabus`, `/exam-pattern`, `/result`, `/previous-paper`, `/cut-off`
 3. Tables MUST use `<thead>`, `<th scope="col">`
 4. Troubleshooting section is essential — high user intent query
-5. Include reporting time and gate closure details (frequently searched)
-6. **PROHIBITED**: No "FAQ" headings in HTML — populate `faq` JSON instead
-7. **REQUIRED**: "Direct Links" table as the final section
+5. **PROHIBITED**: No "FAQ" headings in HTML — populate `faq` JSON instead
+6. **REQUIRED**: "Direct Links" table as the final section

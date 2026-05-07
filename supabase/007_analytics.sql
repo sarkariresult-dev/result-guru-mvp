@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS post_views (
   referrer   TEXT,
   device     TEXT        CHECK (device IN ('mobile','desktop','tablet','bot',NULL)),
   country    TEXT        NOT NULL DEFAULT 'IN',
-  session_id TEXT        -- Anonymised session fingerprint (no PII)
+  session_id TEXT,       -- Anonymised session fingerprint (no PII)
+  duration_seconds INT   NOT NULL DEFAULT 0
 ) PARTITION BY RANGE (viewed_at);
 
 -- ── Quarterly partitions (2025 – 2026) ───────────────────────

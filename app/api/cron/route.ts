@@ -18,6 +18,7 @@ export const GET = withErrorHandling(async (request: Request) => {
         .from('posts')
         .select('id, slug, type, scheduled_at')
         .eq('status', 'scheduled')
+        .eq('needs_human_review', false)
         .lte('scheduled_at', new Date().toISOString())
 
     let publishedCount = 0
@@ -55,47 +56,27 @@ export const GET = withErrorHandling(async (request: Request) => {
     }
 
     // ── Refresh materialized views (existing logic) ─────────────
-    // Call the RPC functions defined in 021_rpc_functions.sql and 022_db_optimizations.sql
-    const [trendingRes, typeStatsRes, siteStatsRes] = await Promise.all([
-        supabase.rpc('fn_refresh_trending'),
-        supabase.rpc('fn_refresh_type_counts'),
-        supabase.rpc('fn_refresh_site_stats')
-    ])
+    // fn_refresh_trending handles all MVs: mv_trending_posts, mv_post_type_counts, mv_site_stats
+    const refreshRes = await supabase.rpc('fn_refresh_trending')
 
-    if (trendingRes.error || typeStatsRes.error || siteStatsRes.error) {
-        console.error('Cron refresh partial error:', {
-            trending: trendingRes.error,
-            typeCounts: typeStatsRes.error,
-            siteStats: siteStatsRes.error
-        })
-        return errorResponse('Failed to refresh some materialized views', 500)
+    if (refreshRes.error) {
+        console.error('Cron refresh error:', refreshRes.error)
+        return errorResponse('Failed to refresh materialized views', 500)
     }
 
-    // ── Phase 3: Flag stale content ─────────────────────────────
-    // Posts not updated in 90+ days lose freshness signals - flag for review
+    // ── Phase 3: Stale content detection (informational only) ────
+    // Posts not updated in 90+ days lose freshness — log count for dashboard
+    // SAFETY: Never auto-noindex published content. Use v_posts_attention for editorial review.
     const staleThreshold = new Date()
     staleThreshold.setDate(staleThreshold.getDate() - 90)
 
-    const { data: stalePosts } = await supabase
+    const { count: staleCount } = await supabase
         .from('posts')
-        .select('id')
+        .select('id', { count: 'exact', head: true })
         .eq('status', 'published')
         .lt('content_updated_at', staleThreshold.toISOString())
-        .is('robots_directive', null) // Only flag posts not already marked
-        .limit(100)
 
-    let staleFlaggedCount = 0
-    if (stalePosts && stalePosts.length > 0) {
-        const staleIds = stalePosts.map((p: { id: string }) => p.id)
-        const { error: staleError } = await supabase
-            .from('posts')
-            .update({ robots_directive: 'noindex,follow' })
-            .in('id', staleIds)
-
-        if (!staleError) {
-            staleFlaggedCount = staleIds.length
-        }
-    }
+    const staleFlaggedCount = staleCount ?? 0
 
     return successResponse({
         message: 'Cron completed successfully',

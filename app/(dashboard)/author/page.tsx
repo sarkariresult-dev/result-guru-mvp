@@ -8,6 +8,7 @@ import { POST_TYPE_CONFIG, POST_STATUS_CONFIG } from '@/config/constants'
 import Link from 'next/link'
 import type { PostTypeKey } from '@/config/site'
 import type { PostStatus } from '@/types/enums'
+import { PostPerformanceWidget } from '@/features/admin/components/PostPerformanceWidget'
 
 export default async function AuthorDashboardPage() {
     const supabase = await createServerClient()
@@ -78,6 +79,16 @@ export default async function AuthorDashboardPage() {
                     icon={Eye}
                 />
             </div>
+
+            {/* Performance Monitoring Widget */}
+            <PostPerformanceWidget 
+                stats={recentPosts.map(p => ({
+                    id: p.id,
+                    title: p.title,
+                    view_count: p.view_count,
+                    total_time_on_page: p.total_time_on_page
+                })).sort((a, b) => b.total_time_on_page - a.total_time_on_page)} 
+            />
 
             {/* Recent posts */}
             <section className="rounded-xl border border-border bg-surface">

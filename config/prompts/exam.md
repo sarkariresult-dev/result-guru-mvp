@@ -1,64 +1,36 @@
-You are writing a **Competitive Exam Overview** post. Comprehensive, strategy-focused tone. Target: **1200+ words of substantive content**.
+You are writing a **Government Exam Overview / Preparation Guide** post. Target: **1800+ words**.
 
-## Content Structure (use raw HTML)
+---
 
-<h2>[Exam Name] [Year]: Notification, Eligibility, Syllabus, and Preparation Guide</h2>
-Open with a **Direct Answer** in the first 50-100 words. Describe clearly what the exam is for, the current status of the [Year] notification, and the official conducting body. Include focus keyword. Link to the official portal.
+## What This Post Must Cover (in ANY order — lead with what helps preparation most)
 
-<h2>Exam Overview</h2>
-<h3>Purpose and Conducting Body</h3>
-Factual summary of the exam's purpose and the authority conducting it.
-<h3>Posts and Departments Covered</h3>
-List of posts/departments filled through this exam with the corresponding pay scale range.
+1. **Exam Overview** — What the exam is, conducting body, career opportunities it opens, competition level.
+2. **Key Highlights Table** — HTML `<table>`: Exam Name, Body, Frequency, Stages, Total Marks, Duration, Vacancies (Latest), Eligibility Summary
+3. **Exam Pattern & Structure** — Stage-wise breakdown table: Stage | Papers | Questions | Marks | Duration | Negative Marking. Link to <a href="/exam-pattern">Full Exam Pattern</a>.
+4. **Syllabus Snapshot** — Subject-wise overview table with topic highlights and weightage. Link to <a href="/syllabus">Complete Syllabus</a>.
+5. **Preparation Roadmap** — Month-wise phased plan: Foundation → Practice → Revision → Mock Test. Subject Priority Matrix: Subject | Difficulty | Weightage | Recommended Hours/Week
+6. **Cut-Off Trends** — HTML table: Year | Gen | OBC | SC | ST. Observations on trend direction. Link to <a href="/cut-off">Cut-Off Analysis</a>.
+7. **Best Books & Resources** — HTML table: Subject | Book | Author | Best For. Include free resources (YouTube, official mock tests).
+8. **Career Growth** — Post-exam career path, pay scale progression, posting locations, promotion timeline.
+9. **Success Strategy** — Daily routine, what toppers do differently, balancing speed and accuracy. Personal observation or tip.
+10. **Direct Links Table** — REQUIRED as the final section
 
-<h2>Key Highlights</h2>
-HTML `<table>` with `<thead>`, `<th scope="col">`: Exam Name, Body, Frequency, Mode, Vacancies (Approx), Salary Range
+## Opening Examples
+- "I've seen thousands of candidates prepare for [Exam]. The ones who clear it do 3 things differently. Here they are."
+- "[Exam] isn't hard — it's competitive. 25 lakh applicants, 7,000 seats. Here's how to be in that 0.03%."
+- "If you're starting [Exam] prep from scratch, don't start with the syllabus. Start with the pattern and the numbers below."
 
-<h2>Eligibility Criteria</h2>
-H3 for Education, Age, Nationality. Include tables for category-wise age limits.
-
-<h2>Important Dates [Year]</h2>
-HTML `<table>`: Notification Release, Apply Start/End, Admit Card, Exam Date, Result
-
-<h2>Exam Pattern</h2>
-H3 for each stage with a paper-wise table. Link to <a href="/exam-pattern">Full Exam Pattern</a>.
-
-<h2>Syllabus Overview</h2>
-H3 per subject outlining key topics. Link to <a href="/syllabus">Complete Syllabus</a>.
-
-<h2>Application Process</h2>
-Numbered step-by-step guide with placeholder links for official portal.
-
-<h2>Preparation Strategy</h2>
-<h3>For Beginners</h3>
-Factual 6-month preparation roadmap.
-<h3>For Repeaters</h3>
-Actionable advice on identifying weak areas and adjusting strategy.
-<h3>Recommended Resources</h3>
-Subject-wise study material recommendations. Link to <a href="/previous-paper">Previous Papers</a>.
-
-<h2>Career Growth and Salary</h2>
-<h3>Post-Wise Salary Breakdown</h3>
-HTML `<table>` with basic pay, grade pay, and in-hand estimate.
-<h3>Promotion Trajectory</h3>
-Factual career progression over 10-15 years based on departmental rules.
-
-<h2>Direct Links for [Exam Name] [Year]</h2>
-Structured HTML `<table>` with `<thead>` and `<tbody>`:
-- Download Notification | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download PDF</a>
-- Apply Online | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Check Schedule</a>
-- Official Website | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Portal</a>
-- Exam Syllabus | <a href="/syllabus">Download Here</a>
-- Join Telegram | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
-- Result Guru | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
+## Voice Notes for This Type
+- Motivating prep partner energy — focus on strategy and career growth, not generic motivation.
+- Your "but wait" moment: a topper strategy, a commonly ignored resource, or a career path detail most people don't consider.
+- Preparation roadmap is your core value — make it specific to this exam, not generic study advice.
+- Career growth section should feel tangible: "in-hand salary after 2 years" not "lucrative career."
 
 ---
 
 **RULES:**
 1. All headings in English — no Hinglish
-2. Internal links: `/syllabus`, `/exam-pattern`, `/previous-paper`, `/admit-card`, `/result`
+2. Internal links: `/syllabus`, `/exam-pattern`, `/cut-off`, `/previous-paper`, `/admit-card`, `/result`
 3. Tables with `<thead>`, `<th scope="col">`
-4. Career growth section with salary data is a key value-add
-5. Separate strategies for beginners vs repeaters adds depth
-6. **PROHIBITED**: No "FAQ" headings in HTML — populate `faq` JSON instead
-7. **REQUIRED**: "Direct Links" table as the final section
+4. **PROHIBITED**: No "FAQ" headings in HTML — populate `faq` JSON instead
+5. **REQUIRED**: "Direct Links" table as the final section

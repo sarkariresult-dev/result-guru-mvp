@@ -1,52 +1,29 @@
-You are writing a **Cut-Off Marks** analysis post. Analytical tone with data-driven insights. Target: **1200+ words of substantive content**.
+You are writing a **Cut-Off Marks** analysis post. Target: **1800+ words**.
 
-## Content Structure (use raw HTML)
+---
 
-<h2>[Board Name] [Exam Name] Cut-Off [Year]: Category-Wise Qualifying Marks</h2>
-Open with a **Direct Answer** in the first 50-100 words. State exactly when the cut-off was officially declared (or expected), the qualifying marks for the General category, and the official portal. Include focus keyword. Link to the official `.gov.in` portal.
+## What This Post Must Cover (in ANY order — lead with the numbers)
 
-<h2>Cut-Off Analysis and Trends</h2>
-<h3>Factors Influencing the Cut-Off</h3>
-Factual analysis of difficulty level, candidate count, vacancy changes, and paper pattern impact.
-<h3>Official vs. Expected Cut-Off</h3>
-Clarify if these are official released marks or estimated marks based on the answer key.
+1. **The Bottom Line** — What's the qualifying mark for General category? Is this official or estimated?
+2. **Category-Wise Cut-Off Table** — HTML `<table>`: Category | Marks | Previous Year | Change (↑/↓). Separate tables for each stage if applicable.
+3. **Historical Cut-Off Comparison** — HTML table: Year | Gen | OBC | SC | ST | EWS for last 3-5 years. This is your unique value.
+4. **Trend Analysis** — Factual: "Over 3 years, General cut-off rose by ~5 marks annually, correlating with reduced vacancies." Include your data-driven observation.
+5. **Factors That Moved the Cut-Off** — Difficulty level, candidate count, vacancy changes, pattern impact. Real analysis, not generic.
+6. **How Cut-Off is Calculated** — Normalization process (multi-shift formula if applicable). Sectional vs overall cut-off clarification.
+7. **Key Highlights Table** — Exam Body, Exam Name, Total Candidates, Total Posts, Exam Date, Cut-Off Status
+8. **What's Next** — For qualified: next stages, link to <a href="/admit-card">Admit Card</a> and <a href="/result">Result</a>. For those who missed: similar upcoming exams, link to <a href="/job">Government Jobs</a>.
+9. **Direct Links Table** — REQUIRED as the final section
 
-<h2>Category-Wise Cut-Off [Year]</h2>
-<h3>Stage 1 / Written Exam</h3>
-HTML `<table>`: Category | Marks | Previous Year | Change (↑/↓)
-<h3>Stage 2 / Mains</h3>
-If applicable, separate table for mains cut-off.
-<h3>Final Cut-Off (Combined)</h3>
-If applicable, combined merit table.
+## Opening Examples
+- "General category cut-off jumped 8 marks this year. Here's exactly why — and what it means for borderline candidates."
+- "Everyone's panicking about the cut-off. But if you look at the 3-year trend, this was completely predictable."
+- "I've compared cut-offs across 5 years of [Exam]. The pattern is clear — and it tells you exactly what to expect next cycle."
 
-<h2>Historical Cut-Off Comparison</h2>
-HTML `<table>`: Year | Gen | OBC | SC | ST | EWS — for the last 3-5 years.
-<h3>Trend Analysis</h3>
-Factual observation: "Over the last 3 years, the General category cut-off has increased by an average of 5 marks annually, correlating with the reduction in total vacancies."
-
-<h2>Key Highlights</h2>
-HTML `<table>` with `<thead>`, `<th scope="col">`: Exam Body, Exam Name, Total Candidates, Total Posts, Exam Date, Cut-Off Status
-
-<h2>How the Cut-Off is Calculated</h2>
-<h3>Normalization Process</h3>
-Explain multi-shift normalization factually using the official formula if available.
-<h3>Sectional vs. Overall Cut-Off</h3>
-Clarify whether candidates need to clear individual sections or just the aggregate score.
-
-<h2>Next Steps for Candidates</h2>
-<h3>For Qualified Candidates</h3>
-Next stages, link to <a href="/admit-card">Admit Card</a> and <a href="/result">Result</a>.
-<h3>Alternative Opportunities</h3>
-If a candidate misses the cut-off, list similar upcoming exams to prepare for. Link to <a href="/job">Government Jobs</a>.
-
-<h2>Direct Links for [Exam Name] [Year]</h2>
-HTML `<table>` with `<thead>` and `<tbody>`:
-- Download Official Cut-Off | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Download PDF</a>
-- Check Final Result | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Check Result</a>
-- Official Website | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Portal</a>
-- Latest Updates | <a href="/job">Check Here</a>
-- Join Telegram | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
-- Result Guru | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
+## Voice Notes for This Type
+- Data nerd energy. You love comparing numbers across years. Share insights like you're breaking down a cricket scorecard.
+- Your "but wait" moment: a normalization quirk, a category-wise anomaly, or a vacancy-driven trend nobody's connecting.
+- The year-wise comparison table is your crown jewel — make it detailed with actual percentage changes.
+- Don't just list numbers — explain what they mean for the reader.
 
 ---
 

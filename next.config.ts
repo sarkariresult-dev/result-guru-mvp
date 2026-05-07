@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   compress: true,
   reactStrictMode: true,
+  staticPageGenerationTimeout: 300,
 
   /* ── Compiler ───────────────────────────────────────────── */
   compiler: {

@@ -1,60 +1,34 @@
-You are writing a **Government Exam Answer Key** post. Target: **1200+ words of substantive content**.
+You are writing a **Government Exam Answer Key** post. Target: **1800+ words**.
 
-## Content Structure (use raw HTML)
+---
 
-<h2>[Board Name] [Exam Name] Answer Key [Year]: Download and Raise Objections</h2>
-Open with a **Direct Answer** in the first 50-100 words. State exactly when the answer key was released, the exam date, and the official portal. Include focus keyword. Link to the official `.gov.in` portal.
+## What This Post Must Cover (in ANY order — lead with download/objection status)
 
-<h2>How to Download the Answer Key</h2>
-<h3>Step-by-Step Guide</h3>
-Numbered guide with placeholder links:
-- <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Download Answer Key Online</a>
-- <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Official Website</a>
-<h3>Troubleshooting Server Issues</h3>
-Practical advice for handling portal downtime or login failures.
+1. **Status Update** — Is the answer key out? Provisional or final? Objection window open?
+2. **How to Download** — Step-by-step with:
+   - <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Download Answer Key</a>
+   - <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Official Website</a>
+   - Troubleshooting for portal issues
+3. **Key Highlights Table** — HTML `<table>`: Body, Exam Name, Key Type (Provisional/Final), Objection Window, Fee per Question
+4. **Important Dates Table** — Exam date, provisional key, objection start/end, final key, expected result
+5. **Raising Objections** — Step-by-step objection process, fee and refund policy, when it's actually worth filing (practical advice on cross-checking with textbooks before paying)
+6. **Marks Calculation Guide** — Official marking scheme (positive, negative, unattempted). Self-score calculation method — make this mathematically clear with an example.
+7. **Expected Cut-Off Analysis** — Category-wise estimate table (Gen/OBC/SC/ST/EWS). Previous year comparison. This is your KEY differentiator.
+8. **What's Next** — Final key timeline, <a href="/result">Result</a> expected date. Prep for next stage. Link to <a href="/syllabus">Syllabus</a> and <a href="/previous-paper">Previous Papers</a>.
+9. **Direct Links Table** — REQUIRED as the final section
 
-<h2>Key Highlights</h2>
-HTML `<table>` with `<thead>`, `<th scope="col">`: Body, Exam Name, Answer Key Type (Provisional/Final), Objection Window, Fee per Question
+## Opening Examples
+- "The provisional answer key is live — and I've already spotted 3 questions that are likely to change after objections."
+- "Should you file an objection? It's ₹200 per question, and here's honestly when it's worth it and when it's not."
+- "Everyone's calculating their score wrong because they're missing the normalization formula. Here's the actual method."
 
-<h2>Important Dates</h2>
-HTML `<table>`: Exam Date, Provisional Key Release, Objection Window Start/End, Final Key Release, Expected Result Date
+## Voice Notes for This Type
+- Think exam coach mode — analytical, strategic. The reader wants to know if they cleared.
+- Your "but wait" moment: an objection that historically changed cut-offs, or a normalization quirk most people miss.
+- The marks calculation section has very high search intent — make it crystal clear with a worked example.
+- Expected cut-off should feel like genuine data analysis, not a guess.
 
-<h2>Raising Objections</h2>
-<h3>Step-by-Step Objection Process</h3>
-Detailed guide on how to file an objection through the official portal.
-<h3>Objection Fee and Refund Policy</h3>
-Factual details: per-question fee, and whether the fee is refunded for successful objections based on official guidelines.
-<h3>Evaluating When to File an Objection</h3>
-Practical advice on cross-checking with standard textbooks before paying the objection fee.
-
-<h2>Expected Cut-Off Analysis</h2>
-<h3>Preliminary Estimate</h3>
-Estimate the qualifying score range based on paper difficulty and previous trends.
-<h3>Category-Wise Expected Cut-Off</h3>
-HTML table with Gen/OBC/SC/ST/EWS estimates.
-<h3>Previous Year Trends</h3>
-Link to <a href="/cut-off">Cut-Off Details</a> for deeper historical context.
-
-<h2>Marks Calculation Guide</h2>
-<h3>Official Marking Scheme</h3>
-Breakdown of positive marks, negative marking penalty, and unattempted question rules.
-<h3>Self-Score Calculation Method</h3>
-Step-by-step instructions on how candidates can calculate their raw score using the answer key.
-
-<h2>Next Steps After the Answer Key</h2>
-<h3>Final Answer Key and Result Timeline</h3>
-Expected timeline for the final answer key and <a href="/result">Result</a> declaration.
-<h3>Preparation for the Next Stage</h3>
-Guidance on preparing for Mains, Physical Test, or Interview. Link to <a href="/syllabus">Syllabus</a> and <a href="/previous-paper">Previous Papers</a>.
-
-<h2>Direct Links for [Exam Name] [Year]</h2>
-HTML `<table>` with `<thead>` and `<tbody>`:
-- Download Answer Key | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Download Here</a>
-- Raise Objection Link | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Raise Objection</a>
-- Official Website | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Portal</a>
-- Expected Cut-Off | <a href="/cut-off">Check Here</a>
-- Join Telegram | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
-- Result Guru | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
+---
 
 **RULES:**
 1. All headings in English — no Hinglish

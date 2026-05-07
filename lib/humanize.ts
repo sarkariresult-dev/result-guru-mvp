@@ -61,6 +61,10 @@ const BANNED_PHRASES: [RegExp, string | ((substring: string, ...args: unknown[])
     [/\bascertain\b/gi, 'find out'],
     [/\bameliorate\b/gi, 'improve'],
     [/\bplays a (?:crucial|vital|pivotal|key) role\b/gi, 'matters'],
+    [/\btapestry\b/gi, 'mix'],
+    [/\bmultifaceted\b/gi, 'varied'],
+    [/\bundeniably\b/gi, ''],
+    [/\bundoubtedly\b/gi, ''],
 
     // ── Redundant qualifiers ──
     [/\bIt's worth noting that\s*/gi, ''],
@@ -134,7 +138,7 @@ function deduplicateTransitions(html: string): string {
         const regex = new RegExp(escaped, 'g')
         const matches = result.match(regex)
 
-        if (matches && matches.length > 2) {
+        if (matches && matches.length > 1) {
             let count = 0
             result = result.replace(regex, (match) => {
                 count++
@@ -241,4 +245,48 @@ export function humanizeContent(html: string): string {
     }
 
     return processed
+}
+
+/* ── AI Score Heuristics ────────────────────────────────────── */
+
+/**
+ * Returns a quick heuristic score to warn editors if the content feels too synthetic.
+ */
+export function analyzeAiHeuristics(html: string): { isFlagged: boolean; score: number; reasons: string[] } {
+    if (!html) return { isFlagged: false, score: 0, reasons: [] }
+    
+    let aiScore = 0
+    const reasons: string[] = []
+    
+    // Check for banned phrases
+    let bannedCount = 0
+    for (const [pattern] of BANNED_PHRASES) {
+        const matches = html.match(pattern)
+        if (matches) bannedCount += matches.length
+    }
+    if (bannedCount > 0) {
+        aiScore += bannedCount * 15
+        reasons.push(`Detected ${bannedCount} AI cliché words/phrases`)
+    }
+    
+    // Check for repetitive transitions
+    for (const transition of COMMON_TRANSITIONS) {
+        const escaped = transition.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        const regex = new RegExp(escaped, 'gi')
+        const matches = html.match(regex)
+        if (matches && matches.length > 2) {
+            aiScore += (matches.length - 1) * 10
+            reasons.push(`Overused transition word: "${transition}" (${matches.length} times)`)
+        }
+    }
+    
+    // Basic formatting checks (too many H2s can be robotic)
+    const h2Count = (html.match(/<h2[^>]*>/gi) || []).length
+    if (h2Count > 8) {
+        aiScore += 20
+        reasons.push(`Unusually high number of H2 headings (${h2Count}) - may feel robotic`)
+    }
+
+    const isFlagged = aiScore >= 50
+    return { isFlagged, score: Math.min(100, aiScore), reasons }
 }

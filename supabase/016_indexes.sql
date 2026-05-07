@@ -18,6 +18,8 @@ CREATE INDEX IF NOT EXISTS idx_posts_scheduled ON posts(scheduled_at) WHERE stat
 CREATE INDEX IF NOT EXISTS idx_posts_expires ON posts(expires_at) WHERE expires_at IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_posts_noindex ON posts(id) WHERE noindex = TRUE;
 CREATE INDEX IF NOT EXISTS idx_posts_content_updated ON posts(content_updated_at DESC) WHERE status = 'published';
+CREATE INDEX IF NOT EXISTS idx_posts_needs_review ON posts(id) WHERE needs_human_review = TRUE;
+CREATE INDEX IF NOT EXISTS idx_posts_total_time ON posts(total_time_on_page DESC) WHERE status = 'published';
 
 CREATE INDEX IF NOT EXISTS idx_posts_type_pub ON posts(type, published_at DESC) WHERE status = 'published';
 CREATE INDEX IF NOT EXISTS idx_posts_state_type_pub ON posts(state_slug, type, published_at DESC) WHERE status = 'published';

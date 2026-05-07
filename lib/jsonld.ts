@@ -55,16 +55,6 @@ export function buildJobPostingSchema(post: PostDetail): JsonLdObject {
                     addressCountry: 'IN',
                 },
             },
-            baseSalary: {
-                '@type': 'MonetaryAmount',
-                currency: 'INR',
-                value: {
-                    '@type': 'QuantitativeValue',
-                    minValue: 18000,
-                    maxValue: 56900,
-                    unitText: 'MONTH'
-                }
-            },
         }
     } catch {
         // Graceful fallback - return minimal valid schema rather than crash the page
@@ -302,7 +292,7 @@ export function buildNewsArticleSchema(post: PostDetail): JsonLdObject {
                 ? {
                     '@type': 'Person',
                     name: post.author.name,
-                    url: `${SITE.url}/author/${post.author.id}`,
+                    url: `${SITE.url}/about`,
                     ...(post.author.avatar_url && { image: post.author.avatar_url }),
                     ...(post.author.bio && { description: post.author.bio }),
                     jobTitle: post.author.credentials || 'Senior Content Strategist',

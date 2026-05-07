@@ -1,51 +1,28 @@
-You are writing a **Previous Year Question Papers** resource post. Professional, study-focused tone. Target: **1200+ words of substantive content**.
+You are writing a **Previous Year Question Papers** resource post. Target: **1800+ words**.
 
-## Content Structure (use raw HTML)
+---
 
-<h2>[Exam Name] Previous Year Papers [Year]: Download PDF and Solutions</h2>
-Open with a **Direct Answer** in the first 50-100 words. State exactly which years are covered, how candidates can download the PDFs, and the availability of official or expert solutions. Include focus keyword. Link to the official `.gov.in` portal.
+## What This Post Must Cover (in ANY order)
 
-<h2>Importance of Previous Papers</h2>
-<h3>Strategic Value</h3>
-Explain why previous papers are essential: pattern familiarity, identifying high-weightage topics, and practicing time management under exam conditions.
-<h3>How to Use Them Effectively</h3>
-Actionable advice on balancing timed mock practice versus deep error analysis.
+1. **What's Available** — Which years are covered, PDF availability, solutions status. Get to the download link fast.
+2. **Year-Wise Papers Table** — HTML `<table>`: Year | Paper/Stage | Language | Solutions | PDF Status. Download links where applicable.
+3. **Why Previous Papers Matter** — Strategic value: pattern familiarity, high-weightage topic identification, time management practice. How to use them effectively (timed mocks vs deep error analysis).
+4. **Topic Distribution Analysis** — HTML table: Topic | 2024 | 2023 | 2022 | Trend (Increasing/Decreasing). Recurring core topics. Recent trend shifts.
+5. **Difficulty Level Comparison** — HTML table: Year | Overall | Section 1 | Section 2 | Section 3. Is the exam getting harder or easier?
+6. **Preparation Strategy Using Papers** — Phase 1 (subject-wise extraction), Phase 2 (full mock mode under time pressure), Phase 3 (error analysis and weak area tracking). Link to <a href="/syllabus">Syllabus</a> and <a href="/exam-pattern">Exam Pattern</a>.
+7. **Recommended Resources** — Books and platforms with detailed solutions.
+8. **Direct Links Table** — REQUIRED as the final section
 
-<h2>Available Papers - Year-Wise</h2>
-HTML `<table>`: Year | Paper/Stage | Language | Solutions | PDF Status
-For each year with download links where applicable: <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Download PDF</a>
+## Opening Examples
+- "I analyzed 5 years of [Exam] papers. The same 12 topics appeared in every single one. Here they are."
+- "Want to predict what's coming in [Year]? Previous papers are literally the answer — and most people use them wrong."
+- "Stop reading the textbook cover to cover. Start with these papers and work backwards. Here's how."
 
-<h2>Topic Distribution Analysis</h2>
-<h3>Subject-Wise Question Frequency</h3>
-HTML `<table>`: Topic | 2024 | 2023 | 2022 | Trend (Increasing/Decreasing)
-<h3>Recurring Core Topics</h3>
-List topics that consistently appear across multiple years based on data analysis.
-<h3>Recent Shift in Trends</h3>
-Identify any topics that have gained sudden importance in recent exam cycles.
-
-<h2>Difficulty Level Comparison</h2>
-HTML `<table>`: Year | Overall | [Section 1] | [Section 2] | [Section 3]
-Factual paragraph analyzing whether the exam is trending harder or easier.
-
-<h2>Preparation Strategy - Solving Papers</h2>
-<h3>Phase 1: Subject-Wise Practice</h3>
-How to use papers during initial preparation by extracting topic-specific questions.
-<h3>Phase 2: Full Mock Mode</h3>
-Instructions for attempting full papers under strict time conditions.
-<h3>Phase 3: Error Analysis</h3>
-Methods for tracking mistakes and identifying weak areas. Link to <a href="/syllabus">Syllabus</a> and <a href="/exam-pattern">Exam Pattern</a>.
-
-<h2>Recommended Resources</h2>
-Books and official online platforms that provide detailed solutions and answer keys.
-
-<h2>Direct Links for [Exam Name] [Year]</h2>
-Structured HTML `<table>` with `<thead>` and `<tbody>`:
-- Download Papers PDF | <a target="_blank" rel="noopener noreferrer" href="[primaryLink]">Download Here</a>
-- Download Notification | <a target="_blank" rel="noopener noreferrer" href="[notificationPdfUrl]">Check Details</a>
-- Official Website | <a target="_blank" rel="noopener noreferrer" href="[officialWebsiteUrl]">Visit Portal</a>
-- Detailed Syllabus | <a href="/syllabus">Get Syllabus</a>
-- Join Telegram | <a target="_blank" rel="noopener noreferrer" href="https://t.me/resultguru247">Join Now</a>
-- Result Guru | <a target="_blank" rel="noopener noreferrer" href="https://resultguru.co.in">resultguru.co.in</a>
+## Voice Notes for This Type
+- Resource-sharing mode — you've done the analysis so they don't have to.
+- Your "but wait" moment: a topic that suddenly appeared in the last 2 years, or a difficulty trend that predicts this year's paper.
+- The topic frequency table across years is your unique value-add.
+- Make the preparation strategy actionable — specific weekly schedules, not vague advice.
 
 ---
 
@@ -54,6 +31,5 @@ Structured HTML `<table>` with `<thead>` and `<tbody>`:
 2. Internal links: `/syllabus`, `/exam-pattern`, `/cut-off`, `/admit-card`, `/result`
 3. Tables with `<thead>`, `<th scope="col">`
 4. Topic frequency table across years is the unique value-add
-5. Include difficulty comparison table for analytical depth
-6. **PROHIBITED**: No "FAQ" headings in HTML — populate `faq` JSON instead
-7. **REQUIRED**: "Direct Links" table as the final section
+5. **PROHIBITED**: No "FAQ" headings in HTML — populate `faq` JSON instead
+6. **REQUIRED**: "Direct Links" table as the final section
