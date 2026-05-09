@@ -202,5 +202,10 @@ export function replacePlaceholders(html: string, mappings: Record<string, strin
         const replacement = value || '#'
         processed = processed.replace(regex, replacement)
     })
+
+    // Clean up any remaining unmapped placeholders (e.g., [officialWebsiteUrl] if not mapped, or AI hallucinations)
+    // This matches anything inside square brackets that looks like a placeholder, but ignores Markdown link syntax `[text](url)`
+    processed = processed.replace(/\[[a-zA-Z0-9]+\]/g, '')
+
     return processed
 }

@@ -10,6 +10,9 @@ export const metadata: Metadata = {
     robots: { index: false, follow: false },
 }
 
+// Extend Vercel Serverless timeout to 5 minutes to prevent 504 Gateway Timeouts during heavy AI content generation.
+export const maxDuration = 300
+
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
     // proxy.ts already validated auth + role and will redirect if not logged in.
     // We only need to fetch the profile for the dashboard shell UI.

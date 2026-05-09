@@ -7,6 +7,7 @@ import { env } from '@/config/env'
 import { generatePostSchema, type GeneratePostInput } from '@/lib/validations/post'
 import { createServerClient } from '@/lib/supabase/server'
 import { humanizeContent } from '@/lib/humanize'
+import { sanitizeHtml } from '@/lib/sanitize'
 
 /* ── Gemini Client ────────────────────────────────────────────────── */
 
@@ -411,9 +412,9 @@ export async function generateContentWithGemini(data: GeneratePostInput) {
 
         const jsonResult = JSON.parse(response.text)
 
-        // 9. Run humanization post-processor on content
+        // 9. Run humanization and HTML sanitization post-processor on content
         if (jsonResult.content && typeof jsonResult.content === 'string') {
-            jsonResult.content = humanizeContent(jsonResult.content)
+            jsonResult.content = sanitizeHtml(humanizeContent(jsonResult.content))
         }
 
         return { success: true, data: jsonResult }

@@ -865,30 +865,8 @@
         @apply bg-brand-600 dark:bg-brand-700/50;
     }
 
-    .prose-recruitment th {
+    & th {
         @apply bg-brand-600 text-white font-black uppercase tracking-widest text-[10px] py-4 px-6 first:rounded-tl-2xl last:rounded-tr-2xl border-none;
-    }
-
-    /* ── Editorial Typography ───────────────────────── */
-    .prose-editorial {
-        @apply text-foreground/90 leading-[1.8] tracking-normal;
-    }
-
-    .prose-editorial h2 {
-        @apply text-2xl font-black tracking-tight mt-12 mb-6 border-l-4 border-brand-500 pl-6;
-    }
-
-    .prose-editorial h3 {
-        @apply text-xl font-black tracking-tight mt-8 mb-4;
-    }
-
-    /* ── Minimal Glass ─────────────────────────────── */
-    .glass-minimal {
-        @apply bg-white/50 backdrop-blur-md dark:bg-zinc-900/50 border border-white/20 dark:border-zinc-800/20 shadow-sm;
-    }
-
-    .text-glow-brand {
-        text-shadow: 0 0 20px rgba(var(--brand-600), 0.2);
     }
 
     & tr:nth-child(even) {
@@ -902,6 +880,19 @@
     & tr:first-child td {
         @apply border-t-0;
     }
+}
+
+/* ── Editorial Typography ───────────────────────── */
+@utility prose-editorial {
+    @apply text-foreground/90 leading-[1.8] tracking-normal;
+
+    & h2 {
+        @apply text-2xl font-black tracking-tight mt-12 mb-6 border-l-4 border-brand-500 pl-6;
+    }
+
+    & h3 {
+        @apply text-xl font-black tracking-tight mt-8 mb-4;
+    }
 
     & strong {
         @apply text-foreground font-black;
@@ -910,6 +901,15 @@
     & a {
         @apply inline-flex items-center gap-1.5 font-black text-brand-600 hover:text-brand-700 underline underline-offset-4 decoration-brand-200 hover:decoration-brand-600 transition-all;
     }
+}
+
+/* ── Minimal Glass ─────────────────────────────── */
+@utility glass-minimal {
+    @apply bg-white/50 backdrop-blur-md dark:bg-zinc-900/50 border border-white/20 dark:border-zinc-800/20 shadow-sm;
+}
+
+@utility text-glow-brand {
+    text-shadow: 0 0 20px rgba(var(--brand-600), 0.2);
 }
 
 @utility gpu {
