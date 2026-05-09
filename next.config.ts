@@ -99,10 +99,8 @@ const nextConfig: NextConfig = {
             value: 'camera=(), microphone=(), geolocation=()',
           },
           { key: 'X-DNS-Prefetch-Control', value: 'on' },
-          {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
-          },
+          // Removed X-Frame-Options: SAMEORIGIN because modern browsers use Content-Security-Policy: frame-ancestors instead.
+          // Leaving X-Frame-Options conflicts with Vercel's preview dashboard.
           {
             key: 'Strict-Transport-Security',
             value: 'max-age=63072000; includeSubDomains; preload',
@@ -126,7 +124,7 @@ const nextConfig: NextConfig = {
               // AdSense traffic quality checks use dynamic domains like ep1.adtrafficquality.google
               "connect-src 'self' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.google-analytics.com https://*.analytics.google.com https://*.doubleclick.net https://*.googlesyndication.com https://*.googleadservices.com https://*.adtrafficquality.google https://*.adservice.google.com https://*.adservice.google.co.in https://vitals.vercel-insights.com https://va.vercel-scripts.com",
               "frame-src 'self' https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.googlesyndication.com https://*.adservice.google.com https://*.adservice.google.co.in https://*.adtrafficquality.google",
-              "frame-ancestors 'self' https://*.google.com https://*.googlesyndication.com https://*.doubleclick.net https://*.googleadservices.com https://*.adservice.google.com https://*.adservice.google.co.in",
+              "frame-ancestors 'self' https://*.google.com https://*.googlesyndication.com https://*.doubleclick.net https://*.googleadservices.com https://*.adservice.google.com https://*.adservice.google.co.in https://vercel.com https://*.vercel.app",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",
