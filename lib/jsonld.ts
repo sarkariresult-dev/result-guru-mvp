@@ -313,6 +313,9 @@ export function buildNewsArticleSchema(post: PostDetail): JsonLdObject {
             mainEntityOfPage: {
                 '@type': 'WebPage',
                 '@id': url,
+                isPartOf: {
+                    '@id': `${SITE.url}/#website`,
+                },
             },
         }
 

@@ -6,16 +6,12 @@ import { env, appUrl } from './env'
 export const SITE = {
     name: env.NEXT_PUBLIC_APP_NAME ?? 'Result Guru',
     tagline: env.NEXT_PUBLIC_APP_TAGLINE ?? 'India\'s #1 Sarkari Result & Free Job Alert Portal',
-    description:
-        'Result Guru - India\'s fastest Sarkari Result portal. Latest Govt Jobs, Free Job Alerts, Admit Cards, Answer Keys & Exam Results from SSC, UPSC, Railway, IBPS & all state commissions.',
+    description: 'Result Guru - India\'s fastest Sarkari Result portal. Latest Govt Jobs, Free Job Alerts, Admit Cards, Answer Keys & Exam Results from SSC, UPSC, Railway, IBPS & all state commissions.',
     url: appUrl,
     locale: 'en_IN',
     language: 'en',
-    /** ISO 3166-1 alpha-2 */
     country: 'IN',
-    /** IANA timezone */
     timezone: 'Asia/Kolkata',
-    /** Business physical presence for E-E-A-T */
     address: {
         street: 'A6, Mangal Bazar, Sector 33, Rohini',
         city: 'New Delhi',

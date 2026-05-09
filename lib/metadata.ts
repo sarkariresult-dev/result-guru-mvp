@@ -24,28 +24,9 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
  * If over 70, it truncates the title so the branded result is exactly 70.
  */
 export function formatTitle(title: string): string {
-    const brandName = SITE.name
-    const brandSuffix = ` | ${brandName}`
     const limit = 60
-
-    // If title already contains brand name, don't append it again
-    if (title.includes(brandName)) {
-        return title.length > limit ? `${title.slice(0, limit - 3)}...` : title
-    }
-
-    if (title.length + brandSuffix.length <= limit) {
-        return `${title}${brandSuffix}`
-    }
-
-    // If already too long, truncate title to fit brand
-    const ellipsis = '...'
-    const available = limit - brandSuffix.length - ellipsis.length
-    if (available > 10) {
-        return `${title.slice(0, available)}${ellipsis}${brandSuffix}`
-    }
-
-    // Fallback: just truncate the title if it's very long
-    return title.length > limit ? `${title.slice(0, limit - 3)}...` : title
+    if (title.length <= limit) return title
+    return `${title.slice(0, limit - 3)}...`
 }
 
 /**

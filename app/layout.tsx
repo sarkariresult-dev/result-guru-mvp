@@ -10,8 +10,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import { SITE } from '@/config/site'
 import './globals.css'
 
-/* ── Fonts - next/font self-hosts for zero layout shift ────── */
-// Consolidating to Inter only to reduce initial request count (22 -> <15 goal)
+/* ── Fonts ── */
 const fontSans = Inter({
     subsets: ['latin', 'latin-ext'],
     display: 'swap',
@@ -22,12 +21,11 @@ const fontSans = Inter({
 /* ── Metadata - comprehensive SEO + OG + Twitter ───────────── */
 export const metadata: Metadata = {
     metadataBase: new URL(SITE.url),
+    applicationName: SITE.name,
 
     title: {
-        /* Fallback title shown only when a page exports no explicit metadata.
-         * 56 chars \u2014 brand-first, Google pixel-safe. */
         default: 'Result Guru \u2013 Sarkari Results, Govt Jobs & Exam Updates',
-        template: '%s',
+        template: `%s | ${SITE.name}`,
     },
     description: SITE.description,
 
@@ -191,10 +189,10 @@ export default function RootLayout({
                 <link rel="dns-prefetch" href="https://www.google-analytics.com" />
                 {/* AI discoverability link */}
                 <link rel="alternate" type="text/plain" title="LLM Context" href="/llms.txt" />
-                
+
                 {/* Google AdSense moved to end of body for stability */}
-                
-                
+
+
                 {/* Google AdSense moved after body for better performance */}
             </head>
             <body className="min-h-screen font-sans antialiased" suppressHydrationWarning>
@@ -263,7 +261,7 @@ export default function RootLayout({
                 <LocalErrorBoundary name="VercelAnalytics" silent>
                     <Analytics />
                 </LocalErrorBoundary>
-                
+
                 <LocalErrorBoundary name="VercelInsights" silent>
                     <SpeedInsights />
                 </LocalErrorBoundary>
