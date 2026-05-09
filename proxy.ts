@@ -2,8 +2,8 @@ import { createServerClient, parseCookieHeader } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-// The URL for our preferred canonical domain
-const CANONICAL_DOMAIN = 'www.resultguru.co.in'
+// The URL for our preferred canonical domain (non-www is primary)
+const CANONICAL_DOMAIN = 'resultguru.co.in'
 
 export async function proxy(request: NextRequest) {
     let response = NextResponse.next({
@@ -15,11 +15,12 @@ export async function proxy(request: NextRequest) {
     const hostHeader = request.headers.get('host') || ''
     const hostname = hostHeader.split(':')[0]
 
-    // 1. Canonical Redirect (301)
-    if (hostname === 'resultguru.co.in') {
+    // 1. Canonical Redirect: www → non-www (301 permanent)
+    // All SEO signals, GSC property, and sitemap use https://resultguru.co.in
+    if (hostname === 'www.resultguru.co.in') {
         const url = request.nextUrl.clone()
         url.hostname = CANONICAL_DOMAIN
-        url.port = '' 
+        url.port = ''
         url.protocol = 'https:'
         return NextResponse.redirect(url, 301)
     }
@@ -52,6 +53,12 @@ export async function proxy(request: NextRequest) {
     // This refreshes the session if it exists/expired and handles it in the background
     // making downstream layouts (RSC) significantly faster.
     await supabase.auth.getUser()
+
+    // 3. Security Headers
+    response.headers.set('X-Frame-Options', 'DENY')
+    response.headers.set('X-Content-Type-Options', 'nosniff')
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
 
     return response
 }

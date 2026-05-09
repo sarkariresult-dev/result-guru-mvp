@@ -186,7 +186,7 @@ export function injectInternalLinks(html: string, context: LinkContext): string 
             const matchedText = match[0]
             const before = chunk.value.slice(0, match.index)
             const after = chunk.value.slice(match.index + matchedText.length)
-            const link = `<a href="${candidate.href}">${matchedText}</a>`
+            const link = `<a href="${candidate.href}" data-internal-link="auto">${matchedText}</a>`
 
             chunk.value = `${before}${link}${after}`
             usedUrls.add(candidate.href)

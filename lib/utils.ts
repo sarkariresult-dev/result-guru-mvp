@@ -223,9 +223,9 @@ export function calculateApplicationStatus(
         const end = new Date(endDate)
         if (now > end) return ApplicationStatus.Closed
 
-        // Closing soon if within 3 days of end date
-        const threeDaysBefore = new Date(end.getTime() - 3 * 24 * 60 * 60 * 1000)
-        if (now > threeDaysBefore) return ApplicationStatus.ClosingSoon
+        // Closing soon if within 7 days of end date (matches v_published_posts SQL view)
+        const sevenDaysBefore = new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000)
+        if (now > sevenDaysBefore) return ApplicationStatus.ClosingSoon
     }
 
     return ApplicationStatus.Open

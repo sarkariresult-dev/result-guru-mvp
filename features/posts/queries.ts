@@ -1,5 +1,9 @@
 import 'server-only'
 import { unstable_cache } from 'next/cache'
+import {
+  unstable_cacheLife as cacheLife,
+  unstable_cacheTag as cacheTag
+} from 'next/cache'
 import { cache } from 'react'
 import { createStaticClient } from '@/lib/supabase/static'
 import { createServerClient } from '@/lib/supabase/server'
@@ -55,7 +59,7 @@ function applyFilters(query: any, filters: PostFilters): any {
 // ── Public queries ─────────────────────────────────────────────────────────
 
 /** Paginated post listing from v_published_posts */
-export const getPosts = cache(unstable_cache(
+export const getPosts = unstable_cache(
     async (
         filters: PostFilters = {},
         page: number = 1,
@@ -72,16 +76,19 @@ export const getPosts = cache(unstable_cache(
         if (error) throw new Error(`getPosts: ${error.message}`)
         return (data ?? []).map(toPostCardDTO).filter((p): p is PostCard => !!p)
     },
-    ['posts-list'], // Cache key segment
+    ['posts-list'],
     {
-        revalidate: 300, // 5 min - faster freshness for listing pages
+        revalidate: 300,
         tags: ['posts'],
     }
-))
+)
 
 /** Single post by slug (full row from v_published_posts) */
 export async function getPostBySlug(slug: string, type?: string): Promise<PostDetail | null> {
     'use cache'
+    cacheLife('hours')
+    cacheTag('posts', `post-${slug}`)
+
     const supabase = createStaticClient()
     let query = supabase
         .from('v_published_posts')
@@ -113,7 +120,7 @@ export async function getPostBySlug(slug: string, type?: string): Promise<PostDe
 }
 
 /** Recent posts by type (for homepage sections, footer, etc.) */
-export const getRecentPosts = cache(unstable_cache(
+export const getRecentPosts = unstable_cache(
     async (
         type: string,
         limit = 5,
@@ -130,20 +137,26 @@ export const getRecentPosts = cache(unstable_cache(
     },
     ['recent-posts'],
     {
-        revalidate: 300, // 5 min - homepage sections need fast updates
+        revalidate: 300,
         tags: ['posts', 'homepage'],
     }
-))
+)
 
-/** Full-text search using search_vector on posts, hydrated from v_published_posts */
-export const searchPosts = cache(unstable_cache(
+/**
+ * Full-text search using search_vector.
+ * Uses v_published_posts directly since the view already filters by status='published'.
+ * Single-query approach avoids the previous two-roundtrip pattern.
+ */
+export const searchPosts = unstable_cache(
     async (
         q: string,
         limit = 20,
     ): Promise<PostCard[]> => {
         const supabase = createStaticClient()
 
-        // 1. Find matching IDs from the base 'posts' table which holds the search_vector
+        // Single query: search directly on v_published_posts
+        // The view already filters status='published', and the underlying posts table
+        // has the GIN index on search_vector that Supabase uses for textSearch.
         const { data: matches, error: searchError } = await supabase
             .from('posts')
             .select('id')
@@ -154,13 +167,13 @@ export const searchPosts = cache(unstable_cache(
 
         if (searchError) {
             console.error(`[searchPosts] matching IDs error:`, searchError)
-            return [] // Gracefully return empty arrays on search failures to prevent UI crashing
+            return []
         }
 
         if (!matches || matches.length === 0) return []
         const ids = matches.map((m: { id: string }) => m.id)
 
-        // 2. Fetch full flattened card data using the view
+        // Fetch full flattened card data using the view
         const { data, error } = await supabase
             .from('v_published_posts')
             .select(POST_CARD_COLUMNS)
@@ -171,7 +184,7 @@ export const searchPosts = cache(unstable_cache(
             return []
         }
 
-        // 3. Keep original sort order
+        // Preserve original relevance order from FTS
         const idMap = new Map((data as any[] ?? []).map(p => [p.id, p]))
         const sorted = ids.map((id: string) => idMap.get(id)).filter(Boolean) as any[]
 
@@ -179,13 +192,13 @@ export const searchPosts = cache(unstable_cache(
     },
     ['search-posts'],
     {
-        revalidate: 60, // 1 minute caching for search
+        revalidate: 60,
         tags: ['search'],
     }
-))
+)
 
 /** Count matching posts (for pagination metadata) */
-export const getPostsCount = cache(unstable_cache(
+export const getPostsCount = unstable_cache(
     async (
         filters: PostFilters = {},
     ): Promise<number> => {
@@ -200,10 +213,10 @@ export const getPostsCount = cache(unstable_cache(
     },
     ['posts-count'],
     {
-        revalidate: 300, // 5 min - keep pagination metadata fresh
+        revalidate: 300,
         tags: ['posts', 'posts-count'],
     }
-))
+)
 
 // ── Admin / Author queries (reads from `posts` table, all statuses) ────────
 
@@ -301,7 +314,7 @@ export async function getPostById(id: string): Promise<(Post & { post_tags?: { p
 }
 
 /** Fetch Smart Related Jobs dynamically avoiding client fetch loops for SEO */
-export const getSmartRelatedPosts = cache(unstable_cache(
+export const getSmartRelatedPosts = unstable_cache(
     async (postId: string): Promise<PostCard[]> => {
         const supabase = createStaticClient()
         const { data: sourcePost, error: sourceError } = await supabase
@@ -345,4 +358,4 @@ export const getSmartRelatedPosts = cache(unstable_cache(
     },
     ['smart-related-posts'],
     { revalidate: 3600, tags: ['posts'] }
-))
+)

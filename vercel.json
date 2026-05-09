@@ -7,6 +7,12 @@
     "functions": {
         "app/api/**/*.ts": {
             "maxDuration": 10
+        },
+        "app/sitemap.xml/route.ts": {
+            "maxDuration": 60
+        },
+        "app/api/ai/**/*.ts": {
+            "maxDuration": 30
         }
     },
     "crons": [

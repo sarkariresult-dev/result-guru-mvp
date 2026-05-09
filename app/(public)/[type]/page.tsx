@@ -101,7 +101,7 @@ function getPageNumbers(current: number, total: number): (number | '...')[] {
 }
 
 function getSEOIntro(typeKey: string, heading: string): string {
-    const year = 2026
+    const year = new Date().getFullYear()
     switch (typeKey) {
         case 'job':
             return `Find the best ${heading} for ${year}. We list active vacancies with clear details on age, qualifications, and how to apply. Browse daily updates from SSC, UPSC, Banking, and more.`

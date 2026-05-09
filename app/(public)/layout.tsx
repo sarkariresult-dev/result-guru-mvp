@@ -1,24 +1,29 @@
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { createServerClient } from '@/lib/supabase/server'
+import { cookies } from 'next/headers'
 import type { PublicUser } from '@/types/user.types'
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
-    // Fetch user server-side so the header renders instantly (no loading flash).
-    // Non-blocking - if no session or fetch fails, serverUser stays null.
+    // Short-circuit for anonymous visitors (~95% of traffic).
+    // Avoid the Supabase auth roundtrip when no auth cookie exists.
     let serverUser: PublicUser | null = null
-    const supabase = await createServerClient()
-    const { data: { user: authUser } } = await supabase.auth.getUser()
-    
-    if (authUser) {
-        // Fetch profile - this will be fast since proxy.ts pre-refreshed the session
-        const { data } = await supabase
-            .from('users')
-            .select('id, name, avatar_url, role')
-            .eq('auth_user_id', authUser.id)
-            .single()
-        
-        if (data) serverUser = data as PublicUser
+    const cookieStore = await cookies()
+    const hasAuthCookie = cookieStore.getAll().some(c => c.name.startsWith('sb-'))
+
+    if (hasAuthCookie) {
+        const supabase = await createServerClient()
+        const { data: { user: authUser } } = await supabase.auth.getUser()
+
+        if (authUser) {
+            const { data } = await supabase
+                .from('users')
+                .select('id, name, avatar_url, role')
+                .eq('auth_user_id', authUser.id)
+                .single()
+            
+            if (data) serverUser = data as PublicUser
+        }
     }
 
     return (

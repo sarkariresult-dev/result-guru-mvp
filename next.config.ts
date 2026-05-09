@@ -17,7 +17,9 @@ const nextConfig: NextConfig = {
 
   /* ── Compiler ───────────────────────────────────────────── */
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production' ? true : false,
+    removeConsole: process.env.NODE_ENV === 'production'
+      ? { exclude: ['error', 'warn'] }
+      : false,
   },
 
   /* ── Server Dependencies ────────────────────────────────── */
@@ -45,8 +47,6 @@ const nextConfig: NextConfig = {
       'class-variance-authority',
       '@vercel/analytics',
       '@vercel/speed-insights',
-      'recharts',
-      'framer-motion',
       'sonner',
     ],
     /* Default stale-times for client router cache (seconds) */
