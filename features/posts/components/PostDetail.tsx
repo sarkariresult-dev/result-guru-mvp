@@ -9,7 +9,7 @@ import { AdZone } from '@/components/ads/AdZone'
 import { processContentHtml, replacePlaceholders } from '@/lib/content-processing'
 import { POST_TYPE_CONFIG } from '@/config/constants'
 import type { PostTypeKey } from '@/config/site'
-import type { PostDetail as PostDetailType, PostAffiliateProductEntry } from '@/types/post.types'
+import { PostDetail as PostDetailType, PostAffiliateProductEntry } from '@/types/post.types'
 import type { FaqItem } from '@/types/post-content.types'
 import { AuthorBox } from './AuthorBox'
 import { ShareBar } from './ShareBar'
@@ -60,19 +60,19 @@ const DEFAULT_ORDER: SectionId[] = ['content', 'author', 'faq', 'tags']
 
 /* ── Component ───────────────────────────────────────────────── */
 
-interface Props {
+interface PostDetailProps {
     post: PostDetailType
     slug: string
     url: string
 }
 
-export function PostDetail({ post, slug, url }: Props) {
+export function PostDetail({ post, slug, url }: PostDetailProps) {
     const typeKey = post.type as PostTypeKey
     const typeMeta = POST_TYPE_CONFIG[typeKey]
 
 
     const faq = post.faq as FaqItem[] | null
-    const affiliates = (post as any).affiliates as PostAffiliateProductEntry[] | undefined
+    const affiliates = post.affiliates
 
     /* Process content HTML with absolute safety */
     let processedHtml = ''
@@ -185,7 +185,11 @@ export function PostDetail({ post, slug, url }: Props) {
     let sectionCount = 0
 
     for (const section of sectionOrder) {
-        const rendered = renderSection(section)
+        const rendered = (
+            <LocalErrorBoundary key={`section-${section}`} name={`PostSection-${section}`} silent>
+                {renderSection(section)}
+            </LocalErrorBoundary>
+        )
         if (rendered) {
             renderedSections.push(rendered)
             sectionCount++
@@ -222,7 +226,7 @@ export function PostDetail({ post, slug, url }: Props) {
             <PostAnalyticsBeacon postId={post.id} />
             <LocalErrorBoundary name="PostDetailMain" silent>
                 {/* ── Header: Title, Org, Dates ────────────────────────── */}
-                <header className="space-y-8 animate-fade-up pt-4 pb-10 border-b border-border/50" suppressHydrationWarning>
+                <header className="space-y-8 pt-4 pb-10 border-b border-border/50" suppressHydrationWarning>
                     {/* Organization Tag */}
                     <div className="flex items-center gap-3">
                         <div className="h-px w-8 bg-brand-500" />
@@ -258,7 +262,7 @@ export function PostDetail({ post, slug, url }: Props) {
                 </header>
 
                 {/* ── Featured Image with overlay badges + actions ─────── */}
-                <figure className="relative overflow-hidden rounded-4xl shadow-xl border border-border group bg-background-muted flex flex-col items-center justify-center">
+                <figure className="relative aspect-video overflow-hidden rounded-4xl shadow-xl border border-border group bg-background-muted flex flex-col items-center justify-center">
                     <Image
                         src={post.featured_image || '/images/placeholder-post.png'}
                         alt={post.featured_image_alt ?? post.title}

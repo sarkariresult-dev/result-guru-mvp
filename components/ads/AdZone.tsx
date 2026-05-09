@@ -19,25 +19,34 @@ interface Props {
     initialAds?: ActiveAd[]
 }
 
-export function AdZone({ zoneSlug, postType, postId, sticky, className }: Props) {
+export function AdZone({ zoneSlug, postType, postId, sticky, className, initialAds }: Props) {
     const [isMounted, setIsMounted] = useState(false)
 
     useEffect(() => {
         setIsMounted(true)
     }, [])
 
-    // Best Practice: Render nothing on server to avoid hydration mismatch
-    // especially important for ad zones that AdSense might modify.
-    if (!isMounted) return null
+    // To prevent CLS, we render a placeholder with a fixed height on the server
+    // for known high-impact zones.
+    const hasPlaceholder = 
+        zoneSlug === 'above_content' || 
+        zoneSlug === 'sidebar_right_top' || 
+        zoneSlug.startsWith('inline_') ||
+        zoneSlug === 'below_content'
+
+    if (!isMounted && !hasPlaceholder && !initialAds) return null
 
     return (
-        <AdZoneContent 
-            zoneSlug={zoneSlug} 
-            postType={postType} 
-            postId={postId} 
-            sticky={sticky} 
-            className={className} 
-        />
+        <div className={cn(hasPlaceholder && !isMounted && "min-h-[90px] w-full bg-background-muted/50 rounded-xl animate-pulse-subtle mb-6")}>
+            <AdZoneContent 
+                zoneSlug={zoneSlug} 
+                postType={postType} 
+                postId={postId} 
+                sticky={sticky} 
+                className={className}
+                initialAds={initialAds}
+            />
+        </div>
     )
 }
 

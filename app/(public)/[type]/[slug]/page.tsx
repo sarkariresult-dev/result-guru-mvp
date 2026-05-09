@@ -1,7 +1,8 @@
+import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { getPostBySlug } from '@/features/posts/queries'
+import { getPostBySlug, getPosts } from '@/features/posts/queries'
 import { buildMetadata } from '@/lib/metadata'
 import { buildJobPostingSchema, buildBreadcrumbSchema, buildFAQPageSchema, buildGovernmentServiceSchema, buildNewsArticleSchema, buildHowToSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
@@ -14,6 +15,7 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { TableOfContents } from '@/features/posts/components/TableOfContents'
 import { AdZone } from '@/components/ads/AdZone'
 import { SidebarProducts } from '@/features/affiliate/components/SidebarProducts'
+import { PostCardSkeleton } from '@/features/posts/components/PostCardSkeleton'
 
 import { POST_TYPE_CONFIG } from '@/config/constants'
 import { SITE, ROUTE_PREFIXES } from '@/config/site'
@@ -140,8 +142,12 @@ export default async function PostDetailPage({ params }: Props) {
         })
         : { tocItems: [] }
 
-    /* ── Fetch Dynamic Sidebar Silo Links ── */
-    const { getPosts } = await import('@/features/posts/queries')
+    /* ── Fetch Dynamic Sidebar Silo Links & Ads (Parallel) ── */
+    const headersList = await headers()
+    const userAgent = headersList.get('user-agent') || ''
+    const isMobile = /mobile/i.test(userAgent)
+    const device = isMobile ? 'mobile' : 'desktop'
+
     const siloFilters: Record<string, string> = {}
     if (publishedPost.organization_id) {
         siloFilters.organization_id = publishedPost.organization_id
@@ -150,21 +156,16 @@ export default async function PostDetailPage({ params }: Props) {
     } else if (publishedPost.category_id) {
         siloFilters.category_id = publishedPost.category_id
     }
-    const rawSiloPosts = await getPosts(siloFilters, 1, 6)
-    const siloPosts = rawSiloPosts
-        .filter(p => p.id !== publishedPost.id)
-        .slice(0, 5)
 
-    /* ── Pre-fetch Ads (Server Side) ── */
-    const headersList = await headers()
-    const userAgent = headersList.get('user-agent') || ''
-    const isMobile = /mobile/i.test(userAgent)
-    const device = isMobile ? 'mobile' : 'desktop'
-
-    const [aboveContentAds, belowContentAds] = await Promise.all([
+    const [rawSiloPosts, aboveContentAds, belowContentAds] = await Promise.all([
+        getPosts(siloFilters, 1, 6),
         getActiveAds('above_content', { post_type: typeKey, post_id: publishedPost.id, device }),
         getActiveAds('below_content', { post_type: typeKey, post_id: publishedPost.id, device }),
     ])
+
+    const siloPosts = rawSiloPosts
+        .filter(p => p.id !== publishedPost.id)
+        .slice(0, 5)
 
     return (
         <>
@@ -200,8 +201,21 @@ export default async function PostDetailPage({ params }: Props) {
                                 <PostDetail post={publishedPost} slug={slug} url={canonicalUrl} />
                                 <div className="space-y-12">
                                     <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} initialAds={belowContentAds} />
-                                    <SmartRelatedPosts postId={publishedPost.id} />
-                                    <RelatedPosts post={publishedPost} />
+                                    <Suspense fallback={
+                                        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                                            {[...Array(3)].map((_, i) => <PostCardSkeleton key={i} />)}
+                                        </div>
+                                    }>
+                                        <RelatedPosts post={publishedPost} />
+                                    </Suspense>
+
+                                    <Suspense fallback={
+                                        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
+                                            {[...Array(2)].map((_, i) => <PostCardSkeleton key={i} />)}
+                                        </div>
+                                    }>
+                                        <SmartRelatedPosts postId={publishedPost.id} />
+                                    </Suspense>
                                 </div>
                             </div>
                         </LocalErrorBoundary>
@@ -213,7 +227,22 @@ export default async function PostDetailPage({ params }: Props) {
                             <AdZone zoneSlug="sidebar_right_top" postType={typeKey} postId={publishedPost.id} />
 
                             <div className="space-y-8 sticky top-24">
-                                <SidebarProducts category="books" limit={3} />
+                                <Suspense fallback={
+                                    <div className="space-y-6">
+                                        <div className="h-4 w-1/2 bg-background-subtle rounded-full animate-pulse" />
+                                        {[...Array(3)].map((_, i) => (
+                                            <div key={i} className="flex gap-4">
+                                                <div className="size-20 rounded-2xl bg-background-subtle animate-pulse" />
+                                                <div className="flex-1 space-y-2 py-2">
+                                                    <div className="h-3 w-full bg-background-subtle rounded-full animate-pulse" />
+                                                    <div className="h-3 w-2/3 bg-background-subtle rounded-full animate-pulse" />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                }>
+                                    <SidebarProducts category="books" limit={4} />
+                                </Suspense>
                                 <SidebarProducts category="stationery" limit={2} />
                                 <SidebarProducts category="electronics" limit={2} />
 
