@@ -1,10 +1,22 @@
 /**
  * Custom image loader for Supabase Storage.
  *
- * This bypasses the Next.js server-side image optimizer (which can fail due to
- * NAT64 / SSRF protection issues) and instead serves images directly from
- * Supabase Storage with optional transformation parameters.
+ * Bypasses the Next.js server-side image optimizer (which fails due to
+ * NAT64 / SSRF "private ip" errors on Vercel) and instead routes images
+ * through Supabase Storage's `/render/image` endpoint for on-the-fly
+ * resize + quality optimization.
+ *
+ * Performance optimization:
+ * - Images requesting width < 200px (avatars, logos, tiny thumbnails)
+ *   are served directly from Supabase CDN without transforms. At these
+ *   sizes, the transform API overhead outweighs any file-size savings.
+ * - Only larger images (post cards, hero images, product photos) use
+ *   the /render/image transform endpoint.
  */
+
+/** Width threshold below which we skip Supabase transforms */
+const TRANSFORM_MIN_WIDTH = 200
+
 export default function supabaseLoader({
     src,
     width,
@@ -16,38 +28,31 @@ export default function supabaseLoader({
 }) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 
-    // 1. Local images (starts with /) - return as is, but with width for Next.js validation
+    /* ── 1. Local assets (starts with /) ─────────────────────── */
     if (src.startsWith('/')) {
-        // SVG assets should be served original; for other images, we append a dummy param to satisfy Next.js
+        // SVGs are vector — serve original without any params
         if (src.endsWith('.svg')) return src
+        // Append a cache-bust param for Next.js validation
         return `${src}?w=${width}`
     }
 
-    // 2. Supabase Storage images - apply transformation if it's a storage URL
-    if (supabaseUrl && src.startsWith(supabaseUrl)) {
-        /**
-         * Standard Supabase Storage public URL:
-         * https://[id].supabase.co/storage/v1/object/public/[bucket]/[path]
-         *
-         * Supabase Image Transformation URL (Pro/Payg):
-         * https://[id].supabase.co/storage/v1/render/image/public/[bucket]/[path]
-         *
-         * We use the /render/ endpoint if it looks like a public storage URL.
-         * If the project is on the Free plan, it will fallback to original or fail,
-         * but the primary goal here is bypassing the Next.js proxy to fix the "private ip" error.
-         */
-        if (src.includes('/storage/v1/object/public/')) {
-            const path = src.split('/storage/v1/object/public/')[1]
-            if (path) {
-                // If the user is on the FREE plan, the /render/ endpoint might return 404.
-                // However, given the "private ip" error in Next.js, we MUST bypass the proxy.
-                // We'll use the transformation params on the public URL which works for many CDN setups,
-                // or just return the direct URL.
-                return `${supabaseUrl}/storage/v1/render/image/public/${path}?width=${width}&quality=${quality || 75}`
+    /* ── 2. Supabase Storage images ──────────────────────────── */
+    if (supabaseUrl && src.startsWith(supabaseUrl) && src.includes('/storage/v1/object/public/')) {
+        const path = src.split('/storage/v1/object/public/')[1]
+        if (path) {
+            // Small images: serve directly from Supabase CDN (no transform)
+            // This avoids unnecessary /render/image API calls for avatars,
+            // org logos, and tiny thumbnails where resize overhead > savings.
+            if (width < TRANSFORM_MIN_WIDTH) {
+                return src
             }
+
+            // Larger images: use Supabase Image Transforms for resize + quality
+            // URL: /storage/v1/render/image/public/[bucket]/[path]?width=X&quality=Y
+            return `${supabaseUrl}/storage/v1/render/image/public/${path}?width=${width}&quality=${quality || 75}`
         }
     }
 
-    // 3. Fallback for other remote images
+    /* ── 3. External / fallback URLs ─────────────────────────── */
     return src
 }

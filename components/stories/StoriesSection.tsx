@@ -69,6 +69,7 @@ export async function StoriesSection() {
                                             width={14}
                                             height={14}
                                             className="rounded-full ring-1 ring-white/50"
+                                            unoptimized
                                         />
                                     ) : (
                                         <div className="flex size-3.5 items-center justify-center rounded-full bg-brand-500 text-[6px] font-bold text-white ring-1 ring-white/50">

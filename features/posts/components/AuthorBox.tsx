@@ -1,7 +1,4 @@
-'use client'
-
-import { useState, useEffect } from 'react'
-import { BadgeCheck, Twitter, Linkedin, Facebook, Award, Briefcase } from 'lucide-react'
+import { BadgeCheck, Twitter, Linkedin, Award, Briefcase } from 'lucide-react'
 import Image from 'next/image'
 import type { AuthorInfo } from '@/types/user.types'
 
@@ -10,18 +7,6 @@ interface Props {
 }
 
 export function AuthorBox({ author }: Props) {
-    const [isMounted, setIsMounted] = useState(false)
-
-    useEffect(() => {
-        setIsMounted(true)
-    }, [])
-
-    if (!isMounted) return null
-
-    return <AuthorBoxContent author={author} />
-}
-
-function AuthorBoxContent({ author }: Props) {
     if (!author) return null
 
     const initials = author.name
@@ -30,7 +15,6 @@ function AuthorBoxContent({ author }: Props) {
         .join('')
         .toUpperCase()
         .slice(0, 2)
-        .slice(0, 2)
 
     return (
         <div className="mt-20 pt-10 border-t border-border/60">
@@ -38,11 +22,12 @@ function AuthorBoxContent({ author }: Props) {
                 {/* Author Avatar */}
                 <div className="relative shrink-0">
                     {author.avatar_url ? (
-                        <div className="size-20 rounded-full bg-background-subtle ring-4 ring-brand-50/50 dark:ring-brand-900/10 overflow-hidden shadow-xs">
+                        <div className="relative size-20 rounded-full bg-background-subtle ring-4 ring-brand-50/50 dark:ring-brand-900/10 overflow-hidden shadow-xs">
                             <Image
                                 src={author.avatar_url}
                                 alt={author.name}
                                 fill
+                                sizes="80px"
                                 className="object-cover"
                             />
                         </div>
