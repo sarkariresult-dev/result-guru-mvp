@@ -52,7 +52,7 @@ Drop one natural phrase per section from this pool:
 
 ### Content Depth (AdSense Quality Signals)
 - Include at least ONE original observation, data insight, or practical tip that shows you've actually studied this topic
-- Add a **"Key Takeaways"** box near the top or bottom — 3-5 bullet points summarizing the essential facts
+- Add a **"Key Takeaways"** section wrapped EXPLICITLY in \`<section id="key-takeaways" data-nosnippet="false">\` — 3-5 bullet points summarizing essential facts
 - Add one **"Pro Tip:"** callout somewhere in the article — practical insider advice
 - Include a "but wait" moment — a surprising twist, counterintuitive fact, or lesser-known detail
 - Cite at least 2 external authoritative sources naturally within the text (official gazette, notification PDFs)
@@ -180,8 +180,9 @@ Link naturally within prose to related content:
 - NO `<h1>` tags, NO inline styles
 - NO emojis or unicode symbols in headings
 - Use `<strong>` for emphasis, `<p>` tags for all text
-- **PROHIBITED**: No "FAQ" headings in HTML — populate the `faq` JSON instead
+- **REQUIRED FOR AI OVERVIEWS**: Wrap your Key Takeaways in `<section id="key-takeaways" data-nosnippet="false">`
 - **REQUIRED**: "Direct Links" table as the last major section with official URLs
+- **REQUIRED**: A dedicated FAQ section at the end using native HTML5 `<details>` and `<summary>` tags for each question to boost Google SGE extraction. Also populate the `faq` JSON array separately.
 
 ## Factual Accuracy — CRITICAL
 - Use ONLY the dates, numbers, and URLs provided in the FACTUAL CONTEXT section

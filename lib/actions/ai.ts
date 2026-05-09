@@ -233,7 +233,7 @@ const aiResponseSchema = {
         },
         content: {
             type: Type.STRING,
-            description: 'Full HTML content (1800+ words). Human-like tone with contractions, em dashes, varied sentence lengths. Uses [officialWebsiteUrl], [primaryLink], [notificationPdfUrl] placeholders. Include a Key Takeaways box and one Pro Tip callout. DO NOT include a Quick Summary box at the beginning.',
+            description: 'Full HTML content (1800+ words). Human-like tone with contractions, em dashes, varied sentence lengths. Uses [officialWebsiteUrl], [primaryLink], [notificationPdfUrl] placeholders. MUST wrap Key Takeaways in <section id="key-takeaways" data-nosnippet="false">. MUST include an FAQ section using native HTML5 <details> and <summary> tags. DO NOT include a Quick Summary box at the beginning.',
         },
         keyTakeaways: {
             type: Type.ARRAY,

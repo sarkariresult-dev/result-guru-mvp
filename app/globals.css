@@ -635,6 +635,20 @@
         cursor: ew-resize;
         cursor: col-resize;
     }
+
+    /* ── AdSense CLS Prevention ── */
+    ins.adsbygoogle {
+        min-height: 90px;
+        display: block !important;
+        background-color: var(--bg-muted);
+        text-align: center;
+    }
+    
+    @media (min-width: 768px) {
+        ins.adsbygoogle {
+            min-height: 250px;
+        }
+    }
 }
 
 /* ══════════════════════════════════════════════════════════════
