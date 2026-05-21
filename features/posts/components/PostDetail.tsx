@@ -254,10 +254,16 @@ export function PostDetail({ post, slug, url }: PostDetailProps) {
                                 <span>Updated {formatDate(post.content_updated_at)}</span>
                             </div>
                         )}
-                        <div className="flex items-center gap-2 bg-brand-50 text-brand-700 px-4 py-1.5 rounded-full border border-brand-200 dark:bg-brand-900/30 dark:text-brand-400 dark:border-brand-800/40 shadow-sm">
+                        <div className="flex items-center gap-2 bg-brand-50 text-brand-700 px-4 py-1.5 rounded-full border border-brand-200 dark:bg-brand-900/30 dark:text-brand-400 dark:border-brand-800/40 shadow-sm" title="This content meets our rigorous editorial standards for accuracy.">
                             <ShieldCheck className="size-3.5" />
-                            <span>Verified Authority</span>
+                            <span>Expert Written & Fact-Checked</span>
                         </div>
+                        {post.author?.credentials && (
+                            <div className="hidden sm:flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-1.5 rounded-full border border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/40 shadow-sm">
+                                <span className="size-1.5 rounded-full bg-blue-500 animate-pulse" />
+                                <span>Reviewed by {post.author.credentials}</span>
+                            </div>
+                        )}
                     </div>
                 </header>
 
@@ -269,9 +275,8 @@ export function PostDetail({ post, slug, url }: PostDetailProps) {
                         width={1200}
                         height={675}
                         className="w-full h-auto transition-transform duration-slow group-hover:scale-[1.02]"
-                        sizes="(max-width: 768px) 100vw, 1200px"
                         priority
-                        quality={75}
+                        fetchPriority="high"
                     />
 
                     {/* Top-left: status badge (overlay) */}

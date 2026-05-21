@@ -13,6 +13,7 @@ export const generatePostSchema = z.object({
     stateOrRegion: z.string().optional(),
     existingPrimaryLink: z.string().optional(),
     existingNotificationPdf: z.string().optional(),
+    contentLanguage: z.enum(['english', 'hinglish']).optional().default('hinglish'),
 })
 
 export type GeneratePostInput = z.input<typeof generatePostSchema>

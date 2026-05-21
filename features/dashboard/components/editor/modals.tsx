@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { processImage } from '@/lib/utils/image'
 import {
     X, Check, Upload, Loader2,
     LinkIcon, ImageIcon,
@@ -116,12 +117,17 @@ export function ImageModal({ uploadBucket, uploadFolder, onSubmit, onCancel }: I
         setError('')
         try {
             const supabase = createClient()
-            const ext = file.name.split('.').pop() || 'jpg'
+            let fileToUpload = file
+            if (file.type !== 'image/gif') {
+                // Resize editor images to max 1200px width and convert to WebP
+                fileToUpload = await processImage(file, { maxWidth: 1200, maxHeight: 1200, quality: 0.85 })
+            }
+            const ext = fileToUpload.name.split('.').pop() || 'webp'
             const fileName = `content-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.${ext}`
             const filePath = `${uploadFolder}/${fileName}`
             const { error: uploadError } = await supabase.storage
                 .from(uploadBucket)
-                .upload(filePath, file, { cacheControl: '31536000' })
+                .upload(filePath, fileToUpload, { cacheControl: '31536000', contentType: fileToUpload.type })
             if (uploadError) {
                 setError(uploadError.message)
                 return

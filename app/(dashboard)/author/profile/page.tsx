@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { updateProfile } from '@/features/dashboard/actions'
 import { profileSchema } from '@/lib/validations'
+import { processImage } from '@/lib/utils/image'
 import { Avatar } from '@/components/ui/Avatar'
 import {
     Camera,
@@ -109,12 +110,18 @@ export default function AuthorProfilePage() {
         setSaveStatus('idle')
 
         const supabase = createClient()
-        const ext = file.name.split('.').pop() ?? 'webp'
+        
+        let fileToUpload = file
+        if (file.type !== 'image/gif') {
+            fileToUpload = await processImage(file, { maxWidth: 400, maxHeight: 400, quality: 0.9 })
+        }
+        
+        const ext = fileToUpload.name.split('.').pop() ?? 'webp'
         const storagePath = `${profile.authUserId}/avatar.${ext}`
 
         const { error: uploadError } = await supabase.storage
             .from('avatars')
-            .upload(storagePath, file, { upsert: true, contentType: file.type })
+            .upload(storagePath, fileToUpload, { upsert: true, contentType: fileToUpload.type, cacheControl: '31536000' })
 
         if (uploadError) {
             setErrorMsg(`Upload failed: ${uploadError.message}`)

@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Upload, X, FileText, Image as ImageIcon, Loader2 } from 'lucide-react'
+import { processImage } from '@/lib/utils/image'
 
 interface FileUploadProps {
     bucket: string
@@ -34,18 +35,18 @@ export function FileUpload({
     const [dragOver, setDragOver] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null)
 
-    const handleFile = async (file: File) => {
+    const handleFile = async (rawFile: File) => {
         setError(null)
 
-        // Size check
-        if (file.size > maxSizeMB * 1024 * 1024) {
+        // Size check (before process)
+        if (rawFile.size > maxSizeMB * 1024 * 1024) {
             setError(`File too large. Max ${maxSizeMB} MB.`)
             return
         }
 
         // Type check
         const allowed = accept.split(',').map(t => t.trim())
-        if (!allowed.includes(file.type)) {
+        if (!allowed.includes(rawFile.type)) {
             setError(`Invalid file type. Allowed: ${allowed.join(', ')}`)
             return
         }
@@ -54,13 +55,21 @@ export function FileUpload({
         onLoading?.(true)
         try {
             const supabase = createClient()
-            const ext = file.name.split('.').pop() || 'jpg'
+            let fileToUpload = rawFile
+            
+            // Pre-process images (WebP conversion + resize)
+            if (rawFile.type.startsWith('image/')) {
+                fileToUpload = await processImage(rawFile, { maxWidth: 1200, maxHeight: 1200, quality: 0.85 })
+            }
+
+            const ext = fileToUpload.name.split('.').pop() || 'jpg'
             const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
             const filePath = `${folder}/${fileName}`
 
+            // Upload with aggressive 1-year cache control for static delivery
             const { error: uploadError } = await supabase.storage
                 .from(bucket)
-                .upload(filePath, file, { cacheControl: '3600', upsert: false })
+                .upload(filePath, fileToUpload, { cacheControl: '31536000', upsert: false, contentType: fileToUpload.type })
 
             if (uploadError) {
                 setError(uploadError.message)

@@ -3,6 +3,7 @@
 import { useState, useRef, useActionState } from 'react'
 import { updateProfile } from '@/features/dashboard/actions'
 import { createClient } from '@/lib/supabase/client'
+import { processImage } from '@/lib/utils/image'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Camera, Loader2, Trash2, User } from 'lucide-react'
@@ -39,7 +40,11 @@ export function ProfileForm({ userId, authUserId, initialName, initialAvatar, in
         setUploadMsg('')
         try {
             const supabase = createClient()
-            const ext = file.name.split('.').pop() || 'jpg'
+            let fileToUpload = file
+            if (file.type !== 'image/gif') {
+                fileToUpload = await processImage(file, { maxWidth: 400, maxHeight: 400, quality: 0.9 })
+            }
+            const ext = fileToUpload.name.split('.').pop() || 'webp'
             const fileName = `avatar-${Date.now()}.${ext}`
             const filePath = `${authUserId}/${fileName}`
 
@@ -52,7 +57,7 @@ export function ProfileForm({ userId, authUserId, initialName, initialAvatar, in
 
             const { error: uploadError } = await supabase.storage
                 .from('avatars')
-                .upload(filePath, file, { cacheControl: '3600', upsert: true })
+                .upload(filePath, fileToUpload, { cacheControl: '31536000', upsert: true, contentType: fileToUpload.type })
 
             if (uploadError) {
                 setUploadMsg(`Error: ${uploadError.message}`)

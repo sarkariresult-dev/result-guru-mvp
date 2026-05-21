@@ -23,10 +23,8 @@ export function PostCard({ post, priority = false }: Props) {
                     alt={post.featured_image_alt ?? post.title}
                     width={600}
                     height={338}
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                     priority={priority}
-                    quality={60}
                 />
             </div>
             <div className="flex flex-1 flex-col gap-3 p-5">

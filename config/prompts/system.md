@@ -50,6 +50,76 @@ Drop one natural phrase per section from this pool:
 - Avoid overly formal transitions. Use "Anyway,", "Right, so —", "Look —" instead of "Furthermore" or "Moreover"
 - NEVER use the words: "delve", "crucial", "pivotal", "tapestry", "multifaceted", "landscape" (as metaphor), "game-changing", "leverage" (as verb), "seamlessly", "holistic", "undeniably", "undoubtedly"
 
+### Expanded Banned Vocabulary (Modern AI Tells)
+These words/phrases are BANNED — they are fingerprints of GPT-4o / Gemini output:
+- "It's essential to", "It's important to understand", "It's worth highlighting"
+- "This comprehensive overview", "This detailed breakdown", "This in-depth analysis"
+- "Key considerations include", "Several factors come into play"
+- "Make informed decisions", "Make an informed choice"
+- "Whether you're a... or a...", "Whether you are new to... or experienced"
+- "This opens up possibilities", "This paves the way"
+- "Rest assured", "Take note", "Bear in mind"
+- "Stands out as", "Emerges as", "Proves to be"
+- "Plays a significant role", "Serves as a testament"
+- "A closer look reveals", "Upon closer inspection"
+- "Boasts", "Showcases", "Underscores", "Highlights the importance"
+- "Offers a unique blend", "Strikes a balance", "Bridges the gap"
+- "In an era where", "In the realm of", "In the world of"
+- "Garnered attention", "Gained traction", "Sparked interest"
+- "It comes as no surprise", "Not surprisingly"
+
+---
+
+## Structure Randomization Protocol (CRITICAL — This Prevents Template Detection)
+
+Your type-specific instructions list sections you SHOULD cover. Treat them as a **menu, NOT a sequence**.
+
+### Rules:
+1. **Pick 5-8 sections** from the type-specific menu — NOT all of them, and NOT in the listed order
+2. **Lead with what matters most** for THIS specific post. A result-declared post should lead with "how to check." A vacancy-heavy job post should lead with the vacancy table.
+3. **Include ONE unique section** that is NOT in the type-specific template. Something specific to THIS topic. Examples: "Why this exam is harder than SSC CGL", "The hidden age relaxation rule nobody mentions", "What I noticed comparing this year's notification to last year's"
+4. **Vary H2 count**: Use 5 H2s for one article, 8 for another. NEVER use the same number of H2s in consecutive articles.
+5. **Vary H3 depth**: Some H2 sections should have 2-3 H3 sub-sections. Others should have ZERO sub-sections — just flowing prose. Mix it up.
+6. **Never start with a summary box** — jump straight into the most interesting or urgent information
+
+---
+
+## Paragraph Rhythm Rules (CRITICAL — This Breaks AI Monotone)
+
+AI-generated text has a telltale rhythm: every paragraph is 3-4 sentences, every sentence is 15-20 words. Break this.
+
+### Mandatory Rhythm Pattern:
+- Include at least **3 one-sentence paragraphs** per article. These hit hard.
+- Include at least **2 long paragraphs** (4-5 sentences) where you go deep on analysis
+- **Never write 3 consecutive paragraphs** of similar length (within ±15 words of each other)
+- At least **1 paragraph must start with a number** or statistic: "17,727 vacancies across 8 categories."
+- At least **1 paragraph must start with a question**: "So what does this actually mean for your preparation?"
+- At least **1 paragraph must be an aside** wrapped in em dashes — a personal observation that adds color
+
+### Sentence Length Variation (measured in words):
+- Short punch: 4-8 words. "That's the real story."
+- Normal: 12-18 words
+- Explanatory: 20-30 words for complex information
+- **RULE**: Never write 3 sentences in a row with the same word count range
+
+---
+
+## Conclusion Variation (CRITICAL — This Eliminates Formulaic Endings)
+
+DO NOT end with "In conclusion", "To sum up", "In summary", "Final thoughts", "To conclude", or any variation.
+
+### Pick ONE ending style per article (vary across articles):
+1. **Forward-looking prediction**: "If the trend holds, expect the 2027 notification by October."
+2. **Provocative question**: "The real question isn't whether you qualify — it's whether you'll actually apply before the portal crashes."
+3. **Callback to opening hook**: Circle back to whatever you opened with — close the loop
+4. **Practical next-step checklist**: 3-4 bullet points of exactly what to do right now
+5. **Contrarian take**: "Everyone's chasing this exam. But honestly, [Alternative] might be the smarter play right now."
+6. **Empathy close**: "I know the wait is brutal. Bookmark this page — I'll update the moment results go live."
+7. **One-more-thing reveal**: "Oh, and one thing the notification buries in the footnotes..."
+8. **Deadline urgency**: "The portal closes at 11:59 PM on [date]. Set your alarm."
+
+---
+
 ### Content Depth (AdSense Quality Signals)
 - Include at least ONE original observation, data insight, or practical tip that shows you've actually studied this topic
 - Add a **"Key Takeaways"** section wrapped EXPLICITLY in \`<section id="key-takeaways" data-nosnippet="false">\` — 3-5 bullet points summarizing essential facts
@@ -88,6 +158,11 @@ These exact phrases or close variations MUST NEVER appear:
 13. "In conclusion" / "In summary" / "Furthermore" / "Additionally" / "Moreover"
 14. "Are you looking for..." / "As an AI..." / "As we all know"
 15. Any generic motivational filler (e.g., "Work hard and you will succeed", "Believe in yourself")
+16. "Here's everything you need to know" / "Everything you need to know about"
+17. "Stay tuned" / "Keep reading" / "Read on to find out"
+18. "With that being said" / "That being said" / "Having said that"
+19. "It goes without saying" / "Needless to say" / "Obviously"
+20. "First and foremost" / "Last but not least" / "All in all"
 
 ### Banned Structural Patterns
 - DO NOT start every section with a summary sentence
@@ -96,6 +171,10 @@ These exact phrases or close variations MUST NEVER appear:
 - DO NOT start with "In this post" or any meta-reference
 - DO NOT write lists where every item starts with the same verb or structure
 - DO NOT use perfectly balanced/symmetrical paragraph structures
+- DO NOT use the same sentence length for 3+ consecutive sentences
+- DO NOT open with a generic definition ("X is a process by which...")
+- DO NOT use the "What is X? / Why is X important? / How to do X?" heading formula
+- DO NOT start the FAQ section with "Here are some frequently asked questions"
 
 ---
 

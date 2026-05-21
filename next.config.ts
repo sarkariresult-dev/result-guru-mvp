@@ -58,20 +58,14 @@ const nextConfig: NextConfig = {
 
   /* ── Images ─────────────────────────────────────────────── */
   images: {
-    loaderFile: './lib/supabase/loader.ts',
+    unoptimized: true,
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       { protocol: 'https', hostname: '**.supabase.co' },
       { protocol: 'https', hostname: '**.supabase.in' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
     ],
-    qualities: [50, 60, 75, 80, 90],
     dangerouslyAllowSVG: true,
-    deviceSizes: [390, 412, 640, 750, 828, 1080, 1200, 1920],
-    /* Next 16 removed 16 from default imageSizes */
-    imageSizes: [32, 48, 64, 96, 128, 256, 384],
-    /* Next 16 default is 14400 (4h); we keep 30 days for our static images */
-    minimumCacheTTL: 60 * 60 * 24 * 30,
   },
 
   /* ── Logging (dev only - avoid production I/O overhead) ──── */
@@ -99,14 +93,10 @@ const nextConfig: NextConfig = {
             value: 'camera=(), microphone=(), geolocation=()',
           },
           { key: 'X-DNS-Prefetch-Control', value: 'on' },
-          // Removed X-Frame-Options: SAMEORIGIN because modern browsers use Content-Security-Policy: frame-ancestors instead.
-          // Leaving X-Frame-Options conflicts with Vercel's preview dashboard.
           {
             key: 'Strict-Transport-Security',
             value: 'max-age=63072000; includeSubDomains; preload',
           },
-          // Note: Cross-Origin-Opener-Policy removed to allow Google AdSense
-          // preview iframe to embed the site without restrictions.
           {
             key: 'Cross-Origin-Resource-Policy',
             value: 'cross-origin',

@@ -9,6 +9,7 @@ import { pushToGoogleIndexingApi } from '@/lib/seo/indexing'
 import { SITE, ROUTE_PREFIXES, type PostTypeKey } from '@/config/site'
 import { runSeoAnalysis } from '@/lib/seo/seo-analyzer'
 import { analyzeAiHeuristics } from '@/lib/humanize'
+import { scoreContentQuality } from '@/lib/content-quality'
 
 /**
  * Columns marked NOT NULL in 007_posts.sql with their DB DEFAULT values.
@@ -261,25 +262,47 @@ export async function publishPost(id: string) {
     const supabase = await createServerClient()
     const { data: post } = await supabase
         .from('posts')
-        .select('slug, type, word_count, content, featured_image')
+        .select('slug, type, word_count, content, featured_image, meta_title, meta_description, focus_keyword, secondary_keywords, excerpt, faq, author_id, published_at, internal_links_count')
         .eq('id', id)
         .single()
 
     if (!post) return { error: 'Post not found' }
 
     const content = post.content || ''
-    const hasPlaceholders = /\[officialWebsiteUrl\]|\[primaryLink\]|\[notificationPdfUrl\]|href="#"/i.test(content)
-    if (hasPlaceholders) {
-        return { error: 'Publishing blocked: Post contains unresolved placeholder links.' }
+
+    // Run comprehensive quality gate
+    const faqItems = Array.isArray(post.faq) ? post.faq : []
+    const qualityReport = scoreContentQuality(content, {
+        title: undefined, // Title check handled separately
+        excerpt: post.excerpt ?? undefined,
+        metaTitle: post.meta_title ?? undefined,
+        metaDescription: post.meta_description ?? undefined,
+        focusKeyword: post.focus_keyword ?? undefined,
+        secondaryKeywords: post.secondary_keywords ?? undefined,
+        faqCount: faqItems.length,
+        hasAuthor: !!post.author_id,
+        publishedAt: post.published_at ?? undefined,
+        internalLinksCount: post.internal_links_count ?? undefined,
+        hasFeaturedImage: !!post.featured_image,
+    })
+
+    if (!qualityReport.canPublish) {
+        const topIssues = qualityReport.issues.slice(0, 5).join(' • ')
+        return {
+            error: `Publishing blocked (Quality: ${qualityReport.score}/100). Issues: ${topIssues}`,
+            qualityReport,
+        }
     }
 
-    if ((post.word_count ?? 0) < 1000) {
-        return { error: `Publishing blocked: Thin content detected (${post.word_count} words). Min 1000 required.` }
-    }
-
+    // Store quality score on the post for dashboard visibility
     const { error } = await supabase
         .from('posts')
-        .update({ status: 'published', published_at: new Date().toISOString() })
+        .update({
+            status: 'published',
+            published_at: new Date().toISOString(),
+            seo_score: Math.min(100, qualityReport.seoOptimization),
+            needs_human_review: qualityReport.humanLikeness < 50, // Flag for editor if borderline
+        })
         .eq('id', id)
 
     if (error) return { error: error.message }
@@ -295,7 +318,7 @@ export async function publishPost(id: string) {
         pushToGoogleIndexingApi(postUrl, 'URL_UPDATED').catch(() => { })
     }
 
-    return { success: true }
+    return { success: true, qualityReport }
 }
 
 // ── Delete Post ────────────────────────────────────────────

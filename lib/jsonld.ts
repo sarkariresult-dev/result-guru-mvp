@@ -273,6 +273,7 @@ export function buildHowToSchema(
 export function buildNewsArticleSchema(post: PostDetail): JsonLdObject {
     try {
         const url = postUrl(post.type as PostType, post.slug)
+        const publishYear = post.published_at ? new Date(post.published_at).getFullYear() : 2026
         const schema: JsonLdObject = {
             '@context': 'https://schema.org',
             '@type': 'NewsArticle',
@@ -282,11 +283,21 @@ export function buildNewsArticleSchema(post: PostDetail): JsonLdObject {
             url,
             datePublished: post.published_at ?? post.created_at,
             dateModified: post.content_updated_at ?? post.updated_at,
+            copyrightHolder: {
+                '@type': 'Organization',
+                '@id': `${SITE.url}/#organization`,
+                name: SITE.publisher.name,
+            },
+            copyrightYear: publishYear,
+            creditText: `${SITE.publisher.name} Editorial Team`,
             publisher: {
                 '@type': 'Organization',
+                '@id': `${SITE.url}/#organization`,
                 name: SITE.publisher.name,
                 url: SITE.publisher.url,
                 logo: { '@type': 'ImageObject', url: SITE.publisher.logo },
+                publishingPrinciples: `${SITE.url}${SITE.publisher.editorialPolicy}`,
+                ethicsPolicy: `${SITE.url}${SITE.publisher.ethicsPolicy}`,
             },
             author: post.author
                 ? {
@@ -296,16 +307,28 @@ export function buildNewsArticleSchema(post: PostDetail): JsonLdObject {
                     ...(post.author.avatar_url && { image: post.author.avatar_url }),
                     ...(post.author.bio && { description: post.author.bio }),
                     jobTitle: post.author.credentials || 'Senior Content Strategist',
-                    ...(post.author.years_of_experience && { 
-                        description: `${post.author.bio || ''} (${post.author.years_of_experience}+ years of experience in government notification verification).` 
+                    knowsAbout: [
+                        'Government Recruitment in India',
+                        'Sarkari Exam Results',
+                        'UPSC', 'SSC', 'Railway Recruitment',
+                        'Government Job Eligibility',
+                    ],
+                    ...(post.author.years_of_experience && {
+                        hasCredential: {
+                            '@type': 'EducationalOccupationalCredential',
+                            credentialCategory: 'Professional Experience',
+                            description: `${post.author.years_of_experience}+ years in government notification verification and analysis`,
+                        },
                     }),
                     worksFor: {
                         '@type': 'Organization',
+                        '@id': `${SITE.url}/#organization`,
                         name: SITE.name,
                     }
                 }
                 : {
                     '@type': 'Organization',
+                    '@id': `${SITE.url}/#organization`,
                     name: SITE.name,
                     url: SITE.url,
                 },
@@ -316,6 +339,11 @@ export function buildNewsArticleSchema(post: PostDetail): JsonLdObject {
                 isPartOf: {
                     '@id': `${SITE.url}/#website`,
                 },
+            },
+            // Speakable: target key-takeaways and excerpt for Google voice search / AI overview
+            speakable: {
+                '@type': 'SpeakableSpecification',
+                cssSelector: ['#key-takeaways', '.post-excerpt', 'h1'],
             },
         }
 
@@ -344,6 +372,23 @@ export function buildNewsArticleSchema(post: PostDetail): JsonLdObject {
                 url: SITE.url,
             }
         }
+    }
+}
+
+// ── Speakable Schema ─────────────────────────────────────────
+/**
+ * Build schema.org/SpeakableSpecification for voice search and AI overviews.
+ * Targets key-takeaways and excerpt sections for extraction.
+ */
+export function buildSpeakableSchema(postUrl: string): JsonLdObject {
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        '@id': postUrl,
+        speakable: {
+            '@type': 'SpeakableSpecification',
+            cssSelector: ['#key-takeaways', '.post-excerpt', 'article h2:first-of-type'],
+        },
     }
 }
 

@@ -85,20 +85,47 @@ function faqSchema(faq: { q: string; a: string }[]): Record<string, unknown> | n
 
 function articleSchema(input: SchemaInput): Record<string, unknown> {
     const url = siteUrl(`${ROUTE_PREFIXES[input.type]}/${input.slug}`)
+    const publishYear = input.publishedAt ? new Date(input.publishedAt).getFullYear() : 2026
+    
     return {
         '@context': 'https://schema.org',
-        '@type': 'Article',
+        '@type': 'NewsArticle',
         headline: input.title,
         description: input.excerpt || stripHtml(input.content).slice(0, 160),
         url,
+        isAccessibleForFree: true,
         datePublished: input.publishedAt || new Date().toISOString(),
         dateModified: input.updatedAt || input.publishedAt || new Date().toISOString(),
+        copyrightHolder: {
+            '@type': 'Organization',
+            '@id': `${SITE.url}/#organization`,
+            name: SITE.publisher.name,
+        },
+        copyrightYear: publishYear,
+        creditText: `${SITE.publisher.name} Editorial Team`,
         author: {
             '@type': 'Person',
             name: input.authorName || 'Result Guru Team',
             url: input.authorUrl || SITE.url,
+            jobTitle: 'Senior Content Strategist',
+            knowsAbout: [
+                'Government Recruitment in India',
+                'Sarkari Exam Results',
+                'UPSC', 'SSC', 'Railway Recruitment',
+                'Government Job Eligibility',
+            ],
+            worksFor: {
+                '@type': 'Organization',
+                '@id': `${SITE.url}/#organization`,
+                name: SITE.name,
+            }
         },
-        publisher: publisherSchema(),
+        publisher: {
+            ...publisherSchema(),
+            '@id': `${SITE.url}/#organization`,
+            publishingPrinciples: `${SITE.url}${SITE.publisher.editorialPolicy}`,
+            ethicsPolicy: `${SITE.url}${SITE.publisher.ethicsPolicy}`,
+        },
         mainEntityOfPage: { '@type': 'WebPage', '@id': url },
         wordCount: wordCount(input.content),
         ...(input.featuredImage && {
@@ -109,6 +136,10 @@ function articleSchema(input: SchemaInput): Record<string, unknown> {
                 height: 630,
             },
         }),
+        speakable: {
+            '@type': 'SpeakableSpecification',
+            cssSelector: ['#key-takeaways', '.post-excerpt', 'h1'],
+        },
     }
 }
 

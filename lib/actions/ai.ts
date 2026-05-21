@@ -6,8 +6,9 @@ import path from 'path'
 import { env } from '@/config/env'
 import { generatePostSchema, type GeneratePostInput } from '@/lib/validations/post'
 import { createServerClient } from '@/lib/supabase/server'
-import { humanizeContent } from '@/lib/humanize'
+import { humanizeContent, analyzeAiHeuristics } from '@/lib/humanize'
 import { sanitizeHtml } from '@/lib/sanitize'
+import { injectContextualLinks } from '@/lib/seo/internal-linking'
 
 /* ── Gemini Client ────────────────────────────────────────────────── */
 
@@ -20,21 +21,81 @@ const ai = new GoogleGenAI({ apiKey: env.GOOGLE_GENAI_API_KEY })
  * to break template fatigue and ensure creative variance.
  */
 const STYLE_SEEDS = [
-    'Start with a bold factual claim that drops the reader right into the story. No warm-up paragraph.',
-    'Open by addressing a common frustration or myth — then promise to set the record straight.',
-    'Begin with a direct question that mirrors what the reader is actually searching for.',
-    'Start with the most urgent date or deadline — create a "this matters right now" energy.',
-    'Open with a surprising data point or year-over-year comparison that hooks attention.',
-    'Begin with a personal observation: "I\'ve tracked this exam for years, and here\'s what changed..."',
-    'Start by acknowledging what everyone gets wrong about this topic, then correct it.',
-    'Open with an inverted pyramid: give the direct answer in the first sentence, then explain why.',
-    'Begin with a "but wait" moment — a counterintuitive fact most people don\'t know.',
-    'Start conversationally: "Right, so — here\'s what you actually need to know about this."',
-    'Open with a mini-checklist of the 3 things that matter most. Then go deep on each.',
-    'Begin with empathy: "I know the portal is a mess. Here\'s the no-BS walkthrough."',
-    'Start with a strong opinion: "This is the most underrated opportunity this year. Here\'s why."',
-    'Open with a comparison to a more popular exam to frame the opportunity correctly.',
-    'Begin with the consequence of NOT taking action: "If you miss this deadline, you wait another year."',
+    // ── Data-Forward Openings ──
+    'Start with a raw number: "142.5 marks. That was the cut-off." Then unpack what it means.',
+    'Open with a year-over-year comparison that immediately shows the trend.',
+    'Begin with the single most important statistic — vacancy count, cut-off, or salary figure.',
+    // ── Question Openings ──
+    'Start with the exact question the reader typed into Google. Answer it in the first sentence.',
+    'Open with a rhetorical question that challenges a common assumption about this topic.',
+    'Begin with: "What happens when [X lakh] people compete for [Y] seats?" Then break it down.',
+    // ── Urgency Openings ──
+    'Start with the deadline: "You have [X] days. Here\'s exactly what to do."',
+    'Open with breaking-news energy: "[Board] just dropped this [time] — here\'s the breakdown."',
+    'Begin with the consequence of missing the deadline. Make it visceral.',
+    // ── Empathy Openings ──
+    'Start with: "I know you\'ve been checking the portal since 6 AM. Let me save you time."',
+    'Open by acknowledging the reader\'s frustration with outdated info on other sites.',
+    'Begin with: "If your friends are telling you [myth], they\'re wrong. Here\'s the real picture."',
+    // ── Myth-Busting Openings ──
+    'Start by naming the #1 misconception about this topic. Correct it immediately.',
+    'Open with: "Everyone says [X]. The data says otherwise." Then show the data.',
+    'Begin with what the official notification says vs. what YouTube/Telegram is telling people.',
+    // ── Opinion Openings ──
+    'Start with a strong personal take: "This is genuinely the best opportunity I\'ve seen this year."',
+    'Open with: "I\'ve tracked [Org] for [X] years. This notification is different. Here\'s why."',
+    'Begin with an insider observation that shows you\'ve actually read the full notification.',
+    // ── Inverted Pyramid Openings ──
+    'Give the complete answer in 2 sentences. Then spend the rest of the article proving it.',
+    'Open with the TL;DR — who, what, when, where, how. Then go deep.',
+    'Start with: "Short answer: [direct answer]. Long answer: it\'s complicated. Let me explain."',
+    // ── Story/Anecdote Openings ──
+    'Start with a specific scenario: "Imagine you\'re at the exam center and [situation]."',
+    'Open with what happened last year when a similar notification dropped.',
+    'Begin with the most interesting detail buried on page 12 of the notification PDF.',
+    // ── Contrarian Openings ──
+    'Start with: "Everyone\'s excited about [vacancy count]. But here\'s what they\'re missing."',
+    'Open with why this opportunity isn\'t for everyone — then explain who it IS for.',
+    'Begin with: "Forget [popular exam]. This is the smarter play right now."',
+    // ── Action-First Openings ──
+    'Open with a 3-step checklist of what to do RIGHT NOW before anything else.',
+    'Start with the download/apply link and key dates. Save analysis for after.',
+    'Begin with: "Stop scrolling. Here are the 3 things that matter." Then go deep on each.',
+]
+
+/* ── Structure Seeds ─────────────────────────────────────────────── */
+
+/**
+ * Controls article skeleton to prevent template detection.
+ * Randomly selected per generation to ensure structural variety.
+ */
+const STRUCTURE_SEEDS = [
+    'Start with the most actionable section (How to Apply / How to Check). Put background context in the middle. End with analysis.',
+    'Lead with a data table (vacancy / dates / cut-off). Follow with narrative analysis. End with action steps.',
+    'Open with a mini-FAQ — answer the top 3 questions immediately as H2s. Then go deep on context.',
+    'Use an inverted pyramid: give the complete answer in 3 paragraphs, then expand each point as separate H2s.',
+    'Start with "What Changed This Year" — make comparison to last year the organizing principle of the entire article.',
+    'Lead with eligibility + who should apply. Middle: selection process deep-dive. End: salary/career growth.',
+    'Open with the most controversial or surprising aspect. Build the rest of the article around explaining it.',
+    'Structure as a problem → solution arc: what makes this confusing → here\'s the clear breakdown.',
+    'Lead with key dates + direct links (what they came for). Then add the analysis they didn\'t know they needed.',
+    'Start with a "Quick Check" section (3-4 bullet facts), then go deep. Readers who want speed get it; readers who want depth scroll down.',
+]
+
+/* ── Conclusion Seeds ────────────────────────────────────────────── */
+
+/**
+ * Randomized ending directives to prevent formulaic conclusions.
+ */
+const CONCLUSION_SEEDS = [
+    'End with a forward-looking prediction about what happens next in this recruitment/exam cycle.',
+    'End with a provocative question that makes the reader think or take action immediately.',
+    'End by calling back to your opening hook — close the loop. Make it feel intentional.',
+    'End with a practical 3-4 item next-step checklist. No fluff, just "do this now."',
+    'End with a contrarian take — suggest an alternative path or exam that might be smarter.',
+    'End with empathy and a promise: "I\'ll update this the moment [X] happens. Bookmark it."',
+    'End with a "one more thing" reveal — a detail from the notification that most people miss.',
+    'End with deadline urgency — the exact date and time the portal closes. Make it visceral.',
 ]
 
 /* ── Tone Mapper ─────────────────────────────────────────────────── */
@@ -234,7 +295,7 @@ const aiResponseSchema = {
         },
         content: {
             type: Type.STRING,
-            description: 'Full HTML content (1800+ words). Human-like tone with contractions, em dashes, varied sentence lengths. Uses [officialWebsiteUrl], [primaryLink], [notificationPdfUrl] placeholders. MUST wrap Key Takeaways in <section id="key-takeaways" data-nosnippet="false">. MUST include an FAQ section using native HTML5 <details> and <summary> tags. DO NOT include a Quick Summary box at the beginning.',
+            description: 'Full HTML content (1800+ words). Human-like tone with natural conversational flow and varied sentence lengths. DO NOT use em-dashes (—) as they look artificial in Hinglish. Uses [officialWebsiteUrl], [primaryLink], [notificationPdfUrl] placeholders. MUST wrap Key Takeaways in <section id="key-takeaways" data-nosnippet="false">. DO NOT include a Quick Summary box at the beginning. CRITICAL: DO NOT write an FAQ section inside this content block. FAQs are handled separately via the faq array field.',
         },
         keyTakeaways: {
             type: Type.ARRAY,
@@ -345,6 +406,11 @@ function buildFactualContext(data: GeneratePostInput): string {
 
 /* ── Main Generation Function ─────────────────────────────────────── */
 
+/** Max auto-retry attempts when content quality is too low */
+const MAX_GENERATION_ATTEMPTS = 3
+/** AI heuristic score threshold — content scoring above this triggers retry */
+const QUALITY_THRESHOLD = 60
+
 export async function generateContentWithGemini(data: GeneratePostInput) {
     const parsed = generatePostSchema.safeParse(data)
     if (!parsed.success) {
@@ -354,74 +420,110 @@ export async function generateContentWithGemini(data: GeneratePostInput) {
     const input = parsed.data
     const { topic, postType, primaryKeywords } = input
 
-    try {
-        // 1. Load system prompt
-        const systemPrompt = readPromptFile('system.md') || 'You are a specialized content generation assistant.'
+    // 1. Load prompts (cached)
+    const systemPrompt = readPromptFile('system.md') || 'You are a specialized content generation assistant.'
+    const typePrompt = readPromptFile(`${postType}.md`) || readPromptFile('generic.md') || 'Generate a structured article for this topic.'
+    const hinglishPrompt = input.contentLanguage === 'hinglish' ? (readPromptFile('hinglish-guide.md') || '') : ''
+    const discoverAiSeoPrompt = readPromptFile('discover-ai-seo.md') || ''
+    const keywordSeed = buildKeywordSeed(topic, postType, primaryKeywords || '')
+    const factualContext = buildFactualContext(input)
+    const tone = getToneForType(postType)
 
-        // 2. Load type-specific prompt (fallback to generic)
-        const typePrompt = readPromptFile(`${postType}.md`) || readPromptFile('generic.md') || 'Generate a structured article for this topic.'
+    let lastError = ''
+    let bestResult: Record<string, unknown> | null = null
+    let bestScore = Infinity
 
-        // 3. Build keyword seed for enrichment
-        const keywordSeed = buildKeywordSeed(topic, postType, primaryKeywords || '')
+    for (let attempt = 1; attempt <= MAX_GENERATION_ATTEMPTS; attempt++) {
+        try {
+            // 2. Select random seeds — different each attempt to ensure variety on retry
+            const styleSeed = STYLE_SEEDS[Math.floor(Math.random() * STYLE_SEEDS.length)]
+            const structureSeed = STRUCTURE_SEEDS[Math.floor(Math.random() * STRUCTURE_SEEDS.length)]
+            const conclusionSeed = CONCLUSION_SEEDS[Math.floor(Math.random() * CONCLUSION_SEEDS.length)]
 
-        // 4. Build factual context from available form data
-        const factualContext = buildFactualContext(input)
+            // 3. Construct the full prompt with all randomization layers
+            const fullPrompt = [
+                `═══ TOPIC ═══`,
+                topic,
+                '',
+                hinglishPrompt ? `═══ STRICT LANGUAGE REQUIREMENT: HINGLISH ═══\n${hinglishPrompt}\n` : '',
+                `═══ POST TYPE: ${postType.toUpperCase()} ═══`,
+                '',
+                factualContext,
+                '',
+                `═══ TONE & STYLE ═══`,
+                `Tone: ${tone}`,
+                `Opening Style: ${styleSeed}`,
+                `Article Structure: ${structureSeed}`,
+                `Ending Style: ${conclusionSeed}`,
+                `Target Audience: Government Job Seekers in India (primarily Hindi-belt, 18-35 age group)`,
+                '',
+                attempt > 1 ? `═══ QUALITY NOTE (Attempt ${attempt}) ═══\nPrevious generation was flagged as too AI-like. This attempt MUST:\n- Use dramatically different sentence lengths\n- Include more one-sentence paragraphs\n- Add more conversational asides (but DO NOT use em-dashes '—')\n- Avoid repetitive paragraph structures\n- Start paragraphs with different words\n` : '',
+                `═══ DISCOVER & AI SEO ENGINES ═══`,
+                discoverAiSeoPrompt,
+                '',
+                `═══ KEYWORD RESEARCH ═══`,
+                keywordSeed,
+                '',
+                `═══ TYPE-SPECIFIC INSTRUCTIONS ═══`,
+                typePrompt,
+            ].filter(Boolean).join('\n')
 
-        // 5. Select random writing style seed for creative variance
-        const styleSeed = STYLE_SEEDS[Math.floor(Math.random() * STYLE_SEEDS.length)]
+            // 4. Execute Gemini generation
+            const response = await ai.models.generateContent({
+                model: env.GOOGLE_GENAI_MODEL || 'gemini-2.5-flash-preview-05-20',
+                contents: fullPrompt,
+                config: {
+                    systemInstruction: systemPrompt,
+                    responseMimeType: 'application/json',
+                    responseSchema: aiResponseSchema as unknown,
+                    temperature: 0.85, // Higher for human-like creative variance
+                    topP: 0.92, // Nucleus sampling to reduce repetitive token selection
+                },
+            })
 
-        // 6. Get tone for this post type
-        const tone = getToneForType(postType)
+            if (!response.text) {
+                throw new Error('No text response received from Gemini.')
+            }
 
-        // 7. Construct the full prompt with structured sections
-        const fullPrompt = [
-            `═══ TOPIC ═══`,
-            topic,
-            '',
-            `═══ POST TYPE: ${postType.toUpperCase()} ═══`,
-            '',
-            factualContext,
-            '',
-            `═══ TONE & STYLE ═══`,
-            `Tone: ${tone}`,
-            `Writing Style Directive: ${styleSeed}`,
-            `Target Audience: Government Job Seekers in India (primarily Hindi-belt, 18-35 age group)`,
-            '',
-            `═══ KEYWORD RESEARCH ═══`,
-            keywordSeed,
-            '',
-            `═══ TYPE-SPECIFIC INSTRUCTIONS ═══`,
-            typePrompt,
-        ].join('\n')
+            const jsonResult = JSON.parse(response.text)
 
-        // 8. Execute Gemini generation with higher temperature for natural variance
-        const response = await ai.models.generateContent({
-            model: env.GOOGLE_GENAI_MODEL || 'gemini-2.5-flash-preview-05-20',
-            contents: fullPrompt,
-            config: {
-                systemInstruction: systemPrompt,
-                responseMimeType: 'application/json',
-                responseSchema: aiResponseSchema as unknown,
-                temperature: 0.8, // Higher for human-like creative variance (was 0.7)
-            },
-        })
+            // 5. Run humanization, HTML sanitization, and SEO internal linking
+            if (jsonResult.content && typeof jsonResult.content === 'string') {
+                let processedContent = sanitizeHtml(humanizeContent(jsonResult.content))
+                processedContent = injectContextualLinks(processedContent, jsonResult.focusKeyword || '')
+                jsonResult.content = processedContent
+            }
 
-        if (!response.text) {
-            throw new Error('No text response received from Gemini.')
+            // 6. Quality gate — check AI heuristic score
+            const heuristics = analyzeAiHeuristics(jsonResult.content || '')
+
+            if (heuristics.score < bestScore) {
+                bestScore = heuristics.score
+                bestResult = jsonResult
+            }
+
+            // If quality is good enough, return immediately
+            if (!heuristics.isFlagged || heuristics.score < QUALITY_THRESHOLD) {
+                return { success: true, data: jsonResult }
+            }
+
+            // Log retry reason for debugging
+            console.warn(
+                `[ai-gen] Attempt ${attempt}/${MAX_GENERATION_ATTEMPTS} flagged (score: ${heuristics.score}). Reasons: ${heuristics.reasons.join('; ')}`
+            )
+
+        } catch (e: unknown) {
+            lastError = e instanceof Error ? e.message : 'An unexpected error occurred during AI generation'
         }
-
-        const jsonResult = JSON.parse(response.text)
-
-        // 9. Run humanization and HTML sanitization post-processor on content
-        if (jsonResult.content && typeof jsonResult.content === 'string') {
-            jsonResult.content = sanitizeHtml(humanizeContent(jsonResult.content))
-        }
-
-        return { success: true, data: jsonResult }
-    } catch (e: unknown) {
-        const error = e instanceof Error ? e.message : 'An unexpected error occurred during AI generation'
-        return { error }
     }
+
+    // All attempts exhausted — return best result with human review flag
+    if (bestResult) {
+        (bestResult as Record<string, unknown>).needsHumanReview = true
+        return { success: true, data: bestResult }
+    }
+
+    return { error: lastError || 'All generation attempts failed' }
 }
 
 /* ── Post-Creation SEO Enhancement ────────────────────────────────── */
