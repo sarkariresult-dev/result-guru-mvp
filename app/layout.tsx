@@ -8,6 +8,8 @@ import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { SITE } from '@/config/site'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { buildOrganizationSchema } from '@/lib/jsonld'
 import './globals.css'
 
 /* ── Fonts ── */
@@ -205,6 +207,9 @@ export default function RootLayout({
                     </div>
                     <CookieConsentWrapper />
                 </Providers>
+
+                {/* Global Organization Schema for Knowledge Panel */}
+                <JsonLd data={[buildOrganizationSchema()]} />
 
                 {/* Google AdSense - Best practice: afterInteractive for performance, maintains auto-ads detection */}
                 {SITE.adsenseId && (

@@ -30,7 +30,8 @@ export function buildJobPostingSchema(post: PostDetail): JsonLdObject {
             '@context': 'https://schema.org',
             '@type': 'JobPosting',
             title: post.title,
-            description: post.excerpt || post.meta_description || post.title,
+            description: post.content || post.excerpt || post.meta_description || post.title,
+            occupationalCategory: 'Government Administration',
             url,
             datePosted: post.published_at ?? post.created_at,
             dateModified: post.content_updated_at ?? post.updated_at,
@@ -371,6 +372,72 @@ export function buildNewsArticleSchema(post: PostDetail): JsonLdObject {
                 name: SITE.name,
                 url: SITE.url,
             }
+        }
+    }
+}
+
+// ── Article Schema (For Evergreen Content) ───────────────────
+/**
+ * Build schema.org/Article for evergreen reference content (Syllabus, Previous Papers).
+ * This prevents Google Discover penalties for marking non-news as NewsArticle.
+ */
+export function buildArticleSchema(post: PostDetail): JsonLdObject {
+    try {
+        const url = postUrl(post.type as PostType, post.slug)
+        const publishYear = post.published_at ? new Date(post.published_at).getFullYear() : 2026
+        const schema: JsonLdObject = {
+            '@context': 'https://schema.org',
+            '@type': 'Article',
+            headline: post.title,
+            description: post.excerpt || post.meta_description || post.title,
+            isAccessibleForFree: true,
+            url,
+            datePublished: post.published_at ?? post.created_at,
+            dateModified: post.content_updated_at ?? post.updated_at,
+            copyrightHolder: {
+                '@type': 'Organization',
+                '@id': `${SITE.url}/#organization`,
+                name: SITE.publisher.name,
+            },
+            copyrightYear: publishYear,
+            publisher: {
+                '@type': 'Organization',
+                '@id': `${SITE.url}/#organization`,
+                name: SITE.publisher.name,
+                url: SITE.publisher.url,
+                logo: { '@type': 'ImageObject', url: SITE.publisher.logo },
+            },
+            author: post.author
+                ? {
+                    '@type': 'Person',
+                    name: post.author.name,
+                    url: `${SITE.url}/about`,
+                }
+                : {
+                    '@type': 'Organization',
+                    '@id': `${SITE.url}/#organization`,
+                    name: SITE.name,
+                    url: SITE.url,
+                },
+            mainEntityOfPage: {
+                '@type': 'WebPage',
+                '@id': url,
+            }
+        }
+
+        if (post.featured_image) {
+            schema.image = {
+                '@type': 'ImageObject',
+                url: post.featured_image,
+            }
+        }
+
+        return schema
+    } catch {
+        return {
+            '@context': 'https://schema.org',
+            '@type': 'Article',
+            headline: post.title ?? 'Educational Resource',
         }
     }
 }

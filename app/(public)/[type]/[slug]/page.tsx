@@ -4,7 +4,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getPostBySlug, getPosts } from '@/features/posts/queries'
 import { buildMetadata } from '@/lib/metadata'
-import { buildJobPostingSchema, buildBreadcrumbSchema, buildFAQPageSchema, buildGovernmentServiceSchema, buildNewsArticleSchema, buildHowToSchema } from '@/lib/jsonld'
+import { buildJobPostingSchema, buildBreadcrumbSchema, buildFAQPageSchema, buildGovernmentServiceSchema, buildNewsArticleSchema, buildArticleSchema, buildHowToSchema } from '@/lib/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { PostDetail } from '@/features/posts/components/PostDetail'
 import { processContentHtml, extractHowToSteps } from '@/lib/content-processing'
@@ -100,9 +100,12 @@ export default async function PostDetailPage({ params }: Props) {
 
     if (typeKey === 'job') {
         jsonLdEntries.push(buildJobPostingSchema(publishedPost))
-    }
-    if (typeKey === 'scheme' || typeKey === 'scholarship') {
+    } else if (typeKey === 'scheme' || typeKey === 'scholarship') {
         jsonLdEntries.push(buildGovernmentServiceSchema(publishedPost))
+    } else if (['syllabus', 'exam_pattern', 'previous_paper', 'admission'].includes(typeKey)) {
+        jsonLdEntries.push(buildArticleSchema(publishedPost))
+    } else {
+        jsonLdEntries.push(buildNewsArticleSchema(publishedPost))
     }
 
     jsonLdEntries.push(
@@ -129,8 +132,6 @@ export default async function PostDetailPage({ params }: Props) {
             )
         )
     }
-
-    jsonLdEntries.push(buildNewsArticleSchema(publishedPost))
 
     const { tocItems } = publishedPost.content
         ? processContentHtml(sanitizeHtml(publishedPost.content), {
@@ -198,6 +199,22 @@ export default async function PostDetailPage({ params }: Props) {
                             <div className="mx-auto max-w-3xl space-y-10">
                                 <AdZone zoneSlug="above_content" postType={typeKey} postId={publishedPost.id} initialAds={aboveContentAds} />
                                 <PostDetail post={publishedPost} slug={slug} url={canonicalUrl} />
+                                
+                                {/* Mobile/Tablet Only: Affiliate Products at the end of the post */}
+                                <div className="block lg:hidden space-y-8 mt-12 pt-8 border-t border-border">
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="h-px w-8 bg-brand-500" />
+                                        <h3 className="text-sm font-black uppercase tracking-[0.2em] text-brand-600 dark:text-brand-400">
+                                            Recommended Resources
+                                        </h3>
+                                    </div>
+                                    <Suspense fallback={<div className="h-40 bg-background-subtle rounded-2xl animate-pulse" />}>
+                                        <SidebarProducts category="books" limit={4} />
+                                    </Suspense>
+                                    <SidebarProducts category="stationery" limit={2} />
+                                    <SidebarProducts category="electronics" limit={2} />
+                                </div>
+
                                 <div className="space-y-12">
                                     <AdZone zoneSlug="below_content" postType={typeKey} postId={publishedPost.id} initialAds={belowContentAds} />
                                     <Suspense fallback={

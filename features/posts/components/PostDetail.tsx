@@ -14,7 +14,6 @@ import type { FaqItem } from '@/types/post-content.types'
 import { AuthorBox } from './AuthorBox'
 import { ShareBar } from './ShareBar'
 import { ActionCenter } from './ActionCenter'
-import { ProductInjection } from '@/features/affiliate/components/ProductInjection'
 import { InlineNewsletterCTA } from './InlineNewsletterCTA'
 import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
 import { Calendar, Clock, Tag, ShieldCheck } from 'lucide-react'
@@ -193,18 +192,6 @@ export function PostDetail({ post, slug, url }: PostDetailProps) {
             renderedSections.push(rendered)
             sectionCount++
 
-            // Insert contextual product injection after the first section (usually summary or dates)
-            if (sectionCount === 1 && post.type === 'job') {
-                renderedSections.push(
-                    <ProductInjection
-                        key="contextual-books"
-                        category="books"
-                        label="Top Recommended Book"
-                        description="This guide is highly recommended for complete syllabus coverage."
-                    />
-                )
-            }
-
             // Insert inline ad zone after every 3rd rendered section
             if (sectionCount % 3 === 0 && section !== 'tags') {
                 renderedSections.push(
@@ -303,12 +290,18 @@ export function PostDetail({ post, slug, url }: PostDetailProps) {
                 </figure>
             </LocalErrorBoundary>
 
-            {/* Excerpt */}
+            {/* Excerpt / Expert Take */}
             {post.excerpt && (
-                <div className="space-y-8">
-                    <p className="border-l-8 border-brand-500 pl-8 py-4 text-2xl font-black text-foreground leading-[1.4] bg-linear-to-r from-brand-50/50 to-transparent dark:from-brand-900/10 rounded-r-4xl">
-                        {post.excerpt}
-                    </p>
+                <div className="space-y-8 my-8">
+                    <div className="relative bg-brand-50 border border-brand-200 p-6 sm:p-8 rounded-3xl dark:bg-brand-950/30 dark:border-brand-800 shadow-sm">
+                        <div className="absolute -top-4 left-6 px-4 py-1.5 bg-brand-600 text-white text-[10px] sm:text-xs font-black uppercase tracking-widest rounded-full shadow-md flex items-center gap-2">
+                            <ShieldCheck className="size-3.5" />
+                            Expert's Take
+                        </div>
+                        <p className="text-lg sm:text-xl font-bold text-foreground leading-relaxed pt-2">
+                            {post.excerpt}
+                        </p>
+                    </div>
                     <ShareBar title={post.title} url={url} />
                 </div>
             )}
@@ -339,6 +332,22 @@ export function PostDetail({ post, slug, url }: PostDetailProps) {
                     .
                 </p>
             )}
+
+            {/* ── Mobile Sticky Action Bar (Dwell Time / UX) ─────── */}
+            <div className="fixed bottom-0 left-0 right-0 p-3 sm:p-4 bg-white/90 backdrop-blur-md dark:bg-slate-950/90 border-t border-border shadow-[0_-8px_30px_-15px_rgba(0,0,0,0.1)] z-50 md:hidden flex justify-between gap-3 animate-in slide-in-from-bottom-10 duration-500">
+                {post.primary_link && (
+                    <a href={post.primary_link} target="_blank" rel="noopener noreferrer" className="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-black uppercase tracking-widest text-xs py-3.5 rounded-xl text-center shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2">
+                        {getActionLinkPageLabel(typeKey)}
+                    </a>
+                )}
+                {post.notification_pdf && (
+                    <a href={post.notification_pdf} target="_blank" rel="noopener noreferrer" className="bg-slate-100 hover:bg-slate-200 text-foreground font-black uppercase tracking-widest text-xs py-3.5 px-6 rounded-xl text-center border border-border active:scale-95 transition-all shadow-sm">
+                        PDF
+                    </a>
+                )}
+            </div>
+            {/* Invisible spacer to prevent footer overlap with sticky nav */}
+            <div className="h-20 md:hidden" />
         </div>
     )
 }
