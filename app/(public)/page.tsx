@@ -29,6 +29,7 @@ export const metadata = buildPageMetadata({
     title: 'Result Guru – Sarkari Results, Govt Jobs & Admit Cards 2026',
     description: 'Get latest Sarkari Results, Govt Jobs, Admit Cards, Answer Keys & Exam Updates 2026. Fast, accurate & daily updated.',
     path: '/',
+    absoluteTitle: true,
 })
 
 /* ── Stat card configuration ─────────────────────────────────────── */

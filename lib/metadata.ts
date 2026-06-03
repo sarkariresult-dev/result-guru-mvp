@@ -375,13 +375,14 @@ export function buildPageMetadata(opts: {
     description: string
     path: string
     noindex?: boolean
+    absoluteTitle?: boolean
 }): Metadata {
     const url = `${SITE.url}${opts.path.startsWith('/') ? opts.path : `/${opts.path}`}`
     const title = formatTitle(opts.title)
     const description = formatDescription(opts.description)
 
     return {
-        title,
+        title: opts.absoluteTitle ? { absolute: title } : title,
         description,
         alternates: { canonical: url },
         robots: opts.noindex
