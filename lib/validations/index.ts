@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { PostStatus } from '@/types/enums'
 
 // ── Auth ───────────────────────────────────────────────────
 
@@ -55,17 +56,15 @@ const POST_TYPES = [
     'scheme', 'exam', 'admission', 'scholarship', 'notification',
 ] as const
 
-/** All 5 post_status enum values from 002_enums.sql */
-const POST_STATUSES = [
-    'draft', 'review', 'scheduled', 'published', 'archived',
-] as const
+/** Derived from PostStatus enum — always in sync */
+const POST_STATUSES = Object.values(PostStatus) as [PostStatus, ...PostStatus[]]
 
 
 
 export const postSchema = z.object({
     // Identity
     type: z.enum(POST_TYPES),
-    status: z.enum(POST_STATUSES).default('draft'),
+    status: z.enum(POST_STATUSES).default(PostStatus.Draft),
     application_start_date: z.string().datetime({ offset: true }).nullable().optional(),
     application_end_date: z.string().datetime({ offset: true }).nullable().optional(),
 
@@ -144,11 +143,7 @@ export type SubscribeInput = z.infer<typeof subscribeSchema>
 
 // ── SEO Settings ───────────────────────────────────────────
 
-export const seoSettingSchema = z.object({
-    key: z.string().min(1),
-    value: z.string(),
-})
-export type SeoSettingInput = z.infer<typeof seoSettingSchema>
+
 
 // ── Contact Form ───────────────────────────────────────────
 
@@ -220,6 +215,14 @@ export const organizationSchema = z.object({
     logo_url: z.string().nullable().optional(),
     description: z.string().max(1000).nullable().optional(),
     is_active: z.boolean().default(true),
+    sources: z.array(z.object({
+        id: z.string().uuid(),
+        name: z.string().min(1, 'Source name is required'),
+        url: z.string().url('Invalid URL'),
+        selector: z.string().nullable().optional(),
+        source_type: z.string().default('webpage'),
+        is_active: z.boolean().default(true),
+    })).default([]),
     meta_title: z.string().max(70).nullable().optional(),
     meta_description: z.string().max(165).nullable().optional(),
     meta_robots: z.string().default('index,follow'),
@@ -233,6 +236,16 @@ export const organizationSchema = z.object({
     ]).nullable().optional(),
 })
 export type OrganizationInput = z.infer<typeof organizationSchema>
+
+export const organizationSourceSchema = z.object({
+    organization_id: z.string().uuid(),
+    name: z.string().min(1, 'Name is required').max(200),
+    url: z.string().url('Invalid URL'),
+    selector: z.string().nullable().optional(),
+    source_type: z.string().default('webpage'),
+    is_active: z.boolean().default(true),
+})
+export type OrganizationSourceInput = z.infer<typeof organizationSourceSchema>
 
 // ── Taxonomy: State ────────────────────────────────────────
 

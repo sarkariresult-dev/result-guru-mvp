@@ -1,6 +1,10 @@
 /**
  * Upstash Redis-backed sliding-window rate limiter (C4).
  * Works securely across all Vercel serverless Edge functions.
+ * 
+ * Securely hardened with automated E2E test bypasses:
+ * - NODE_ENV === 'test' bypasses limits.
+ * - X-E2E-Bypass-Token header matching E2E_BYPASS_TOKEN bypasses limits in staging.
  */
 
 import { Ratelimit } from '@upstash/ratelimit'
@@ -18,46 +22,83 @@ const redis = isRedisConfigured
     : null
 
 
+/* ── Helper to wrap Ratelimit instance with E2E bypass logic ─────────────── */
+
+function wrapLimiter(limiter: Ratelimit): Ratelimit {
+    // If Redis is not configured, limiter is already a mock
+    if (!redis) return limiter;
+
+    const originalLimit = limiter.limit.bind(limiter);
+
+    limiter.limit = (async function(
+        identifier: string,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        req?: any
+    ) {
+        // 1. Bypass automatically during local test runs
+        if (process.env.NODE_ENV === 'test') {
+            return { success: true, reset: 0, limit: 0, remaining: 0, pending: Promise.resolve() };
+        }
+
+        // 2. Bypass via secure request header matching E2E_BYPASS_TOKEN env
+        try {
+            const { headers } = await import('next/headers');
+            const headersList = await headers();
+            const bypassHeader = headersList.get('x-e2e-bypass-token');
+            if (process.env.E2E_BYPASS_TOKEN && bypassHeader === process.env.E2E_BYPASS_TOKEN) {
+                return { success: true, reset: 0, limit: 0, remaining: 0, pending: Promise.resolve() };
+            }
+        } catch {
+            // Safe to ignore: called outside Next.js request context (e.g. build time, static params)
+        }
+
+        return originalLimit(identifier, req);
+    }) as typeof limiter.limit;
+
+    return limiter;
+}
+
+
 /* ── Pre-configured limiters for different API routes ────────────────────── */
 
 /** Newsletter subscribe: 5 requests per minute per IP */
-export const subscribeLimiter = redis ? new Ratelimit({
+export const subscribeLimiter = wrapLimiter(redis ? new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(5, '1 m'),
     analytics: true,
-}) : { limit: async () => ({ success: true }) } as unknown as Ratelimit
+}) : { limit: async () => ({ success: true }) } as unknown as Ratelimit)
 
 
 /** View tracking: 30 requests per minute per IP */
-export const viewLimiter = redis ? new Ratelimit({
+export const viewLimiter = wrapLimiter(redis ? new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(30, '1 m'),
     analytics: true,
-}) : { limit: async () => ({ success: true }) } as unknown as Ratelimit
+}) : { limit: async () => ({ success: true }) } as unknown as Ratelimit)
 
 
 /** Revalidate: 10 requests per minute per IP */
-export const revalidateLimiter = redis ? new Ratelimit({
+export const revalidateLimiter = wrapLimiter(redis ? new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(10, '1 m'),
     analytics: true,
-}) : { limit: async () => ({ success: true }) } as unknown as Ratelimit
+}) : { limit: async () => ({ success: true }) } as unknown as Ratelimit)
 
 
 /** Search: 20 requests per minute per IP */
-export const searchLimiter = redis ? new Ratelimit({
+export const searchLimiter = wrapLimiter(redis ? new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(20, '1 m'),
     analytics: true,
-}) : { limit: async () => ({ success: true }) } as unknown as Ratelimit
+}) : { limit: async () => ({ success: true }) } as unknown as Ratelimit)
 
 
 /** General API: 60 requests per minute per IP */
-export const generalLimiter = redis ? new Ratelimit({
+export const generalLimiter = wrapLimiter(redis ? new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(60, '1 m'),
     analytics: true,
-}) : { limit: async () => ({ success: true }) } as unknown as Ratelimit
+}) : { limit: async () => ({ success: true }) } as unknown as Ratelimit)
 
 
 /* ── Helper to extract client IP from NextRequest ────────────────────────── */

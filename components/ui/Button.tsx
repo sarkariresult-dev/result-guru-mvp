@@ -1,4 +1,7 @@
+'use client'
+
 import { forwardRef, type ButtonHTMLAttributes } from 'react'
+import { useFormStatus } from 'react-dom'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
@@ -35,14 +38,17 @@ export interface ButtonProps
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant, size, loading, children, disabled, ...props }, ref) => {
+        const { pending } = useFormStatus()
+        const isLoading = loading || (props.type === 'submit' && pending)
+
         return (
             <button
                 ref={ref}
-                disabled={disabled || loading}
+                disabled={disabled || isLoading}
                 className={cn(buttonVariants({ variant, size }), className)}
                 {...props}
             >
-                {loading && (
+                {isLoading && (
                     <span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                 )}
                 {children}

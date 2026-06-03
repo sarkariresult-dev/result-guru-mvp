@@ -65,7 +65,7 @@ export function OrgsClient({ organizations, stateOptions, count, children }: Org
                                 <tr>
                                     <th className="px-4 py-3 text-left font-medium text-foreground-muted">Name</th>
                                     <th className="px-4 py-3 text-left font-medium text-foreground-muted">State</th>
-                                    <th className="px-4 py-3 text-left font-medium text-foreground-muted">Website</th>
+                                    <th className="px-4 py-3 text-left font-medium text-foreground-muted">Sources</th>
                                     <th className="px-4 py-3 text-left font-medium text-foreground-muted">Status</th>
                                     <th className="px-4 py-3 text-left font-medium text-foreground-muted">Created</th>
                                     <th className="px-4 py-3 text-right font-medium text-foreground-muted">Actions</th>
@@ -74,17 +74,17 @@ export function OrgsClient({ organizations, stateOptions, count, children }: Org
                             <tbody className="divide-y divide-border">
                                 {organizations.map((org) => (
                                     <tr key={org.id} className="transition-colors hover:bg-background-subtle">
-                                        <td className="px-4 py-3">
+                                        <td className="px-4 py-3 max-w-[250px] sm:max-w-[300px]">
                                             <div className="flex items-center gap-2">
                                                 {org.logo_url && (
                                                     // eslint-disable-next-line @next/next/no-img-element -- dynamic org logo from admin
                                                     <img
                                                         src={org.logo_url}
                                                         alt=""
-                                                        className="size-6 rounded object-contain"
+                                                        className="size-6 shrink-0 rounded object-contain"
                                                     />
                                                 )}
-                                                <div>
+                                                <div className="truncate" title={org.name}>
                                                     <span className="font-medium">{org.name}</span>
                                                     {org.short_name && (
                                                         <span className="ml-1.5 text-xs text-foreground-subtle">({org.short_name})</span>
@@ -96,17 +96,12 @@ export function OrgsClient({ organizations, stateOptions, count, children }: Org
                                             {org.state_slug ?? <span className="text-foreground-subtle">Central</span>}
                                         </td>
                                         <td className="px-4 py-3">
-                                            {org.official_url ? (
-                                                <a
-                                                    href={org.official_url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex items-center gap-1 text-xs text-brand-600 hover:underline"
-                                                >
-                                                    Visit <ExternalLink className="size-3" />
-                                                </a>
+                                            {org.sources && org.sources.length > 0 ? (
+                                                <span className="inline-flex items-center gap-1 rounded bg-brand-50 px-1.5 py-0.5 text-xs font-medium text-brand-700 dark:bg-brand-900/30 dark:text-brand-300">
+                                                    {org.sources.length} active
+                                                </span>
                                             ) : (
-                                                <span className="text-xs text-foreground-subtle">-</span>
+                                                <span className="text-xs text-foreground-subtle">None</span>
                                             )}
                                         </td>
                                         <td className="px-4 py-3">
@@ -123,12 +118,25 @@ export function OrgsClient({ organizations, stateOptions, count, children }: Org
                                             })}
                                         </td>
                                         <td className="px-4 py-3 text-right">
-                                            <TaxonomyActions
-                                                entityId={org.id}
-                                                entityName={org.name}
-                                                onEdit={() => handleEdit(org)}
-                                                deleteAction={deleteOrganization}
-                                            />
+                                            <div className="flex items-center justify-end gap-2">
+                                                {org.official_url && (
+                                                    <a
+                                                        href={org.official_url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="rounded p-1.5 text-foreground-muted hover:bg-brand-50 hover:text-brand-600 dark:hover:bg-brand-900/20 dark:hover:text-brand-400 transition-colors"
+                                                        title="Visit Website"
+                                                    >
+                                                        <ExternalLink className="size-4" />
+                                                    </a>
+                                                )}
+                                                <TaxonomyActions
+                                                    entityId={org.id}
+                                                    entityName={org.name}
+                                                    onEdit={() => handleEdit(org)}
+                                                    deleteAction={deleteOrganization}
+                                                />
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -153,12 +161,25 @@ export function OrgsClient({ organizations, stateOptions, count, children }: Org
                                             )}
                                         </div>
                                     </div>
-                                    <TaxonomyActions
-                                        entityId={org.id}
-                                        entityName={org.name}
-                                        onEdit={() => handleEdit(org)}
-                                        deleteAction={deleteOrganization}
-                                    />
+                                    <div className="flex items-center gap-2">
+                                        {org.official_url && (
+                                            <a
+                                                href={org.official_url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="rounded p-1.5 text-foreground-muted hover:bg-brand-50 hover:text-brand-600 dark:hover:bg-brand-900/20 dark:hover:text-brand-400 transition-colors"
+                                                title="Visit Website"
+                                            >
+                                                <ExternalLink className="size-4" />
+                                            </a>
+                                        )}
+                                        <TaxonomyActions
+                                            entityId={org.id}
+                                            entityName={org.name}
+                                            onEdit={() => handleEdit(org)}
+                                            deleteAction={deleteOrganization}
+                                        />
+                                    </div>
                                 </div>
                                 <div className="mt-2 flex flex-wrap items-center gap-2">
                                     <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium ${org.is_active
@@ -170,6 +191,9 @@ export function OrgsClient({ organizations, stateOptions, count, children }: Org
                                     {org.state_slug && (
                                         <span className="text-xs text-foreground-muted">{org.state_slug}</span>
                                     )}
+                                    <span className="rounded bg-background-subtle px-1.5 py-0.5 text-[10px] font-medium text-foreground-muted">
+                                        {org.sources && org.sources.length > 0 ? `${org.sources.length} active` : 'No sources'}
+                                    </span>
                                 </div>
                             </div>
                         ))}

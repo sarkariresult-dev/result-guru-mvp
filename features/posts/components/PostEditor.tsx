@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/Textarea'
 import { Select } from '@/components/ui/Select'
 import { Button } from '@/components/ui/Button'
 import { POST_TYPES, APPLICATION_STATUSES } from '@/config/constants'
+import { PostStatus } from '@/types/enums'
 
 interface Props {
     initialData?: Record<string, unknown>
@@ -15,7 +16,7 @@ interface Props {
 
 export function PostEditor({ initialData, onSubmit, loading }: Props) {
     const [data, setData] = useState<Record<string, unknown>>(initialData ?? {
-        title: '', slug: '', type: 'job', status: 'draft',
+        title: '', slug: '', type: 'job', status: PostStatus.Draft,
         application_start_date: null, application_end_date: null,
         excerpt: '', content: '', state_slug: '', organization_id: '',
     })
@@ -75,12 +76,12 @@ export function PostEditor({ initialData, onSubmit, loading }: Props) {
                 </div>
                 <div>
                     <label className="mb-1 block text-sm font-medium">Status</label>
-                    <Select value={String(data['status'] ?? 'draft')} onChange={(e) => update('status', e.target.value)}>
-                        <option value="draft">Draft</option>
-                        <option value="review">In Review</option>
-                        <option value="published">Published</option>
-                        <option value="scheduled">Scheduled</option>
-                        <option value="archived">Archived</option>
+                    <Select value={String(data['status'] ?? PostStatus.Draft)} onChange={(e) => update('status', e.target.value)}>
+                        <option value={PostStatus.Draft}>Draft</option>
+                        <option value={PostStatus.Review}>In Review</option>
+                        <option value={PostStatus.Published}>Published</option>
+                        <option value={PostStatus.Scheduled}>Scheduled</option>
+                        <option value={PostStatus.Archived}>Archived</option>
                     </Select>
                 </div>
                 <div>

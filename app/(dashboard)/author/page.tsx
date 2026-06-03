@@ -1,14 +1,27 @@
 import { createServerClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { FileText, Eye, TrendingUp, PenLine, Plus, ArrowRight } from 'lucide-react'
-import { getAuthorStats } from '@/lib/queries/analytics'
+import { FileText, TrendingUp, PenLine, Plus, ArrowRight } from 'lucide-react'
 import { getAuthorPosts } from '@/features/posts/queries'
 import { StatsCard } from '@/features/dashboard/components/StatsCard'
 import { POST_TYPE_CONFIG, POST_STATUS_CONFIG } from '@/config/constants'
 import Link from 'next/link'
 import type { PostTypeKey } from '@/config/site'
 import type { PostStatus } from '@/types/enums'
-import { PostPerformanceWidget } from '@/features/admin/components/PostPerformanceWidget'
+
+async function getSimpleAuthorStats(authorId: string) {
+    const supabase = await createServerClient()
+    const [totalRes, publishedRes, draftRes] = await Promise.all([
+        supabase.from('posts').select('id', { count: 'exact', head: true }).eq('author_id', authorId),
+        supabase.from('posts').select('id', { count: 'exact', head: true }).eq('author_id', authorId).eq('status', 'published'),
+        supabase.from('posts').select('id', { count: 'exact', head: true }).eq('author_id', authorId).eq('status', 'draft'),
+    ])
+
+    return {
+        totalPosts: totalRes.count ?? 0,
+        publishedPosts: publishedRes.count ?? 0,
+        draftPosts: draftRes.count ?? 0,
+    }
+}
 
 export default async function AuthorDashboardPage() {
     const supabase = await createServerClient()
@@ -25,7 +38,7 @@ export default async function AuthorDashboardPage() {
     const authorId = dbUser.id as string
 
     const [stats, { data: recentPosts }] = await Promise.all([
-        getAuthorStats(authorId),
+        getSimpleAuthorStats(authorId),
         getAuthorPosts(authorId, { limit: 5 }),
     ])
 
@@ -53,7 +66,7 @@ export default async function AuthorDashboardPage() {
             </div>
 
             {/* Stats grid */}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <StatsCard
                     title="Total Posts"
                     value={stats.totalPosts}
@@ -72,23 +85,7 @@ export default async function AuthorDashboardPage() {
                     description="Awaiting completion"
                     icon={PenLine}
                 />
-                <StatsCard
-                    title="Total Views"
-                    value={stats.totalViews.toLocaleString()}
-                    description="Across all published posts"
-                    icon={Eye}
-                />
             </div>
-
-            {/* Performance Monitoring Widget */}
-            <PostPerformanceWidget 
-                stats={recentPosts.map(p => ({
-                    id: p.id,
-                    title: p.title,
-                    view_count: p.view_count,
-                    total_time_on_page: p.total_time_on_page
-                })).sort((a, b) => b.total_time_on_page - a.total_time_on_page)} 
-            />
 
             {/* Recent posts */}
             <section className="rounded-xl border border-border bg-surface">
@@ -155,9 +152,6 @@ export default async function AuthorDashboardPage() {
                                             </span>
                                         </div>
                                     </div>
-                                    <span className="shrink-0 text-sm tabular-nums text-foreground-muted">
-                                        {post.view_count.toLocaleString()} views
-                                    </span>
                                 </Link>
                             )
                         })}

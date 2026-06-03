@@ -27,6 +27,17 @@ function slugify(text: string): string {
         .replace(/^-|-$/g, '')
 }
 
+function generateUUID(): string {
+    if (typeof window !== 'undefined' && window.crypto?.randomUUID) {
+        return window.crypto.randomUUID()
+    }
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0
+        const v = c === 'x' ? r : (r & 0x3 | 0x8)
+        return v.toString(16)
+    })
+}
+
 export function OrgForm({ open, onClose, organization, stateOptions }: OrgFormProps) {
     const isEditing = !!organization
     const router = useRouter()
@@ -34,7 +45,21 @@ export function OrgForm({ open, onClose, organization, stateOptions }: OrgFormPr
     const [error, setError] = useState('')
     const [slugTouched, setSlugTouched] = useState(false)
 
-    const [form, setForm] = useState({
+    const [form, setForm] = useState<{
+        name: string
+        slug: string
+        short_name: string
+        state_slug: string
+        official_url: string
+        logo_url: string
+        description: string
+        is_active: boolean
+        sources: Array<{ id: string; name: string; url: string; selector: string | null | undefined; source_type: string; is_active: boolean }>
+        meta_title: string
+        meta_description: string
+        meta_robots: string
+        schema_json: string
+    }>({
         name: '',
         slug: '',
         short_name: '',
@@ -43,6 +68,7 @@ export function OrgForm({ open, onClose, organization, stateOptions }: OrgFormPr
         logo_url: '',
         description: '',
         is_active: true,
+        sources: [],
         meta_title: '',
         meta_description: '',
         meta_robots: 'index,follow',
@@ -61,6 +87,7 @@ export function OrgForm({ open, onClose, organization, stateOptions }: OrgFormPr
                     logo_url: organization.logo_url ?? '',
                     description: organization.description ?? '',
                     is_active: organization.is_active,
+                    sources: (organization.sources || []) as Array<{ id: string; name: string; url: string; selector: string | null | undefined; source_type: string; is_active: boolean }>,
                     meta_title: organization.meta_title ?? '',
                     meta_description: organization.meta_description ?? '',
                     meta_robots: organization.meta_robots ?? 'index,follow',
@@ -71,7 +98,7 @@ export function OrgForm({ open, onClose, organization, stateOptions }: OrgFormPr
                 setForm({
                     name: '', slug: '', short_name: '', state_slug: '',
                     official_url: '', logo_url: '', description: '',
-                    is_active: true, meta_title: '', meta_description: '',
+                    is_active: true, sources: [], meta_title: '', meta_description: '',
                     meta_robots: 'index,follow', schema_json: '',
                 })
                 setSlugTouched(false)
@@ -88,6 +115,30 @@ export function OrgForm({ open, onClose, organization, stateOptions }: OrgFormPr
         }))
     }
 
+    function handleAddSource() {
+        setForm(prev => ({
+            ...prev,
+            sources: [
+                ...prev.sources,
+                { id: generateUUID(), name: '', url: '', selector: '', source_type: 'webpage', is_active: true }
+            ]
+        }))
+    }
+
+    function handleRemoveSource(index: number) {
+        setForm(prev => ({
+            ...prev,
+            sources: prev.sources.filter((_, i) => i !== index)
+        }))
+    }
+
+    function handleSourceChange(index: number, key: string, value: any) {
+        setForm(prev => ({
+            ...prev,
+            sources: prev.sources.map((s, i) => i === index ? { ...s, [key]: value } : s)
+        }))
+    }
+
     function handleSubmit() {
         setError('')
         startTransition(async () => {
@@ -100,6 +151,7 @@ export function OrgForm({ open, onClose, organization, stateOptions }: OrgFormPr
                 logo_url: form.logo_url || null,
                 description: form.description || null,
                 is_active: form.is_active,
+                sources: form.sources,
                 meta_title: form.meta_title || null,
                 meta_description: form.meta_description || null,
                 meta_robots: form.meta_robots || 'index,follow',
@@ -208,6 +260,89 @@ export function OrgForm({ open, onClose, organization, stateOptions }: OrgFormPr
                     />
                     <label htmlFor="org-active" className="text-sm font-medium">Active</label>
                 </div>
+
+                {isEditing && (
+                    <details className="rounded-lg border border-border">
+                        <summary className="cursor-pointer px-4 py-2 text-sm font-medium text-foreground-muted">
+                            Monitoring Sources ({form.sources.length})
+                        </summary>
+                        <div className="space-y-4 px-4 pb-4 pt-2">
+                            {form.sources.map((s, idx) => (
+                                <div key={s.id} className="relative space-y-3 rounded-lg border border-border p-3 bg-background-subtle">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-xs font-semibold text-foreground-muted">Source #{idx + 1}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveSource(idx)}
+                                            className="text-xs font-medium text-red-500 hover:text-red-700 transition-colors"
+                                        >
+                                            Remove
+                                        </button>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <label className="mb-0.5 block text-xs font-medium text-foreground-muted">Source Name *</label>
+                                            <Input
+                                                value={s.name}
+                                                onChange={e => handleSourceChange(idx, 'name', e.target.value)}
+                                                placeholder="e.g. Notices Board"
+                                            />
+                                        </div>
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <label className="mb-0.5 block text-xs font-medium text-foreground-muted">URL *</label>
+                                            <Input
+                                                type="url"
+                                                value={s.url}
+                                                onChange={e => handleSourceChange(idx, 'url', e.target.value)}
+                                                placeholder="https://ssc.nic.in/portal/notices"
+                                            />
+                                        </div>
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <label className="mb-0.5 block text-xs font-medium text-foreground-muted">CSS Selector (Optional)</label>
+                                            <Input
+                                                value={s.selector || ''}
+                                                onChange={e => handleSourceChange(idx, 'selector', e.target.value)}
+                                                placeholder="e.g. .notice-list"
+                                            />
+                                        </div>
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <label className="mb-0.5 block text-xs font-medium text-foreground-muted">Type</label>
+                                            <Select
+                                                value={s.source_type}
+                                                onChange={e => handleSourceChange(idx, 'source_type', e.target.value)}
+                                            >
+                                                <option value="webpage">Webpage</option>
+                                                <option value="rss">RSS</option>
+                                                <option value="json_api">API</option>
+                                            </Select>
+                                        </div>
+                                        <div className="col-span-2">
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="checkbox"
+                                                    id={`source-active-${s.id}`}
+                                                    checked={s.is_active}
+                                                    onChange={e => handleSourceChange(idx, 'is_active', e.target.checked)}
+                                                    className="size-3.5 rounded border-border"
+                                                />
+                                                <label htmlFor={`source-active-${s.id}`} className="text-xs font-medium text-foreground-muted">Active (Will be crawled)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                size="sm"
+                                className="w-full"
+                                onClick={handleAddSource}
+                            >
+                                + Add Source
+                            </Button>
+                        </div>
+                    </details>
+                )}
 
                 <details className="rounded-lg border border-border">
                     <summary className="cursor-pointer px-4 py-2 text-sm font-medium text-foreground-muted">

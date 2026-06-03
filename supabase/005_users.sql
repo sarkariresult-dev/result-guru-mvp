@@ -133,3 +133,8 @@ DO $$ BEGIN
     ON auth.users
     FOR EACH ROW EXECUTE FUNCTION fn_handle_user_login();
 EXCEPTION WHEN duplicate_object THEN NULL; END$$;
+
+REVOKE EXECUTE ON FUNCTION fn_sync_role_to_claims() FROM anon, authenticated;
+REVOKE EXECUTE ON FUNCTION fn_handle_new_auth_user() FROM anon, authenticated;
+REVOKE EXECUTE ON FUNCTION fn_backfill_role_claims() FROM anon, authenticated;
+REVOKE EXECUTE ON FUNCTION fn_handle_user_login() FROM anon, authenticated;

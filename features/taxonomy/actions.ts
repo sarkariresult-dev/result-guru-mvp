@@ -2,7 +2,7 @@
 
 import { createServerClient } from '@/lib/supabase/server'
 import { revalidatePath, revalidateTag } from 'next/cache'
-import { categorySchema, tagSchema, organizationSchema, stateSchema, qualificationSchema } from '@/lib/validations'
+import { categorySchema, tagSchema, organizationSchema, stateSchema, qualificationSchema, organizationSourceSchema } from '@/lib/validations'
 import { z } from 'zod'
 
 // ── Helpers ────────────────────────────────────────────────
@@ -198,13 +198,41 @@ export async function updateOrganization(id: string, data: Partial<z.infer<typeo
     }
 
     const supabase = await createServerClient()
+    const { sources, ...orgData } = parsed.data
     const updateRow: Record<string, unknown> = {}
-    for (const [key, value] of Object.entries(parsed.data)) {
+    for (const [key, value] of Object.entries(orgData)) {
         updateRow[key] = value === '' ? null : (value ?? null)
     }
 
     const { error } = await supabase.from('organizations').update(updateRow).eq('id', id)
     if (error) return { error: error.message }
+
+    if (sources !== undefined) {
+        // Sync sources
+        const { data: existingSources } = await supabase.from('organization_sources').select('id').eq('organization_id', id)
+        
+        const existingIds = new Set(existingSources?.map(s => s.id) || [])
+        const incomingIds = new Set(sources.filter(s => s.id).map(s => s.id))
+
+        // Delete removed sources
+        const idsToDelete = [...existingIds].filter(sid => !incomingIds.has(sid))
+        if (idsToDelete.length > 0) {
+            await supabase.from('organization_sources').delete().in('id', idsToDelete)
+        }
+
+        // Upsert incoming sources
+        for (const s of sources) {
+            await supabase.from('organization_sources').upsert({
+                id: s.id,
+                organization_id: id,
+                name: s.name,
+                url: s.url,
+                selector: s.selector || null,
+                is_active: s.is_active ?? true,
+                source_type: s.source_type ?? 'webpage',
+            })
+        }
+    }
 
     revalidateTaxonomy()
     return { success: true }
@@ -217,6 +245,58 @@ export async function deleteOrganization(id: string) {
 
     const supabase = await createServerClient()
     const { error } = await supabase.from('organizations').delete().eq('id', id)
+    if (error) return { error: error.message }
+
+    revalidateTaxonomy()
+    return { success: true }
+}
+
+// ── Organization Sources ───────────────────────────────────
+
+export async function createOrganizationSource(data: z.infer<typeof organizationSourceSchema>) {
+    const parsed = organizationSourceSchema.safeParse(data)
+    if (!parsed.success) {
+        return { error: parsed.error.issues.map(i => i.message).join(', ') }
+    }
+
+    const supabase = await createServerClient()
+    const { error } = await supabase.from('organization_sources').insert(parsed.data)
+    if (error) return { error: error.message }
+
+    revalidateTaxonomy()
+    return { success: true }
+}
+
+export async function updateOrganizationSource(id: string, data: Partial<z.infer<typeof organizationSourceSchema>>) {
+    if (!z.string().uuid().safeParse(id).success) {
+        return { error: 'Invalid source ID' }
+    }
+
+    const parsed = organizationSourceSchema.partial().safeParse(data)
+    if (!parsed.success) {
+        return { error: parsed.error.issues.map(i => i.message).join(', ') }
+    }
+
+    const supabase = await createServerClient()
+    const updateRow: Record<string, unknown> = {}
+    for (const [key, value] of Object.entries(parsed.data)) {
+        updateRow[key] = value ?? null
+    }
+
+    const { error } = await supabase.from('organization_sources').update(updateRow).eq('id', id)
+    if (error) return { error: error.message }
+
+    revalidateTaxonomy()
+    return { success: true }
+}
+
+export async function deleteOrganizationSource(id: string) {
+    if (!z.string().uuid().safeParse(id).success) {
+        return { error: 'Invalid source ID' }
+    }
+
+    const supabase = await createServerClient()
+    const { error } = await supabase.from('organization_sources').delete().eq('id', id)
     if (error) return { error: error.message }
 
     revalidateTaxonomy()

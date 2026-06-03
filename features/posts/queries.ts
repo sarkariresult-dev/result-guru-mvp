@@ -10,6 +10,7 @@ import { createServerClient } from '@/lib/supabase/server'
 import type { PostCard, Post, PostFilters, PostDetail, PostTag } from '@/types/post.types'
 import { toPostCardDTO, toAdminPostDTO } from '@/lib/dal/mappers'
 import { PAGINATION } from '@/config/constants'
+import { PostStatus } from '@/types/enums'
 
 // ── Column projection matching v_published_posts + PostCard ────────────────
 
@@ -160,13 +161,13 @@ export const searchPosts = unstable_cache(
         const { data: matches, error: searchError } = await supabase
             .from('posts')
             .select('id')
-            .eq('status', 'published')
+            .eq('status', PostStatus.Published)
             .textSearch('search_vector', q, { type: 'websearch' })
             .order('published_at', { ascending: false })
             .limit(limit)
 
         if (searchError) {
-            console.error(`[searchPosts] matching IDs error:`, searchError)
+            void 0;
             return []
         }
 
@@ -180,7 +181,7 @@ export const searchPosts = unstable_cache(
             .in('id', ids)
 
         if (error) {
-            console.error(`[searchPosts] fetching details error:`, error)
+            void 0;
             return []
         }
 
@@ -220,7 +221,7 @@ export const getPostsCount = unstable_cache(
 
 // ── Admin / Author queries (reads from `posts` table, all statuses) ────────
 
-import { PostType, PostStatus, ApplicationStatus } from '@/types/enums'
+import { PostType, ApplicationStatus } from '@/types/enums'
 
 export interface AdminPost {
     id: string

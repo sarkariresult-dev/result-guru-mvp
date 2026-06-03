@@ -3,23 +3,22 @@
 import { type ReactNode, useState, useCallback, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { X } from 'lucide-react'
-import { Sidebar, GroupedSidebar } from '@/components/layout/Sidebar'
+import { Sidebar, GroupedSidebar, getNavGroups } from '@/components/layout/Sidebar'
 import { DashboardHeader } from '@/components/layout/DashboardHeader'
 import { LogoutButton } from '@/features/dashboard/components/LogoutButton'
 import { Logo } from '@/features/shared/components/Logo'
-import type { NavItem, NavGroup } from '@/components/layout/Sidebar'
 import type { PublicUser } from '@/types/user.types'
 
 interface Props {
     user: PublicUser
     children: ReactNode
-    navItems?: NavItem[]
-    navGroups?: NavGroup[]
+    pendingDraftsCount?: number | null
 }
 
-export function DashboardShell({ user, navItems, navGroups, children }: Props) {
+export function DashboardShell({ user, pendingDraftsCount, children }: Props) {
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const pathname = usePathname()
+    const navGroups = getNavGroups(user.role, pendingDraftsCount ?? 0)
 
     /* Close mobile sidebar on route change */
     useEffect(() => {
@@ -52,11 +51,7 @@ export function DashboardShell({ user, navItems, navGroups, children }: Props) {
     const sidebarContent = (
         <>
             <div className="flex-1 overflow-y-auto px-3 py-4">
-                {navGroups ? (
-                    <GroupedSidebar groups={navGroups} onNavigate={closeSidebar} />
-                ) : navItems ? (
-                    <Sidebar items={navItems} onNavigate={closeSidebar} />
-                ) : null}
+                <GroupedSidebar groups={navGroups} onNavigate={closeSidebar} />
             </div>
             <div className="border-t border-border px-3 py-3">
                 <LogoutButton variant="full" />

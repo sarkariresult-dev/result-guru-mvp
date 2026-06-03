@@ -3,6 +3,7 @@
 import { createServerClient } from '../supabase/server'
 import { revalidatePath } from 'next/cache'
 import { WebStory, WebStorySlide } from '@/types/stories.types'
+import { PostStatus } from '@/types/enums'
 
 export async function createWebStory(data: {
     title: string
@@ -116,7 +117,7 @@ export async function publishStory(storyId: string, isPublished: boolean, revali
     const { error } = await supabase
         .from('web_stories')
         .update({ 
-            status: isPublished ? 'published' : 'draft',
+            status: isPublished ? PostStatus.Published : PostStatus.Draft,
             published_at: isPublished ? new Date().toISOString() : null
         })
         .eq('id', storyId)

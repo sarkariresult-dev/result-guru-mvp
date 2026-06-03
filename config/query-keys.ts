@@ -91,7 +91,7 @@ export const queryKeys = {
         stats: () => ['admin', 'stats'] as const,
         users: () => ['admin', 'users'] as const,
         redirects: () => ['admin', 'redirects'] as const,
-        seoSettings: () => ['admin', 'seo-settings'] as const,
-        media: (filters?: object) => ['admin', 'media', filters] as const,
+
+
     },
 } as const

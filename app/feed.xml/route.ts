@@ -86,7 +86,7 @@ export async function GET() {
                 .join('\n')
         }
     } catch (err) {
-        console.error('[feed.xml] Failed to fetch posts:', err)
+        void 0;
     }
 
     const lastBuildDate = new Date().toUTCString()

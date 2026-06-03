@@ -3,14 +3,7 @@
 // Mirrors 011_advertising.sql - zones, campaigns, ads, events.
 // =============================================================
 
-import type {
-    AdStatus,
-    AdType,
-    AdZonePosition,
-    AdEventType,
-    DeviceType,
-    PostType,
-} from './enums'
+import type { AdStatus, AdType, AdZonePosition, AdEventType, DeviceType, PostType } from './enums'
 
 // ── Ad zone ────────────────────────────────────────────────
 export interface AdZone {
@@ -55,7 +48,7 @@ export interface AdCampaign {
     description: string | null
     budget: number | null
     daily_budget: number | null
-    start_date: string           // ISO date
+    start_date: string
     end_date: string | null
     status: AdStatus
     // Targeting

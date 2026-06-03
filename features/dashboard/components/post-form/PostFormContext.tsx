@@ -8,6 +8,7 @@
 
 import { createContext, useContext, useReducer, useEffect, useMemo, type ReactNode } from 'react'
 import { runSeoAnalysis, type SeoAnalysisResult } from '@/lib/seo/seo-analyzer'
+import { PostStatus } from '@/types/enums'
 
 // ── State Shape ──────────────────────────────────────────────────────────────
 
@@ -16,7 +17,7 @@ export interface FaqItem { question: string; answer: string }
 export interface PostFormState {
     // Identity
     type: string
-    status: string
+    status: PostStatus
     title: string
     slug: string
     slugManual: boolean // true = user has manually edited slug
@@ -207,7 +208,7 @@ function createInitialState(initialData?: Record<string, unknown>): PostFormStat
 
     return {
         type: (d.type as string) ?? 'job',
-        status: (d.status as string) ?? 'draft',
+        status: (d.status as PostStatus) ?? PostStatus.Draft,
         title: (d.title as string) ?? '',
         slug: (d.slug as string) ?? '',
         slugManual: !!d.slug,

@@ -74,6 +74,9 @@ AS $$
   );
 $$;
 
+REVOKE EXECUTE ON FUNCTION fn_is_admin() FROM anon;
+REVOKE EXECUTE ON FUNCTION fn_is_author_or_admin() FROM anon;
+
 -- ── 6. Storage public URL builder ────────────────────────────
 CREATE OR REPLACE FUNCTION storage_public_url(bucket TEXT, file_path TEXT)
 RETURNS TEXT

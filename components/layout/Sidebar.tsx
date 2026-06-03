@@ -28,6 +28,7 @@ import {
     Mail,
     ChevronDown,
     Layers,
+    Activity,
     type LucideIcon,
 } from 'lucide-react'
 import { useState, useEffect, useMemo } from 'react'
@@ -58,32 +59,22 @@ const iconMap: Record<string, LucideIcon> = {
     Mail,
     Layers,
     GraduationCap,
+    Activity,
 }
-
-/* ── Types ───────────────────────────────────────────────────── */
 
 export interface NavItem {
     title: string
     href: string
     icon: string
-    /** Optional badge text (e.g. "New", count) */
     badge?: string
-    /** Mark disabled items that aren't built yet */
     disabled?: boolean
 }
 
 export interface NavGroup {
     label: string
     items: NavItem[]
-    /** Whether this group starts collapsed */
     defaultCollapsed?: boolean
 }
-
-/* ── Admin navigation (grouped by feature) ───────────────────── */
-/* Mirrors migration files:
-   006_users, 007_posts, 004_taxonomy (states, orgs, categories, tags),
-   010_media, 011_advertising, 012_affiliate, 013_seo, 014_newsletter,
-   008_post_analytics, 009_automation                                   */
 
 export const adminNavGroups: NavGroup[] = [
     {
@@ -92,7 +83,23 @@ export const adminNavGroups: NavGroup[] = [
             { title: 'Dashboard', href: '/admin', icon: 'LayoutDashboard' },
             { title: 'Posts', href: '/admin/posts', icon: 'FileText' },
             { title: 'Stories', href: '/admin/stories', icon: 'Layers' },
-            { title: 'Media', href: '/admin/media', icon: 'Image' },
+
+        ],
+        defaultCollapsed: false,
+    },
+    {
+        label: 'Monetization',
+        items: [
+            { title: 'Advertising', href: '/admin/advertising', icon: 'Megaphone' },
+            { title: 'Affiliates', href: '/admin/affiliate', icon: 'ShoppingBag' },
+        ],
+        defaultCollapsed: false,
+    },
+    {
+        label: 'Growth',
+        items: [
+            { title: 'Subscribers', href: '/admin/subscribers', icon: 'Mail' },
+            { title: 'Broadcasts', href: '/admin/broadcasts', icon: 'Bell' },
         ],
         defaultCollapsed: false,
     },
@@ -108,39 +115,15 @@ export const adminNavGroups: NavGroup[] = [
         defaultCollapsed: false,
     },
     {
-        label: 'Monetization',
-        items: [
-            { title: 'Advertising', href: '/admin/ads', icon: 'Megaphone' },
-            { title: 'Affiliates', href: '/admin/affiliate', icon: 'ShoppingBag' },
-        ],
-        defaultCollapsed: false,
-    },
-    {
-        label: 'Growth',
-        items: [
-            { title: 'Subscribers', href: '/admin/subscribers', icon: 'Mail' },
-            { title: 'Analytics', href: '/admin/analytics', icon: 'BarChart3', disabled: true },
-            { title: 'SEO', href: '/admin/seo', icon: 'Search' },
-            { title: 'Redirects', href: '/admin/redirects', icon: 'ArrowRightLeft' },
-            { title: 'Search Analytics', href: '/admin/search-analytics', icon: 'SearchCheck' },
-        ],
-        defaultCollapsed: false,
-    },
-    {
         label: 'System',
         items: [
             { title: 'Users', href: '/admin/users', icon: 'Users' },
-            { title: 'Automation', href: '/admin/automation', icon: 'Bot', disabled: true },
+            { title: 'Monitoring', href: '/admin/monitoring', icon: 'Activity' },
             { title: 'Settings', href: '/admin/settings', icon: 'Settings' },
         ],
         defaultCollapsed: false,
     },
 ]
-
-/* Flat list for backward compat */
-export const adminNav: NavItem[] = adminNavGroups.flatMap((g) => g.items)
-
-/* ── Author navigation ───────────────────────────────────────── */
 
 export const authorNavGroups: NavGroup[] = [
     {
@@ -149,7 +132,7 @@ export const authorNavGroups: NavGroup[] = [
             { title: 'Dashboard', href: '/author', icon: 'LayoutDashboard' },
             { title: 'My Posts', href: '/author/posts', icon: 'FileText' },
             { title: 'Stories', href: '/author/stories', icon: 'Layers' },
-            { title: 'Media', href: '/author/media', icon: 'Image', disabled: true },
+
         ],
         defaultCollapsed: false,
     },
@@ -161,10 +144,6 @@ export const authorNavGroups: NavGroup[] = [
         defaultCollapsed: false,
     },
 ]
-
-export const authorNav: NavItem[] = authorNavGroups.flatMap((g) => g.items)
-
-/* ── User navigation ─────────────────────────────────────────── */
 
 export const userNavGroups: NavGroup[] = [
     {
@@ -185,7 +164,30 @@ export const userNavGroups: NavGroup[] = [
     },
 ]
 
-export const userNav: NavItem[] = userNavGroups.flatMap((g) => g.items)
+export function getNavGroups(role: string, pendingDraftsCount: number): NavGroup[] {
+    const baseGroups =
+        role === 'admin'
+            ? adminNavGroups
+            : role === 'author'
+                ? authorNavGroups
+                : userNavGroups
+
+    return baseGroups.map(group => {
+        if (group.label === 'Main' || group.label === 'Content') {
+            return {
+                ...group,
+                items: group.items.map(item => {
+                    if ((item.title === 'Posts' || item.title === 'My Posts') && pendingDraftsCount > 0) {
+                        return { ...item, badge: String(pendingDraftsCount) }
+                    }
+                    return item
+                })
+            }
+        }
+        return group
+    })
+}
+
 
 /* ── Active-link detection ───────────────────────────────────── */
 

@@ -93,7 +93,7 @@ export async function manageAffiliateProductAction(formData: FormData) {
         return { success: true }
     } catch (e: unknown) {
         const message = e instanceof Error ? e.message : 'Failed to save product.'
-        console.error('Affiliate Product Mutation Error:', e)
+        void 0;
         return { error: message }
     }
 }
@@ -118,7 +118,7 @@ export async function deleteAffiliateProductAction(id: string) {
         return { success: true }
     } catch (e: unknown) {
         const message = e instanceof Error ? e.message : 'Failed to delete product.'
-        console.error('Affiliate Delete Error:', e)
+        void 0;
         return { error: message }
     }
 }
@@ -143,7 +143,7 @@ export async function toggleAffiliateActiveAction(id: string, isActive: boolean)
         return { success: true }
     } catch (e: unknown) {
         const message = e instanceof Error ? e.message : 'Failed to toggle status.'
-        console.error('Affiliate Toggle Error:', e)
+        void 0;
         return { error: message }
     }
 }

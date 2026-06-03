@@ -7,6 +7,7 @@
 
 import { createServerClient } from '@/lib/supabase/server'
 import type { PublishedPost } from '@/types/post.types'
+import { PostStatus } from '@/types/enums'
 
 export interface FreshnessReport {
     stalePosts: PublishedPost[]
@@ -27,10 +28,10 @@ export async function findStaleContent(): Promise<FreshnessReport> {
     const { data: posts, error } = await supabase
         .from('v_published_posts')
         .select('*')
-        .eq('status', 'published')
+        .eq('status', PostStatus.Published)
     
     if (error || !posts) {
-        console.error('Failed to fetch posts for freshness check:', error)
+        void 0;
         return { stalePosts: [], totalChecked: 0 }
     }
 

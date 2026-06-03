@@ -10,11 +10,9 @@ import type { PostStatus } from '@/types/enums'
 
 const STATUS_FILTERS = [
     { value: '', label: 'All' },
-    { value: 'draft', label: 'Draft' },
-    { value: 'review', label: 'In Review' },
-    { value: 'published', label: 'Published' },
-    { value: 'archived', label: 'Archived' },
-] as const
+    ...(Object.entries(POST_STATUS_CONFIG) as [PostStatus, { label: string }][])
+        .map(([value, { label }]) => ({ value, label })),
+]
 
 export default async function AuthorPostsPage({
     searchParams,

@@ -10,7 +10,7 @@ interface QuickAction {
 const defaultActions: QuickAction[] = [
     { label: 'New Post', href: '/admin/posts/new', icon: Plus },
     { label: 'All Posts', href: '/admin/posts', icon: FileText },
-    { label: 'Upload Media', href: '/admin/media', icon: Upload },
+
     { label: 'Users', href: '/admin/users', icon: Users },
 ]
 

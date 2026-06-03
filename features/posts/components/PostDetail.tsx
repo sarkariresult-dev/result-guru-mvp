@@ -9,14 +9,13 @@ import { AdZone } from '@/components/ads/AdZone'
 import { processContentHtml, replacePlaceholders } from '@/lib/content-processing'
 import { POST_TYPE_CONFIG } from '@/config/constants'
 import type { PostTypeKey } from '@/config/site'
-import { PostDetail as PostDetailType, PostAffiliateProductEntry } from '@/types/post.types'
+import { PostDetail as PostDetailType } from '@/types/post.types'
 import type { FaqItem } from '@/types/post-content.types'
 import { AuthorBox } from './AuthorBox'
 import { ShareBar } from './ShareBar'
 import { ActionCenter } from './ActionCenter'
 import { ProductInjection } from '@/features/affiliate/components/ProductInjection'
 import { InlineNewsletterCTA } from './InlineNewsletterCTA'
-import { PostAnalyticsBeacon } from './PostAnalyticsBeacon'
 import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
 import { Calendar, Clock, Tag, ShieldCheck } from 'lucide-react'
 import { getActionLinkPageLabel } from '@/lib/seo/seo-analyzer'
@@ -223,7 +222,6 @@ export function PostDetail({ post, slug, url }: PostDetailProps) {
 
     return (
         <div className="space-y-8" suppressHydrationWarning>
-            <PostAnalyticsBeacon postId={post.id} />
             <LocalErrorBoundary name="PostDetailMain" silent>
                 {/* ── Header: Title, Org, Dates ────────────────────────── */}
                 <header className="space-y-8 pt-4 pb-10 border-b border-border/50" suppressHydrationWarning>

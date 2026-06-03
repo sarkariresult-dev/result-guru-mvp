@@ -23,7 +23,7 @@ import type { PostTypeKey } from '@/config/site'
 import type { PublishedPost, PostDetail as PostDetailType } from '@/types/post.types'
 import type { FaqItem } from '@/types/post-content.types'
 import { slugToKey, humanise, keyToSlug } from '@/lib/utils'
-import { PageViewTracker } from '@/features/analytics/components/PageViewTracker'
+
 import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
 import { getActiveAds } from '@/features/advertising/queries'
 import { headers } from 'next/headers'
@@ -169,7 +169,6 @@ export default async function PostDetailPage({ params }: Props) {
 
     return (
         <>
-            <PageViewTracker postId={publishedPost.id} />
             <JsonLd data={jsonLdEntries} />
 
             <div className="container mx-auto max-w-7xl px-4 py-8">

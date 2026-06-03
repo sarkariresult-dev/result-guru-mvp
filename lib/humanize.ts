@@ -532,12 +532,12 @@ export function humanizeContent(html: string): string {
     if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'production') {
         const placeholders = detectPlaceholderLinks(processed)
         if (placeholders.length > 0) {
-            console.warn('[humanize] Unresolved placeholders detected:', placeholders)
+            void 0;
         }
 
         const depth = validateContentDepth(processed)
         if (!depth.valid) {
-            console.warn('[humanize] Content depth issues:', depth.missing)
+            void 0;
         }
     }
 

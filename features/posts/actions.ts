@@ -4,7 +4,7 @@ import { createServerClient } from '@/lib/supabase/server'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { postSchema } from '@/lib/validations'
 import { z } from 'zod'
-import type { PostType, PostStatus } from '@/types/enums'
+import { PostType, PostStatus } from '@/types/enums'
 import { pushToGoogleIndexingApi } from '@/lib/seo/indexing'
 import { SITE, ROUTE_PREFIXES, type PostTypeKey } from '@/config/site'
 import { runSeoAnalysis } from '@/lib/seo/seo-analyzer'
@@ -298,7 +298,7 @@ export async function publishPost(id: string) {
     const { error } = await supabase
         .from('posts')
         .update({
-            status: 'published',
+            status: PostStatus.Published,
             published_at: new Date().toISOString(),
             seo_score: Math.min(100, qualityReport.seoOptimization),
             needs_human_review: qualityReport.humanLikeness < 50, // Flag for editor if borderline
@@ -334,7 +334,7 @@ export async function deletePost(id: string) {
     revalidateTag('posts')
     revalidateTag('sitemap')
 
-    if (post?.status === 'published' && post.slug && post.type) {
+    if (post?.status === PostStatus.Published && post.slug && post.type) {
         const typeKey = post.type as PostTypeKey
         if (ROUTE_PREFIXES[typeKey]) {
             const postUrl = `${SITE.url}${ROUTE_PREFIXES[typeKey]}/${post.slug}`

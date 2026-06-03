@@ -87,7 +87,7 @@ class AdEventTracker {
                 })
             }
         } catch (error) {
-            console.error('Failed to flush ad events:', error)
+            void 0;
             // Restore events to buffer to try again later
             this.buffer = [...eventsToFlush, ...this.buffer]
         }

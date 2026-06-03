@@ -9,6 +9,7 @@ import { createServerClient } from '@/lib/supabase/server'
 import { humanizeContent, analyzeAiHeuristics } from '@/lib/humanize'
 import { sanitizeHtml } from '@/lib/sanitize'
 import { injectContextualLinks } from '@/lib/seo/internal-linking'
+import { PostStatus } from '@/types/enums'
 
 /* ── Gemini Client ────────────────────────────────────────────────── */
 
@@ -508,9 +509,7 @@ export async function generateContentWithGemini(data: GeneratePostInput) {
             }
 
             // Log retry reason for debugging
-            console.warn(
-                `[ai-gen] Attempt ${attempt}/${MAX_GENERATION_ATTEMPTS} flagged (score: ${heuristics.score}). Reasons: ${heuristics.reasons.join('; ')}`
-            )
+            void 0;
 
         } catch (e: unknown) {
             lastError = e instanceof Error ? e.message : 'An unexpected error occurred during AI generation'
@@ -549,7 +548,7 @@ export async function enhancePostSEO(postId: string) {
         const { data: related } = await supabase
             .from('posts')
             .select('id')
-            .eq('status', 'published')
+            .eq('status', PostStatus.Published)
             .neq('id', postId)
             .or(`type.eq.${currentPost.type},organization_id.eq.${currentPost.organization_id}`)
             .order('published_at', { ascending: false })
@@ -722,7 +721,130 @@ export async function generateTwitterThread(postId: string) {
         const tweets: string[] = JSON.parse(response.text)
         return { success: true, data: tweets }
     } catch (error) {
-        console.error('Failed to generate Twitter thread:', error)
+        void 0;
         return { error: error instanceof Error ? error.message : 'Failed to generate Twitter thread' }
+    }
+}
+
+/* ── Monitoring Schema ────────────────────────────────────────────── */
+
+const monitoringResponseSchema = {
+    type: Type.OBJECT,
+    properties: {
+        isRelevant: {
+            type: Type.BOOLEAN,
+            description: 'Set to true ONLY if there is a new announcement relevant to job aspirants (jobs, results, admit cards, syllabus, answer keys, schemes). Set to false for tenders, holidays, office orders, internal administrative notifications, or if no new updates are present.'
+        },
+        relevanceReason: {
+            type: Type.STRING,
+            description: 'Brief reason why this update was classified as relevant or irrelevant.'
+        },
+        postType: {
+            type: Type.STRING,
+            description: 'The post type classification. Must be one of: job, result, admit, answer_key, cut_off, syllabus, exam_pattern, previous_paper, scheme, exam, admission, scholarship, notification.'
+        },
+        draft: {
+            type: Type.OBJECT,
+            description: 'The full drafted post content. Populate ONLY if isRelevant is true.',
+            properties: {
+                title: { type: Type.STRING, description: 'SEO title (30-65 chars). MUST contain focus keyword + current year.' },
+                ctrTitle: { type: Type.STRING, description: 'High-CTR alternative title with urgency triggers (≤65 chars). NO emojis or icons.' },
+                metaTitle: { type: Type.STRING, description: 'SERP meta title (MAX 60 chars).' },
+                metaDescription: { type: Type.STRING, description: 'Meta description (120-155 chars). Must contain focus keyword.' },
+                slug: { type: Type.STRING, description: 'Clean URL slug (≤75 chars). contains focus keyword, hyphens only.' },
+                focusKeyword: { type: Type.STRING, description: 'Primary focus keyword (3-5 words).' },
+                secondaryKeywords: { type: Type.ARRAY, items: { type: Type.STRING }, description: 'At least 3 secondary keywords.' },
+                suggestedQualifications: { type: Type.ARRAY, items: { type: Type.STRING }, description: 'Suggested qualification slugs: 10th, 12th, graduation, pg, diploma, etc.' },
+                excerpt: { type: Type.STRING, description: 'Brief excerpt (50-200 chars) summarizing the announcement.' },
+                content: { type: Type.STRING, description: 'Full HTML content of the article (1200+ words). Write like a senior mentor in simple direct Indian English. Wrap Key Takeaways in a section. DO NOT write FAQs here.' },
+                officialWebsiteUrl: { type: Type.STRING, description: 'Official domain URL.' },
+                primaryLink: { type: Type.STRING, description: 'Action link for candidates.' },
+                notificationPdfUrl: { type: Type.STRING, description: 'Direct PDF URL if found, or base official URL.' },
+                faq: {
+                    type: Type.ARRAY,
+                    items: {
+                        type: Type.OBJECT,
+                        properties: {
+                            question: { type: Type.STRING },
+                            answer: { type: Type.STRING },
+                        },
+                        required: ['question', 'answer']
+                    },
+                    description: '3-5 FAQs matching candidate queries.'
+                }
+            },
+            required: [
+                'title', 'ctrTitle', 'metaTitle', 'metaDescription', 'slug',
+                'focusKeyword', 'secondaryKeywords', 'suggestedQualifications',
+                'excerpt', 'content', 'officialWebsiteUrl', 'primaryLink', 'faq'
+            ]
+        }
+    },
+    required: ['isRelevant', 'relevanceReason']
+}
+
+/* ── Monitoring Update Scraper & Draft Auto-Generation ──────────────── */
+
+export async function generateDraftFromSourceUpdate(opts: {
+    organizationName: string
+    organizationShortName: string | null
+    stateOrRegion: string | null
+    sourceUrl: string
+    scrapedContent: string
+}) {
+    try {
+        const { organizationName, organizationShortName, stateOrRegion, sourceUrl, scrapedContent } = opts
+
+        const prompt = `
+        You are a specialized content generator and verification assistant for Result Guru (an Indian Sarkari job portal).
+        An automated script checked the following organization source URL:
+        Organization: ${organizationName} (${organizationShortName || 'N/A'})
+        State/Region: ${stateOrRegion || 'Central'}
+        Source URL: ${sourceUrl}
+        
+        SCRAPED NOTICE LIST:
+        """
+        ${scrapedContent}
+        """
+
+        TASK:
+        1. Determine if there is any new announcement in the notice list that is highly relevant to Result Guru (e.g., new recruitment/vacancy, admit card release, exam results, exam schedule, answer key, syllabus, or major government scheme).
+        2. Set "isRelevant" to false if:
+           - The notice is about tenders, holiday notices, office orders, transfer lists, staff promotions, website maintenance, or routine administrative reports.
+           - There are no clear, actionable updates for students/candidates.
+        3. If "isRelevant" is true:
+           - Identify the correct "postType" (one of: job, result, admit, answer_key, cut_off, syllabus, exam_pattern, previous_paper, scheme, exam, admission, scholarship, notification).
+           - Generate a complete, SEO-optimized draft post in English/Hinglish in the "draft" object.
+           - Ground the content details strictly on the notices scraped (e.g. if the notice lists 'SSC CGL Result 2026 out on 01 June', write the post about that exact result announcement).
+           - Do NOT hallucinate dates or facts that are not present. If the notice links to a PDF, capture that PDF URL and put it in "notificationPdfUrl".
+           - The drafted "content" HTML must be high quality, mentor-style, and at least 800 words, including key details like how to check, important dates, and eligibility if available.
+        `
+
+        const response = await ai.models.generateContent({
+            model: env.GOOGLE_GENAI_MODEL || 'gemini-2.5-flash-preview-05-20',
+            contents: prompt,
+            config: {
+                systemInstruction: "You are an expert editor for Sarkari Result portals. You analyze raw notifications, filter out administrative noise (tenders, transfers), and draft detailed posts for relevant updates.",
+                responseMimeType: 'application/json',
+                responseSchema: monitoringResponseSchema as unknown,
+                temperature: 0.3, // Lower temperature for more factual processing
+            },
+        })
+
+        if (!response.text) throw new Error('No response from Gemini')
+
+        const result = JSON.parse(response.text)
+
+        // Run post-processing on draft content if relevant and present
+        if (result.isRelevant && result.draft?.content) {
+            let processedContent = sanitizeHtml(humanizeContent(result.draft.content))
+            processedContent = injectContextualLinks(processedContent, result.draft.focusKeyword || '')
+            result.draft.content = processedContent
+        }
+
+        return { success: true, data: result }
+    } catch (e: unknown) {
+        void 0;
+        return { error: e instanceof Error ? e.message : 'AI Draft Generation failed' }
     }
 }

@@ -39,6 +39,10 @@ const envSchema = z.object({
     GOOGLE_GENAI_API_KEY: z.string().optional(),
     GOOGLE_GENAI_MODEL: z.string().optional(),
     GOOGLE_GENAI_TEMPERATURE: z.coerce.number().optional(),
+
+    // ── Web Push Notifications ────────────────────────────────────────────
+    NEXT_PUBLIC_VAPID_PUBLIC_KEY: z.string().min(1, 'VAPID public key is required').optional(),
+    VAPID_PRIVATE_KEY: z.string().min(1, 'VAPID private key is required').optional(),
 })
 
 // ─── Validate ───────────────────────────────────────────────────────────────
@@ -72,11 +76,14 @@ const _parsed = envSchema.safeParse({
     GOOGLE_GENAI_API_KEY: process.env.GOOGLE_GENAI_API_KEY,
     GOOGLE_GENAI_MODEL: process.env.GOOGLE_GENAI_MODEL,
     GOOGLE_GENAI_TEMPERATURE: process.env.GOOGLE_GENAI_TEMPERATURE,
+
+    NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+    VAPID_PRIVATE_KEY: process.env.VAPID_PRIVATE_KEY,
 })
 
 if (!_parsed.success) {
     const formatted = _parsed.error.format()
-    console.error('❌  Invalid environment variables:\n', JSON.stringify(formatted, null, 2))
+    void 0;
     throw new Error(
         '❌  Invalid / missing environment variables. Check the server logs for details.',
     )

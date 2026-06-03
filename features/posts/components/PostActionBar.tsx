@@ -46,64 +46,12 @@ function XIcon({ className }: { className?: string }) {
     )
 }
 
-// ── Bot detection (skip view tracking for crawlers) ──────────────────────
-
-const BOT_RE = /bot|crawl|spider|slurp|mediapartners|adsbot|lighthouse|prerender|headless/i
-
-function isBot(): boolean {
-    if (typeof navigator === 'undefined') return true
-    return BOT_RE.test(navigator.userAgent)
-}
-
-function getDevice(): 'mobile' | 'tablet' | 'desktop' {
-    if (typeof window === 'undefined') return 'desktop'
-    const w = window.innerWidth
-    if (w < 768) return 'mobile'
-    if (w < 1024) return 'tablet'
-    return 'desktop'
-}
-
-export function PostActionBar({ postId, slug, title, type, initialViewCount, url }: Props) {
+export function PostActionBar({ postId, slug, title, type, url }: Props) {
     const { copy, copied } = useCopyToClipboard()
     const { toggle, isBookmarked } = useBookmarks()
     const bookmarked = isBookmarked(slug)
     const [shareOpen, setShareOpen] = useState(false)
     const shareRef = useRef<HTMLDivElement>(null)
-    const viewTracked = useRef(false)
-
-    // ── Track page view once per session ────────────────────────────────
-    useEffect(() => {
-        // Entire effect is wrapped - analytics must NEVER crash the page
-        try {
-            if (viewTracked.current || isBot()) return
-            const key = `pv_${postId}`
-            
-            let alreadyTracked = false
-            try {
-                alreadyTracked = !!window.sessionStorage.getItem(key)
-            } catch {
-                alreadyTracked = false
-            }
-            
-            if (alreadyTracked) return
-            viewTracked.current = true
-            
-            try {
-                window.sessionStorage.setItem(key, '1')
-            } catch {
-                // ignore
-            }
-
-            fetch('/api/analytics/view', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ post_id: postId, referrer: document.referrer || '', device: getDevice() }),
-                keepalive: true,
-            }).catch(() => { /* analytics must never break the page */ })
-        } catch {
-            // Absolute safety net
-        }
-    }, [postId])
 
     // ── Close share dropdown on outside click ──────────────────────────
     useEffect(() => {

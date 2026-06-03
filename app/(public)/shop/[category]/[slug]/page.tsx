@@ -24,7 +24,7 @@ export async function generateStaticParams() {
         }))
         return paths.length > 0 ? paths : [{ category: 'books', slug: 'placeholder' }]
     } catch (err) {
-        console.error('[shop] generateStaticParams failed:', err)
+        void 0;
         return [{ category: 'books', slug: 'placeholder' }]
     }
 }

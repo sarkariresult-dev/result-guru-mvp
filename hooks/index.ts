@@ -47,7 +47,6 @@ export type { BookmarkEntry } from './useBookmarks'
 export { useSubscribe, useUnsubscribe } from './useSubscribe'
 
 // ── Analytics ─────────────────────────────────────────────────────────────
-export { usePageView } from './usePageView'
 
 // ── Ads ────────────────────────────────────────────────────────────────────
 export { useAds, recordAdEvent } from './useAds'

@@ -3,10 +3,9 @@ export { getStates, getStateBySlug } from './states'
 export { getOrganizations, getOrganizationBySlug } from './organizations'
 export { getCategories, getQualifications } from './taxonomy'
 export { getTags, getTagBySlug, getPostsByTag, getPostsCountByTag } from './tags'
-export { getDashboardStats, getTopPosts, getAuthorStats } from './analytics'
-export { getMediaItems } from './media'
+
+
 export { getUsers, getUserById, getUserByAuthId } from '@/features/dashboard/queries'
 export { getSubscribers, getSubscriberCount } from './subscribers'
-export { getSeoSettings, getSeoSettingsMap, getSeoSetting, getRedirects, getSitemapConfig } from './seo'
 export { getPostCountsByType, getHomepageSections } from '@/features/stats/queries'
 export type { PostTypeCounts, HomepageSections } from '@/features/stats/queries'

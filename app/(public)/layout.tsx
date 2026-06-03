@@ -1,5 +1,6 @@
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { GlobalPushModal } from '@/components/shared/GlobalPushModal'
 import { createServerClient } from '@/lib/supabase/server'
 import { cookies } from 'next/headers'
 import type { PublicUser } from '@/types/user.types'
@@ -37,6 +38,7 @@ export default async function PublicLayout({ children }: { children: React.React
             </a>
 
             <Header initialUser={serverUser} />
+            <GlobalPushModal />
 
             <main id="main-content" className="flex-1">
                 {children}

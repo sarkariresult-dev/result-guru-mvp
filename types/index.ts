@@ -17,12 +17,7 @@ export * from './post-content.types'
 export * from './taxonomy.types'
 export * from './user.types'
 export * from './post.types'
-export * from './media.types'
 export * from './advertising.types'
 export * from './affiliate.types'
-export * from './seo.types'
 export * from './newsletter.types'
-export * from './analytics.types'
-
-// ── API / response types ───────────────────────────────────
 export * from './api.types'

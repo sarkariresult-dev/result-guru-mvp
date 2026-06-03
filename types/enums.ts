@@ -25,6 +25,7 @@ export enum PostType {
 export enum PostStatus {
     Draft = 'draft',
     Review = 'review',
+    Scheduled = 'scheduled',
     Published = 'published',
     Archived = 'archived',
 }

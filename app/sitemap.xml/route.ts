@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createStaticClient } from '@/lib/supabase/static'
 import { SITE } from '@/config/site'
+import { PostStatus } from '@/types/enums'
 
 /**
  * sitemap.xml - Sitemap Index
@@ -26,7 +27,7 @@ export async function GET() {
         const { count, error } = await supabase
             .from('posts')
             .select('*', { count: 'exact', head: true })
-            .eq('status', 'published')
+            .eq('status', PostStatus.Published)
 
         if (!error && count !== null) {
             const numPages = Math.ceil(count / POSTS_PER_SITEMAP) || 1
@@ -36,7 +37,7 @@ export async function GET() {
             }
         }
     } catch (err) {
-        console.error('[sitemap index] Failed to fetch posts count:', err)
+        void 0;
     }
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>

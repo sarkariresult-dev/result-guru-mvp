@@ -10,7 +10,6 @@ import type { PublishedPost, SeoAuditRow, TrendingPostRow, PostAttentionRow } fr
 import type { AffiliateProductCard } from './affiliate.types'
 import type { ActiveAd, AdRenderContext } from './advertising.types'
 import type { TaxonomySummary } from './taxonomy.types'
-import type { DashboardStats } from './analytics.types'
 
 // ─────────────────────────────────────────────────────────────
 // CORE RESPONSE ENVELOPES
@@ -203,7 +202,6 @@ export type GetTaxonomyResponse = ApiResponse<TaxonomySummary>
 // CMS / ADMIN API
 // ─────────────────────────────────────────────────────────────
 
-export type GetDashboardStatsResponse = ApiResponse<DashboardStats>
 
 export type GetSeoAuditResponse = PaginatedResponse<SeoAuditRow>
 
@@ -223,18 +221,6 @@ export interface SubscribeRequest {
 export type SubscribeResponse = ApiResponse<{ id: string; email: string }>
 
 export type UnsubscribeResponse = ApiResponse<void>
-
-// ─────────────────────────────────────────────────────────────
-// PAGE VIEW API
-// ─────────────────────────────────────────────────────────────
-
-export interface RecordViewRequest {
-    post_id: string
-    referrer?: string
-    device?: string
-}
-
-export type RecordViewResponse = ApiResponse<void>
 
 // ─────────────────────────────────────────────────────────────
 // SUPABASE CLIENT HELPERS

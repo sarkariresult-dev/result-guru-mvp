@@ -1,21 +1,13 @@
-import { getSeoSettings, getRedirects } from '@/lib/queries/seo'
-import { SeoSettingsForm } from '@/features/dashboard/components/SeoSettingsForm'
 import { SITE } from '@/config/site'
 import { env } from '@/config/env'
 import {
-    Settings,
     Globe,
-    Search,
-    ArrowRightLeft,
     Shield,
     Code,
-    CheckCircle2,
-    AlertTriangle,
     Lock,
     Eye,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
-import type { SeoSetting } from '@/lib/queries/seo'
 
 // ── ENV-sourced settings (read-only, change in .env / Vercel dashboard) ──
 const ENV_GROUPS = [
@@ -63,63 +55,14 @@ const ENV_GROUPS = [
     },
 ]
 
-// ── DB-sourced setting groups (editable via admin UI) ──
-const SETTING_GROUPS = [
-    {
-        label: 'Default Open Graph',
-        icon: Globe,
-        keys: ['default_og_image', 'default_og_image_width', 'default_og_image_height'],
-    },
-    {
-        label: 'Robots / Crawling',
-        icon: Search,
-        keys: ['robots_global', 'robots_pagination', 'robots_search'],
-    },
-    {
-        label: 'Sitemap',
-        icon: Settings,
-        keys: ['sitemap_posts_per_index', 'sitemap_ping_google'],
-    },
-    {
-        label: 'Structured Data',
-        icon: Code,
-        keys: ['website_schema_json', 'organization_schema_json'],
-    },
-] as const
-
-function formatRedirectType(type: string): string {
-    return type === '301' ? '301 Permanent' : type === '302' ? '302 Temporary' : type
-}
-
 export default async function AdminSettingsPage() {
-    const [settings, { data: redirects, count: redirectCount }] = await Promise.all([
-        getSeoSettings(),
-        getRedirects({ limit: 10 }),
-    ])
-
-    // Build a settings map for lookup
-    const settingsMap = new Map(settings.map(s => [s.key, s]))
-
-    // Keys managed exclusively via ENV vars - never show in editable UI
-    const ENV_MANAGED_KEYS = new Set([
-        'site_name', 'site_tagline', 'site_url', 'twitter_handle',
-        'google_tag_id',
-        'google_verification', 'bing_verification',
-    ])
-
-    // Group settings - put ungrouped ones at the end, excluding env-managed
-    const groupedKeys: Set<string> = new Set(SETTING_GROUPS.flatMap(g => [...g.keys]))
-    const ungroupedSettings = settings.filter(
-        s => !groupedKeys.has(s.key) && !ENV_MANAGED_KEYS.has(s.key)
-    )
-
     return (
         <div className="space-y-8">
             {/* ── Header ──────────────────────────────────── */}
             <div>
                 <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
                 <p className="mt-1 text-sm text-foreground-muted">
-                    Manage SEO configuration, redirects, and site-wide settings.
+                    Manage global site configurations.
                 </p>
             </div>
 
@@ -176,116 +119,6 @@ export default async function AdminSettingsPage() {
                         )
                     })}
                 </div>
-            </section>
-
-            {/* ── Editable DB Settings ────────────────────── */}
-            {SETTING_GROUPS.map(group => {
-                const groupSettings = group.keys
-                    .map(key => settingsMap.get(key))
-                    .filter((s): s is SeoSetting => s != null)
-
-                if (groupSettings.length === 0) return null
-
-                const Icon = group.icon
-                return (
-                    <section key={group.label} className="rounded-xl border border-border bg-surface">
-                        <div className="flex items-center gap-2 border-b border-border px-6 py-4">
-                            <Icon className="size-4 text-foreground-muted" />
-                            <h2 className="font-semibold">{group.label}</h2>
-                            <span className="text-xs text-foreground-subtle">
-                                {groupSettings.length} {groupSettings.length === 1 ? 'setting' : 'settings'}
-                            </span>
-                        </div>
-                        <div className="px-6 py-2">
-                            <SeoSettingsForm settings={groupSettings} />
-                        </div>
-                    </section>
-                )
-            })}
-
-            {/* ── Ungrouped Settings ──────────────────────── */}
-            {ungroupedSettings.length > 0 && (
-                <section className="rounded-xl border border-border bg-surface">
-                    <div className="flex items-center gap-2 border-b border-border px-6 py-4">
-                        <Settings className="size-4 text-foreground-muted" />
-                        <h2 className="font-semibold">Other Settings</h2>
-                    </div>
-                    <div className="px-6 py-2">
-                        <SeoSettingsForm settings={ungroupedSettings} />
-                    </div>
-                </section>
-            )}
-
-            {/* ── Redirects Overview ──────────────────────── */}
-            <section className="rounded-xl border border-border bg-surface">
-                <div className="flex items-center justify-between border-b border-border px-6 py-4">
-                    <div className="flex items-center gap-2">
-                        <ArrowRightLeft className="size-4 text-foreground-muted" />
-                        <h2 className="font-semibold">Redirects</h2>
-                        <span className="text-xs text-foreground-subtle">
-                            {redirectCount} total
-                        </span>
-                    </div>
-                </div>
-
-                {redirects.length === 0 ? (
-                    <div className="px-6 py-8 text-center">
-                        <ArrowRightLeft className="mx-auto mb-3 size-8 text-foreground-subtle" />
-                        <p className="text-sm text-foreground-muted">No redirects configured.</p>
-                    </div>
-                ) : (
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                            <thead className="border-b border-border bg-background-subtle">
-                                <tr>
-                                    <th className="px-4 py-2.5 text-left font-medium text-foreground-muted">From</th>
-                                    <th className="px-4 py-2.5 text-left font-medium text-foreground-muted">To</th>
-                                    <th className="px-4 py-2.5 text-left font-medium text-foreground-muted">Type</th>
-                                    <th className="px-4 py-2.5 text-right font-medium text-foreground-muted">Hits</th>
-                                    <th className="px-4 py-2.5 text-center font-medium text-foreground-muted">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-border">
-                                {redirects.map(r => (
-                                    <tr key={r.id} className="transition-colors hover:bg-background-subtle">
-                                        <td className="px-4 py-2.5 font-mono text-xs">{r.from_path}</td>
-                                        <td className="px-4 py-2.5 font-mono text-xs text-foreground-muted">
-                                            {r.to_path ?? '-'}
-                                        </td>
-                                        <td className="px-4 py-2.5">
-                                            <Badge className="bg-blue-100 text-blue-700">
-                                                {formatRedirectType(String(r.type))}
-                                            </Badge>
-                                            {r.is_chained && (
-                                                <span className="ml-1 inline-flex items-center gap-0.5 text-[10px] text-amber-600" title="Part of a redirect chain">
-                                                    <AlertTriangle className="size-3" /> Chain
-                                                </span>
-                                            )}
-                                        </td>
-                                        <td className="px-4 py-2.5 text-right text-foreground-muted">
-                                            {r.hits.toLocaleString('en-IN')}
-                                        </td>
-                                        <td className="px-4 py-2.5 text-center">
-                                            {r.is_active ? (
-                                                <CheckCircle2 className="mx-auto size-4 text-green-600" />
-                                            ) : (
-                                                <span className="text-xs text-foreground-subtle">Inactive</span>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-
-                {redirectCount > 10 && (
-                    <div className="border-t border-border px-6 py-3 text-center">
-                        <p className="text-xs text-foreground-muted">
-                            Showing 10 of {redirectCount} redirects
-                        </p>
-                    </div>
-                )}
             </section>
         </div>
     )

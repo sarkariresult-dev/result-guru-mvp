@@ -1,17 +1,35 @@
 import Link from 'next/link'
-import { FileText, Users, Bell, TrendingUp, Eye, ArrowRight, Clock } from 'lucide-react'
-import { getDashboardStats, getTopPosts } from '@/lib/queries/analytics'
+import { FileText, Users, Bell, TrendingUp, ArrowRight, Clock } from 'lucide-react'
 import { getAdminPosts } from '@/features/posts/queries'
 import { StatsCard } from '@/features/dashboard/components/StatsCard'
 import { POST_TYPE_CONFIG, POST_STATUS_CONFIG } from '@/config/constants'
 import type { PostTypeKey } from '@/config/site'
 import type { PostStatus } from '@/types/enums'
+import { createServerClient } from '@/lib/supabase/server'
+
+async function getSimpleDashboardStats() {
+    const supabase = await createServerClient()
+    const [postsRes, publishedRes, usersRes, subsRes, recentRes] = await Promise.all([
+        supabase.from('posts').select('id', { count: 'exact', head: true }),
+        supabase.from('posts').select('id', { count: 'exact', head: true }).eq('status', 'published'),
+        supabase.from('users').select('id', { count: 'exact', head: true }),
+        supabase.from('subscribers').select('id', { count: 'exact', head: true }).eq('status', 'active'),
+        supabase.from('posts').select('id', { count: 'exact', head: true }).gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()),
+    ])
+
+    return {
+        totalPosts: postsRes.count ?? 0,
+        publishedPosts: publishedRes.count ?? 0,
+        totalUsers: usersRes.count ?? 0,
+        totalSubscribers: subsRes.count ?? 0,
+        recentPostsCount: recentRes.count ?? 0,
+    }
+}
 
 export default async function AdminDashboardPage() {
-    const [stats, topPosts, { data: recentPosts }] = await Promise.all([
-        getDashboardStats(true),
-        getTopPosts(5),
-        getAdminPosts({ limit: 7, status: 'published' }),
+    const [stats, { data: recentPosts }] = await Promise.all([
+        getSimpleDashboardStats(),
+        getAdminPosts({ limit: 10, status: 'published' }),
     ])
 
     const publishRate = stats.totalPosts > 0
@@ -31,7 +49,7 @@ export default async function AdminDashboardPage() {
             </div>
 
             {/* Stats grid */}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                 <StatsCard
                     title="Total Posts"
                     value={stats.totalPosts}
@@ -43,12 +61,6 @@ export default async function AdminDashboardPage() {
                     value={stats.publishedPosts}
                     description="Live on the site"
                     icon={TrendingUp}
-                />
-                <StatsCard
-                    title="Total Views"
-                    value={stats.totalViews.toLocaleString()}
-                    description="All published posts"
-                    icon={Eye}
                 />
                 <StatsCard
                     title="Users"
@@ -70,54 +82,11 @@ export default async function AdminDashboardPage() {
                 />
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-2">
-                {/* Top performing posts */}
-                <section className="rounded-xl border border-border bg-surface">
-                    <div className="flex items-center justify-between border-b border-border px-5 py-4 sm:px-6">
-                        <h2 className="font-semibold">Top Performing Posts</h2>
-                        <Link
-                            href="/admin/posts"
-                            className="inline-flex items-center gap-1 text-sm font-medium text-brand-600 transition-colors hover:text-brand-700"
-                        >
-                            All posts <ArrowRight className="size-3.5" />
-                        </Link>
-                    </div>
-                    {topPosts.length === 0 ? (
-                        <div className="px-6 py-10 text-center text-sm text-foreground-muted">
-                            No published posts yet.
-                        </div>
-                    ) : (
-                        <div className="divide-y divide-border">
-                            {topPosts.map((post) => {
-                                const typeConf = POST_TYPE_CONFIG[post.type as PostTypeKey]
-                                return (
-                                    <Link
-                                        key={post.id}
-                                        href={`/admin/posts/${post.id}`}
-                                        className="flex items-center justify-between gap-4 px-5 py-3 transition-colors hover:bg-background-subtle sm:px-6"
-                                    >
-                                        <div className="min-w-0 flex-1">
-                                            <p className="truncate text-sm font-medium">{post.title}</p>
-                                            {typeConf && (
-                                                <span className={`mt-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium ${typeConf.color} ${typeConf.textColor}`}>
-                                                    {typeConf.label}
-                                                </span>
-                                            )}
-                                        </div>
-                                        <span className="shrink-0 text-sm tabular-nums text-brand-600 font-medium">
-                                            {post.view_count.toLocaleString()}
-                                        </span>
-                                    </Link>
-                                )
-                            })}
-                        </div>
-                    )}
-                </section>
-
+            <div className="grid gap-6 lg:grid-cols-1">
                 {/* Recent posts activity */}
                 <section className="rounded-xl border border-border bg-surface">
                     <div className="flex items-center justify-between border-b border-border px-5 py-4 sm:px-6">
-                        <h2 className="font-semibold">Recent Activity</h2>
+                        <h2 className="font-semibold">Recent Published Posts</h2>
                         <Link
                             href="/admin/posts"
                             className="inline-flex items-center gap-1 text-sm font-medium text-brand-600 transition-colors hover:text-brand-700"

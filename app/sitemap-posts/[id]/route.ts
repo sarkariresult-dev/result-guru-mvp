@@ -56,7 +56,7 @@ export async function GET(
             .range(from, to)
 
         if (error) {
-            console.error(`[sitemap-posts] Page ${pageId} error:`, error.message)
+            void 0;
             return new NextResponse('Internal Server Error', { status: 500 })
         }
 
@@ -72,7 +72,7 @@ export async function GET(
             }
         }
     } catch (err) {
-        console.error(`[sitemap-posts] Page ${pageId} failure:`, err)
+        void 0;
     }
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>

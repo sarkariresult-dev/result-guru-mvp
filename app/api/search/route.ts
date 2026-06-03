@@ -55,22 +55,5 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
         took_ms: Date.now() - startTime,
     }
 
-    // Fire-and-forget telemetry logging for Admin Search Analytics
-    if (page === 1) {
-        Promise.resolve().then(async () => {
-            try {
-                const userAgent = request.headers.get('user-agent') || ''
-                const isMobile = /mobile/i.test(userAgent)
-                await supabase.from('search_queries').insert({
-                    query: q,
-                    results_count: total,
-                    device: isMobile ? 'mobile' : 'desktop',
-                })
-            } catch (e) {
-                console.error('Search telemetry failed:', e)
-            }
-        })
-    }
-
     return successResponse(result)
 })

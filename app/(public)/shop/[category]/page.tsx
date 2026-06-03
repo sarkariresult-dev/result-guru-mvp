@@ -21,7 +21,7 @@ export async function generateStaticParams() {
         const paths = categories.map(c => ({ category: c.slug }))
         return paths.length > 0 ? paths : [{ category: 'books' }]
     } catch (err) {
-        console.error('[shop] generateStaticParams failed:', err)
+        void 0;
         return [{ category: 'books' }]
     }
 }

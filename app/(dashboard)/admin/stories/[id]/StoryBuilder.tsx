@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { WebStory, WebStorySlide } from '@/types/stories.types'
+import { PostStatus } from '@/types/enums'
 import { saveStorySlides, publishStory, updateWebStory } from '@/lib/actions/stories'
 import { Plus, Trash2, ArrowLeft, Save, Eye, EyeOff } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -109,7 +110,7 @@ export function StoryBuilder({
     }
 
     const handleTogglePublish = async () => {
-        if (slides.length < 4 && story.status === 'draft') {
+        if (slides.length < 4 && story.status === PostStatus.Draft) {
             setMessage({ type: 'error', text: 'Google Discover requires a minimum of 4 slides to be indexed.' })
             return
         }
@@ -117,7 +118,7 @@ export function StoryBuilder({
         setIsPublishing(true)
         setMessage(null)
         try {
-            const newStatus = story.status === 'published' ? false : true
+            const newStatus = story.status === PostStatus.Published ? false : true
             const res = await publishStory(story.id, newStatus)
             if (res.error) throw new Error(res.error)
 
@@ -229,9 +230,9 @@ export function StoryBuilder({
             <div className="flex flex-1 flex-col overflow-y-auto rounded-xl border border-slate-200 bg-white">
                 <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-slate-50/90 px-6 py-4 backdrop-blur">
                     <div className="flex items-center gap-2">
-                        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${story.status === 'published' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${story.status === PostStatus.Published ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
                             }`}>
-                            {story.status === 'published' ? 'LIVE' : 'DRAFT'}
+                            {story.status === PostStatus.Published ? 'LIVE' : 'DRAFT'}
                         </span>
                         {message && (
                             <span className={`text-sm ${message.type === 'success' ? 'text-emerald-600' : 'text-red-600'}`}>
@@ -251,11 +252,11 @@ export function StoryBuilder({
                         <button
                             onClick={handleTogglePublish}
                             disabled={isPublishing || isSaving}
-                            className={`inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white shadow-sm disabled:opacity-50 ${story.status === 'published' ? 'bg-amber-600 hover:bg-amber-700' : 'bg-emerald-600 hover:bg-emerald-700'
+                            className={`inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white shadow-sm disabled:opacity-50 ${story.status === PostStatus.Published ? 'bg-amber-600 hover:bg-amber-700' : 'bg-emerald-600 hover:bg-emerald-700'
                                 }`}
                         >
-                            {story.status === 'published' ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                            {story.status === 'published' ? 'Unpublish' : 'Publish Story'}
+                            {story.status === PostStatus.Published ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            {story.status === PostStatus.Published ? 'Unpublish' : 'Publish Story'}
                         </button>
                     </div>
                 </div>

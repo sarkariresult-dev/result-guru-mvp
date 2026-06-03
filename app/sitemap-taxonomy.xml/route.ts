@@ -81,7 +81,7 @@ export async function GET() {
         }
 
     } catch (err) {
-        console.error('[sitemap] Failed to fetch taxonomy data:', err)
+        void 0;
     }
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>

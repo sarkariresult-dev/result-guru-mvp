@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation'
 import { Save, Eye, Keyboard, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { createPost, updatePost } from '@/features/posts/actions'
+import { PostStatus } from '@/types/enums'
 import { PostFormProvider, usePostForm, clearPostDraft } from './PostFormContext'
 import { ContentSection } from './ContentSection'
 import { TaxonomySection } from './TaxonomySection'
@@ -50,7 +51,7 @@ function PostFormInner({
     const [isPending, startTransition] = useTransition()
     const [error, setError] = useState<string | null>(null)
     const [showSeoModal, setShowSeoModal] = useState(false)
-    const [pendingSaveAs, setPendingSaveAs] = useState<'draft' | 'published'>('draft')
+    const [pendingSaveAs, setPendingSaveAs] = useState<PostStatus>(PostStatus.Draft)
     const { state, dispatch, mode, initialData } = usePostForm()
 
     // ── Keyboard shortcuts ──
@@ -59,19 +60,19 @@ function PostFormInner({
             // Ctrl/Cmd + S = Save
             if ((e.ctrlKey || e.metaKey) && e.key === 's') {
                 e.preventDefault()
-                if (state.title) triggerSave('draft')
+                if (state.title) triggerSave(PostStatus.Draft)
             }
             // Ctrl/Cmd + Shift + P = Publish
             if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'P') {
                 e.preventDefault()
-                if (state.title) triggerSave('published')
+                if (state.title) triggerSave(PostStatus.Published)
             }
         }
         window.addEventListener('keydown', handler)
         return () => window.removeEventListener('keydown', handler)
     }, [state.title]) // eslint-disable-line react-hooks/exhaustive-deps
 
-    const triggerSave = useCallback((saveAs: 'draft' | 'published') => {
+    const triggerSave = useCallback((saveAs: PostStatus) => {
         setPendingSaveAs(saveAs)
         setShowSeoModal(true)
     }, [])
@@ -84,7 +85,7 @@ function PostFormInner({
             // Map context state → DB column names (matches 007_posts.sql)
             const data = {
                 type: state.type,
-                status: pendingSaveAs as import('@/types/enums').PostStatus,
+                status: pendingSaveAs,
                 application_start_date: state.applicationStartDate || null,
                 application_end_date: state.applicationEndDate || null,
                 title: state.title,
@@ -110,7 +111,7 @@ function PostFormInner({
                 og_description: state.ogDescription || state.metaDescription || state.excerpt || null,
                 og_image: state.ogImage || state.featuredImage || null,
                 author_id: state.authorId || null,
-                published_at: pendingSaveAs === 'published' ? new Date().toISOString() : null,
+                published_at: pendingSaveAs === PostStatus.Published ? new Date().toISOString() : null,
                 tag_ids: state.tagIds.filter(id => !!id).length > 0
                     ? state.tagIds.filter(id => !!id)
                     : undefined,
@@ -159,7 +160,7 @@ function PostFormInner({
                 <SeoModal
                     onClose={() => setShowSeoModal(false)}
                     onProceed={doSubmit}
-                    saveLabel={pendingSaveAs === 'published' ? 'Publish' : 'Save'}
+                    saveLabel={pendingSaveAs === PostStatus.Published ? 'Publish' : 'Save'}
                 />
             )}
 
@@ -188,10 +189,10 @@ function PostFormInner({
                         <Button variant="ghost" onClick={handleCancel} disabled={isPending}>
                             Cancel
                         </Button>
-                        <Button variant="secondary" disabled={isPending || !state.title} onClick={() => triggerSave('draft')}>
+                        <Button variant="secondary" disabled={isPending || !state.title} onClick={() => triggerSave(PostStatus.Draft)}>
                             <Save className="size-4" /> {isPending ? 'Saving…' : 'Save Draft'}
                         </Button>
-                        <Button disabled={isPending || !state.title} onClick={() => triggerSave('published')}>
+                        <Button disabled={isPending || !state.title} onClick={() => triggerSave(PostStatus.Published)}>
                             <CheckCircle2 className="size-4" />{' '}
                             {isPending
                                 ? (mode === 'edit' ? 'Updating…' : 'Publishing…')

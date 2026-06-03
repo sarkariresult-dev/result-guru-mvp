@@ -28,7 +28,7 @@ export default async function AdminPostDetailPage({
 
     // Build public URL for published posts
     const prefix = ROUTE_PREFIXES[post.type as PostTypeKey]
-    const publicUrl = post.status === 'published' && prefix
+    const publicUrl = post.status === PostStatus.Published && prefix
         ? `${prefix}/${post.slug}`
         : null
 

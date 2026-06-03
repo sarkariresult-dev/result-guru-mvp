@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
 
     /* ── Handle OAuth/email errors from Supabase ── */
     if (errorParam) {
-        console.error('[auth/callback] Error:', errorParam, errorDescription)
+        void 0;
         const loginUrl = new URL('/login', requestUrl.origin)
         loginUrl.searchParams.set(
             'error',
@@ -41,22 +41,8 @@ export async function GET(request: NextRequest) {
 
     /* ── Exchange code for session ── */
     if (code) {
-        /* Determine redirect destination:
-         * - Password recovery → /reset-password
-         * - Custom `next` param → validate it's a relative path (prevent open-redirect)
-         * - Default → /user dashboard
-         */
-        let destination: string
-        if (type === 'recovery') {
-            destination = '/reset-password'
-        } else if (next && next.startsWith('/') && !next.startsWith('//')) {
-            destination = next
-        } else {
-            destination = '/user'
-        }
-
-        const redirectUrl = new URL(destination, requestUrl.origin)
-        const response = NextResponse.redirect(redirectUrl)
+        // Keep track of cookies to set on the final response
+        const cookiesToSetList: { name: string; value: string; options: any }[] = []
 
         const supabase = createServerClient(
             env.NEXT_PUBLIC_SUPABASE_URL,
@@ -65,22 +51,51 @@ export async function GET(request: NextRequest) {
                 cookies: {
                     getAll: () => request.cookies.getAll(),
                     setAll: (cookiesToSet) => {
-                        cookiesToSet.forEach(({ name, value, options }) =>
-                            response.cookies.set(name, value, options),
-                        )
+                        cookiesToSet.forEach(({ name, value, options }) => {
+                            request.cookies.set(name, value)
+                            cookiesToSetList.push({ name, value, options })
+                        })
                     },
                 },
             },
         )
 
-        const { error } = await supabase.auth.exchangeCodeForSession(code)
+        const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
         if (error) {
-            console.error('[auth/callback] Code exchange failed:', error.message)
+            void 0;
             const loginUrl = new URL('/login', requestUrl.origin)
             loginUrl.searchParams.set('error', 'Session expired. Please sign in again.')
             return NextResponse.redirect(loginUrl)
         }
+
+        /* Determine redirect destination */
+        let destination: string
+        if (type === 'recovery') {
+            destination = '/reset-password'
+        } else if (next && next.startsWith('/') && !next.startsWith('//')) {
+            destination = next
+        } else {
+            destination = '/user'
+            if (data.session?.user) {
+                const { data: dbUser } = await supabase
+                    .from('users')
+                    .select('role')
+                    .eq('auth_user_id', data.session.user.id)
+                    .single()
+
+                if (dbUser?.role === 'admin') destination = '/admin'
+                else if (dbUser?.role === 'author') destination = '/author'
+            }
+        }
+
+        const redirectUrl = new URL(destination, requestUrl.origin)
+        const response = NextResponse.redirect(redirectUrl)
+
+        // Apply all gathered cookies to the final response
+        cookiesToSetList.forEach(({ name, value, options }) => {
+            response.cookies.set(name, value, options)
+        })
 
         return response
     }

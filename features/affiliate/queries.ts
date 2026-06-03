@@ -61,7 +61,7 @@ export const getStaticAffiliateProducts = cache(
             .order('created_at', { ascending: false })
 
         if (error) {
-            console.error('Error fetching static affiliate products:', error)
+            void 0;
             return []
         }
         return (data || []) as AffiliateProduct[]
@@ -86,7 +86,7 @@ export const getAffiliateProducts = cache(
             .order('created_at', { ascending: false })
 
         if (error) {
-            console.error('Error fetching affiliate products:', error)
+            void 0;
             return []
         }
         return (data || []) as AffiliateProduct[]
@@ -106,7 +106,7 @@ export const getFeaturedProducts = cache(
             .limit(limit)
 
         if (error) {
-            console.error('Error fetching featured products:', error)
+            void 0;
             return []
         }
         return (data || []) as AffiliateProduct[]
@@ -124,7 +124,7 @@ export const getRecentlyAddedProducts = cache(
             .limit(limit)
 
         if (error) {
-            console.error('Error fetching recent products:', error)
+            void 0;
             return []
         }
         return (data || []) as AffiliateProduct[]
@@ -141,7 +141,7 @@ export const getAffiliateProductBySlug = cache(
             .single()
             
         if (error) {
-            console.error('Error fetching affiliate product by slug:', error)
+            void 0;
             return null
         }
         return data as AffiliateProduct
@@ -161,7 +161,7 @@ export const getProductsByCategory = cache(
             .limit(limit)
 
         if (error) {
-            console.error(`Error fetching ${category} products:`, error)
+            void 0;
             return []
         }
         return (data || []) as AffiliateProduct[]
@@ -205,7 +205,7 @@ export const getRelatedProducts = cache(
             .limit(limit)
 
         if (error) {
-            console.error('Error fetching related products:', error)
+            void 0;
             return []
         }
         return (data || []) as AffiliateProduct[]
@@ -227,7 +227,7 @@ export const searchAffiliateProducts = cache(
             .limit(20)
 
         if (error) {
-            console.error('Error searching affiliate products:', error)
+            void 0;
             return []
         }
         return (data || []) as AffiliateProduct[]
@@ -272,7 +272,7 @@ export const getAdminAffiliateProducts = cache(
         ])
             
         if (error) {
-            console.error('Error fetching admin affiliate products:', error)
+            void 0;
             return { data: [] as AffiliateProduct[], count: 0 }
         }
         return { data: (data || []) as AffiliateProduct[], count: count || 0 }
@@ -289,7 +289,7 @@ export const getAffiliateProduct = cache(
             .single()
             
         if (error) {
-            console.error('Error fetching affiliate product:', error)
+            void 0;
             return null
         }
         return data as AffiliateProduct

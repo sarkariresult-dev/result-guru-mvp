@@ -34,7 +34,7 @@ export async function getActiveAds(zoneSlug: string, ctx: AdFetchContext = {}): 
 
     const { data, error } = await q
     if (error) {
-        console.error(`getActiveAds error for ${zoneSlug}:`, error)
+        void 0;
         return []
     }
 

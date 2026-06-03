@@ -118,7 +118,7 @@ export async function getAdminOrganizations(opts: {
 
     let query = supabase
         .from('organizations')
-        .select('*', { count: 'exact' })
+        .select('*, sources:organization_sources(*)', { count: 'exact' })
 
     if (opts.active === 'true') query = query.eq('is_active', true)
     if (opts.active === 'false') query = query.eq('is_active', false)

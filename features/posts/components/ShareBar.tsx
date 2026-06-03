@@ -77,7 +77,7 @@ function ShareBarContent({ title, url }: Props) {
                     url: url
                 })
             } catch (err) {
-                console.debug('Native share cancelled', err)
+                void 0;
             }
         } else {
             copy(url)

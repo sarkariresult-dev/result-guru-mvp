@@ -8,7 +8,7 @@ import { SITE } from '@/config/site'
 export async function signIn(payload: { email: string; password: string }) {
     const supabase = await createServerClient()
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
         email: payload.email,
         password: payload.password,
     })
@@ -17,7 +17,22 @@ export async function signIn(payload: { email: string; password: string }) {
         return { error: error.message }
     }
 
-    redirect('/user')
+    let destination = '/user'
+    if (data.user) {
+        const { data: dbUser } = await supabase
+            .from('users')
+            .select('role')
+            .eq('auth_user_id', data.user.id)
+            .single()
+
+        if (dbUser?.role === 'admin') {
+            destination = '/admin'
+        } else if (dbUser?.role === 'author') {
+            destination = '/author'
+        }
+    }
+
+    redirect(destination)
 }
 
 // ── Sign Up (email + password) ─────────────────────────────
@@ -89,7 +104,7 @@ export async function forgotPassword(payload: { email: string }) {
         .maybeSingle()
 
     if (lookupError) {
-        console.error('[forgotPassword] DB lookup failed:', lookupError.message)
+        void 0;
         return { success: false, error: 'Something went wrong. Please try again later.' }
     }
 

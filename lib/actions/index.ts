@@ -1,5 +1,4 @@
 export { signIn, signUp, signOut, signInWithGoogle, forgotPassword, resetPassword } from '@/features/auth/actions'
 export { createPost, updatePost, publishPost, deletePost } from '@/features/posts/actions'
 export { updateProfile, updateUser } from '@/features/dashboard/actions'
-export { updateSeoSetting } from './seo'
 export { subscribe } from '@/features/subscribers/actions'

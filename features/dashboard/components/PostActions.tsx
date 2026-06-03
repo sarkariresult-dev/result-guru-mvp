@@ -4,6 +4,7 @@ import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { publishPost, deletePost } from '@/features/posts/actions'
 import { Button } from '@/components/ui/Button'
+import { PostStatus } from '@/types/enums'
 
 interface Props {
     postId: string
@@ -34,7 +35,7 @@ export function PostActions({ postId, status }: Props) {
             <Button size="sm" variant="ghost" onClick={() => router.push(`/author/posts/${postId}/edit`)} disabled={isPending}>
                 Edit
             </Button>
-            {status !== 'published' && (
+            {status !== PostStatus.Published && (
                 <Button size="sm" onClick={handlePublish} disabled={isPending}>
                     {isPending ? 'Publishing…' : 'Publish'}
                 </Button>

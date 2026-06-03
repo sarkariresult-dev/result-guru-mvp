@@ -6,16 +6,8 @@ import { updateProfile } from '@/features/dashboard/actions'
 import { profileSchema } from '@/lib/validations'
 import { processImage } from '@/lib/utils/image'
 import { Avatar } from '@/components/ui/Avatar'
-import {
-    Camera,
-    Check,
-    Loader2,
-    Shield,
-    Calendar,
-    AlertTriangle,
-    KeyRound,
-    FileText,
-} from 'lucide-react'
+import { PostStatus } from '@/types/enums'
+import { Camera, Check, Loader2, Shield, Calendar, AlertTriangle, KeyRound, FileText, } from 'lucide-react'
 
 /* ── Types ────────────────────────────────────────────────── */
 
@@ -66,7 +58,7 @@ export default function AuthorProfilePage() {
             // Fetch post counts in parallel
             const [totalRes, publishedRes] = await Promise.all([
                 supabase.from('posts').select('id', { count: 'exact', head: true }).eq('author_id', userId),
-                supabase.from('posts').select('id', { count: 'exact', head: true }).eq('author_id', userId).eq('status', 'published'),
+                supabase.from('posts').select('id', { count: 'exact', head: true }).eq('author_id', userId).eq('status', PostStatus.Published),
             ])
 
             const p: ProfileData = {
@@ -110,12 +102,12 @@ export default function AuthorProfilePage() {
         setSaveStatus('idle')
 
         const supabase = createClient()
-        
+
         let fileToUpload = file
         if (file.type !== 'image/gif') {
             fileToUpload = await processImage(file, { maxWidth: 400, maxHeight: 400, quality: 0.9 })
         }
-        
+
         const ext = fileToUpload.name.split('.').pop() ?? 'webp'
         const storagePath = `${profile.authUserId}/avatar.${ext}`
 
@@ -204,11 +196,28 @@ export default function AuthorProfilePage() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div>
-                <h1 className="text-2xl font-bold tracking-tight text-foreground">My Profile</h1>
-                <p className="mt-1 text-sm text-foreground-muted">
-                    Manage your author profile and account settings.
-                </p>
+            <div className='flex items-center justify-between'>
+                <div>
+                    <h1 className="text-2xl font-bold tracking-tight text-foreground">My Profile</h1>
+                    <p className="mt-1 text-sm text-foreground-muted">
+                        Manage your author profile and account settings.
+                    </p>
+                </div>
+                <div className="flex items-center gap-3">
+                    <button
+                        type="button"
+                        onClick={handleSave}
+                        disabled={saveStatus === 'saving'}
+                        className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-700 disabled:opacity-50"
+                    >
+                        {saveStatus === 'saving' && <Loader2 className="size-4 animate-spin" />}
+                        {saveStatus === 'saved' && <Check className="size-4" />}
+                        {saveStatus === 'saving' ? 'Saving…' : saveStatus === 'saved' ? 'Saved!' : 'Save Changes'}
+                    </button>
+                    {saveStatus === 'saved' && (
+                        <span className="text-sm text-green-600">Profile updated successfully!</span>
+                    )}
+                </div>
             </div>
 
             <div className="max-w-2xl space-y-6">
@@ -393,23 +402,6 @@ export default function AuthorProfilePage() {
                         {errorMsg}
                     </div>
                 )}
-
-                {/* Save button */}
-                <div className="flex items-center gap-3">
-                    <button
-                        type="button"
-                        onClick={handleSave}
-                        disabled={saveStatus === 'saving'}
-                        className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-700 disabled:opacity-50"
-                    >
-                        {saveStatus === 'saving' && <Loader2 className="size-4 animate-spin" />}
-                        {saveStatus === 'saved' && <Check className="size-4" />}
-                        {saveStatus === 'saving' ? 'Saving…' : saveStatus === 'saved' ? 'Saved!' : 'Save Changes'}
-                    </button>
-                    {saveStatus === 'saved' && (
-                        <span className="text-sm text-green-600">Profile updated successfully!</span>
-                    )}
-                </div>
             </div>
         </div>
     )

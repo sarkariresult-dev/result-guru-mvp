@@ -1,6 +1,7 @@
 import { createServerClient } from '../supabase/server'
 import { createStaticClient } from '@/lib/supabase/static'
 import { WebStory, WebStorySlide } from '@/types/stories.types'
+import { PostStatus } from '@/types/enums'
 
 export async function getStories(options?: {
     page?: number
@@ -99,7 +100,7 @@ export async function getPublicStories(limit: number = 10, page: number = 1): Pr
             *,
             author:users(name, avatar_url)
         `, { count: 'exact' })
-        .eq('status', 'published')
+        .eq('status', PostStatus.Published)
         .order('published_at', { ascending: false })
         .range(from, to)
 
@@ -117,7 +118,7 @@ export async function getPublicStoryBySlug(slug: string): Promise<WebStory | nul
         .from('web_stories')
         .select('*')
         .eq('slug', slug)
-        .eq('status', 'published')
+        .eq('status', PostStatus.Published)
         .single()
 
     if (error) {

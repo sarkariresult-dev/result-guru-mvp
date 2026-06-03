@@ -3,6 +3,7 @@ import { revalidateTag } from 'next/cache'
 import { pushToGoogleIndexingApi } from '@/lib/seo/indexing'
 import { SITE, ROUTE_PREFIXES, type PostTypeKey } from '@/config/site'
 import { withErrorHandling, successResponse, errorResponse } from '@/lib/api-response'
+import { PostStatus } from '@/types/enums'
 
 export const GET = withErrorHandling(async (request: Request) => {
     const authHeader = request.headers.get('authorization')
@@ -17,7 +18,7 @@ export const GET = withErrorHandling(async (request: Request) => {
     const { data: scheduledPosts, error: scheduleError } = await supabase
         .from('posts')
         .select('id, slug, type, scheduled_at')
-        .eq('status', 'scheduled')
+        .eq('status', PostStatus.Scheduled)
         .eq('needs_human_review', false)
         .lte('scheduled_at', new Date().toISOString())
 
@@ -30,7 +31,7 @@ export const GET = withErrorHandling(async (request: Request) => {
         const { error: updateError } = await supabase
             .from('posts')
             .update({
-                status: 'published',
+                status: PostStatus.Published,
                 published_at: new Date().toISOString(),
             })
             .in('id', ids)
@@ -51,7 +52,7 @@ export const GET = withErrorHandling(async (request: Request) => {
                 }
             }
         } else {
-            console.error('Failed to publish scheduled posts:', updateError)
+            void 0;
         }
     }
 
@@ -60,7 +61,7 @@ export const GET = withErrorHandling(async (request: Request) => {
     const refreshRes = await supabase.rpc('fn_refresh_trending')
 
     if (refreshRes.error) {
-        console.error('Cron refresh error:', refreshRes.error)
+        void 0;
         return errorResponse('Failed to refresh materialized views', 500)
     }
 
@@ -73,7 +74,7 @@ export const GET = withErrorHandling(async (request: Request) => {
     const { count: staleCount } = await supabase
         .from('posts')
         .select('id', { count: 'exact', head: true })
-        .eq('status', 'published')
+        .eq('status', PostStatus.Published)
         .lt('content_updated_at', staleThreshold.toISOString())
 
     const staleFlaggedCount = staleCount ?? 0

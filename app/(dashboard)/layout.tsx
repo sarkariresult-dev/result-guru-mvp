@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { createServerClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { DashboardShell } from '@/features/dashboard/components/DashboardShell'
-import { adminNavGroups, authorNavGroups, userNavGroups } from '@/components/layout/Sidebar'
+
 import type { PublicUser } from '@/types/user.types'
 
 // Dashboard pages must never be indexed by search engines
@@ -44,16 +44,21 @@ export default async function DashboardLayout({ children }: { children: React.Re
         bio: dbUser?.bio ?? null,
     }
 
-    const navGroups =
-        profile.role === 'admin'
-            ? adminNavGroups
-            : profile.role === 'author'
-                ? authorNavGroups
-                : userNavGroups
+    let draftsQuery = supabase
+        .from('posts')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'draft')
+        .eq('needs_human_review', true)
+
+    if (profile.role === 'author') {
+        draftsQuery = draftsQuery.eq('author_id', profile.id)
+    }
+
+    const { count: pendingDraftsCount } = await draftsQuery
 
     return (
         <div className="flex min-h-screen bg-background">
-            <DashboardShell user={profile} navGroups={navGroups}>
+            <DashboardShell user={profile} pendingDraftsCount={pendingDraftsCount}>
                 <main id="main-content" className="flex-1">
                     {children}
                 </main>

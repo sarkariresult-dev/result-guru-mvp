@@ -34,7 +34,7 @@ export function useMediaQuery(query: string): boolean {
             handler = (e: MediaQueryListEvent) => setMatches(e.matches)
             mq.addEventListener('change', handler)
         } catch (err) {
-            console.error('Media query error:', err)
+            void 0;
         }
 
         return () => {
