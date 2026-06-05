@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { notFound, useRouter } from 'next/navigation'
 import { deleteMonitoringJob } from '@/lib/actions/monitoring'
 import type { MonitoringJob, MonitoringEvent } from '@/types/taxonomy.types'
+import { useAuth } from '@/hooks/useAuth'
 
 interface PageProps {
     params: Promise<{ jobId: string }>
@@ -21,6 +22,8 @@ export default function JobDetailsPage({ params }: PageProps) {
     const [updates, setUpdates] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [isDeleting, setIsDeleting] = useState(false)
+    const [isNotFound, setIsNotFound] = useState(false)
+    const { isAdmin } = useAuth()
     const supabase = createClient()
     const router = useRouter()
 
@@ -51,7 +54,7 @@ export default function JobDetailsPage({ params }: PageProps) {
                 .single()
 
             if (!jobData) {
-                if (isMounted) notFound()
+                if (isMounted) setIsNotFound(true)
                 return
             }
 
@@ -110,6 +113,10 @@ export default function JobDetailsPage({ params }: PageProps) {
             supabase.removeChannel(updatesChannel)
         }
     }, [job?.id, job?.status, supabase])
+
+    if (isNotFound) {
+        notFound()
+    }
 
     if (loading || !job) {
         return (
@@ -201,27 +208,40 @@ export default function JobDetailsPage({ params }: PageProps) {
                                             </tr>
                                         </thead>
                                         <tbody className='divide-y divide-border'>
-                                            {updates.map((update) => (
-                                                <tr key={update.id} className="hover:bg-background-subtle/50">
-                                                    <td className='px-4 py-3 font-medium'>{update.organizations?.name}</td>
-                                                    <td className='px-4 py-3'>
-                                                        <a href={update.source_url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                                                            {update.organization_sources?.name || 'Link'}
-                                                        </a>
-                                                    </td>
-                                                    <td className='px-4 py-3'>{update.title}</td>
-                                                    <td className='px-4 py-3'>
-                                                        <Badge variant="default">{update.status}</Badge>
-                                                    </td>
-                                                    <td className='px-4 py-3 text-right'>
-                                                        {update.draft_post_id && (
-                                                            <Link href={`/author/editor/${update.draft_post_id}`} className={buttonVariants({ variant: 'secondary', size: 'sm' })}>
-                                                                Review Draft
-                                                            </Link>
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                            {updates.map((update) => {
+                                                const org = update.organizations
+                                                const orgName = Array.isArray(org) ? org[0]?.name : org?.name
+
+                                                const source = update.organization_sources
+                                                const sourceObj = Array.isArray(source) ? source[0] : source
+                                                const sourceName = sourceObj?.name || 'Link'
+
+                                                const reviewUrl = isAdmin 
+                                                    ? `/admin/posts/${update.draft_post_id}` 
+                                                    : `/author/posts/${update.draft_post_id}/edit`
+
+                                                return (
+                                                    <tr key={update.id} className="hover:bg-background-subtle/50">
+                                                        <td className='px-4 py-3 font-medium'>{orgName || '—'}</td>
+                                                        <td className='px-4 py-3'>
+                                                            <a href={update.source_url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                                                                {sourceName}
+                                                            </a>
+                                                        </td>
+                                                        <td className='px-4 py-3'>{update.title}</td>
+                                                        <td className='px-4 py-3'>
+                                                            <Badge variant="default">{update.status}</Badge>
+                                                        </td>
+                                                        <td className='px-4 py-3 text-right'>
+                                                            {update.draft_post_id && (
+                                                                <Link href={reviewUrl} className={buttonVariants({ variant: 'secondary', size: 'sm' })}>
+                                                                    Review Draft
+                                                                </Link>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })}
                                             {updates.length === 0 && (
                                                 <tr>
                                                     <td colSpan={5} className="px-4 py-8 text-center text-foreground-muted">

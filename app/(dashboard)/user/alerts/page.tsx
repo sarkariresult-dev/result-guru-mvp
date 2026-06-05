@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { subscribe } from '@/features/subscribers/actions'
 import { POST_TYPE_CONFIG } from '@/config/constants'
+import { PushNotificationPrompt } from '@/components/shared/PushNotificationPrompt'
 import type { SubscriberPreferences } from '@/types/newsletter.types'
 import {
     Bell,
@@ -282,6 +283,18 @@ export default function UserAlertsPage() {
                         {errorMsg}
                     </div>
                 )}
+
+                {/* ── Push Notifications ──────────────────────── */}
+                <section className="rounded-xl border border-border bg-surface p-5 sm:p-6">
+                    <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-foreground-subtle">
+                        Push Notifications
+                    </h2>
+                    <p className="mb-5 text-sm text-foreground-muted">
+                        Receive instant browser notifications when important updates
+                        are announced — even when you&apos;re not on the site.
+                    </p>
+                    <PushNotificationPrompt />
+                </section>
 
                 {/* ── Action buttons ─────────────────────────── */}
                 <div className="flex items-center justify-between">

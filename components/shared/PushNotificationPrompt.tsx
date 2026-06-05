@@ -2,10 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { env } from '@/config/env';
-import { Button } from '@/components/ui/Button'; // Assuming you have this
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card'; // Assuming this exists
+import { Button } from '@/components/ui/Button';
+import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/Card';
 import { Bell, BellOff, Loader2 } from 'lucide-react';
 
+/**
+ * Inline push notification opt-in/opt-out card.
+ * Used in the user dashboard (/user/alerts) as an explicit toggle.
+ * For the auto-prompted modal on public pages, see GlobalPushModal.tsx.
+ */
 export function PushNotificationPrompt() {
   const [isSupported, setIsSupported] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -27,14 +32,14 @@ export function PushNotificationPrompt() {
 
       const sub = await reg.pushManager.getSubscription();
       setIsSubscribed(!!sub);
-    } catch (err) {
-      void 0;
+    } catch (err: unknown) {
+      console.error('[PushNotificationPrompt] SW registration failed:', err);
     }
   };
 
   const urlB64ToUint8Array = (base64String: string) => {
     const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-    const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
     const rawData = window.atob(base64);
     const outputArray = new Uint8Array(rawData.length);
     for (let i = 0; i < rawData.length; ++i) {
@@ -72,9 +77,10 @@ export function PushNotificationPrompt() {
 
       setIsSubscribed(true);
       setError(null);
-    } catch (err: any) {
-      void 0;
-      if (err.message === 'Permission not granted for Notification') {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      console.error('[PushNotificationPrompt] Subscribe failed:', message);
+      if (message === 'Permission not granted for Notification') {
         setError('Permission denied. Please enable notifications in your browser settings.');
       } else {
         setError('Failed to enable push notifications. Please try again.');
@@ -104,8 +110,8 @@ export function PushNotificationPrompt() {
         await subscription.unsubscribe();
       }
       setIsSubscribed(false);
-    } catch (err) {
-      void 0;
+    } catch (err: unknown) {
+      console.error('[PushNotificationPrompt] Unsubscribe failed:', err);
     } finally {
       setIsLoading(false);
     }

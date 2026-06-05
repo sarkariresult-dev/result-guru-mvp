@@ -139,22 +139,22 @@ Update this file after every meaningful implementation change.
 - [x] AI relevance filter and post drafting action (`generateDraftFromSourceUpdate`)
 - [x] Admin Monitoring Dashboard with manual/batch controls and history feed (`MonitoringClient.tsx`)
 - [x] Dynamic Sidebar navigation count badge for pending human-review drafts
+- [x] Full Web Push Notification system — native Web Push API (no third-party), VAPID keys, service worker with install/activate lifecycle, subscribe/unsubscribe API routes, admin broadcast dashboard, click tracking, paginated send, iOS Safari guidance, UTM analytics, CSP hardening
+- [x] Secured and refactored organization notice board monitoring crawler: moved core logic into service layer (`lib/monitoring.ts`), wrapped Server Actions with role verification checks using `createServerClient()`, resolved RSC rendering click handler crash by converting to HTML form action, resolved database constraint log failures during scraping/AI error (`monitoring_logs` NOT NULL constraint), and integrated Next.js 15 `after` API + cron awaiting to prevent serverless execution freezes.
+- [x] Resolved client-side routing, query relationships, and broken navigation issues in the monitoring job details view page (`app/(dashboard)/admin/monitoring/[jobId]/page.tsx`). Fixed unhandled promise rejection by moving `notFound()` to the render phase; handled single-relationship Supabase joined objects returning as arrays; dynamically linked "Review Draft" button to `/admin/posts/[id]` for admins and `/author/posts/[id]/edit` for authors using `useAuth()`.
 
 ## In Progress
 
-- [x] Context file audit and rewrite (this session)
+- [ ] (None)
 
 ## Next Up
 
 - Email delivery infrastructure for newsletter broadcasts
-- Push notification implementation (broadcast channels table exists but no send logic)
 - Automated social media posting (Twitter thread generation exists but posting is manual)
-- PWA offline support (manifest exists but no service worker)
 
 ## Open Questions
 
 - **Email provider**: Which service will handle newsletter broadcast delivery? (SendGrid, Resend, AWS SES, etc.)
-- **Push notifications**: Which push service will be used? (Firebase Cloud Messaging, OneSignal, etc.)
 - **Search infrastructure**: Current search uses Supabase full-text search. Is migration to Algolia/Meilisearch/Typesense planned for better Hindi/Hinglish support?
 - **Social media automation**: Will Twitter thread posting be automated (via Twitter API), or remain manual copy-paste?
 - **Image CDN**: Is a dedicated image CDN (Cloudinary, Imgix) planned, or will Supabase Storage + Next.js Image Optimization remain sufficient?
@@ -197,3 +197,4 @@ Update this file after every meaningful implementation change.
 - Deleted the SEO and Redirects Admin UI pages to simplify the dashboard.
 - Completely removed the dynamic database-driven SEO architecture (`012_seo.sql`, `lib/queries/seo.ts`, `lib/actions/seo.ts`) in favor of the inherently faster hardcoded approach (in `next.config.ts`, `app/robots.ts`, `app/sitemap-static.xml/route.ts`). This removes unused DB tables and dead code, resulting in an optimized, zero-latency setup. (2026-06-03)
 - Fully refactored and scrubbed the database schema migration sequence (001 - 023). Removed all orphaned analytics, trending, and tracking elements from views, functions, RLS, optimization configurations, and CRON schedules, then sequentially renamed the files to eliminate numbering gaps and patched all inter-file reference headers. (2026-06-03)
+- Comprehensive push notification system audit and fix — resolved 13 issues across service worker, API routes, client components, send infrastructure, and config. Key fixes: created missing `/api/analytics/push-click` route for click tracking, rewrote `sw.js` with `install`/`activate` lifecycle + versioning + rich notification actions + vibrate, fixed >1000 subscriber cap with paginated fetching, added UTM analytics parameters, added iOS Safari PWA guidance modal, fixed `any` type violations and `void 0` silent errors across 3 files, added `worker-src 'self'` CSP and `Cache-Control` headers for SW, wired `PushNotificationPrompt` into `/user/alerts` dashboard, updated manifest with `id`/`scope` for iOS 16.4+. Passed `tsc --noEmit` and `npm run build` with zero errors. (2026-06-05)

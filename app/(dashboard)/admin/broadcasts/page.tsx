@@ -37,6 +37,12 @@ export default async function BroadcastsPage() {
     .order('created_at', { ascending: false })
     .limit(20);
 
+  const { data: subscribers } = await supabaseAdmin
+    .from('web_push_subscriptions')
+    .select('*, users(email)')
+    .order('created_at', { ascending: false })
+    .limit(100);
+
   return (
     <div className="space-y-6 max-w-5xl">
       <div className="flex items-center justify-between">
@@ -96,6 +102,58 @@ export default async function BroadcastsPage() {
               {!broadcasts?.length && (
                 <tr>
                   <td colSpan={5} className="p-4 text-center text-foreground-muted">No broadcasts sent yet.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      <h2 className="text-2xl font-semibold tracking-tight mt-8 mb-4">Subscriber List (Latest 100)</h2>
+      <Card>
+        <div className="relative w-full overflow-auto">
+          <table className="w-full caption-bottom text-sm">
+            <thead className="[&_tr]:border-b">
+              <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <th className="h-12 px-4 text-left align-middle font-medium text-foreground-muted">User</th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-foreground-muted">Endpoint / Provider</th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-foreground-muted">Device / Browser</th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-foreground-muted">Subscribed At</th>
+              </tr>
+            </thead>
+            <tbody className="[&_tr:last-child]:border-0">
+              {subscribers?.map((sub) => {
+                let host = sub.endpoint;
+                try {
+                  host = new URL(sub.endpoint).hostname;
+                } catch {
+                  // Ignore
+                }
+
+                return (
+                  <tr key={sub.id} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                    <td className="p-4 align-middle">
+                      {sub.users?.email ? (
+                        <span className="font-medium text-foreground">{sub.users.email}</span>
+                      ) : (
+                        <span className="text-foreground-muted italic">Anonymous</span>
+                      )}
+                    </td>
+                    <td className="p-4 align-middle max-w-[200px] truncate" title={sub.endpoint}>
+                      {host}
+                    </td>
+                    <td className="p-4 align-middle max-w-[300px] truncate text-foreground-subtle" title={sub.user_agent || 'Unknown'}>
+                      {sub.user_agent || 'Unknown'}
+                    </td>
+                    <td className="p-4 align-middle text-foreground-subtle whitespace-nowrap">
+                      {new Date(sub.created_at).toLocaleString()}
+                    </td>
+                  </tr>
+                );
+              })}
+              {!subscribers?.length && (
+                <tr>
+                  <td colSpan={4} className="p-4 text-center text-foreground-muted">No subscribers found.</td>
                 </tr>
               )}
             </tbody>

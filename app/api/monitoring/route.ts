@@ -1,6 +1,6 @@
 import { createServerClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { startMonitoringJob } from '@/lib/actions/monitoring'
+import { startMonitoringJob } from '@/lib/monitoring'
 import { withErrorHandling, successResponse, errorResponse } from '@/lib/api-response'
 
 export const maxDuration = 300 // Allow up to 5 minutes for batch scraping
@@ -82,6 +82,11 @@ export const GET = withErrorHandling(async (request: Request) => {
 
     if ('error' in result) {
         return errorResponse(result.error || 'Monitoring batch check failed', 500)
+    }
+
+    // Await execution to completion in serverless/cron environment
+    if (result.promise) {
+        await result.promise
     }
 
     return successResponse({

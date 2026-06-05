@@ -113,10 +113,25 @@ const nextConfig: NextConfig = {
               "connect-src 'self' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.google-analytics.com https://*.analytics.google.com https://*.doubleclick.net https://*.googlesyndication.com https://*.googleadservices.com https://*.adtrafficquality.google https://*.adservice.google.com https://*.adservice.google.co.in https://vitals.vercel-insights.com https://va.vercel-scripts.com",
               "frame-src 'self' https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.googlesyndication.com https://*.adservice.google.com https://*.adservice.google.co.in https://*.adtrafficquality.google",
               "frame-ancestors 'self' https://*.google.com https://*.googlesyndication.com https://*.doubleclick.net https://*.googleadservices.com https://*.adservice.google.com https://*.adservice.google.co.in https://vercel.com https://*.vercel.app",
+              "worker-src 'self'",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",
             ].join('; '),
+          },
+        ],
+      },
+      /* Service Worker - must always revalidate for instant updates */
+      {
+        source: '/sw.js',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=0, must-revalidate',
+          },
+          {
+            key: 'Service-Worker-Allowed',
+            value: '/',
           },
         ],
       },

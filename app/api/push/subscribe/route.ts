@@ -6,6 +6,7 @@ import { generalLimiter, getClientIp } from '@/lib/rate-limit';
 
 const subscriptionSchema = z.object({
   endpoint: z.string().url(),
+  expirationTime: z.number().nullable().optional(),
   keys: z.object({
     p256dh: z.string(),
     auth: z.string()

@@ -19,7 +19,7 @@ export default async function AdminMonitoringPage() {
     const triggerCrawlerAction = async () => {
         'use server'
         const result = await startMonitoringJob('manual')
-        if (result.jobId) {
+        if (result.success) {
             revalidatePath('/admin/monitoring')
         }
     }
@@ -33,9 +33,11 @@ export default async function AdminMonitoringPage() {
                         Track background scraper executions across all organization sources.
                     </p>
                 </div>
-                <button onClick={triggerCrawlerAction} className="rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 cursor-pointer border border-border">
-                    Run Crawler Now
-                </button>
+                <form action={triggerCrawlerAction}>
+                    <button type="submit" className="rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 cursor-pointer border border-border">
+                        Run Crawler Now
+                    </button>
+                </form>
             </div>
 
             <div className='w-full rounded-xl overflow-hidden border border-border bg-surface'>
