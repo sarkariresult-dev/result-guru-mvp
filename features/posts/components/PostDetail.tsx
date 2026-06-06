@@ -15,6 +15,7 @@ import { AuthorBox } from './AuthorBox'
 import { ShareBar } from './ShareBar'
 import { ActionCenter } from './ActionCenter'
 import { InlineNewsletterCTA } from './InlineNewsletterCTA'
+import { ViewCounter } from '@/features/shared/components/ViewCounter'
 import { LocalErrorBoundary } from '@/components/shared/LocalErrorBoundary'
 import { Calendar, Clock, Tag, ShieldCheck } from 'lucide-react'
 import { getActionLinkPageLabel } from '@/lib/seo/seo-analyzer'
@@ -239,6 +240,7 @@ export function PostDetail({ post, slug, url }: PostDetailProps) {
                                 <span>Updated {formatDate(post.content_updated_at)}</span>
                             </div>
                         )}
+                        <ViewCounter postId={post.id} initialCount={post.view_count} className="text-[10px] font-black uppercase tracking-widest text-foreground-subtle" />
                         <div className="flex items-center gap-2 bg-brand-50 text-brand-700 px-4 py-1.5 rounded-full border border-brand-200 dark:bg-brand-900/30 dark:text-brand-400 dark:border-brand-800/40 shadow-sm" title="This content meets our rigorous editorial standards for accuracy.">
                             <ShieldCheck className="size-3.5" />
                             <span>Expert Written & Fact-Checked</span>

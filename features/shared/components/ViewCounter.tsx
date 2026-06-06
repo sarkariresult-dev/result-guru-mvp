@@ -2,10 +2,12 @@
 
 import { useEffect, useRef } from 'react'
 import { Eye } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface Props {
     postId: string
     initialCount: number
+    className?: string
 }
 
 /** Detect device type from viewport width */
@@ -17,7 +19,7 @@ function getDevice(): string {
     return 'desktop'
 }
 
-export function ViewCounter({ postId, initialCount }: Props) {
+export function ViewCounter({ postId, initialCount, className }: Props) {
     const tracked = useRef(false)
 
     useEffect(() => {
@@ -37,9 +39,10 @@ export function ViewCounter({ postId, initialCount }: Props) {
     }, [postId])
 
     return (
-        <span className="inline-flex items-center gap-1 text-xs text-foreground-subtle">
-            <Eye className="size-3.5" />
-            {initialCount.toLocaleString()} views
+        <span className={cn("inline-flex items-center gap-1.5 text-xs text-foreground-subtle", className)}>
+            <Eye className="size-3.5 text-brand-500" />
+            <span>{initialCount.toLocaleString()} Views</span>
         </span>
     )
 }
+
