@@ -16,6 +16,8 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
     
     const body = await request.json()
     const postId = body.postId ?? body.post_id
+    const referrer = body.referrer ?? null
+    const device = body.device ?? null
 
     if (!postId) {
         return errorResponse('postId is required', 400)
@@ -26,8 +28,8 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
     // fn_increment_post_view(p_post_id, p_referrer, p_device)
     const { error } = await supabase.rpc('fn_increment_post_view', {
         p_post_id: postId,
-        p_referrer: null,
-        p_device: null,
+        p_referrer: referrer,
+        p_device: device,
     })
 
     if (error) throw error

@@ -73,3 +73,26 @@ $$;
 COMMENT ON FUNCTION fn_posts_by_tag(UUID, INT, INT) IS
   'Returns paginated published posts for a given tag via JOIN.
    Replaces the app-layer two-query pattern (fetch IDs → IN query).';
+
+
+-- ── Increment Post View RPC ──────────────────────────────────────
+CREATE OR REPLACE FUNCTION fn_increment_post_view(
+  p_post_id          UUID,
+  p_referrer         TEXT,
+  p_device           TEXT
+)
+RETURNS VOID
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  UPDATE posts
+  SET view_count = COALESCE(view_count, 0) + 1
+  WHERE id = p_post_id;
+END;
+$$;
+
+COMMENT ON FUNCTION fn_increment_post_view(UUID, TEXT, TEXT) IS
+  'SECURITY DEFINER: increments the view count of a post.';
+

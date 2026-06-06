@@ -79,10 +79,10 @@ export function injectContextualLinks(
 
     // We can expand this with exact LSI keyword mapping to other category hubs
     const lsiMapping: Record<string, string> = {
-        'sarkari result': '/category/result',
-        'admit card': '/category/admit-card',
-        'syllabus': '/category/syllabus',
-        'latest jobs': '/category/latest-jobs'
+        'sarkari result': '/result',
+        'admit card': '/admit-card',
+        'syllabus': '/syllabus',
+        'latest jobs': '/latest-jobs'
     }
 
     const linkedCategories = new Set<string>()

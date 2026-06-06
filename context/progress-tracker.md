@@ -34,7 +34,7 @@ Update this file after every meaningful implementation change.
 - [x] Programmatic database cleanup (`tests/global-teardown.ts`) using admin client to clear `e2e-test-` data on all tables after test runs
 
 ### Database
-- [x] Full PostgreSQL schema via Supabase migrations (001–024)
+- [x] Full PostgreSQL schema via Supabase migrations (001–023)
 - [x] 13 post type enum, 4 post statuses, and all supporting enums
 - [x] Posts table with 50+ columns (content, SEO, OG, dates, links, structured data)
 - [x] Taxonomy tables: states, organizations, categories, tags, qualifications
@@ -51,7 +51,8 @@ Update this file after every meaningful implementation change.
 - [x] JWT role sync via fn_sync_role_to_claims trigger
 - [x] Materialized views: mv_post_counts, mv_active_ads_lookup
 - [x] Regular views: v_posts_detail, v_posts_list, v_posts_attention
-- [x] Database functions: fn_increment_view_count, fn_is_admin, fn_is_author_or_admin
+- [x] Database functions: fn_increment_post_view, fn_is_admin, fn_is_author_or_admin
+- [x] Analytics view partition maintenance: fn_create_quarterly_partitions
 
 ### Auth
 - [x] Supabase Auth (email/password + Google OAuth)
@@ -142,8 +143,8 @@ Update this file after every meaningful implementation change.
 - [x] Full Web Push Notification system — native Web Push API (no third-party), VAPID keys, service worker with install/activate lifecycle, subscribe/unsubscribe API routes, admin broadcast dashboard, click tracking, paginated send, iOS Safari guidance, UTM analytics, CSP hardening
 - [x] Secured and refactored organization notice board monitoring crawler: moved core logic into service layer (`lib/monitoring.ts`), wrapped Server Actions with role verification checks using `createServerClient()`, resolved RSC rendering click handler crash by converting to HTML form action, resolved database constraint log failures during scraping/AI error (`monitoring_logs` NOT NULL constraint), and integrated Next.js 15 `after` API + cron awaiting to prevent serverless execution freezes.
 - [x] Resolved client-side routing, query relationships, and broken navigation issues in the monitoring job details view page (`app/(dashboard)/admin/monitoring/[jobId]/page.tsx`). Fixed unhandled promise rejection by moving `notFound()` to the render phase; handled single-relationship Supabase joined objects returning as arrays; dynamically linked "Review Draft" button to `/admin/posts/[id]` for admins and `/author/posts/[id]/edit` for authors using `useAuth()`.
-- [x] Email Delivery Infrastructure: Integrated Resend email provider. Created Zod-validated configuration schema, wrote a robust batch-sending (`resend.batch.send` in chunks of 100) Server Action `sendEmailBroadcast` with RFC-compliant `List-Unsubscribe` headers, developed a beautiful public `/unsubscribe` page with direct Supabase status updates, and upgraded the Admin Broadcast Dashboard to dynamically switch between Push Notifications and Email Newsletter campaigns with live metrics.
 - [x] Hardened post-generation FAQ schemas, resolved database and UI key discrepancies (`{q, a}` vs `{question, answer}`), resolved indexing contradictions by pruning empty/noindexed archives from `sitemap-taxonomy.xml`, and integrated the Google Web Stories sitemap into the main sitemap index. Passed strict compilation and production build tests with zero errors.
+- [x] Post View Count Tracking Fix: Implemented the missing `fn_increment_post_view` database RPC function under `SECURITY DEFINER` context in `017_rpc_functions.sql` and refactored `/api/views/route.ts` to properly pass `referrer` and `device` metadata dynamically tracked by the client-side `ViewCounter` component. Verified complete type-checking and Next.js production builds.
 
 ## In Progress
 
