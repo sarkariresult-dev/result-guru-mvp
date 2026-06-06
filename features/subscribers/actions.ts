@@ -1,6 +1,6 @@
 'use server'
 
-import { createServerClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 export type SubscribeState = {
     success: boolean
@@ -12,7 +12,7 @@ export async function subscribe(
     prevState: SubscribeState | null,
     formData: FormData
 ): Promise<SubscribeState> {
-    const supabase = await createServerClient()
+    const supabase = createAdminClient()
     
     const email = formData.get('email')?.toString().toLowerCase().trim()
     const phone = formData.get('phone')?.toString() ?? null

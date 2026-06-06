@@ -13,7 +13,7 @@ export function NewsletterForm() {
 
     return (
         <form action={formAction} className="flex flex-col gap-2" aria-label="Newsletter subscription">
-            <div className="flex gap-2 w-full">
+            <div className="flex flex-col sm:flex-row gap-2 w-full">
                 <label htmlFor="newsletter-email" className="sr-only">Email address</label>
                 <input
                     id="newsletter-email"
@@ -23,9 +23,9 @@ export function NewsletterForm() {
                     required
                     disabled={isPending}
                     aria-label="Email address for newsletter"
-                    className="h-10 flex-1 rounded-lg border border-border bg-surface px-3 text-sm disabled:opacity-50"
+                    className="h-10 w-full sm:flex-1 rounded-lg border border-border bg-surface px-3 text-sm disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                 />
-                <Button type="submit" loading={isPending} size="md">Subscribe</Button>
+                <Button type="submit" loading={isPending} className="h-10 w-full sm:w-auto font-semibold">Subscribe</Button>
             </div>
             {state?.error && (
                 <p className="text-xs font-medium text-rose-500">{state.error}</p>

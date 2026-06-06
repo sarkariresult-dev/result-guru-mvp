@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { createServerClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { subscribeLimiter, getClientIp, rateLimitResponse } from '@/lib/rate-limit'
 import { withErrorHandling, successResponse, errorResponse } from '@/lib/api-response'
 
@@ -21,7 +21,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
     }
 
     const normalizedEmail = email.toLowerCase().trim()
-    const supabase = await createServerClient()
+    const supabase = createAdminClient()
 
     // Check if already subscribed
     const { data: existing } = await supabase
