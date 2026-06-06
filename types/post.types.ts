@@ -115,6 +115,7 @@ export interface PublishedPost extends Post {
     // From states JOIN
     state_name: string | null
     // From organizations JOIN
+    org_slug: string | null
     org_official_url: string | null     // ← organisations.official_url
     org_logo_url: string | null
     // From categories JOIN

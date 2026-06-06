@@ -65,13 +65,15 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     const totalCount = await getPostsCount({ organization_id: org.id }).catch(() => 0)
     const totalPages = Math.ceil(totalCount / PAGINATION.DEFAULT_LIMIT)
 
+    const robots = totalCount === 0 ? 'noindex, follow' : org.meta_robots
+
     const baseMetadata: Metadata = {
         title,
         description,
         alternates: {
             canonical,
         },
-        ...(org.meta_robots && { robots: org.meta_robots }),
+        ...(robots && { robots }),
         openGraph: {
             title,
             description,

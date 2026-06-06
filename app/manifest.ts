@@ -12,8 +12,8 @@ import { SITE } from '@/config/site'
  */
 export default function manifest(): MetadataRoute.Manifest {
     return {
-        name: SITE.name,
-        short_name: SITE.name,
+        name: 'Result Guru – Sarkari Result & Govt Jobs',
+        short_name: 'Result Guru',
         description: SITE.description,
         start_url: '/',
         id: '/',

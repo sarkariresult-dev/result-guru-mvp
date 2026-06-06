@@ -36,6 +36,16 @@ export async function GET() {
                 sitemaps.push(`${baseUrl}/sitemap-posts/${i}`)
             }
         }
+
+        // Count published web stories
+        const { count: storiesCount } = await supabase
+            .from('web_stories')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', PostStatus.Published)
+
+        if (storiesCount && storiesCount > 0) {
+            sitemaps.push(`${baseUrl}/stories-sitemap.xml`)
+        }
     } catch (err) {
         void 0;
     }

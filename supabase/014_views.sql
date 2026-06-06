@@ -21,7 +21,7 @@ SELECT
   p.title, p.slug, p.excerpt, p.content,
   
   p.state_slug, s.name AS state_name,
-  p.organization_id, p.org_name, p.org_short_name,
+  p.organization_id, o.slug AS org_slug, p.org_name, p.org_short_name,
   o.official_url AS org_official_url, o.logo_url AS org_logo_url,
   p.qualification, p.category_id,
   c.name AS category_name, c.slug AS category_slug,

@@ -22,12 +22,12 @@ import type { LucideIcon } from 'lucide-react'
 
 
 /* SEO Metadata
- * Title: 59 chars — brand-first per Google Search Central best practice (2025).
- * Description: 116 chars — natural summary, no CTA suffix per Google's latest snippet guidance.
+ * Title: 60 chars — keyword-first to prevent Google title rewriting. Brand suffix at end.
+ * Description: 131 chars — natural summary with source trust signal.
  */
 export const metadata = buildPageMetadata({
-    title: 'Result Guru – Sarkari Results, Govt Jobs & Admit Cards 2026',
-    description: 'Get latest Sarkari Results, Govt Jobs, Admit Cards, Answer Keys & Exam Updates 2026. Fast, accurate & daily updated.',
+    title: 'Sarkari Result 2026 – Govt Jobs, Admit Cards & Exam Updates | Result Guru',
+    description: 'Get latest Sarkari Results, Govt Jobs, Admit Cards, Answer Keys & Exam Updates 2026. Fast, accurate & daily updated from official sources.',
     path: '/',
     absoluteTitle: true,
 })

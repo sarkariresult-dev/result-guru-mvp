@@ -77,7 +77,7 @@ export async function TaxonomyRibbon({ typeSlug, layout = 'ribbon' }: Props) {
                             {quals.map(q => (
                                 <Link
                                     key={q.slug}
-                                    href={`/${typeSlug}/for/${q.slug}`}
+                                    href="/qualifications"
                                     className="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-foreground-muted transition-all hover:bg-brand-50 hover:text-brand-700 dark:hover:bg-brand-900/20"
                                 >
                                     <span>{q.short_name || q.name}</span>
@@ -99,7 +99,7 @@ export async function TaxonomyRibbon({ typeSlug, layout = 'ribbon' }: Props) {
                             {states.map(s => (
                                 <Link
                                     key={s.slug}
-                                    href={`/${typeSlug}/in/${s.slug}`}
+                                    href={`/states/${s.slug}`}
                                     className="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-foreground-muted transition-all hover:bg-accent-50 hover:text-accent-700 dark:hover:bg-accent-950/30"
                                 >
                                     <span>{s.name}</span>
@@ -121,7 +121,7 @@ export async function TaxonomyRibbon({ typeSlug, layout = 'ribbon' }: Props) {
                             {orgs.map(o => (
                                 <Link
                                     key={o.slug}
-                                    href={`/${typeSlug}/org/${o.slug}`}
+                                    href={`/organizations/${o.slug}`}
                                     className="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-foreground-muted transition-all hover:bg-brand-50 hover:text-brand-700 dark:hover:bg-brand-900/20"
                                 >
                                     <span className="line-clamp-1">{o.short_name || o.name}</span>
@@ -147,7 +147,7 @@ export async function TaxonomyRibbon({ typeSlug, layout = 'ribbon' }: Props) {
                         {quals.map(q => (
                             <Link
                                 key={q.slug}
-                                href={`/${typeSlug}/for/${q.slug}`}
+                                href="/qualifications"
                                 className="whitespace-nowrap rounded-lg border border-border bg-background-subtle px-3 py-1.5 text-xs font-semibold text-foreground transition-all hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700 dark:hover:bg-brand-900/30 active:scale-95"
                             >
                                 {q.short_name || q.name}
@@ -167,7 +167,7 @@ export async function TaxonomyRibbon({ typeSlug, layout = 'ribbon' }: Props) {
                         {states.map(s => (
                             <Link
                                 key={s.slug}
-                                href={`/${typeSlug}/in/${s.slug}`}
+                                href={`/states/${s.slug}`}
                                 className="whitespace-nowrap rounded-lg border border-border bg-background-subtle px-3 py-1.5 text-xs font-semibold text-foreground transition-all hover:border-accent-200 hover:bg-accent-50 hover:text-accent-700 dark:hover:bg-accent-950/30 active:scale-95"
                             >
                                 {s.name}
@@ -187,7 +187,7 @@ export async function TaxonomyRibbon({ typeSlug, layout = 'ribbon' }: Props) {
                         {orgs.map(o => (
                             <Link
                                 key={o.slug}
-                                href={`/${typeSlug}/org/${o.slug}`}
+                                href={`/organizations/${o.slug}`}
                                 className="whitespace-nowrap rounded-lg border border-border bg-background-subtle px-3 py-1.5 text-xs font-semibold text-foreground transition-all hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700 dark:hover:bg-brand-900/30 active:scale-95"
                             >
                                 {o.short_name || o.name}

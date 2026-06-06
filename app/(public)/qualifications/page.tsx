@@ -40,7 +40,7 @@ export default async function QualificationsDirectoryPage() {
         itemListElement: quals.map((qual, i) => ({
             '@type': 'ListItem',
             position: i + 1,
-            url: `${SITE.url}/qualification/${qual.slug}`,
+            url: `${SITE.url}/qualifications`,
             name: qual.name,
         })),
     } : null

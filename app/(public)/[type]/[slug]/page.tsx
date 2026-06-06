@@ -137,7 +137,7 @@ export default async function PostDetailPage({ params }: Props) {
         ? processContentHtml(sanitizeHtml(publishedPost.content), {
             stateSlug: publishedPost.state_slug,
             stateName: publishedPost.state_name,
-            orgSlug: publishedPost.org_short_name ? publishedPost.slug : null,
+            orgSlug: publishedPost.org_slug,
             orgName: publishedPost.org_name,
             orgShortName: publishedPost.org_short_name,
         })

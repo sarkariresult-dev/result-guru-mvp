@@ -43,6 +43,10 @@ const envSchema = z.object({
     // ── Web Push Notifications ────────────────────────────────────────────
     NEXT_PUBLIC_VAPID_PUBLIC_KEY: z.string().min(1, 'VAPID public key is required').optional(),
     VAPID_PRIVATE_KEY: z.string().min(1, 'VAPID private key is required').optional(),
+
+    // ── Resend Email Delivery ─────────────────────────────────────────────
+    RESEND_API_KEY: z.string().min(1, 'Resend API key is required').optional(),
+    RESEND_FROM_EMAIL: z.string().min(1).default('onboarding@resend.dev'),
 })
 
 // ─── Validate ───────────────────────────────────────────────────────────────
@@ -79,6 +83,9 @@ const _parsed = envSchema.safeParse({
 
     NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
     VAPID_PRIVATE_KEY: process.env.VAPID_PRIVATE_KEY,
+
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
 })
 
 if (!_parsed.success) {

@@ -105,7 +105,7 @@ export async function checkOrganizationSource(
     }
 
     const startMs = Date.now()
-    
+
     try {
         // 1. Fetch organization source & organization details
         const { data: sourceData, error: sourceError } = await supabase
@@ -119,7 +119,7 @@ export async function checkOrganizationSource(
         }
         const activeSource = sourceData as SourceJoinData
         source = activeSource
-        
+
         const org = Array.isArray(activeSource.organizations) ? activeSource.organizations[0] : activeSource.organizations;
         if (!org) throw new Error('Organization data missing');
 
@@ -135,7 +135,7 @@ export async function checkOrganizationSource(
         // 3. Scrape current source page
         const controller = new AbortController()
         const timeoutId = setTimeout(() => controller.abort(), SOURCE_TIMEOUT_MS)
-        
+
         let scrapeResult
         try {
             scrapeResult = await scrapePage(activeSource.url, activeSource.selector, controller.signal)
@@ -262,8 +262,8 @@ export async function checkOrganizationSource(
         }
 
         const validPostTypes = [
-            'job', 'result', 'admit', 'answer_key', 'cut_off', 'syllabus', 
-            'exam_pattern', 'previous_paper', 'scheme', 'exam', 'admission', 
+            'job', 'result', 'admit', 'answer_key', 'cut_off', 'syllabus',
+            'exam_pattern', 'previous_paper', 'scheme', 'exam', 'admission',
             'scholarship', 'notification'
         ]
         if (!validPostTypes.includes(postType)) {
@@ -299,7 +299,7 @@ export async function checkOrganizationSource(
             official_url: org.official_url,
             primary_link: draft.primaryLink || org.official_url,
             notification_pdf: draft.notificationPdfUrl || null,
-            faq: draft.faq || [],
+            faq: (draft.faq || []).map((f: any) => ({ q: f.question ?? f.q ?? '', a: f.answer ?? f.a ?? '' })),
             meta_title: draft.metaTitle ? draft.metaTitle.substring(0, 70) : null,
             meta_description: draft.metaDescription ? draft.metaDescription.substring(0, 165) : null,
             focus_keyword: draft.focusKeyword || '',
@@ -484,7 +484,7 @@ async function runMonitoringTask(jobId: string, shortId: string, activeSources: 
             const chunkSize = 3
             for (let i = 0; i < activeSources.length; i += chunkSize) {
                 const chunk = activeSources.slice(i, i + chunkSize)
-                
+
                 await Promise.all(
                     chunk.map(async (item) => {
                         try {
@@ -492,7 +492,7 @@ async function runMonitoringTask(jobId: string, shortId: string, activeSources: 
                             if (checkRes.status === 'updated') updatesCount++
                             else if (checkRes.status === 'error') errorsCount++
                             else if (checkRes.status === 'no_change' && checkRes.reason) muffledCount++
-                            
+
                             results.push({ source_id: item.id, organization_id: item.organization_id, ...checkRes })
                         } catch (e: unknown) {
                             errorsCount++
@@ -503,13 +503,13 @@ async function runMonitoringTask(jobId: string, shortId: string, activeSources: 
                                 error: e instanceof Error ? e.message : String(e)
                             })
                         }
-                        
+
                         processedOrgs.add(item.organization_id)
                     })
                 )
 
                 processedCount += chunk.length
-                
+
                 try {
                     await supabase.from('monitoring_jobs').update({
                         processed_count: processedCount,
@@ -540,14 +540,14 @@ async function runMonitoringTask(jobId: string, shortId: string, activeSources: 
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Unknown monitoring run error'
         console.error('Failed monitoring task execution:', message)
-        
+
         try {
             await supabase.from('monitoring_jobs').update({
                 status: 'failed',
                 completed_at: new Date().toISOString(),
                 errors_count: 1
             }).eq('id', jobId)
-            
+
             await logEvent(supabase, jobId, 'job_failed', `Job failed: ${message}`)
         } catch (e) {
             console.error('Failed to set job status to failed:', e)
@@ -560,16 +560,16 @@ async function runMonitoringTask(jobId: string, shortId: string, activeSources: 
  */
 export async function deleteMonitoringJob(jobId: string) {
     const supabase = createAdminClient()
-    
+
     try {
         // 1. Delete associated updates explicitly (since schema has ON DELETE SET NULL for updates)
         await supabase.from('monitoring_updates').delete().eq('job_id', jobId)
-        
+
         // 2. Delete the job itself (Logs and Events will cascade automatically per DB schema)
         const { error } = await supabase.from('monitoring_jobs').delete().eq('id', jobId)
-        
+
         if (error) throw new Error(error.message)
-        
+
         return { success: true }
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Unknown delete error'

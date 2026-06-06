@@ -57,8 +57,8 @@ export const GET = withErrorHandling(async (request: Request) => {
     }
 
     // ── Refresh materialized views (existing logic) ─────────────
-    // fn_refresh_trending handles all MVs: mv_trending_posts, mv_post_type_counts, mv_site_stats
-    const refreshRes = await supabase.rpc('fn_refresh_trending')
+    // fn_refresh_materialized_views handles all MVs: mv_post_type_counts, mv_site_stats
+    const refreshRes = await supabase.rpc('fn_refresh_materialized_views')
 
     if (refreshRes.error) {
         void 0;

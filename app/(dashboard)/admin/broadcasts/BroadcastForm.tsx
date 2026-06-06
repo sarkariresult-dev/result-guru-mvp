@@ -8,9 +8,10 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Loader2 } from 'lucide-react';
-import { sendPushBroadcast } from '@/lib/actions/broadcasts';
+import { sendPushBroadcast, sendEmailBroadcast } from '@/lib/actions/broadcasts';
 
 const formSchema = z.object({
+  channel: z.enum(['push', 'email']),
   subject: z.string().min(3, 'Subject must be at least 3 characters'),
   body: z.string().min(5, 'Body must be at least 5 characters'),
   url: z.string().url('Must be a valid URL (e.g., https://resultguru.co.in/job/xyz)'),
@@ -27,26 +28,38 @@ export function BroadcastForm() {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      channel: 'push',
       subject: '',
       body: '',
       url: 'https://resultguru.co.in/',
     },
   });
 
+  const channel = watch('channel');
+
   const onSubmit = async (data: FormValues) => {
     setError(null);
     setSuccess(null);
     
-    // Quick confirmation
-    if (!window.confirm(`Are you sure you want to send this broadcast? It will instantly notify all subscribers.`)) {
+    const channelName = data.channel === 'push' ? 'Push Notification' : 'Email Newsletter';
+    if (!window.confirm(`Are you sure you want to send this broadcast? It will instantly notify all active ${channelName} subscribers.`)) {
       return;
     }
 
-    const result = await sendPushBroadcast(data);
+    const payload = {
+      subject: data.subject,
+      body: data.body,
+      url: data.url
+    };
+
+    const result = data.channel === 'push' 
+      ? await sendPushBroadcast(payload)
+      : await sendEmailBroadcast(payload);
 
     if (result?.error) {
       setError(result.error);
@@ -62,6 +75,40 @@ export function BroadcastForm() {
       {error && <div className="text-sm font-medium text-error p-3 bg-error/10 rounded-md">{error}</div>}
       {success && <div className="text-sm font-medium text-success p-3 bg-success/10 rounded-md">{success}</div>}
       
+      <div className="space-y-2">
+        <label className="text-sm font-medium leading-none">Broadcast Channel</label>
+        <div className="grid grid-cols-2 gap-4">
+          <label className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-all ${
+            channel === 'push' 
+              ? 'border-primary bg-primary/5 text-primary' 
+              : 'border-border bg-surface text-foreground hover:bg-background-subtle'
+          }`}>
+            <input 
+              type="radio" 
+              value="push" 
+              {...register('channel')} 
+              className="sr-only" 
+            />
+            <span className="font-bold text-sm">Push Notification</span>
+            <span className="text-xs text-foreground-muted mt-1 text-center">Sends native web push alerts</span>
+          </label>
+          <label className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-all ${
+            channel === 'email' 
+              ? 'border-primary bg-primary/5 text-primary' 
+              : 'border-border bg-surface text-foreground hover:bg-background-subtle'
+          }`}>
+            <input 
+              type="radio" 
+              value="email" 
+              {...register('channel')} 
+              className="sr-only" 
+            />
+            <span className="font-bold text-sm">Email Newsletter</span>
+            <span className="text-xs text-foreground-muted mt-1 text-center">Sends email via Resend</span>
+          </label>
+        </div>
+      </div>
+
       <div className="space-y-2">
         <label htmlFor="subject" className="text-sm font-medium leading-none">Title (Subject)</label>
         <Input id="subject" {...register('subject')} placeholder="e.g. SSC CGL 2024 Admit Card Out" />

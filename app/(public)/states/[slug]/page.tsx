@@ -51,12 +51,15 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     const totalCount = await getPostsCount({ state_slug: slug }).catch(() => 0)
     const totalPages = Math.ceil(totalCount / PAGINATION.DEFAULT_LIMIT)
 
+    const robots = totalCount === 0 ? 'noindex, follow' : stateRecord.meta_robots
+
     const baseMetadata: Metadata = {
         title,
         description,
         alternates: {
             canonical,
         },
+        ...(robots && { robots }),
         openGraph: {
             title,
             description,

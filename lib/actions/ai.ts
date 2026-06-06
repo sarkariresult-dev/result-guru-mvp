@@ -477,7 +477,7 @@ export async function generateContentWithGemini(data: GeneratePostInput) {
                     systemInstruction: systemPrompt,
                     responseMimeType: 'application/json',
                     responseSchema: aiResponseSchema as unknown,
-                    temperature: 0.85, // Higher for human-like creative variance
+                    temperature: env.GOOGLE_GENAI_TEMPERATURE !== undefined ? env.GOOGLE_GENAI_TEMPERATURE : 0.85,
                     topP: 0.92, // Nucleus sampling to reduce repetitive token selection
                 },
             })
@@ -659,7 +659,7 @@ export async function generateAffiliateData(url: string) {
                 systemInstruction: systemPrompt,
                 responseMimeType: 'application/json',
                 responseSchema: affiliateResponseSchema as unknown,
-                temperature: 0.3, // Lower temperature for more factual data
+                temperature: env.GOOGLE_GENAI_TEMPERATURE !== undefined ? env.GOOGLE_GENAI_TEMPERATURE : 0.3,
             },
         })
 
@@ -712,7 +712,7 @@ export async function generateTwitterThread(postId: string) {
                 systemInstruction: "You are a viral Twitter ghostwriter for an Indian education platform. You write punchy, relatable, and high-engagement threads.",
                 responseMimeType: 'application/json',
                 responseSchema: responseSchema as unknown,
-                temperature: 0.7,
+                temperature: env.GOOGLE_GENAI_TEMPERATURE !== undefined ? env.GOOGLE_GENAI_TEMPERATURE : 0.7,
             },
         })
 
@@ -827,7 +827,7 @@ export async function generateDraftFromSourceUpdate(opts: {
                 systemInstruction: "You are an expert editor for Sarkari Result portals. You analyze raw notifications, filter out administrative noise (tenders, transfers), and draft detailed posts for relevant updates.",
                 responseMimeType: 'application/json',
                 responseSchema: monitoringResponseSchema as unknown,
-                temperature: 0.3, // Lower temperature for more factual processing
+                temperature: env.GOOGLE_GENAI_TEMPERATURE !== undefined ? env.GOOGLE_GENAI_TEMPERATURE : 0.3,
             },
         })
 

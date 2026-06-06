@@ -42,11 +42,11 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
             canonical,
         },
         robots: {
-            index: page === 1,
+            index: totalCountRes > 0 && page === 1,
             follow: true,
             nocache: false,
             googleBot: {
-                index: page === 1,
+                index: totalCountRes > 0 && page === 1,
                 follow: true,
             },
         },

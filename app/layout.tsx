@@ -9,7 +9,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { SITE } from '@/config/site'
 import { JsonLd } from '@/components/seo/JsonLd'
-import { buildOrganizationSchema } from '@/lib/jsonld'
+import { buildOrganizationSchema, buildWebSiteSchema } from '@/lib/jsonld'
 import './globals.css'
 
 /* ── Fonts ── */
@@ -26,10 +26,10 @@ export const metadata: Metadata = {
     applicationName: SITE.name,
 
     title: {
-        default: 'Result Guru \u2013 Sarkari Results, Govt Jobs & Exam Updates',
+        default: 'Sarkari Result 2026 \u2013 Govt Jobs & Exam Updates | Result Guru',
         template: `%s | ${SITE.name}`,
     },
-    description: SITE.description,
+    description: 'Get latest Sarkari Results, Govt Jobs, Admit Cards, Answer Keys & Exam Updates 2026. Fast, accurate & daily updated from official sources.',
 
     keywords: [
         'sarkari result',
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
         type: 'website',
         locale: SITE.locale,
         siteName: SITE.name,
-        title: `${SITE.name} - Sarkari Result 2026 | Govt Jobs & Admit Cards`,
+        title: 'Sarkari Result 2026 \u2013 Govt Jobs, Admit Cards & Exam Updates | Result Guru',
         description: SITE.description,
         url: SITE.url,
         images: [
@@ -82,7 +82,7 @@ export const metadata: Metadata = {
         card: SITE.twitter.cardType,
         site: SITE.twitter.handle,
         creator: SITE.twitter.handle,
-        title: `${SITE.name} - Sarkari Result 2026 | Govt Jobs & Admit Cards`,
+        title: 'Sarkari Result 2026 \u2013 Govt Jobs, Admit Cards & Exam Updates | Result Guru',
         description: SITE.description,
         images: [
             {
@@ -208,8 +208,8 @@ export default function RootLayout({
                     <CookieConsentWrapper />
                 </Providers>
 
-                {/* Global Organization Schema for Knowledge Panel */}
-                <JsonLd data={[buildOrganizationSchema()]} />
+                {/* Global Organization + WebSite Schema for Knowledge Panel & Site Name */}
+                <JsonLd data={[buildOrganizationSchema(), buildWebSiteSchema()]} />
 
                 {/* Google AdSense - Best practice: afterInteractive for performance, maintains auto-ads detection */}
                 {SITE.adsenseId && (

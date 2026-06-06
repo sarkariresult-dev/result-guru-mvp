@@ -188,7 +188,7 @@ export function buildSiteNavigationSchema(): JsonLdObject {
  * Google uses this for rich FAQ snippets in search results.
  */
 export function buildFAQPageSchema(
-    items: Array<{ q: string; a: string }>,
+    items: Array<{ q?: string; a?: string; question?: string; answer?: string }>,
     name = 'Frequently Asked Questions'
 ): JsonLdObject {
     return {
@@ -197,10 +197,10 @@ export function buildFAQPageSchema(
         name,
         mainEntity: items.map((item) => ({
             '@type': 'Question',
-            name: item.q,
+            name: item.q ?? item.question ?? '',
             acceptedAnswer: {
                 '@type': 'Answer',
-                text: item.a,
+                text: item.a ?? item.answer ?? '',
             },
         })),
     }

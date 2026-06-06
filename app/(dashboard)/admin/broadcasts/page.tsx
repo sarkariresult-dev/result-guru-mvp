@@ -7,7 +7,7 @@ import { BroadcastForm } from './BroadcastForm';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'Push Broadcasts | Result Guru Admin',
+  title: 'Broadcasts | Result Guru Admin',
 };
 
 export default async function BroadcastsPage() {
@@ -26,14 +26,18 @@ export default async function BroadcastsPage() {
   // Fetch metrics (use Admin client to bypass RLS and get all users' subscriptions)
   const supabaseAdmin = createAdminClient();
 
-  const { count: subscriberCount } = await supabaseAdmin
+  const { count: pushSubscriberCount } = await supabaseAdmin
     .from('web_push_subscriptions')
     .select('*', { count: 'exact', head: true });
+
+  const { count: emailSubscriberCount } = await supabaseAdmin
+    .from('subscribers')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'active');
 
   const { data: broadcasts } = await supabaseAdmin
     .from('broadcasts')
     .select('*')
-    .eq('channel', 'push')
     .order('created_at', { ascending: false })
     .limit(20);
 
@@ -46,24 +50,36 @@ export default async function BroadcastsPage() {
   return (
     <div className="space-y-6 max-w-5xl">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Push Broadcasts</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Broadcast Dashboard</h1>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Active Subscribers</CardTitle>
-            <CardDescription>Total users opted-in to web push notifications</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-bold">{subscriberCount || 0}</div>
-          </CardContent>
-        </Card>
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Active Push Subscribers</CardTitle>
+              <CardDescription>Total devices opted-in to web push notifications</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-4xl font-bold">{pushSubscriberCount || 0}</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Active Email Subscribers</CardTitle>
+              <CardDescription>Total active email newsletter subscribers</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-4xl font-bold">{emailSubscriberCount || 0}</div>
+            </CardContent>
+          </Card>
+        </div>
 
         <Card>
           <CardHeader>
             <CardTitle>Send New Broadcast</CardTitle>
-            <CardDescription>Send a notification to all active subscribers</CardDescription>
+            <CardDescription>Send a notification or newsletter to active subscribers</CardDescription>
           </CardHeader>
           <CardContent>
             <BroadcastForm />
@@ -78,6 +94,7 @@ export default async function BroadcastsPage() {
             <thead className="[&_tr]:border-b">
               <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                 <th className="h-12 px-4 text-left align-middle font-medium text-foreground-muted">Date</th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-foreground-muted">Channel</th>
                 <th className="h-12 px-4 text-left align-middle font-medium text-foreground-muted">Subject</th>
                 <th className="h-12 px-4 text-left align-middle font-medium text-foreground-muted">Sent</th>
                 <th className="h-12 px-4 text-left align-middle font-medium text-foreground-muted">Clicks</th>
@@ -88,12 +105,20 @@ export default async function BroadcastsPage() {
               {broadcasts?.map((b) => (
                 <tr key={b.id} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                   <td className="p-4 align-middle">{new Date(b.created_at).toLocaleDateString()}</td>
+                  <td className="p-4 align-middle">
+                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                      b.channel === 'email' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                    }`}>
+                      {b.channel}
+                    </span>
+                  </td>
                   <td className="p-4 align-middle font-medium">{b.subject}</td>
                   <td className="p-4 align-middle">{b.sent_count}</td>
                   <td className="p-4 align-middle">{b.click_count}</td>
                   <td className="p-4 align-middle">
-                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${b.status === 'sent' ? 'bg-success/20 text-success' : 'bg-warning/20 text-warning'
-                      }`}>
+                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
+                      b.status === 'sent' ? 'bg-success/20 text-success' : 'bg-warning/20 text-warning'
+                    }`}>
                       {b.status}
                     </span>
                   </td>
@@ -101,7 +126,7 @@ export default async function BroadcastsPage() {
               ))}
               {!broadcasts?.length && (
                 <tr>
-                  <td colSpan={5} className="p-4 text-center text-foreground-muted">No broadcasts sent yet.</td>
+                  <td colSpan={6} className="p-4 text-center text-foreground-muted">No broadcasts sent yet.</td>
                 </tr>
               )}
             </tbody>
@@ -109,7 +134,7 @@ export default async function BroadcastsPage() {
         </div>
       </Card>
 
-      <h2 className="text-2xl font-semibold tracking-tight mt-8 mb-4">Subscriber List (Latest 100)</h2>
+      <h2 className="text-2xl font-semibold tracking-tight mt-8 mb-4">Web Push Subscriber List (Latest 100)</h2>
       <Card>
         <div className="relative w-full overflow-auto">
           <table className="w-full caption-bottom text-sm">

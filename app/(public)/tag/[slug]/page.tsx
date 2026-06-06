@@ -51,17 +51,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
 
     if (!tag) return {}
-  
+
     const baseTitle = tag.meta_title ?? `${tag.name} | Latest Govt Jobs, Results & Updates 2026`
     const title = formatTitle(baseTitle)
     const description = tag.meta_description ?? `Browse all posts tagged "${tag.name}". Find the latest Sarkari Jobs, exam results, admit cards, and notifications related to ${tag.name}.`
     const url = `${SITE.url}/tag/${slug}`
 
+    const totalCount = await getPostsCountByTag(tag.id).catch(() => 0)
+    const robots = totalCount === 0 ? 'noindex, follow' : tag.meta_robots
+
     return {
         title,
         description,
         alternates: { canonical: url },
-        ...(tag.meta_robots && tag.meta_robots !== 'index,follow' && { robots: tag.meta_robots }),
+        ...(robots && { robots }),
         openGraph: {
             title,
             description,

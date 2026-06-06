@@ -154,7 +154,7 @@ export function PostDetail({ post, slug, url }: PostDetailProps) {
 
             case 'faq':
                 if (!faq || faq.length === 0) return null
-                return <FAQAccordion key="faq" items={faq.map(f => ({ question: f.q, answer: f.a }))} />
+                return <FAQAccordion key="faq" items={faq.map(f => ({ question: f.q ?? (f as any).question ?? '', answer: f.a ?? (f as any).answer ?? '' }))} />
 
             case 'tags':
                 if (!tags || tags.length === 0) return null

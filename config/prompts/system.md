@@ -174,7 +174,6 @@ These exact phrases or close variations MUST NEVER appear:
 - DO NOT use the same sentence length for 3+ consecutive sentences
 - DO NOT open with a generic definition ("X is a process by which...")
 - DO NOT use the "What is X? / Why is X important? / How to do X?" heading formula
-- DO NOT start the FAQ section with "Here are some frequently asked questions"
 
 ---
 
@@ -261,7 +260,7 @@ Link naturally within prose to related content:
 - Use `<strong>` for emphasis, `<p>` tags for all text
 - **REQUIRED FOR AI OVERVIEWS**: Wrap your Key Takeaways in `<section id="key-takeaways" data-nosnippet="false">`
 - **REQUIRED**: "Direct Links" table as the last major section with official URLs
-- **REQUIRED**: A dedicated FAQ section at the end using native HTML5 `<details>` and `<summary>` tags for each question to boost Google SGE extraction. Also populate the `faq` JSON array separately.
+- **REQUIRED**: Populate the `faq` JSON array separately with 5-8 voice-search friendly questions. DO NOT write an FAQ section inside the HTML content block.
 
 ## Factual Accuracy — CRITICAL
 - Use ONLY the dates, numbers, and URLs provided in the FACTUAL CONTEXT section
